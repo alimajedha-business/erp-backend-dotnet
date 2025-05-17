@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Accounting.Domain.Entities;
+using NGErp.Accounting.Infrastructure.DataAccess.Repositories.Configuration;
 
 namespace Accounting.Infrastructure.DataAccess
 {
@@ -9,5 +10,10 @@ namespace Accounting.Infrastructure.DataAccess
 
         public AccountingDbContext(DbContextOptions<AccountingDbContext> options)
             : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new LedgerConfiguration());
+        }
     }
 }

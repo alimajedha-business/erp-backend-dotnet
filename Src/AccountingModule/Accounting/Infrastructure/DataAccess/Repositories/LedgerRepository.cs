@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Accounting.Domain.Entities;
 using Accounting.Domain.Interfaces;
-using Accounting.Infrastructure.DataAccess;
 
 namespace Accounting.Infrastructure.DataAccess.Repositories
 {
@@ -17,7 +16,7 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public async Task<IEnumerable<Ledger>> GetByDateRangeAsync(DateTime start, DateTime end)
         {
             return await _context.Ledgers
-                .Where(l => l.Date >= start && l.Date <= end)
+                .Where(l => l.CreatedAt >= start && l.CreatedAt <= end)
                 .ToListAsync();
         }
     }

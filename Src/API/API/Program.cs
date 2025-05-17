@@ -2,6 +2,7 @@ using API.Extentions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Common.Logging;
+using Accounting.Infrastructure.DataAccess;
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
@@ -20,7 +21,9 @@ try
 
     builder.Services.AddControllers();
     builder.Services.AddCustomLogging();
-    builder.Host.UseSerilog();  
+    builder.Host.UseSerilog();
+
+    builder.Services.AddDbContext<AccountingDbContext>();
 
     var app = builder.Build();
 

@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AccountingModule\Accounting\Accounting.csproj" />
     <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
   </ItemGroup>
 
