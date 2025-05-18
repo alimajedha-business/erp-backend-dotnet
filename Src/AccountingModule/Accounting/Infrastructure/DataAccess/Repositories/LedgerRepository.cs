@@ -1,23 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Accounting.Domain.Entities;
 using Accounting.Domain.Interfaces;
+using Common.DataAccess;
 
 namespace Accounting.Infrastructure.DataAccess.Repositories
 {
-    public class LedgerRepository : ILedgerRepository
+    public class LedgerRepository : RepositoryBase<Ledger>, ILedgerRepository
     {
-        private readonly AccountingDbContext _context;
-
-        public LedgerRepository(AccountingDbContext context)
+        public LedgerRepository(AccountingDbContext context) : base(context)
         {
-            _context = context;
-        }
-
-        public async Task<IEnumerable<Ledger>> GetByDateRangeAsync(DateTime start, DateTime end)
-        {
-            return await _context.Ledgers
-                .Where(l => l.CreatedAt >= start && l.CreatedAt <= end)
-                .ToListAsync();
         }
     }
 }
