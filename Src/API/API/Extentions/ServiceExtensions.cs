@@ -1,4 +1,11 @@
-﻿namespace API.Extentions
+﻿using Accounting.Application.Interfaces;
+using Accounting.Application.Services;
+using Accounting.Domain.Interfaces;
+using Accounting.Infrastructure.DataAccess;
+using Accounting.Infrastructure.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Extentions
 {
     public static class ServiceExtensions
     {
@@ -14,6 +21,13 @@
             services.Configure<IISOptions>(options =>
             {
             });
+        public static void ConfigureRepositoryManager(this IServiceCollection services) =>
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
+        public static void ConfigureServiceManager(this IServiceCollection services) =>
+            services.AddScoped<IServiceManager, ServiceManager>();
+        public static void ConfigureSqlContext(this IServiceCollection services,IConfiguration configuration) =>
+            services.AddDbContext<AccountingDbContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("NGERPDatabase")));
 
     }
 }
