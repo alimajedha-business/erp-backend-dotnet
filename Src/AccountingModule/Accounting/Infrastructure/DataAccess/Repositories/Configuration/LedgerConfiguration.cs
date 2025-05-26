@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace NGErp.Accounting.Infrastructure.DataAccess.Repositories.Configuration
+namespace Accounting.Infrastructure.DataAccess.Repositories.Configuration
 {
-    public class LedgerConfiguration : IEntityTypeConfiguration<AccountingDbContext>
+    public class LedgerConfiguration : IEntityTypeConfiguration<Ledger>
     {
-        public void Configure(EntityTypeBuilder<AccountingDbContext> builder)
+        public void Configure(EntityTypeBuilder<Ledger> builder)
         {
             builder.HasData
             (
@@ -23,12 +24,11 @@ namespace NGErp.Accounting.Infrastructure.DataAccess.Repositories.Configuration
                 Code = 1,
                 Name = "دفتر کل اصلی",
                 Name2 = "Main Ledger",
-                Descripion = "",
+                Description = "",
                 IsLeading = true,
                 CreatedAt= DateTime.UtcNow,
-
             }
-            );
+            );           
         }
     }
 }

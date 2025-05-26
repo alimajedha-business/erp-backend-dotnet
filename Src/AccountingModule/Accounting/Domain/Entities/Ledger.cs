@@ -20,9 +20,8 @@ public class Ledger
     [Column("is_leading")]
     public bool IsLeading { get; set; }
     [MaxLength(1000)]
-    public string? Descripion { get; set; }
+    public string? Description { get; set; }
     [Required]
     [Column("created_at", TypeName = "datetime2(7)")]
     public DateTime CreatedAt { get; set; }
-
 }
