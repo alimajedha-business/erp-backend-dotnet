@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Common.Logging;
 using Accounting.Infrastructure.DataAccess;
+using API.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
@@ -30,9 +31,8 @@ try
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
-    if (app.Environment.IsDevelopment())
-        app.UseDeveloperExceptionPage();
-    else
+     app.ConfigureExceptionHandler();
+    if (app.Environment.IsProduction())
         app.UseHsts();
 
     app.UseHttpsRedirection();

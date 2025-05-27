@@ -9,6 +9,7 @@ namespace Accounting.Domain.Interfaces
     public interface IRepositoryManager
     {
         ILedgerRepository Ledger { get; }
+        IAccountSetRepository AccountSet { get; }
         void Save();
     }
 }

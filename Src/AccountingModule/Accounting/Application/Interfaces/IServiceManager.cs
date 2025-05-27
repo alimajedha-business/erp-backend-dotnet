@@ -9,5 +9,6 @@ namespace Accounting.Application.Interfaces
     public interface IServiceManager
     {
         ILedgerService LedgerService { get; }
+        IAccountSetService AccountSetService { get; }
     }
 }

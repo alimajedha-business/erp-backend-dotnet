@@ -1,5 +1,6 @@
 ﻿using Accounting.Application.Interfaces;
 using Accounting.Domain.Interfaces;
+using AutoMapper;
 using Common.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,16 @@ namespace Accounting.Application.Services
     public sealed class ServiceManager : IServiceManager
     {
         private readonly Lazy<ILedgerService> _ledgerService;
-        
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService  logger)
+        private readonly Lazy<IAccountSetService> _accountSetService;
+
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
         {
-            _ledgerService = new Lazy<ILedgerService>(() => new
-            LedgerService(repositoryManager, logger));            
+            _ledgerService = new Lazy<ILedgerService>(() =>
+            new LedgerService(repositoryManager, logger, mapper));
+            _accountSetService = new Lazy<IAccountSetService>(() =>
+            new AccountSetService(repositoryManager, logger, mapper));
         }
-        public ILedgerService LedgerService => _ledgerService.Value;        
+        public ILedgerService LedgerService => _ledgerService.Value;
+        public IAccountSetService AccountSetService => _accountSetService.Value;
     }
 }

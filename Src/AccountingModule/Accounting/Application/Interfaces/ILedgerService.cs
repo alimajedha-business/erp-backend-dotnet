@@ -7,5 +7,6 @@ namespace Accounting.Application.Interfaces
     public interface ILedgerService
     {
         IEnumerable<LedgerDto> GetAllLedgers(bool trackChanges);
+        LedgerDto? GetLedger(int LedgerId, bool trackChanges);
     }
 }

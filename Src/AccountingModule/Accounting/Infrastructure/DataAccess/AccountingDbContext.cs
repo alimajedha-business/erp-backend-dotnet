@@ -12,7 +12,9 @@ namespace Accounting.Infrastructure.DataAccess
         {
             modelBuilder.ApplyConfiguration(new LedgerConfiguration());
             modelBuilder.Entity<Ledger>().ToTable("Ledgers", "accounting");
+            modelBuilder.Entity<AccountSet>().ToTable("Account_Sets", "Accounting");
         }
         public DbSet<Ledger> Ledgers { get; set; }
+        public DbSet<AccountSet> AccountSets { get; set; }
     }
 }

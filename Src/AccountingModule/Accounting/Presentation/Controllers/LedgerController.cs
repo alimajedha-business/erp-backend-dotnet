@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Accounting.Presentation.Controllers
 {
-    [Route("api/Accounting/Ledgers")]
+    [Route("api/accounting/ledgers")]
     [ApiController]
     public class LedgerController : ControllerBase
     {
@@ -12,16 +12,14 @@ namespace Accounting.Presentation.Controllers
         [HttpGet]
         public IActionResult GetLedgers()
         {
-            try
-            {
-                var ledgers =
-                _service.LedgerService.GetAllLedgers(trackChanges: false);
-                return Ok(ledgers);
-            }
-            catch
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            var ledgers = _service.LedgerService.GetAllLedgers(trackChanges: false);
+            return Ok(ledgers);
+        }
+        [HttpGet("{id:int}")]
+        public IActionResult GetLedger(int id)
+        {
+            var ledger = _service.LedgerService.GetLedger(id, trackChanges: false);
+            return Ok(ledger);
         }
     }
 }

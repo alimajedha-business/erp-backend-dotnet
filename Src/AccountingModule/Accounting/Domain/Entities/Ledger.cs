@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Accounting.Domain.Entities;
 
-[Table("Ledgers")]
+[Table("ledgers")]
 public class Ledger
 {
     [Key]

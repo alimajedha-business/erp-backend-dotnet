@@ -10,8 +10,9 @@ namespace API
         public MappingProfile()
         {
             CreateMap<Ledger, LedgerDto>()
-            .ForMember(l => l.Description, opt => opt.MapFrom(x => string.Join(' ', x.Name, x.Name2)));
+            .ForCtorParam("Description", opt => opt.MapFrom(x => string.Join(' ', x.Name, x.Name2)));
+            CreateMap<AccountSetDto, AccountSetDto>();
         }
- 
+
     }
 }
