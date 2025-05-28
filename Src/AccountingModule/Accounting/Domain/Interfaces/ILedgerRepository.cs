@@ -7,5 +7,7 @@ namespace Accounting.Domain.Interfaces
     {
         IEnumerable<Ledger> GetAllLedgers(bool trackChanges);
         Ledger? GetLedger(int LedgerId, bool trackChanges);
+        void CreateLedger(Ledger ledger);
+        IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges);
     }
 }

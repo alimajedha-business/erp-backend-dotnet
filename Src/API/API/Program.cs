@@ -4,6 +4,7 @@ using Serilog;
 using Common.Logging;
 using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
@@ -16,22 +17,27 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureRepositoryManager();
     builder.Services.ConfigureServiceManager();
     builder.Services.ConfigureSqlContext(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(Program));
-    builder.Services.AddControllers()
-        .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly);
+    builder.Services.Configure<ApiBehaviorOptions>(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+    builder.Services.AddControllers(config =>
+    {
+        config.ReturnHttpNotAcceptable = true;
+    }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly);
     builder.Services.AddCustomLogging();
     builder.Host.UseSerilog();
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
-     app.ConfigureExceptionHandler();
+    app.ConfigureExceptionHandler();
     if (app.Environment.IsProduction())
         app.UseHsts();
 

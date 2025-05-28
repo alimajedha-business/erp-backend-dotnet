@@ -32,18 +32,32 @@ namespace Accounting.Application.Services
             var ledger = _repository.Ledger.GetLedger(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-
             var accountSets = _repository.AccountSet.GetAllAccountSets(ledgerId, trackChanges);
             var accountSetDtos = _mapper.Map<IEnumerable<AccountSetDto>>(accountSets);
             return accountSetDtos;
         }
 
-        public AccountSetDto? GetAccountSet(int AccountSetId, bool trackChanges)
+        public AccountSetDto? GetAccountSet(int ledgerId, int accountSetId, bool trackChanges)
         {
-            var accountSet = _repository.AccountSet.GetAccountSet(AccountSetId, trackChanges);
+            var ledger = _repository.Ledger.GetLedger(ledgerId, trackChanges);
+            if (ledger is null)
+                throw new LedgerNotFoundException(ledgerId);
+            var accountSet = _repository.AccountSet.GetAccountSet(ledgerId,accountSetId, trackChanges);
             if (accountSet is null)
-                throw new AccountSetNotFoundException(AccountSetId);
+                throw new AccountSetNotFoundException(accountSetId);
             var accountSetDto = _mapper.Map<AccountSetDto>(accountSet);
+            return accountSetDto;
+        }
+
+        public AccountSetDto CreateAccountSetForLedger(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges)
+        {
+            var ledger = _repository.Ledger.GetLedger(ledgerId, trackChanges);
+            if (ledger is null)
+                throw new LedgerNotFoundException(ledgerId);
+            var accountSetEntity = _mapper.Map<AccountSet>(accountSet);
+            _repository.AccountSet.CreateAccountSetForLedger(companyId,ledgerId, accountSetEntity);
+            _repository.Save();
+            var accountSetDto = _mapper.Map<AccountSetDto>(accountSetEntity);
             return accountSetDto;
         }
     }

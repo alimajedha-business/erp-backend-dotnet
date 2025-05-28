@@ -10,6 +10,7 @@ namespace Accounting.Application.Interfaces
     public interface IAccountSetService
     {
         IEnumerable<AccountSetDto> GetAllAccountSets(int ledgerId, bool trackChanges);
-        AccountSetDto? GetAccountSet(int AccountSetId, bool trackChanges);
+        AccountSetDto? GetAccountSet(int ledgerId, int accountSetId, bool trackChanges);
+        AccountSetDto CreateAccountSetForLedger(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges);
     }
 }

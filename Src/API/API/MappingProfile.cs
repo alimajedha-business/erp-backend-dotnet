@@ -11,7 +11,9 @@ namespace API
         {
             CreateMap<Ledger, LedgerDto>()
             .ForCtorParam("Description", opt => opt.MapFrom(x => string.Join(' ', x.Name, x.Name2)));
-            CreateMap<AccountSetDto, AccountSetDto>();
+            CreateMap<AccountSet, AccountSetDto>();
+            CreateMap<LedgerForCreationDto, Ledger>();
+            CreateMap<AccountSetForCreationDto, AccountSet>();
         }
 
     }

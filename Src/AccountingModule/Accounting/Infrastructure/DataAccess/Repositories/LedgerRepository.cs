@@ -18,5 +18,14 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public Ledger? GetLedger(int LedgerId, bool trackChanges) =>
             FindByCondition(l => l.Id.Equals(LedgerId), trackChanges)
             .SingleOrDefault();
+        public void CreateLedger(Ledger ledger)
+        {
+            ledger.CreatedAt = DateTime.Now;
+            Create(ledger);
+        }
+
+        public IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges) =>
+            FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToList();
     }
 }

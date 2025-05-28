@@ -19,8 +19,14 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
             FindByCondition(a => a.LedgerId.Equals(ledgerId), trackChanges)
             .OrderBy(a => a.Title)
             .ToList();
-        public AccountSet? GetAccountSet(int AccountSetId, bool trackChanges) =>
-            FindByCondition(a => a.Id.Equals(AccountSetId), trackChanges)
+        public AccountSet? GetAccountSet(int ledgerId,int accountSetId, bool trackChanges) =>
+            FindByCondition(a =>a.LedgerId.Equals(ledgerId) && a.Id.Equals(accountSetId), trackChanges)
             .SingleOrDefault();
+        public void CreateAccountSetForLedger(int companyId, int ledgerId, AccountSet accountSet)
+        {
+            accountSet.CompanyId = companyId;
+            accountSet.LedgerId = ledgerId; 
+            Create(accountSet);
+        }
     }
 }
