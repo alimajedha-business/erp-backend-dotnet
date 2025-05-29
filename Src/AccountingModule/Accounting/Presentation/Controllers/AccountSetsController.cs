@@ -44,5 +44,23 @@ namespace Accounting.Presentation.Controllers
             },
             AccounSetToReturn);
         }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult DeleteAccountSetForLedger(int companyId, int ledgerId, int id)
+        {
+            _service.AccountSetService.DeleteAccountSetForLedger(companyId, ledgerId, id, trackChanges:
+            false);
+            return NoContent();
+        }
+
+        [HttpPut("{id:int}")]
+        public IActionResult UpdateAccountSetForLedger(int companyId, int ledgerId, int id, [FromBody] AccountSetForUpdateDto accountSet)
+        {
+            if (accountSet is null)
+                return BadRequest("AccountSet object is null");
+            _service.AccountSetService.UpdateAccountSetForLedger(companyId, ledgerId, id, accountSet,
+            ledTrackChanges: false, accTrackChanges: true);
+            return NoContent();
+        }
     }
 }

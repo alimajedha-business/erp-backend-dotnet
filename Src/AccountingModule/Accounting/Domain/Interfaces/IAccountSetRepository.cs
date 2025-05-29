@@ -13,5 +13,6 @@ namespace Accounting.Domain.Interfaces
         IEnumerable<AccountSet> GetAllAccountSets(int ledgerId, bool trackChanges);
         AccountSet? GetAccountSet(int ledgerId,int accountSetId, bool trackChanges);
         void CreateAccountSetForLedger(int companyId,int ledgerId, AccountSet accountSet);
+        void DeleteAccountSet(AccountSet accountSet);
     }
 }

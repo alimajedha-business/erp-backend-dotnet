@@ -15,18 +15,24 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public AccountSetRepository(AccountingDbContext context) : base(context)
         {
         }
+
         public IEnumerable<AccountSet> GetAllAccountSets(int ledgerId, bool trackChanges) =>
             FindByCondition(a => a.LedgerId.Equals(ledgerId), trackChanges)
             .OrderBy(a => a.Title)
             .ToList();
-        public AccountSet? GetAccountSet(int ledgerId,int accountSetId, bool trackChanges) =>
-            FindByCondition(a =>a.LedgerId.Equals(ledgerId) && a.Id.Equals(accountSetId), trackChanges)
+
+        public AccountSet? GetAccountSet(int ledgerId, int accountSetId, bool trackChanges) =>
+            FindByCondition(a => a.LedgerId.Equals(ledgerId) && a.Id.Equals(accountSetId), trackChanges)
             .SingleOrDefault();
+
         public void CreateAccountSetForLedger(int companyId, int ledgerId, AccountSet accountSet)
         {
             accountSet.CompanyId = companyId;
-            accountSet.LedgerId = ledgerId; 
+            accountSet.LedgerId = ledgerId;
             Create(accountSet);
         }
+
+        public void DeleteAccountSet(AccountSet accountSet) => Delete(accountSet);
+
     }
 }

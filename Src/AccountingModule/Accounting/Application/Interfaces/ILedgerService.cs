@@ -11,5 +11,7 @@ namespace Accounting.Application.Interfaces
         LedgerDto CreateLedger(LedgerForCreationDto ledger);
         IEnumerable<LedgerDto> GetByIds(IEnumerable<int> ids, bool trackChanges);
         (IEnumerable<LedgerDto> ledgers, string ids) CreateLedgerCollection(IEnumerable<LedgerForCreationDto> ledgerCollection);
+        void DeleteLedger(int ledgerId, bool trackChanges);
+        void UpdateLedger(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges);
     }
 }

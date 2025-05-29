@@ -9,5 +9,6 @@ namespace Accounting.Domain.Interfaces
         Ledger? GetLedger(int LedgerId, bool trackChanges);
         void CreateLedger(Ledger ledger);
         IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges);
+        void DeleteLedger(Ledger ledger);
     }
 }
