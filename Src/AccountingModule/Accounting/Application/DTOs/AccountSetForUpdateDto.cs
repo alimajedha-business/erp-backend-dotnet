@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Accounting.Application.DTOs
 {
-    public record AccountSetForUpdateDto(string Title);
+    public record AccountSetForUpdateDto:AccountSetForManipulationDto;
 }

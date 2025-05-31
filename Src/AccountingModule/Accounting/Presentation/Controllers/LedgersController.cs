@@ -2,11 +2,14 @@
 using Accounting.Application.Interfaces;
 using Accounting.Presentation.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Morcatko.AspNetCore.JsonMergePatch;
+using System.ComponentModel.Design;
 
 namespace Accounting.Presentation.Controllers
 {
     [Route("api/{companyId:int}/accounting/ledgers")]
-    [ApiController]
+   [ApiController]
     public class LedgersController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -16,14 +19,14 @@ namespace Accounting.Presentation.Controllers
         [HttpGet]
         public IActionResult GetLedgers()
         {
-            var ledgers = _service.LedgerService.GetAllLedgers(trackChanges: false);
+            var ledgers = _service.LedgerService.GetAll(trackChanges: false);
             return Ok(ledgers);
         }
 
         [HttpGet("{id:int}", Name = "LedgerById")]
         public IActionResult GetLedger(int id)
         {
-            var ledger = _service.LedgerService.GetLedger(id, trackChanges: false);
+            var ledger = _service.LedgerService.Get(id, trackChanges: false);
             return Ok(ledger);
         }
 
@@ -32,7 +35,9 @@ namespace Accounting.Presentation.Controllers
         {
             if (ledger is null)
                 return BadRequest("LedgerForCreationDto object is null");
-            var createdLedger = _service.LedgerService.CreateLedger(ledger);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+            var createdLedger = _service.LedgerService.Create(ledger);
             return CreatedAtRoute("LedgerById", new { companyId, id = createdLedger.Id }, createdLedger);
         }
 
@@ -47,14 +52,14 @@ namespace Accounting.Presentation.Controllers
         [HttpPost("collection")]
         public IActionResult CreateLedgerCollection(int companyId, [FromBody] IEnumerable<LedgerForCreationDto> ledgers)
         {
-            var result = _service.LedgerService.CreateLedgerCollection(ledgers);
+            var result = _service.LedgerService.CreateCollection(ledgers);
             return CreatedAtRoute("LedgerCollection", new { companyId, result.ids }, result.ledgers);
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteLedger(int id)
         {
-            _service.LedgerService.DeleteLedger(id, trackChanges: false);
+            _service.LedgerService.Delete(id, trackChanges: false);
             return NoContent();
         }
 
@@ -63,7 +68,24 @@ namespace Accounting.Presentation.Controllers
         {
             if (ledger is null)
                 return BadRequest("Ledger object is null");
-            _service.LedgerService.UpdateLedger(id, ledger, trackChanges: true);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+            _service.LedgerService.Update(id, ledger, trackChanges: true);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        [Consumes(JsonMergePatchDocument.ContentType)]
+        public IActionResult PatchLedger(int id, [FromBody] JsonMergePatchDocument<LedgerForUpdateDto> ledgerPatch)
+        {
+            if (ledgerPatch is null)
+            {
+                return BadRequest("Ledger object is null.");
+            }
+            var result = _service.LedgerService.GetLedgerForPatch(id, trackChanges: true);
+            ledgerPatch.ApplyTo(result.ledgerForUpdate);
+            _service.LedgerService.SaveChangesForPatch(result.ledgerForUpdate, result.ledgerEntity);
+
             return NoContent();
         }
     }

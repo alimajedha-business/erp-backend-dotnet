@@ -5,6 +5,8 @@ using Common.Logging;
 using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Morcatko.AspNetCore.JsonMergePatch;
+
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
@@ -32,6 +34,7 @@ try
         config.ReturnHttpNotAcceptable = true;
     }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly);
     builder.Services.AddCustomLogging();
+    builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
 
     var app = builder.Build();

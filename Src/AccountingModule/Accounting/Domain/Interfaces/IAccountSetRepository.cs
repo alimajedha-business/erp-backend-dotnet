@@ -10,9 +10,9 @@ namespace Accounting.Domain.Interfaces
 {
     public interface IAccountSetRepository
     {
-        IEnumerable<AccountSet> GetAllAccountSets(int ledgerId, bool trackChanges);
-        AccountSet? GetAccountSet(int ledgerId,int accountSetId, bool trackChanges);
-        void CreateAccountSetForLedger(int companyId,int ledgerId, AccountSet accountSet);
-        void DeleteAccountSet(AccountSet accountSet);
+        IEnumerable<AccountSet> GetAll(int ledgerId, bool trackChanges);
+        AccountSet? Get(int ledgerId,int accountSetId, bool trackChanges);
+        void Create(int companyId,int ledgerId, AccountSet accountSet);
+        void Delete(AccountSet accountSet);
     }
 }

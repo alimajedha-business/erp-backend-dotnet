@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Common.Exceptions;
-using System.ComponentModel.Design;
+
 
 namespace Accounting.Application.Services
 {
@@ -29,23 +29,23 @@ namespace Accounting.Application.Services
             _mapper = mapper;
         }
 
-        public LedgerDto CreateLedger(LedgerForCreationDto ledger)
+        public LedgerDto Create(LedgerForCreationDto ledger)
         {
-            var ledgerEntity = _mapper.Map<Ledger>(ledger);
-            _repository.Ledger.CreateLedger(ledgerEntity);
+            var ledgerEntity = _mapper.Map<Ledger>(ledger);  
+            _repository.Ledger.Create(ledgerEntity);
             _repository.Save();
             var ledgerToReturn = _mapper.Map<LedgerDto>(ledgerEntity);
             return ledgerToReturn;
         }
 
-        public (IEnumerable<LedgerDto> ledgers, string ids) CreateLedgerCollection(IEnumerable<LedgerForCreationDto> ledgerCollection)
+        public (IEnumerable<LedgerDto> ledgers, string ids) CreateCollection(IEnumerable<LedgerForCreationDto> ledgerCollection)
         {
             if (ledgerCollection is null)
                 throw new LedgerCollectionBadRequestException();
             var ledgerEntities = _mapper.Map<IEnumerable<Ledger>>(ledgerCollection);
             foreach (var ledger in ledgerEntities)
             {
-                _repository.Ledger.CreateLedger(ledger);
+                _repository.Ledger.Create(ledger);
             }
             _repository.Save();
             var ledgerCollectionToReturn =
@@ -54,18 +54,18 @@ namespace Accounting.Application.Services
             return (ledgers: ledgerCollectionToReturn, ids);
         }
 
-        public void DeleteLedger(int ledgerId, bool trackChanges)
+        public void Delete(int ledgerId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.GetLedger(ledgerId, trackChanges);
+            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-            _repository.Ledger.DeleteLedger(ledger);
+            _repository.Ledger.Delete(ledger);
             _repository.Save();
         }
 
-        public IEnumerable<LedgerDto> GetAllLedgers(bool trackChanges)
+        public IEnumerable<LedgerDto> GetAll(bool trackChanges)
         {
-            var ledgers = _repository.Ledger.GetAllLedgers(trackChanges);
+            var ledgers = _repository.Ledger.GetAll(trackChanges);
             var ledgersDto = _mapper.Map<IEnumerable<LedgerDto>>(ledgers);
             return ledgersDto;
         }
@@ -81,21 +81,36 @@ namespace Accounting.Application.Services
             return ledgersToReturn;
         }
 
-        public LedgerDto? GetLedger(int LedgerId, bool trackChanges)
+        public LedgerDto? Get(int LedgerId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.GetLedger(LedgerId, trackChanges);
+            var ledger = _repository.Ledger.Get(LedgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(LedgerId);
             var ledgerDto = _mapper.Map<LedgerDto>(ledger);
             return ledgerDto;
         }
 
-        public void UpdateLedger(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges)
+        public void Update(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges)
         {
-            var ledgerEntity = _repository.Ledger.GetLedger(ledgerId, trackChanges);
+            var ledgerEntity = _repository.Ledger.Get(ledgerId, trackChanges);
             if (ledgerEntity is null)
                 throw new LedgerNotFoundException(ledgerId);
             _mapper.Map(ledger, ledgerEntity);
+            _repository.Save();
+        }
+
+        public (LedgerForUpdateDto ledgerForUpdate, Ledger ledgerEntity) GetLedgerForPatch(int ledgerId, bool trackChanges)
+        {
+            var ledgerEntity = _repository.Ledger.Get(ledgerId, trackChanges);
+            if (ledgerEntity is null)
+                throw new LedgerNotFoundException(ledgerId);
+            var ledgerToPatch = _mapper.Map<LedgerForUpdateDto>(ledgerEntity);
+            return (ledgerToPatch, ledgerEntity);
+        }
+
+        public void SaveChangesForPatch(LedgerForUpdateDto ledgerToPatch, Ledger ledgerEntity)
+        {
+            _mapper.Map(ledgerToPatch, ledgerEntity);
             _repository.Save();
         }
     }

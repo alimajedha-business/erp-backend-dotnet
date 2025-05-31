@@ -5,10 +5,10 @@ namespace Accounting.Domain.Interfaces
 {
     public interface ILedgerRepository
     {
-        IEnumerable<Ledger> GetAllLedgers(bool trackChanges);
-        Ledger? GetLedger(int LedgerId, bool trackChanges);
-        void CreateLedger(Ledger ledger);
+        IEnumerable<Ledger> GetAll(bool trackChanges);
+        Ledger? Get(int LedgerId, bool trackChanges);
+        void Create(Ledger ledger);
         IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges);
-        void DeleteLedger(Ledger ledger);
+        void Delete(Ledger ledger);
     }
 }

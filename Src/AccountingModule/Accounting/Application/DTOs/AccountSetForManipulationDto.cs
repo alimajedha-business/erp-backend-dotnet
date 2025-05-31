@@ -7,5 +7,9 @@ using System.Threading.Tasks;
 
 namespace Accounting.Application.DTOs
 {
-    public record LedgerForCreationDto:LedgerForManipulationDto;
+    public abstract record AccountSetForManipulationDto
+    {
+        [Required(ErrorMessage = "Title is a required field.")]
+        public string? Title;
+    }
 }

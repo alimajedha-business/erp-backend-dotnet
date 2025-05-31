@@ -16,6 +16,7 @@ namespace API
             CreateMap<AccountSetForCreationDto, AccountSet>();
             CreateMap<AccountSetForUpdateDto, AccountSet>();
             CreateMap<LedgerForUpdateDto, Ledger>();
+            CreateMap<Ledger, LedgerForUpdateDto>();
         }
 
     }

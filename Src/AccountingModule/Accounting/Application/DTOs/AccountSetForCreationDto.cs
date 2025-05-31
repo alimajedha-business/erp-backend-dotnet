@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Accounting.Application.DTOs
 {
-    public record AccountSetForCreationDto(string Title);
+    public record AccountSetForCreationDto:AccountSetForManipulationDto;
  
 }

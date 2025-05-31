@@ -19,13 +19,13 @@ namespace Accounting.Presentation.Controllers
         [HttpGet]
         public IActionResult GetAccountSetsForCompany(int ledgerId)
         {
-            var accountSets = _service.AccountSetService.GetAllAccountSets(ledgerId, trackChanges: false);
+            var accountSets = _service.AccountSetService.GetAll(ledgerId, trackChanges: false);
             return Ok(accountSets);
         }
         [HttpGet("{id:int}", Name = "GetAccountSetForCompany")]
         public IActionResult GetAccountSetForCompany(int ledgerId, int id)
         {
-            var accountSet = _service.AccountSetService.GetAccountSet(ledgerId, id,
+            var accountSet = _service.AccountSetService.Get(ledgerId, id,
             trackChanges: false);
             return Ok(accountSet);
         }
@@ -35,7 +35,7 @@ namespace Accounting.Presentation.Controllers
             if (accountSet is null)
                 return BadRequest("AccountSet object is null");
             var AccounSetToReturn = _service.AccountSetService
-                .CreateAccountSetForLedger(companyId, ledgerId, accountSet, trackChanges: false);
+                .Create(companyId, ledgerId, accountSet, trackChanges: false);
             return CreatedAtRoute("GetAccountSetForCompany", new
             {
                 companyId,
@@ -48,7 +48,7 @@ namespace Accounting.Presentation.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult DeleteAccountSetForLedger(int companyId, int ledgerId, int id)
         {
-            _service.AccountSetService.DeleteAccountSetForLedger(companyId, ledgerId, id, trackChanges:
+            _service.AccountSetService.Delete(companyId, ledgerId, id, trackChanges:
             false);
             return NoContent();
         }
@@ -58,7 +58,7 @@ namespace Accounting.Presentation.Controllers
         {
             if (accountSet is null)
                 return BadRequest("AccountSet object is null");
-            _service.AccountSetService.UpdateAccountSetForLedger(companyId, ledgerId, id, accountSet,
+            _service.AccountSetService.Update(companyId, ledgerId, id, accountSet,
             ledTrackChanges: false, accTrackChanges: true);
             return NoContent();
         }

@@ -27,7 +27,6 @@ namespace API.Extentions
             services.AddScoped<IServiceManager, ServiceManager>();
         public static void ConfigureSqlContext(this IServiceCollection services,IConfiguration configuration) =>
             services.AddDbContext<AccountingDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("NGERPDatabase")));
-
+            opts.UseSqlServer(configuration.GetConnectionString("NGERPDatabase")));      
     }
 }

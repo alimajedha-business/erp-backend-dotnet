@@ -11,23 +11,23 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public LedgerRepository(AccountingDbContext context) : base(context)
         {
         }
-        public IEnumerable<Ledger> GetAllLedgers(bool trackChanges) =>
+        public IEnumerable<Ledger> GetAll(bool trackChanges) =>
              FindAll(trackChanges)
             .OrderBy(l => l.Id)
             .ToList();
-        public Ledger? GetLedger(int LedgerId, bool trackChanges) =>
+        public Ledger? Get(int LedgerId, bool trackChanges) =>
             FindByCondition(l => l.Id.Equals(LedgerId), trackChanges)
             .SingleOrDefault();
-        public void CreateLedger(Ledger ledger)
+        public new void Create(Ledger ledger)
         {
             ledger.CreatedAt = DateTime.Now;
-            Create(ledger);
+            base.Create(ledger);
         }
 
         public IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges) =>
             FindByCondition(x => ids.Contains(x.Id), trackChanges)
             .ToList();
 
-        public void DeleteLedger(Ledger ledger) => Delete(ledger);
+        public new void Delete(Ledger ledger) => base.Delete(ledger);
     }
 }
