@@ -1,5 +1,5 @@
 ﻿using Accounting.Application.DTOs;
-using Accounting.Application.Exceptions;
+using Accounting.Domain.Exceptions;
 using Accounting.Application.Interfaces.Repositories;
 using Accounting.Application.Interfaces.Services;
 using Accounting.Domain.Entities;

@@ -1,5 +1,5 @@
 ﻿using Accounting.Application.DTOs;
-using Accounting.Application.Exceptions;
+using Accounting.Domain.Exceptions;
 using Accounting.Domain.Entities;
 using AutoMapper;
 using System;

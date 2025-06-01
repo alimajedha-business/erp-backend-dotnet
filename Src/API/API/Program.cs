@@ -6,6 +6,7 @@ using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Morcatko.AspNetCore.JsonMergePatch;
 using Common.Infrastructure.Logging;
+using General.Infrastructure.DataAccess;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -23,7 +24,7 @@ try
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureRepositoryManager();
     builder.Services.ConfigureServiceManager();
-    builder.Services.ConfigureSqlContext(builder.Configuration);
+    builder.Services.AddDbContexts(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {

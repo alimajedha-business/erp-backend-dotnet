@@ -3,6 +3,8 @@ using Accounting.Application.Interfaces.Services;
 using Accounting.Application.Services;
 using Accounting.Infrastructure.DataAccess;
 using Accounting.Infrastructure.DataAccess.Repositories;
+using Common.Infrastructure.Logging;
+using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extentions
@@ -25,8 +27,14 @@ namespace API.Extentions
             services.AddScoped<IRepositoryManager, AccountingRepositoryManager>();
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
-        public static void ConfigureSqlContext(this IServiceCollection services,IConfiguration configuration) =>
-            services.AddDbContext<AccountingDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("NGERPDatabase")));      
+
+        public static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Module infrastructure
+            services.AddAccountingDbContext(configuration);
+            services.AddGeneralDbContext(configuration);
+            // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
+            return services;
+        }
     }
 }
