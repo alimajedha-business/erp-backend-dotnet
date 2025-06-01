@@ -1,7 +1,7 @@
-﻿using Accounting.Application.Interfaces;
-using Accounting.Domain.Interfaces;
+﻿using Accounting.Application.Interfaces.Repositories;
+using Accounting.Application.Interfaces.Services;
 using AutoMapper;
-using Common.Logging;
+using Common.Infrastructure.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

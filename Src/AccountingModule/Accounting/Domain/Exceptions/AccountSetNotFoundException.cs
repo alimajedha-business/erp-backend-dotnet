@@ -1,11 +1,11 @@
-﻿using Common.Exceptions;
+﻿using Common.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Accounting.Application.Exceptions
+namespace Accounting.Domain.Exceptions
 {
     internal class AccountSetNotFoundException : NotFoundException
     {

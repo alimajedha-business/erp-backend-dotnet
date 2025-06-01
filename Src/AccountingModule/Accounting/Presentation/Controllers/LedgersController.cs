@@ -1,5 +1,5 @@
 ﻿using Accounting.Application.DTOs;
-using Accounting.Application.Interfaces;
+using Accounting.Application.Interfaces.Services;
 using Accounting.Presentation.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ using System.ComponentModel.Design;
 namespace Accounting.Presentation.Controllers
 {
     [Route("api/{companyId:int}/accounting/ledgers")]
-   [ApiController]
+    [ApiController]
     public class LedgersController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -84,6 +84,9 @@ namespace Accounting.Presentation.Controllers
             }
             var result = _service.LedgerService.GetLedgerForPatch(id, trackChanges: true);
             ledgerPatch.ApplyTo(result.ledgerForUpdate);
+            TryValidateModel(result.ledgerForUpdate);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
             _service.LedgerService.SaveChangesForPatch(result.ledgerForUpdate, result.ledgerEntity);
 
             return NoContent();

@@ -2,7 +2,7 @@ using Accounting.Application.DTOs;
 using Accounting.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Accounting.Application.Interfaces
+namespace Accounting.Application.Interfaces.Services
 {
     public interface ILedgerService
     {

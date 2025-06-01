@@ -1,10 +1,10 @@
 ﻿using Accounting.Application.DTOs;
 using Accounting.Application.Exceptions;
-using Accounting.Application.Interfaces;
+using Accounting.Application.Interfaces.Repositories;
+using Accounting.Application.Interfaces.Services;
 using Accounting.Domain.Entities;
-using Accounting.Domain.Interfaces;
 using AutoMapper;
-using Common.Logging;
+using Common.Infrastructure.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;

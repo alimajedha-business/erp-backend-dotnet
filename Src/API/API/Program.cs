@@ -1,11 +1,11 @@
 using API.Extentions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
-using Common.Logging;
 using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Morcatko.AspNetCore.JsonMergePatch;
+using Common.Infrastructure.Logging;
 
 
 Log.Logger = new LoggerConfiguration()

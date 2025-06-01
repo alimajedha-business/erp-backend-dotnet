@@ -1,6 +1,6 @@
-﻿using Accounting.Domain.Entities;
-using Accounting.Domain.Interfaces;
-using Common.DataAccess;
+﻿using Accounting.Application.Interfaces.Repositories;
+using Accounting.Domain.Entities;
+using Common.Infrastructure.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;

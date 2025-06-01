@@ -1,6 +1,6 @@
-﻿using Accounting.Application.Interfaces;
+﻿using Accounting.Application.Interfaces.Repositories;
+using Accounting.Application.Interfaces.Services;
 using Accounting.Application.Services;
-using Accounting.Domain.Interfaces;
 using Accounting.Infrastructure.DataAccess;
 using Accounting.Infrastructure.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ namespace API.Extentions
             {
             });
         public static void ConfigureRepositoryManager(this IServiceCollection services) =>
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
+            services.AddScoped<IRepositoryManager, AccountingRepositoryManager>();
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
         public static void ConfigureSqlContext(this IServiceCollection services,IConfiguration configuration) =>

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Accounting.Domain.Entities;
-using Accounting.Domain.Interfaces;
-using Common.DataAccess;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Accounting.Application.Interfaces.Repositories;
+using Common.Infrastructure.DataAccess;
 
 namespace Accounting.Infrastructure.DataAccess.Repositories
 {

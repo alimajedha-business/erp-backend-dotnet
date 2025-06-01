@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace Common.Logging
+namespace Common.Infrastructure.Logging
 {
     public class LoggerService : ILoggerService
     {

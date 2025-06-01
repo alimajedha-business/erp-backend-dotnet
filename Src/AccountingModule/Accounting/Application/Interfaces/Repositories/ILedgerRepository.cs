@@ -1,7 +1,7 @@
 using Accounting.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace Accounting.Domain.Interfaces
+namespace Accounting.Application.Interfaces.Repositories
 {
     public interface ILedgerRepository
     {

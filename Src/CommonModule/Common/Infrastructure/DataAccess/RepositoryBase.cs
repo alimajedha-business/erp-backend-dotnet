@@ -1,4 +1,4 @@
-﻿using Common.Interfaces;
+﻿using Common.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.DataAccess
+namespace Common.Infrastructure.DataAccess
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

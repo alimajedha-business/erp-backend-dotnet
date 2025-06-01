@@ -1,8 +1,8 @@
 ﻿// Ignore Spelling: Middleware
 
+using Common.Domain.Exceptions;
 using Common.ErrorModel;
-using Common.Exceptions;
-using Common.Logging;
+using Common.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 

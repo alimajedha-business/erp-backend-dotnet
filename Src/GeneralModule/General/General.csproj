@@ -10,4 +10,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\DataAccess\Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
+  </ItemGroup>
+
 </Project>
