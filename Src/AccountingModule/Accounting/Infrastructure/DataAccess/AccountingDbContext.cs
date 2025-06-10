@@ -6,7 +6,7 @@ namespace Accounting.Infrastructure.DataAccess
 {
     public class AccountingDbContext : DbContext
     {
-        public AccountingDbContext(DbContextOptions options)
+        public AccountingDbContext(DbContextOptions<AccountingDbContext> options)
             : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

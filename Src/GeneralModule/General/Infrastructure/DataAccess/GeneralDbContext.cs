@@ -10,7 +10,7 @@ namespace General.Infrastructure.DataAccess
 {
     public class GeneralDbContext : DbContext
     {
-        public GeneralDbContext(DbContextOptions options) : base(options) { }
+        public GeneralDbContext(DbContextOptions<GeneralDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Currency>().ToTable("currencies", "general");
