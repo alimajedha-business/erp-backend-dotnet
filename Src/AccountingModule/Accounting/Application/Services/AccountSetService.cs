@@ -17,11 +17,11 @@ namespace Accounting.Application.Services
 {
     internal sealed class AccountSetService : IAccountSetService
     {
-        private readonly IRepositoryManager _repository;
+        private readonly IAccountingRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
 
-        public AccountSetService(IRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public AccountSetService(IAccountingRepositoryManager repository, ILoggerService logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;

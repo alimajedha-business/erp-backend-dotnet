@@ -18,11 +18,11 @@ namespace Accounting.Application.Services
 {
     internal sealed class LedgerService : ILedgerService
     {
-        private readonly IRepositoryManager _repository;
+        private readonly IAccountingRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
 
-        public LedgerService(IRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public LedgerService(IAccountingRepositoryManager repository, ILoggerService logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;

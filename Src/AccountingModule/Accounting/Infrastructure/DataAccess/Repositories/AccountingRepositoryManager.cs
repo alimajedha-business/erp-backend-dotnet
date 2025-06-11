@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Accounting.Infrastructure.DataAccess.Repositories
 {
-    public sealed class AccountingRepositoryManager : IRepositoryManager
+    public sealed class AccountingRepositoryManager : IAccountingRepositoryManager
     {
         private readonly AccountingDbContext _repositoryContext;
         private readonly Lazy<ILedgerRepository> _ledgerRepository;

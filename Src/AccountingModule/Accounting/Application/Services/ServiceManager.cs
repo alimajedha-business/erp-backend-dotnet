@@ -15,7 +15,7 @@ namespace Accounting.Application.Services
         private readonly Lazy<ILedgerService> _ledgerService;
         private readonly Lazy<IAccountSetService> _accountSetService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
+        public ServiceManager(IAccountingRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
         {
             _ledgerService = new Lazy<ILedgerService>(() =>
             new LedgerService(repositoryManager, logger, mapper));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Accounting.Application.Interfaces.Repositories
 {
-    public interface IRepositoryManager
+    public interface IAccountingRepositoryManager
     {
         ILedgerRepository Ledger { get; }
         IAccountSetRepository AccountSet { get; }

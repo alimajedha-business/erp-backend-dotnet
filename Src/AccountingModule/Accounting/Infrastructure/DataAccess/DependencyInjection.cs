@@ -1,4 +1,6 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Accounting.Application.Interfaces.Repositories;
+using Accounting.Infrastructure.DataAccess.Repositories;
+using Common.Infrastructure.DataAccess;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,8 +13,9 @@ namespace Accounting.Infrastructure.DataAccess
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddAccountingDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAccountingInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IAccountingRepositoryManager, AccountingRepositoryManager>();
             services.AddSqlServerDbContext<AccountingDbContext>(configuration);
             return services;
         }
