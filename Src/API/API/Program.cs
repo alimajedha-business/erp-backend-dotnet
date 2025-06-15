@@ -22,9 +22,8 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
-    builder.Services.ConfigureRepositoryManager();
-    builder.Services.ConfigureServiceManager();
-    builder.Services.AddDbContexts(builder.Configuration);
+    builder.Services.AddModuleApplications();
+    builder.Services.AddInfrastructures(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(Program));
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {

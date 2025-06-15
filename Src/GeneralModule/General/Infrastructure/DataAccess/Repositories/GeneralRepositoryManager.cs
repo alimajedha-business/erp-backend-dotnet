@@ -31,4 +31,3 @@ namespace General.Infrastructure.DataAccess.Repositories
 
     }
 }
-}
