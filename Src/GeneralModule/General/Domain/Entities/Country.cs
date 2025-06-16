@@ -19,7 +19,8 @@ namespace General.Domain.Entities
         [Required]
         public int Code { get; set; }
         public int TaxCode { get; set; }
-        [Column("currency_id")]
+        [Column("currency_id"),ForeignKey("Currency")]
         public int CurrencyId { get; set; }
+        public Currency? Currency { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace General.Application.Interfaces.Services
 {
     internal interface IServiceManager
     {
-        //ILedgerService LedgerService { get; }
+        ICountryService CountryService{ get; }
         //IAccountSetService AccountSetService { get; }
     }
 }

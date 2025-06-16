@@ -20,15 +20,16 @@ namespace API.Extentions
                 .AllowAnyMethod()
                 .AllowAnyHeader());
             });
+
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options =>
             {
             });
+
           public static void AddModuleApplications(this IServiceCollection services) 
         {
             services.AddAccountingApplication();
-        }
-          
+        }        
 
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
         {

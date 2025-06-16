@@ -32,7 +32,8 @@ try
     builder.Services.AddControllers(config =>
     {
         config.ReturnHttpNotAcceptable = true;
-    }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly);
+    }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
+    .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly);
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using General.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace General.Application.Interfaces.Services
 {
     public interface ICountryService
     {
-        //IEnumerable<LedgerDto> GetAll(bool trackChanges);
+        IEnumerable<CountryDto> GetAll(bool trackChanges);
         //LedgerDto? Get(int LedgerId, bool trackChanges);
         //LedgerDto Create(LedgerForCreationDto ledger);
         //IEnumerable<LedgerDto> GetByIds(IEnumerable<int> ids, bool trackChanges);

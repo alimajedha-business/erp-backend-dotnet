@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace General.Application.DTOs
 {
-    public record class CountryDto(int Id,string Name)
+    public record class CountryDto(int Id,string Name,int Code, int TaxCode, string? Currency);
    
 }
