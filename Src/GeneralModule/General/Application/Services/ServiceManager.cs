@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace General.Application.Services
 {
-    public sealed class ServiceManager : IServiceManager
+    internal sealed class ServiceManager : IServiceManager
     {
         private readonly Lazy<ICountryService> _countryService;
         //private readonly Lazy<IAccountSetService> _accountSetService;

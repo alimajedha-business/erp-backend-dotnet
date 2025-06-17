@@ -5,6 +5,7 @@ using Accounting.Application.Services;
 using Accounting.Infrastructure.DataAccess;
 using Accounting.Infrastructure.DataAccess.Repositories;
 using Common.Infrastructure.Logging;
+using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,7 @@ namespace API.Extentions
           public static void AddModuleApplications(this IServiceCollection services) 
         {
             services.AddAccountingApplication();
+            services.AddGeneralApplication();
         }        
 
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)

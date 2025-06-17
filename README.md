@@ -42,28 +42,30 @@ Serilog
     - Add AddModuleInfrastructures from DependencyInjection to AddInfrastructures method    
 9. In Module > Application > Services
 	- Implement ServiceManager.cs
-10. In Module > Domain > Entities
+10. In Module >	Presentation
+	- Add AssemblyReference.cs
+11. In Module > Domain > Entities
 	- Create Entities.cs
-11. In Module > Infrastructure > DataAccess > ModuleDBContext.cs
+12. In Module > Infrastructure > DataAccess > ModuleDBContext.cs
 	- Add Entities DbSets
-12. In Module > Application > Interfaces > Repositories
+13. In Module > Application > Interfaces > Repositories
 	1. Create IEntityRepository.cs
 	2. Add IEntityRepository to IModuleRepositoryManager.cs
-13. In Module > Infrastructure > DataAccess > Repositories
+14. In Module > Infrastructure > DataAccess > Repositories
     1. Implement EntityRepository.cs
     2. Add EntityRepository to ModuleRepositoryManager.cs
-14. In Module > Application > DTOs
+15. In Module > Application > DTOs
 	- Create EntityDto.cs, EntityForCreationDto.cs, EntityForManipulationDto.cs, EntityForUpdateDto.cs
-15. In Module > Application > Mappings
+16. In Module > Application > Mappings
 	-  Add mapping to MappingProfile.cs
-16. In Module > Application > Interfaces > Services
+17. In Module > Application > Interfaces > Services
 	1. Create IEntityService.cs
 	2. Add IEntityService to IServiceManager.cs
-17. In Module > Application > Services
+18. In Module > Application > Services
 	1. Implement EntityService.cs
 	2. Add EntityService to ServiceManager.cs
-18. In Module > Presntation > Controllers
+19. In Module > Presentation > Controllers
 	- Create EntitiesController
-19. In API > Program.cs
+20. In API > Program.cs
 	- Add EntitiesController to 
 	

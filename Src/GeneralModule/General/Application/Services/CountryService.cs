@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace General.Application.Services
 {
-    internal sealed class CountryService : ICountryService
+    public sealed class CountryService : ICountryService
     {
         private readonly IGeneralRepositoryManager _repository;
         private readonly ILoggerService _logger;
