@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Accounting.Domain.Entities;
-using Common.Logging;
+using Common.Infrastructure.Logging;
 using Xunit;
 
 namespace Accounting.Tests.Services;

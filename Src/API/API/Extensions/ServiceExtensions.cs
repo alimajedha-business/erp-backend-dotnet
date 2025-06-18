@@ -37,7 +37,7 @@ namespace API.Extentions
         {
             // Module infrastructure
             services.AddAccountingInfrastructure(configuration);
-            services.AddGeneralDbContext(configuration);
+            services.AddGeneralInfrastructure(configuration);
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
             return services;
         }

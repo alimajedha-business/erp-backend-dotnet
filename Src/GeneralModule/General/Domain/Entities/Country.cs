@@ -18,9 +18,11 @@ namespace General.Domain.Entities
         public string? Name { get; set; }
         [Required]
         public int Code { get; set; }
-        public int TaxCode { get; set; }
-        [Column("currency_id"),ForeignKey("Currency")]
-        public int CurrencyId { get; set; }
+        [Column("tax_code")]
+        public int? TaxCode { get; set; }
+        [Column("currency_id")]
+        public int? CurrencyId { get; set; }
+        [ForeignKey("CurrencyId")]
         public Currency? Currency { get; set; }
     }
 }

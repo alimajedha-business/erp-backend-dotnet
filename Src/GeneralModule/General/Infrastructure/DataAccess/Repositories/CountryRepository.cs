@@ -22,6 +22,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 
         public IEnumerable<Country> GetAll(bool trackChanges) =>
             FindAll(trackChanges)
+            .Include(c => c.Currency)
             .OrderBy(x => x.Id)
             .ToList();
 

@@ -13,7 +13,7 @@ namespace General.Infrastructure.DataAccess
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddGeneralDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddGeneralInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IGeneralRepositoryManager, GeneralRepositoryManager>();
             services.AddSqlServerDbContext<GeneralDbContext>(configuration);
