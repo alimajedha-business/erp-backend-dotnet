@@ -1,0 +1,20 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Accounting.Domain.Entities;
+using Accounting.Infrastructure.DataAccess.Repositories.Configuration;
+
+namespace Accounting.Infrastructure.DataAccess
+{
+    public class AccountingDbContext : DbContext
+    {
+        public AccountingDbContext(DbContextOptions<AccountingDbContext> options)
+            : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new LedgerConfiguration());
+            modelBuilder.Entity<Ledger>().ToTable("Ledgers", "accounting");
+            modelBuilder.Entity<AccountSet>().ToTable("Account_Sets", "Accounting");
+        }
+        public DbSet<Ledger> Ledgers { get; set; }
+        public DbSet<AccountSet> AccountSets { get; set; }
+    }
+}

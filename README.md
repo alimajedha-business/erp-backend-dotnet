@@ -1,3 +1,4 @@
+
 # Name
 Noavaran Group ERP
 
@@ -20,6 +21,18 @@ xUnit
 
 ### Logging
 Serilog
+
+### EF Core tools
+**install**
+`dotnet tool install --global dotnet-ef`
+**update**
+`dotnet tool update --global dotnet-ef`
+Before you can use the tools on a specific project, you'll need to add the *Microsoft.EntityFrameworkCore.Design* and *Microsoft.EntityFrameworkCore.SqlServer* packages to it.
+**dotnet ef dbcontext scaffold**
+`dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;" Microsoft.EntityFrameworkCore.SqlServer -d -o Data/Generated -c SharedDbContext --conte  xt-dir Data --schema shared`
+this command should be exexute at root of project
+
+
 
 ## Creating project flow
 1. In Module > Infrastructure > DataAccess
