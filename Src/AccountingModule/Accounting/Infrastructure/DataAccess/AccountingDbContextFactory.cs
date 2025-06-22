@@ -13,13 +13,13 @@ namespace Accounting.Infrastructure.DataAccess
     {
         public AccountingDbContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            //var configuration = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json")
+            //    .Build();
 
             var builder = new DbContextOptionsBuilder<AccountingDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("NGERPDatabase"));
+                .UseSqlServer("Server=.\\sql19;Database=NGERP;User Id=sa;Password=123;");
 
             return new AccountingDbContext(builder.Options);
         }
