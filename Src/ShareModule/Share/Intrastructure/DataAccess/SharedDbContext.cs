@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Share.Domain.Entities;
+using Shared.Domain.Entities;
 
-namespace Share.Data;
+namespace Shared.Intrastructure.DataAccess;
 
 public partial class SharedDbContext : DbContext
 {

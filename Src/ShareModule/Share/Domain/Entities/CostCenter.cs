@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Share.Domain.Entities;
+namespace Shared.Domain.Entities;
 
 [Table("cost_centers", Schema = "shared")]
 [Index("CompanyId", Name = "cost_centers_company_id_5390b4ec")]

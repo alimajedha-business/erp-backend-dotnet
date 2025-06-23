@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse", "Src\WarehouseM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Treasury", "Src\TreasuryModule\Treasury\Treasury.csproj", "{6D1A4B45-EDA0-4372-89F3-4400ABEE5F11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Share", "Src\ShareModule\Share\Share.csproj", "{5A38D96D-6F71-4E8B-A050-7A1F64CB8C89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Src\ShareModule\Share\Shared.csproj", "{5A38D96D-6F71-4E8B-A050-7A1F64CB8C89}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payroll", "Src\PayrollModule\Payroll\Payroll.csproj", "{51A3BC00-9F71-4361-9CC6-8BBFA6E8C512}"
 EndProject
@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General", "Src\GeneralModul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Src\CommonModule\Common\Common.csproj", "{F08E0B4F-3478-43DA-B2B8-6E2E290B4810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "Src\API\API\API.csproj", "{4E3574E3-62B2-42CF-B9D0-7D5A8F48C1AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "Src\API\API\API.csproj", "{4E3574E3-62B2-42CF-B9D0-7D5A8F48C1AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Share.Domain.Entities;
+namespace Shared.Domain.Entities;
 
 [Table("role_permission_constraints", Schema = "shared")]
 [Index("EntityTypeId", Name = "role_permission_constraints_entity_type_id_183e495f")]

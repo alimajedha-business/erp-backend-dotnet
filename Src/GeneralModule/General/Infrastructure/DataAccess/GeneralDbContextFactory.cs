@@ -13,13 +13,13 @@ namespace General.Infrastructure.DataAccess
     {
         public GeneralDbContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            //var configuration = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json")
+            //    .Build();
 
             var builder = new DbContextOptionsBuilder<GeneralDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("NGERPDatabase"));
+                .UseSqlServer("Server=.\\sql19;Database=NGERP;User Id=sa;Password=123;");
 
             return new GeneralDbContext(builder.Options);
         }
