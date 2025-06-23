@@ -45,7 +45,7 @@ this command should be exexute at root of project
 
 **Updates the database to the last migration or to a specified migration**
 
-`dotnet ef database update'
+`dotnet ef database update`
 
 ## Creating project flow
 1. In Module > Infrastructure > DataAccess
