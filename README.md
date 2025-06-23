@@ -35,7 +35,7 @@ Before you can use the tools on a specific project, you'll need to add the *Micr
 
 **dotnet ef dbcontext scaffold**
 
-`dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;" Microsoft.EntityFrameworkCore.SqlServer -d -o Data/Generated -c SharedDbContext --conte  xt-dir Data --schema shared`
+` dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -d -o Domain\Entities -c ModuleDbContext --context-dir Infrastructure\DataAccess --schema ModuleSchema`
 
 this command should be exexute at root of project
 
