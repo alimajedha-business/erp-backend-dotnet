@@ -10,6 +10,6 @@ namespace Accounting.Application.Interfaces.Repositories
     {
         ILedgerRepository Ledger { get; }
         IAccountSetRepository AccountSet { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

@@ -27,66 +27,66 @@ namespace Accounting.Application.Services
             _logger = logger;
             _mapper = mapper;
         }
-        public IEnumerable<AccountSetDto> GetAll(int ledgerId, bool trackChanges)
+        public async Task<IEnumerable<AccountSetDto>> GetAllAsync(int ledgerId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledger = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-            var accountSets = _repository.AccountSet.GetAll(ledgerId, trackChanges);
+            var accountSets = await _repository.AccountSet.GetAllAsync(ledgerId, trackChanges);
             var accountSetDtos = _mapper.Map<IEnumerable<AccountSetDto>>(accountSets);
             return accountSetDtos;
         }
 
-        public AccountSetDto? Get(int ledgerId, int accountSetId, bool trackChanges)
+        public async Task<AccountSetDto?> GetAsync(int ledgerId, int accountSetId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledger =await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-            var accountSet = _repository.AccountSet.Get(ledgerId, accountSetId, trackChanges);
+            var accountSet = await _repository.AccountSet.GetAsync(ledgerId, accountSetId, trackChanges);
             if (accountSet is null)
                 throw new AccountSetNotFoundException(accountSetId);
             var accountSetDto = _mapper.Map<AccountSetDto>(accountSet);
             return accountSetDto;
         }
 
-        public AccountSetDto Create(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges)
+        public async Task<AccountSetDto> CreateAsync(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges)
         {
-            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledger =await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
             var accountSetEntity = _mapper.Map<AccountSet>(accountSet);
             _repository.AccountSet.Create(companyId, ledgerId, accountSetEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             var accountSetDto = _mapper.Map<AccountSetDto>(accountSetEntity);
             return accountSetDto;
         }
 
-        public void Delete(int companyId, int ledgerId, int id, bool trackChanges)
+        public async Task DeleteAsync(int companyId, int ledgerId, int id, bool trackChanges)
         {
             //var company = _repository.Company.GetCompany(companyId, trackChanges);
             //if (company is null)
             //    throw new CompanyNotFoundException(companyId);
-            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledger = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-            var accountSetForLedger = _repository.AccountSet.Get(ledgerId, id, trackChanges);
+            var accountSetForLedger = await _repository.AccountSet.GetAsync(ledgerId, id, trackChanges);
             if (accountSetForLedger is null)
                 throw new AccountSetNotFoundException(id);
             _repository.AccountSet.Delete(accountSetForLedger);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public void Update(int companyId, int ledgerId, int accountSetId, AccountSetForUpdateDto accountSet,
+        public async Task UpdateAsync(int companyId, int ledgerId, int accountSetId, AccountSetForUpdateDto accountSet,
             bool ledTrackChanges, bool accTrackChanges)
         {
-            var ledger = _repository.Ledger.Get(ledgerId, ledTrackChanges);
+            var ledger =await _repository.Ledger.GetAsync(ledgerId, ledTrackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
-            var accountSetEntity = _repository.AccountSet.Get(ledgerId, accountSetId,accTrackChanges);
+            var accountSetEntity = await _repository.AccountSet.GetAsync(ledgerId, accountSetId, accTrackChanges);
             if (accountSetEntity is null)
                 throw new AccountSetNotFoundException(accountSetId);
             _mapper.Map(accountSet, accountSetEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
     }
 }

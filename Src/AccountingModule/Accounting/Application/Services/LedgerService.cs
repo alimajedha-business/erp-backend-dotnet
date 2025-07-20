@@ -29,16 +29,16 @@ namespace Accounting.Application.Services
             _mapper = mapper;
         }
 
-        public LedgerDto Create(LedgerForCreationDto ledger)
+        public async Task<LedgerDto> CreateAsync(LedgerForCreationDto ledger)
         {
-            var ledgerEntity = _mapper.Map<Ledger>(ledger);  
+            var ledgerEntity = _mapper.Map<Ledger>(ledger);
             _repository.Ledger.Create(ledgerEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             var ledgerToReturn = _mapper.Map<LedgerDto>(ledgerEntity);
             return ledgerToReturn;
         }
 
-        public (IEnumerable<LedgerDto> ledgers, string ids) CreateCollection(IEnumerable<LedgerForCreationDto> ledgerCollection)
+        public async Task<(IEnumerable<LedgerDto> ledgers, string ids)> CreateCollectionAsync(IEnumerable<LedgerForCreationDto> ledgerCollection)
         {
             if (ledgerCollection is null)
                 throw new LedgerCollectionBadRequestException();
@@ -47,71 +47,71 @@ namespace Accounting.Application.Services
             {
                 _repository.Ledger.Create(ledger);
             }
-            _repository.Save();
+            await _repository.SaveAsync();
             var ledgerCollectionToReturn =
             _mapper.Map<IEnumerable<LedgerDto>>(ledgerEntities);
             var ids = string.Join(",", ledgerCollectionToReturn.Select(c => c.Id));
             return (ledgers: ledgerCollectionToReturn, ids);
         }
 
-        public void Delete(int ledgerId, bool trackChanges)
+        public async Task DeleteAsync(int ledgerId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledger = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(ledgerId);
             _repository.Ledger.Delete(ledger);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<LedgerDto> GetAll(bool trackChanges)
+        public async Task<IEnumerable<LedgerDto>> GetAllAsync(bool trackChanges)
         {
-            var ledgers = _repository.Ledger.GetAll(trackChanges);
+            var ledgers = await _repository.Ledger.GetAllAsync(trackChanges);
             var ledgersDto = _mapper.Map<IEnumerable<LedgerDto>>(ledgers);
             return ledgersDto;
         }
 
-        public IEnumerable<LedgerDto> GetByIds(IEnumerable<int> ids, bool trackChanges)
+        public async Task<IEnumerable<LedgerDto>> GetByIdsAsync(IEnumerable<int> ids, bool trackChanges)
         {
             if (ids is null)
                 throw new IdParametersBadRequestException();
-            var ledgerEntities = _repository.Ledger.GetByIds(ids, trackChanges);
+            var ledgerEntities = await _repository.Ledger.GetByIdsAsync(ids, trackChanges);
             if (ids.Count() != ledgerEntities.Count())
                 throw new CollectionByIdsBadRequestException();
             var ledgersToReturn = _mapper.Map<IEnumerable<LedgerDto>>(ledgerEntities);
             return ledgersToReturn;
         }
 
-        public LedgerDto? Get(int LedgerId, bool trackChanges)
+        public async Task<LedgerDto?> GetAsync(int LedgerId, bool trackChanges)
         {
-            var ledger = _repository.Ledger.Get(LedgerId, trackChanges);
+            var ledger = await _repository.Ledger.GetAsync(LedgerId, trackChanges);
             if (ledger is null)
                 throw new LedgerNotFoundException(LedgerId);
             var ledgerDto = _mapper.Map<LedgerDto>(ledger);
             return ledgerDto;
         }
 
-        public void Update(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges)
+        public async Task UpdateAsync(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges)
         {
-            var ledgerEntity = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledgerEntity = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledgerEntity is null)
                 throw new LedgerNotFoundException(ledgerId);
             _mapper.Map(ledger, ledgerEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public (LedgerForUpdateDto ledgerForUpdate, Ledger ledgerEntity) GetLedgerForPatch(int ledgerId, bool trackChanges)
+        public async Task<(LedgerForUpdateDto ledgerForUpdate, Ledger ledgerEntity)> GetLedgerForPatchAsync(int ledgerId, bool trackChanges)
         {
-            var ledgerEntity = _repository.Ledger.Get(ledgerId, trackChanges);
+            var ledgerEntity = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
             if (ledgerEntity is null)
                 throw new LedgerNotFoundException(ledgerId);
             var ledgerToPatch = _mapper.Map<LedgerForUpdateDto>(ledgerEntity);
             return (ledgerToPatch, ledgerEntity);
         }
 
-        public void SaveChangesForPatch(LedgerForUpdateDto ledgerToPatch, Ledger ledgerEntity)
+        public async Task SaveChangesForPatchAsync(LedgerForUpdateDto ledgerToPatch, Ledger ledgerEntity)
         {
             _mapper.Map(ledgerToPatch, ledgerEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
     }
 }

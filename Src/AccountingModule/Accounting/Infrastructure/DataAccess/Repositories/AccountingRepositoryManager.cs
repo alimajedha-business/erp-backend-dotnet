@@ -15,14 +15,14 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public AccountingRepositoryManager(AccountingDbContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
-            _ledgerRepository = new Lazy<ILedgerRepository>(() => 
+            _ledgerRepository = new Lazy<ILedgerRepository>(() =>
             new LedgerRepository(repositoryContext));
-            _accountSetRepository = new Lazy<IAccountSetRepository>(() => 
+            _accountSetRepository = new Lazy<IAccountSetRepository>(() =>
             new AccountSetRepository(repositoryContext));
         }
         public ILedgerRepository Ledger => _ledgerRepository.Value;
         public IAccountSetRepository AccountSet => _accountSetRepository.Value;
-        public void Save() => _repositoryContext.SaveChanges();
+        public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
 
     }
 }

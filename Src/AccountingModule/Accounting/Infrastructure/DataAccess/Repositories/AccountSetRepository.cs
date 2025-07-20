@@ -1,6 +1,7 @@
 ﻿using Accounting.Application.Interfaces.Repositories;
 using Accounting.Domain.Entities;
 using Common.Infrastructure.DataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -16,14 +17,14 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         {
         }
 
-        public IEnumerable<AccountSet> GetAll(int ledgerId, bool trackChanges) =>
-            FindByCondition(a => a.LedgerId.Equals(ledgerId), trackChanges)
+        public async Task<IEnumerable<AccountSet>> GetAllAsync(int ledgerId, bool trackChanges) =>
+          await FindByCondition(a => a.LedgerId.Equals(ledgerId), trackChanges)
             .OrderBy(a => a.Title)
-            .ToList();
+            .ToListAsync();
 
-        public AccountSet? Get(int ledgerId, int accountSetId, bool trackChanges) =>
-            FindByCondition(a => a.LedgerId.Equals(ledgerId) && a.Id.Equals(accountSetId), trackChanges)
-            .SingleOrDefault();
+        public async Task<AccountSet?> GetAsync(int ledgerId, int accountSetId, bool trackChanges) =>
+           await FindByCondition(a => a.LedgerId.Equals(ledgerId) && a.Id.Equals(accountSetId), trackChanges)
+            .SingleOrDefaultAsync();
 
         public void Create(int companyId, int ledgerId, AccountSet accountSet)
         {
