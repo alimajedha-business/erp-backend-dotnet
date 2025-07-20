@@ -56,10 +56,8 @@ namespace Accounting.Application.Services
 
         public async Task DeleteAsync(int ledgerId, bool trackChanges)
         {
-            var ledger = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
-            if (ledger is null)
-                throw new LedgerNotFoundException(ledgerId);
-            _repository.Ledger.Delete(ledger);
+            var ledgerEntity = await GetLedgerAndCheckIfItExistsAsync(ledgerId, trackChanges);
+            _repository.Ledger.Delete(ledgerEntity);
             await _repository.SaveAsync();
         }
 
@@ -81,29 +79,23 @@ namespace Accounting.Application.Services
             return ledgersToReturn;
         }
 
-        public async Task<LedgerDto?> GetAsync(int LedgerId, bool trackChanges)
+        public async Task<LedgerDto?> GetAsync(int ledgerId, bool trackChanges)
         {
-            var ledger = await _repository.Ledger.GetAsync(LedgerId, trackChanges);
-            if (ledger is null)
-                throw new LedgerNotFoundException(LedgerId);
-            var ledgerDto = _mapper.Map<LedgerDto>(ledger);
+            var ledgerEntity = await GetLedgerAndCheckIfItExistsAsync(ledgerId, trackChanges);
+            var ledgerDto = _mapper.Map<LedgerDto>(ledgerEntity);
             return ledgerDto;
         }
 
         public async Task UpdateAsync(int ledgerId, LedgerForUpdateDto ledger, bool trackChanges)
         {
-            var ledgerEntity = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
-            if (ledgerEntity is null)
-                throw new LedgerNotFoundException(ledgerId);
+            var ledgerEntity = await GetLedgerAndCheckIfItExistsAsync(ledgerId, trackChanges);
             _mapper.Map(ledger, ledgerEntity);
             await _repository.SaveAsync();
         }
 
         public async Task<(LedgerForUpdateDto ledgerForUpdate, Ledger ledgerEntity)> GetLedgerForPatchAsync(int ledgerId, bool trackChanges)
         {
-            var ledgerEntity = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
-            if (ledgerEntity is null)
-                throw new LedgerNotFoundException(ledgerId);
+            var ledgerEntity = await GetLedgerAndCheckIfItExistsAsync(ledgerId, trackChanges);
             var ledgerToPatch = _mapper.Map<LedgerForUpdateDto>(ledgerEntity);
             return (ledgerToPatch, ledgerEntity);
         }
@@ -113,5 +105,14 @@ namespace Accounting.Application.Services
             _mapper.Map(ledgerToPatch, ledgerEntity);
             await _repository.SaveAsync();
         }
+
+        private async Task<Ledger> GetLedgerAndCheckIfItExistsAsync(int ledgerId, bool trackChanges)
+        {
+            var ledgerEntity = await _repository.Ledger.GetAsync(ledgerId, trackChanges);
+            if (ledgerEntity is null)
+                throw new LedgerNotFoundException(ledgerId);
+            return (ledgerEntity);
+        }
+
     }
 }
