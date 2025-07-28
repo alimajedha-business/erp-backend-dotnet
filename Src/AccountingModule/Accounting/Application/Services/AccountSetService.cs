@@ -27,6 +27,7 @@ namespace Accounting.Application.Services
             _logger = logger;
             _mapper = mapper;
         }
+
         public async Task<IEnumerable<AccountSetDto>> GetAllAsync(int ledgerId, bool trackChanges)
         {
             var ledger = await _repository.Ledger.GetAsync(ledgerId, trackChanges);

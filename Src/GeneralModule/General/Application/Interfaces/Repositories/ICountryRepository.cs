@@ -1,4 +1,5 @@
-﻿using General.Domain.Entities;
+﻿using Common.Application.RequestParameters;
+using General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace General.Application.Interfaces.Repositories
 {
     public interface ICountryRepository
     {
-        IEnumerable<Country> GetAll(bool trackChanges);
+        PagedList<Country> GetAll(CountryParameters countryParameters, bool trackChanges);
         Country? Get(int Id, bool trackChanges);
         void Create(Country country);
         IEnumerable<Country> GetByIds(IEnumerable<int> ids, bool trackChanges);
