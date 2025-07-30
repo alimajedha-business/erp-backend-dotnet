@@ -2,6 +2,7 @@
 using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Domain.Entities;
+using General.Infrastructure.DataAccess.Repositories.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
 
@@ -21,6 +22,7 @@ namespace General.Infrastructure.DataAccess.Repositories
         {
             var countries = FindAll(trackChanges)
             .OrderBy(x => x.Id)
+            .Search(countryParameters.SearchTerm)
             .Skip((countryParameters.PageNumber - 1) * countryParameters.PageSize)
             .Take(countryParameters.PageSize)
             .Include(c => c.Currency)

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Common.Application.RequestParameters
 {
-    public class CountryParameters : RequestParameters
+    public class ProvinceParameters:RequestParameters
     {
+        public int CountryId {  get; set; }
     }
 }
