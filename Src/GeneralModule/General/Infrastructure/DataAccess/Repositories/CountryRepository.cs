@@ -26,6 +26,7 @@ namespace General.Infrastructure.DataAccess.Repositories
             .Skip((countryParameters.PageNumber - 1) * countryParameters.PageSize)
             .Take(countryParameters.PageSize)
             .Include(c => c.Currency)
+            .Sort(countryParameters.OrderBy)
             .ToList();
 
             var count = FindAll(trackChanges).Count();

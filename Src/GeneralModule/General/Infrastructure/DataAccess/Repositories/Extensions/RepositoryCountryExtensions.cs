@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
+using System.Reflection;
+using Common.Infrastructure.DataAccess.Repositories.Extensions.Utility;
 
 namespace General.Infrastructure.DataAccess.Repositories.Extensions
 {
@@ -17,6 +20,17 @@ namespace General.Infrastructure.DataAccess.Repositories.Extensions
                 return countries;
             var lowerCaseTerm = searchTerm.Trim().ToLower();
             return countries.Where(e => e.Name.ToLower().Contains(lowerCaseTerm));
+        }
+
+        public static IQueryable<Country> Sort(this IQueryable<Country> countries, string? orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return countries.OrderBy(e => e.Name);
+        
+            var orderQuery = OrderQueryBuilder.CreateOrderQuery<Country>(orderByQueryString);
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return countries.OrderBy(e => e.Name);
+            return countries.OrderBy(orderQuery);
         }
     }
 }
