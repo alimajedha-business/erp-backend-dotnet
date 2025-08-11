@@ -4,11 +4,12 @@ Noavaran Group ERP
 
 ## Architecture
 ### System Architecture
-![Alt text](architectures.webp)
-![Alt text](MODULAR-Monolith-Architecture.webp)
+![Alt text](readme-files/architectures.webp)
+![Alt text](readme-files/MODULAR-Monolith-Architecture.webp)
 ### Module Architecture
 Onion Architecture
 
+![Alt text](readme-files/onion-architecture.webp)
 
 ## Naming Conventions
 https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/
