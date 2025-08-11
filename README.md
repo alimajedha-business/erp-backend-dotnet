@@ -5,6 +5,7 @@ Noavaran Group ERP
 ## Architecture
 ### System Architecture
 Modular Monolith
+
 ![Alt text](architectures.webp)
 ![Alt text](MODULAR-Monolith-Architecture.webp)
 ### Module Architecture
