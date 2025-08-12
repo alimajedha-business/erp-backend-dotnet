@@ -8,6 +8,7 @@ using Common.Infrastructure.Logging;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace API.Extentions
 {
@@ -21,18 +22,18 @@ namespace API.Extentions
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-Pagination"));
-    });
+            });
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options =>
             {
             });
 
-          public static void AddModuleApplications(this IServiceCollection services) 
+        public static void AddModuleApplications(this IServiceCollection services)
         {
             services.AddAccountingApplication();
             services.AddGeneralApplication();
-        }        
+        }
 
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
         {
@@ -41,6 +42,19 @@ namespace API.Extentions
             services.AddGeneralInfrastructure(configuration);
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
             return services;
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Noavaran ERP API",
+                    Version = "v1"                   
+                });
+                
+            });
         }
     }
 }

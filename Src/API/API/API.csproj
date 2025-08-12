@@ -11,6 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\AccountingModule\Accounting\Accounting.csproj" />
         <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />

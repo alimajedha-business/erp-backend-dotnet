@@ -37,6 +37,7 @@ try
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
+    builder.Services.ConfigureSwagger();
 
     var app = builder.Build();
 
@@ -58,6 +59,12 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(s =>
+    {
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "Noavaran ERP API v1");
+    });
 
     app.Run();
 }

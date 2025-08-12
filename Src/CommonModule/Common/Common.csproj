@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
     <PackageReference Include="Morcatko.AspNetCore.JsonMergePatch.SystemText" Version="6.0.4" />
@@ -17,6 +18,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Domain\Entities\" />
   </ItemGroup>
 
 </Project>
