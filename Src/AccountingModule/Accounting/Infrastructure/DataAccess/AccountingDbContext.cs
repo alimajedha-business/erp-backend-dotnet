@@ -153,12 +153,9 @@ public partial class AccountingDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__account___3213E83F57D6E072");
 
             entity.HasIndex(e => new { e.AccountSetId, e.MasterId, e.SlaveId }, "account_set_items_account_set_id_master_id_slave_id_c5ba8c71_uniq")
-                .IsUnique()
-                .HasFilter("([account_set_id] IS NOT NULL AND [master_id] IS NOT NULL AND [slave_id] IS NOT NULL)");
+                .IsUnique().HasFilter("([account_set_id] IS NOT NULL AND [master_id] IS NOT NULL AND [slave_id] IS NOT NULL)");
 
-            entity.HasOne(d => d.AccountSet).WithMany(p => p.AccountSetItems)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("account_set_items_account_set_id_c6a49338_fk_account_sets_id");
+            entity.HasOne(d => d.AccountSet).WithMany(p => p.AccountSetItems).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("account_set_items_account_set_id_c6a49338_fk_account_sets_id");
 
             entity.HasOne(d => d.Master).WithMany(p => p.AccountSetItems).HasConstraintName("account_set_items_master_id_e12671e4_fk_master_accounts_id");
 

@@ -14,6 +14,7 @@
         <ProjectReference Include="..\..\AccountingModule\Accounting\Accounting.csproj" />
         <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
+        <ProjectReference Include="..\..\WarehouseModule\Warehouse\Warehouse.csproj" />
     </ItemGroup>
 
 </Project>

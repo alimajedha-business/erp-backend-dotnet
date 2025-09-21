@@ -13,5 +13,6 @@ namespace Accounting.Domain.Exceptions
         : base($"The ledger with id: {LedgerId} doesn't exist in the database.")
         {
         }
+
     }
 }

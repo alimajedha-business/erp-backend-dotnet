@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +12,8 @@ namespace Warehouse.Infrastructure.DataAccess
     {
         public WarehouseDbContext CreateDbContext(string[] args)
         {
-            //var configuration = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json")
-            //    .Build();
-
-            var builder = new DbContextOptionsBuilder<WarehouseDbContext>()
-                .UseSqlServer("Server=.\\sql19;Database=NGERP;User Id=sa;Password=123;Encrypt=False;");
-
+            var builder= new DbContextOptionsBuilder<WarehouseDbContext>()
+               .UseSqlServer("Server=.\\sql19;Database=NGERP;User Id=sa;Password=123;Encrypt=False;");              
             return new WarehouseDbContext(builder.Options);
         }
     }

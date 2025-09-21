@@ -17,7 +17,7 @@ namespace Accounting.Application
         public static IServiceCollection AddAccountingApplication(this IServiceCollection services)
         {
             services.AddScoped<IServiceManager, ServiceManager>();
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(AccountingMappingProfile));
             return services;
         }
     }

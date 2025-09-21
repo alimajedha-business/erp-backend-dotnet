@@ -35,5 +35,10 @@ namespace Common.Infrastructure.Logging
         {
             _logger.Debug(message, args);
         }
+
+        public void LogError(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

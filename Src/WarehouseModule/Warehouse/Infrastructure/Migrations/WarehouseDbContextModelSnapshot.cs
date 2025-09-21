@@ -21,24 +21,289 @@ namespace Warehouse.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Warehouse.Domain.Entities.Warehouse", b =>
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductCode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<int?>("FifthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FifthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("FifthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("FirstLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstLevelName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("FourthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FourthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("FourthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SecondLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecondLevelName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("SeventhLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeventhLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("SeventhNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("SixthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SixthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("SixthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ThirdLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ThirdLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("ThirdNextLevel")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.ToTable("warehouses", "warehouse");
+                    b.ToTable("ProductCodes", "Warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductHierarchy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte?>("FifthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FifthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte>("FirstLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FirstLevelType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("FourthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FourthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte>("SecondLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SecondLevelType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("SixthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SixthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("ThirdLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("ThirdLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductHierarchies", "Warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseStock", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ExportAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ExportDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MaxAssetValue")
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<bool>("PurchaseReturnAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("PurchaseReturnDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ReturnAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ReturnDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SalesAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("SalesDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("WarehouseAccountFixed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("WarehouseCode")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WarehouseName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int?>("WarehouseSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "BranchId" }, "WarehouseStocks_BranchId");
+
+                    b.HasIndex(new[] { "CompanyId" }, "WarehouseStocks_CompanyId");
+
+                    b.HasIndex(new[] { "WarehouseTypeId" }, "WarehouseStocks_WarehouseTypeId");
+
+                    b.ToTable("WarehouseStocks", "Warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TypeCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WarehouseTypes", "Warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseStock", b =>
+                {
+                    b.HasOne("Warehouse.Domain.Entities.WarehouseType", "WarehouseType")
+                        .WithMany("WarehouseStocks")
+                        .HasForeignKey("WarehouseTypeId");
+
+                    b.Navigation("WarehouseType");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseType", b =>
+                {
+                    b.Navigation("WarehouseStocks");
                 });
 #pragma warning restore 612, 618
         }

@@ -54,4 +54,8 @@ public partial class CompanyUnit
     [ForeignKey("ParentId")]
     [InverseProperty("InverseParent")]
     public virtual CompanyUnit? Parent { get; set; }
+
+    //[ForeignKey("Id")]
+    //[InverseProperty("InverseParent")]
+    //public virtual CompanyUnit? WarehouseStocks { get; set; }
 }

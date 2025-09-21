@@ -43,4 +43,12 @@ public partial class Company
 
     [InverseProperty("Company")]
     public virtual ICollection<SelectLog> SelectLogs { get; set; } = new List<SelectLog>();
+
+    //public virtual ICollection<WarehouseStock> WarehouseStocks { get; set; } = new List<WarehouseStock>();
+
+
+
+
+
+
 }

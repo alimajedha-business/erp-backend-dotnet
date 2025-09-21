@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Morcatko.AspNetCore.JsonMergePatch;
 using Common.Infrastructure.Logging;
 using General.Infrastructure.DataAccess;
+using Warehouse.Infrastructure.DataAccess;
+using Warehouse.Application.Mappings;
+using Accounting.Application.Mappings;
+using Common.Application.Mappings;
+using Microsoft.EntityFrameworkCore;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -24,7 +29,9 @@ try
     builder.Services.ConfigureIISIntegration();
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
-    builder.Services.AddAutoMapper(typeof(Program));
+    builder.Services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
+    builder.Services.AddAutoMapper(typeof(WarehouseMappingProfile).Assembly);
+    builder.Services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
@@ -33,10 +40,13 @@ try
     {
         config.ReturnHttpNotAcceptable = true;
     }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
-    .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly);
+    .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
+    .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly);
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
+
+    
 
     var app = builder.Build();
 
@@ -46,7 +56,7 @@ try
         app.UseHsts();
 
     app.UseHttpsRedirection();
-
+    
     app.UseStaticFiles();
 
     app.UseForwardedHeaders(new ForwardedHeadersOptions
