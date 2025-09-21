@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -8,12 +8,23 @@
 
     <ItemGroup>
         <Folder Include="wwwroot\" />
+        <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\AccountingModule\Accounting\Accounting.csproj" />
         <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Persistence\Persistence.csproj" />
+        <ProjectReference Include="..\..\ShareModule\Share\Shared.csproj" />
+        <ProjectReference Include="..\..\WeighingModule\Weighing\Weighing.csproj" />
     </ItemGroup>
 
 </Project>
