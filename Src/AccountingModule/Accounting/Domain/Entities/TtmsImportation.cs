@@ -197,7 +197,7 @@ public partial class TtmsImportation
 
     [Column("kala_type_id")]
     [StringLength(10)]
-    public string? KalaTypeId { get; set; }
+    public int? KalaTypeId { get; set; }
 
     [Column("ledger_id")]
     public int LedgerId { get; set; }

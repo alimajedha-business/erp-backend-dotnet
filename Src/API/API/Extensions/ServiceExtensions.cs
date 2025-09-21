@@ -8,6 +8,7 @@ using Common.Infrastructure.Logging;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Persistence.DataAccess;
 
 namespace API.Extentions
 {
@@ -39,6 +40,7 @@ namespace API.Extentions
             // Module infrastructure
             services.AddAccountingInfrastructure(configuration);
             services.AddGeneralInfrastructure(configuration);
+            services.AddPersistenceInfrastructure(configuration);
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
             return services;
         }
