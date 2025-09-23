@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using General.Application.Interfaces.Services;
+﻿using General.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Common.Application.RequestParameters;
+using System.Text.Json;
 
 namespace General.Presentation.Controllers
 {
@@ -16,10 +13,11 @@ namespace General.Presentation.Controllers
         public CountriesController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        public IActionResult GetCountries()
+        public IActionResult GetCountries([FromQuery] CountryParameters countryParameters)
         {
-            var accountSets = _service.CountryService.GetAll(trackChanges: false);
-            return Ok(accountSets);
+            var pagedResult = _service.CountryService.GetAll(countryParameters,trackChanges: false);
+            Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
+            return Ok(pagedResult.countries);
         }
     }
 }

@@ -56,6 +56,8 @@ public partial class SharedDbContext : DbContext
 
     public virtual DbSet<RolePermissionConstraint> RolePermissionConstraints { get; set; }
 
+    public virtual DbSet<VehicleType> VehicleTypes { get; set; }
+
     public virtual DbSet<Sale> Sales { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -230,6 +232,8 @@ public partial class SharedDbContext : DbContext
                 .HasFilter("([company_id] IS NOT NULL AND [entity_type_id] IS NOT NULL AND [user_id] IS NOT NULL)");
         });
 
+
+       
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__roles__3213E83FF1D516A7");
@@ -298,6 +302,10 @@ public partial class SharedDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("role_permission_constraints_role_permission_id_678eb8f6_fk_role_permissions_id");
         });
+       
+
+
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(SharedDbContext).Assembly);
 
         modelBuilder.Entity<Sale>(entity =>
         {

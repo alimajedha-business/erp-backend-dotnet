@@ -1,12 +1,10 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.RequestParameters;
+using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Domain.Entities;
+using General.Infrastructure.DataAccess.Repositories.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Design;
 
 namespace General.Infrastructure.DataAccess.Repositories
 {
@@ -20,11 +18,21 @@ namespace General.Infrastructure.DataAccess.Repositories
             FindByCondition(x => x.Id.Equals(Id), trackChanges)
             .SingleOrDefault();
 
-        public IEnumerable<Country> GetAll(bool trackChanges) =>
-            FindAll(trackChanges)
-            .Include(c => c.Currency)
+        public PagedList<Country> GetAll(CountryParameters countryParameters, bool trackChanges)
+        {
+            var countries = FindAll(trackChanges)
             .OrderBy(x => x.Id)
+            .Search(countryParameters.SearchTerm)
+            .Skip((countryParameters.PageNumber - 1) * countryParameters.PageSize)
+            .Take(countryParameters.PageSize)
+            .Include(c => c.Currency)
+            .Sort(countryParameters.OrderBy)
             .ToList();
+
+            var count = FindAll(trackChanges).Count();
+            return PagedList<Country>
+                .ToPagedList(countries, count, countryParameters.PageNumber, countryParameters.PageSize);
+        }
 
         public IEnumerable<Country> GetByIds(IEnumerable<int> ids, bool trackChanges) =>
             FindByCondition(x => ids.Contains(x.Id), trackChanges)

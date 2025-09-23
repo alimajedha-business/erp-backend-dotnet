@@ -3,7 +3,13 @@
 Noavaran Group ERP
 
 ## Architecture
-Modular Monolith
+### System Architecture
+![architectures](readme-files/architectures.webp)
+![modular Monolithic](readme-files/MODULAR-Monolith-Architecture.webp)
+### Module Architecture
+Onion Architecture
+
+![onion architecture ><](readme-files/onion-architecture.webp)
 
 ## Naming Conventions
 https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/
@@ -70,32 +76,32 @@ this command should be exexute at root of project
     - Add AddModuleApplication from DependencyInjection to AddModuleApplications method    
 10. In Module > Application > Services
 	- Implement ServiceManager.cs
-12. In Module > Application
+11. In Module > Application
 	- Add ServiceManager DI to DependencyInjection.cs
-13. In Module >	Presentation
+12. In Module >	Presentation
 	- Add AssemblyReference.cs
-14. In Module > Domain > Entities
+13. In Module > Domain > Entities
 	- Create Entities.cs
-15. In Module > Infrastructure > DataAccess > ModuleDBContext.cs
+14. In Module > Infrastructure > DataAccess > ModuleDBContext.cs
 	- Add Entities DbSets
-16. In Module > Application > Interfaces > Repositories
+15. In Module > Application > Interfaces > Repositories
 	1. Create IEntityRepository.cs
 	2. Add IEntityRepository to IModuleRepositoryManager.cs
-17. In Module > Infrastructure > DataAccess > Repositories
+16. In Module > Infrastructure > DataAccess > Repositories
     1. Implement EntityRepository.cs
     2. Add EntityRepository to ModuleRepositoryManager.cs
-18. In Module > Application > DTOs
+17. In Module > Application > DTOs
 	- Create EntityDto.cs, EntityForCreationDto.cs, EntityForManipulationDto.cs, EntityForUpdateDto.cs
-19. In Module > Application > Mappings
+18. In Module > Application > Mappings
 	-  Add mapping to MappingProfile.cs
-20. In Module > Application > Interfaces > Services
+19. In Module > Application > Interfaces > Services
 	1. Create IEntityService.cs
 	2. Add IEntityService to IServiceManager.cs
-21. In Module > Application > Services
+20. In Module > Application > Services
 	1. Implement EntityService.cs
 	2. Add EntityService to ServiceManager.cs
-22. In Module > Presentation > Controllers
+21. In Module > Presentation > Controllers
 	- Create EntitiesController
-23. In API > Program.cs
-	- Add EntitiesController to 
+22. In API > Program.cs
+	- Add EntitiesController
 	

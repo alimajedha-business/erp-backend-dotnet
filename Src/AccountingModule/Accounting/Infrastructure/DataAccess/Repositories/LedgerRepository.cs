@@ -11,22 +11,22 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
         public LedgerRepository(AccountingDbContext context) : base(context)
         {
         }
-        public IEnumerable<Ledger> GetAll(bool trackChanges) =>
-             FindAll(trackChanges)
+        public async Task<IEnumerable<Ledger>> GetAllAsync(bool trackChanges) =>
+            await FindAll(trackChanges)
             .OrderBy(l => l.Id)
-            .ToList();
-        public Ledger? Get(int LedgerId, bool trackChanges) =>
-            FindByCondition(l => l.Id.Equals(LedgerId), trackChanges)
-            .SingleOrDefault();
+            .ToListAsync();
+        public async Task<Ledger?> GetAsync(int LedgerId, bool trackChanges) =>
+          await FindByCondition(l => l.Id.Equals(LedgerId), trackChanges)
+            .SingleOrDefaultAsync();
         public new void Create(Ledger ledger)
         {
             ledger.CreatedAt = DateTime.Now;
             base.Create(ledger);
         }
 
-        public IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges) =>
-            FindByCondition(x => ids.Contains(x.Id), trackChanges)
-            .ToList();
+        public async Task<IEnumerable<Ledger>> GetByIdsAsync(IEnumerable<int> ids, bool trackChanges) =>
+           await FindByCondition(x => ids.Contains(x.Id), trackChanges)
+            .ToListAsync();
 
         public new void Delete(Ledger ledger) => base.Delete(ledger);
     }

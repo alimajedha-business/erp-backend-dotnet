@@ -5,10 +5,10 @@ namespace Accounting.Application.Interfaces.Repositories
 {
     public interface ILedgerRepository
     {
-        IEnumerable<Ledger> GetAll(bool trackChanges);
-        Ledger? Get(int LedgerId, bool trackChanges);
+        Task<IEnumerable<Ledger>> GetAllAsync(bool trackChanges);
+        Task<Ledger?> GetAsync(int LedgerId, bool trackChanges);
         void Create(Ledger ledger);
-        IEnumerable<Ledger> GetByIds(IEnumerable<int> ids, bool trackChanges);
+        Task<IEnumerable<Ledger>> GetByIdsAsync(IEnumerable<int> ids, bool trackChanges);
         void Delete(Ledger ledger);
     }
 }

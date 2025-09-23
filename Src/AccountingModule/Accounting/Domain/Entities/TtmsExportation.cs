@@ -185,7 +185,7 @@ public partial class TtmsExportation
 
     [Column("kala_type_id")]
     [StringLength(10)]
-    public string? KalaTypeId { get; set; }
+    public int? KalaTypeId { get; set; }
 
     [Column("kharidar_id")]
     public int? KharidarId { get; set; }

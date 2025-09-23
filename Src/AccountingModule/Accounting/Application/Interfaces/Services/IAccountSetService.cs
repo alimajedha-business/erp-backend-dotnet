@@ -9,11 +9,11 @@ namespace Accounting.Application.Interfaces.Services
 {
     public interface IAccountSetService
     {
-        IEnumerable<AccountSetDto> GetAll(int ledgerId, bool trackChanges);
-        AccountSetDto? Get(int ledgerId, int accountSetId, bool trackChanges);
-        AccountSetDto Create(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges);
-        void Delete(int companyId, int ledgerId, int id, bool trackChanges);
-        void Update(int companyId, int ledgerId, int accountSetId, AccountSetForUpdateDto accountSet, bool ledTrackChanges,
+      Task<IEnumerable<AccountSetDto>> GetAllAsync(int ledgerId, bool trackChanges);
+        Task<AccountSetDto?> GetAsync(int ledgerId, int accountSetId, bool trackChanges);
+        Task<AccountSetDto> CreateAsync(int companyId, int ledgerId, AccountSetForCreationDto accountSet, bool trackChanges);
+        Task DeleteAsync(int companyId, int ledgerId, int id, bool trackChanges);
+        Task UpdateAsync(int companyId, int ledgerId, int accountSetId, AccountSetForUpdateDto accountSet, bool ledTrackChanges,
             bool accTrackChanges);
     }
 }

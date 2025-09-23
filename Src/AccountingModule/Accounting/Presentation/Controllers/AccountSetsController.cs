@@ -17,25 +17,25 @@ namespace Accounting.Presentation.Controllers
         public AccountSetsController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        public IActionResult GetAccountSetsForCompany(int ledgerId)
+        public async Task<IActionResult> GetAccountSetsForCompany(int ledgerId)
         {
-            var accountSets = _service.AccountSetService.GetAll(ledgerId, trackChanges: false);
+            var accountSets = await _service.AccountSetService.GetAllAsync(ledgerId, trackChanges: false);
             return Ok(accountSets);
         }
         [HttpGet("{id:int}", Name = "GetAccountSetForCompany")]
-        public IActionResult GetAccountSetForCompany(int ledgerId, int id)
+        public async Task<IActionResult> GetAccountSetForCompany(int ledgerId, int id)
         {
-            var accountSet = _service.AccountSetService.Get(ledgerId, id,
+            var accountSet = await _service.AccountSetService.GetAsync(ledgerId, id,
             trackChanges: false);
             return Ok(accountSet);
         }
         [HttpPost]
-        public IActionResult CreateEmployeeForCompany(int companyId, int ledgerId, [FromBody] AccountSetForCreationDto accountSet)
+        public async Task<IActionResult> CreateEmployeeForCompany(int companyId, int ledgerId, [FromBody] AccountSetForCreationDto accountSet)
         {
             if (accountSet is null)
                 return BadRequest("AccountSet object is null");
-            var AccounSetToReturn = _service.AccountSetService
-                .Create(companyId, ledgerId, accountSet, trackChanges: false);
+            var AccounSetToReturn = await _service.AccountSetService
+                .CreateAsync(companyId, ledgerId, accountSet, trackChanges: false);
             return CreatedAtRoute("GetAccountSetForCompany", new
             {
                 companyId,
@@ -46,19 +46,19 @@ namespace Accounting.Presentation.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteAccountSetForLedger(int companyId, int ledgerId, int id)
+        public async Task<IActionResult> DeleteAccountSetForLedger(int companyId, int ledgerId, int id)
         {
-            _service.AccountSetService.Delete(companyId, ledgerId, id, trackChanges:
+           await _service.AccountSetService.DeleteAsync(companyId, ledgerId, id, trackChanges:
             false);
             return NoContent();
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult UpdateAccountSetForLedger(int companyId, int ledgerId, int id, [FromBody] AccountSetForUpdateDto accountSet)
+        public async Task<IActionResult> UpdateAccountSetForLedger(int companyId, int ledgerId, int id, [FromBody] AccountSetForUpdateDto accountSet)
         {
             if (accountSet is null)
                 return BadRequest("AccountSet object is null");
-            _service.AccountSetService.Update(companyId, ledgerId, id, accountSet,
+            await _service.AccountSetService.UpdateAsync(companyId, ledgerId, id, accountSet,
             ledTrackChanges: false, accTrackChanges: true);
             return NoContent();
         }

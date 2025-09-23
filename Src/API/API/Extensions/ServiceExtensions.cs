@@ -8,8 +8,7 @@ using Common.Infrastructure.Logging;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Warehouse.Application;
-using Warehouse.Infrastructure.DataAccess;
+using Persistence.DataAccess;
 
 namespace API.Extentions
 {
@@ -21,8 +20,9 @@ namespace API.Extentions
                 options.AddPolicy("CorsPolicy", builder =>
                 builder.AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());
-            });
+                .AllowAnyHeader()
+                .WithExposedHeaders("X-Pagination"));
+    });
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options =>
@@ -33,7 +33,6 @@ namespace API.Extentions
         {
             services.AddAccountingApplication();
             services.AddGeneralApplication();
-            services.AddWarehouseApplication();
         }        
 
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
@@ -41,7 +40,7 @@ namespace API.Extentions
             // Module infrastructure
             services.AddAccountingInfrastructure(configuration);
             services.AddGeneralInfrastructure(configuration);
-            services.AddWarehouseInfrastructure(configuration);
+            services.AddPersistenceInfrastructure(configuration);
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
             return services;
         }

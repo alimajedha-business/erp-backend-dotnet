@@ -17,77 +17,77 @@ namespace Accounting.Presentation.Controllers
         public LedgersController(IServiceManager service) => _service = service;
 
         [HttpGet]
-        public IActionResult GetLedgers()
+        public async Task<IActionResult> GetLedgers()
         {
-            var ledgers = _service.LedgerService.GetAll(trackChanges: false);
+            var ledgers = await _service.LedgerService.GetAllAsync(trackChanges: false);
             return Ok(ledgers);
         }
 
         [HttpGet("{id:int}", Name = "LedgerById")]
-        public IActionResult GetLedger(int id)
+        public async Task<IActionResult> GetLedger(int id)
         {
-            var ledger = _service.LedgerService.Get(id, trackChanges: false);
+            var ledger = await _service.LedgerService.GetAsync(id, trackChanges: false);
             return Ok(ledger);
         }
 
         [HttpPost]
-        public IActionResult CreateLedger(int companyId, [FromBody] LedgerForCreationDto ledger)
+        public async Task<IActionResult> CreateLedger(int companyId, [FromBody] LedgerForCreationDto ledger)
         {
             if (ledger is null)
                 return BadRequest("LedgerForCreationDto object is null");
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            var createdLedger = _service.LedgerService.Create(ledger);
+            var createdLedger = await _service.LedgerService.CreateAsync(ledger);
             return CreatedAtRoute("LedgerById", new { companyId, id = createdLedger.Id }, createdLedger);
         }
 
         [HttpGet("collection/({ids})", Name = "LedgerCollection")]
-        public IActionResult GetLedgerCollection(int companyId, [ModelBinder(BinderType =typeof(ArrayModelBinder))]
+        public async Task<IActionResult> GetLedgerCollection(int companyId, [ModelBinder(BinderType =typeof(ArrayModelBinder))]
         IEnumerable<int> ids)
         {
-            var ledgers = _service.LedgerService.GetByIds(ids, trackChanges: false);
+            var ledgers = await _service.LedgerService.GetByIdsAsync(ids, trackChanges: false);
             return Ok(ledgers);
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateLedgerCollection(int companyId, [FromBody] IEnumerable<LedgerForCreationDto> ledgers)
+        public async Task<IActionResult> CreateLedgerCollection(int companyId, [FromBody] IEnumerable<LedgerForCreationDto> ledgers)
         {
-            var result = _service.LedgerService.CreateCollection(ledgers);
+            var result = await _service.LedgerService.CreateCollectionAsync(ledgers);
             return CreatedAtRoute("LedgerCollection", new { companyId, result.ids }, result.ledgers);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteLedger(int id)
+        public async Task<IActionResult> DeleteLedger(int id)
         {
-            _service.LedgerService.Delete(id, trackChanges: false);
+            await _service.LedgerService.DeleteAsync(id, trackChanges: false);
             return NoContent();
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult UpdateLedger(int id, [FromBody] LedgerForUpdateDto ledger)
+        public async Task<IActionResult> UpdateLedger(int id, [FromBody] LedgerForUpdateDto ledger)
         {
             if (ledger is null)
                 return BadRequest("Ledger object is null");
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            _service.LedgerService.Update(id, ledger, trackChanges: true);
+            await _service.LedgerService.UpdateAsync(id, ledger, trackChanges: true);
             return NoContent();
         }
 
         [HttpPatch("{id}")]
         [Consumes(JsonMergePatchDocument.ContentType)]
-        public IActionResult PatchLedger(int id, [FromBody] JsonMergePatchDocument<LedgerForUpdateDto> ledgerPatch)
+        public async Task<IActionResult> PatchLedger(int id, [FromBody] JsonMergePatchDocument<LedgerForUpdateDto> ledgerPatch)
         {
             if (ledgerPatch is null)
             {
                 return BadRequest("Ledger object is null.");
             }
-            var result = _service.LedgerService.GetLedgerForPatch(id, trackChanges: true);
+            var result = await _service.LedgerService.GetLedgerForPatchAsync(id, trackChanges: true);
             ledgerPatch.ApplyTo(result.ledgerForUpdate);
             TryValidateModel(result.ledgerForUpdate);
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            _service.LedgerService.SaveChangesForPatch(result.ledgerForUpdate, result.ledgerEntity);
+            await _service.LedgerService.SaveChangesForPatchAsync(result.ledgerForUpdate, result.ledgerEntity);
 
             return NoContent();
         }
