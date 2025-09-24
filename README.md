@@ -43,7 +43,7 @@ Before you can use the tools on a specific project, you'll need to add the *Micr
 
 **dotnet ef dbcontext scaffold**
 
-` dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -d -o Domain\Entities -c ModuleDbContext --context-dir Infrastructure\DataAccess --schema ModuleSchema`
+`dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -d -o Domain\Entities -c ModuleDbContext --context-dir Infrastructure\DataAccess --schema ModuleSchema`
 
 this command should be exexute at root of project
 
@@ -67,7 +67,7 @@ this command should be exexute at root of project
 
 **Adds a new migration**
 
-`Add-Migration <Name> -c ModuleDbContext`
+`Add-Migration <Name> -context ModuleDbContext`
 
 **Updates the database to the last migration or to a specified migration**
 
