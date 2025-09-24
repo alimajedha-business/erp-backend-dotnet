@@ -2,22 +2,22 @@
 # Name
 Noavaran Group ERP
 
-## Architecture
-### System Architecture
+## System Architecture
 ![architectures](readme-files/architectures.webp)
 ![modular Monolithic](readme-files/MODULAR-Monolith-Architecture.webp)
-### Module Architecture
+
+## Module Architecture
 Onion Architecture
 
 ![onion architecture ><](readme-files/onion-architecture.webp)
 
-## Naming Conventions
+# Naming Conventions
 https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/
 
 Every module will be further split into API, Core, and Infrastructure projects to enforce Clean Onion Architecture.
 Cross Module communication can happen only via Interfaces
 
-## Libraries
+# Libraries
 
 ### Serialization/Deserialization
 System.Text.Json
@@ -28,7 +28,9 @@ xUnit
 ### Logging
 Serilog
 
-### EF Core tools
+## EF Core tools
+### .NET CLI
+
 **install**
 
 `dotnet tool install --global dotnet-ef`
@@ -52,6 +54,24 @@ this command should be exexute at root of project
 **Updates the database to the last migration or to a specified migration**
 
 `dotnet ef database update`
+
+### Package Manager Console
+
+**install**
+
+`Install-Package Microsoft.EntityFrameworkCore.Tools`
+
+**update**
+
+`Update-Package Microsoft.EntityFrameworkCore.Tools`
+
+**Adds a new migration**
+
+`Add-Migration <Name> -c ModuleDbContext`
+
+**Updates the database to the last migration or to a specified migration**
+
+`Update-Database`
 
 ## Creating project flow
 1. In Module > Infrastructure > DataAccess
