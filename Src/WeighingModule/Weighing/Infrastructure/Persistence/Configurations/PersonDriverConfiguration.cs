@@ -43,10 +43,10 @@ namespace Weighing.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.PersonId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.VehicleType)
-                .WithMany()
-                .HasForeignKey(x => x.VehicleTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(x => x.VehicleType)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.VehicleTypeId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 

@@ -17,7 +17,6 @@ namespace Weighing.Infrastructure.Persistence.Common
 
             builder.HasKey(e => e.Id);
 
-
             builder.Property(e => e.CompanyId)
                .IsRequired();
 

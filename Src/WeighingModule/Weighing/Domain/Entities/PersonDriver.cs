@@ -20,7 +20,7 @@ namespace Weighing.Domain.Entities
 
         [Column("vehicle_type_id")]
         public int VehicleTypeId { get; set; }
-        public VehicleType VehicleType { get; set; } = null!;
+       // public VehicleType VehicleType { get; set; } = null!;
         [Column("vehicle_name")]
         public string VehicleName { get; set; } = null!;
         [Column("plate_number")]

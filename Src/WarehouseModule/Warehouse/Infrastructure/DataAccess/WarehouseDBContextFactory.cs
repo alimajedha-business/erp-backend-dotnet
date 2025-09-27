@@ -18,7 +18,7 @@ namespace Warehouse.Infrastructure.DataAccess
             //    .Build();
 
             var builder = new DbContextOptionsBuilder<WarehouseDbContext>()
-                .UseSqlServer("Server=.\\sql19;Database=NGERP;User Id=sa;Password=123;Encrypt=False;");
+                .UseSqlServer("Server=.\\sql2022;Database=NGERP;User Id=sa;Password=123;Encrypt=False;");
 
             return new WarehouseDbContext(builder.Options);
         }

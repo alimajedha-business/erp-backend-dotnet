@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using General.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Warehouse.Domain.Entities;
 
 
 namespace Warehouse.Infrastructure.DataAccess
@@ -14,6 +16,8 @@ namespace Warehouse.Infrastructure.DataAccess
         {
         }
 
-        public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
+        public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }        
+
+
     }
 }
