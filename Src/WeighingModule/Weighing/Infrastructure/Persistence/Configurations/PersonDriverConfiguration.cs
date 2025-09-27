@@ -17,9 +17,6 @@ namespace Weighing.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
-
-      
-
             builder.Property(x => x.VehicleName)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -30,9 +27,6 @@ namespace Weighing.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.InitialWeight)
                 .HasColumnType("decimal(18,2)");
-
-
-
 
             builder.Property(x => x.DriverType)
                 .HasConversion<int>()

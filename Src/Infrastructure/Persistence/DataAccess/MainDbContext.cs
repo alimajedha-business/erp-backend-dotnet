@@ -23,8 +23,8 @@ namespace Persistence.DataAccess
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GeneralDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SharedDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(PayrollDbContext).Assembly);
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(PayrollDbContext).Assembly);            
             //modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);            
 
             base.OnModelCreating(modelBuilder);

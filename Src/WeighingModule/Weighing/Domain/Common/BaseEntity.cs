@@ -11,11 +11,9 @@ namespace Weighing.Domain.Common
 {
     public abstract class BaseEntity
     {
-        [Key]
-        [Column("id")]
+        [Key]        
         public int Id { get; set; }
-
-        [Column("company_id")]
+        
         public int CompanyId { get; set; }
 
         [ForeignKey(nameof(CompanyId))]

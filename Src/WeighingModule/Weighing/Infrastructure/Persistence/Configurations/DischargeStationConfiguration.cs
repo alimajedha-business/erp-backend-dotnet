@@ -10,7 +10,6 @@ namespace Weighing.Infrastructure.Persistence.Configurations
         public override void Configure(EntityTypeBuilder<DischargeStation> builder)
         {
             base.Configure(builder);
-
             
             builder.Property(e => e.Code)
                 .HasMaxLength(10)

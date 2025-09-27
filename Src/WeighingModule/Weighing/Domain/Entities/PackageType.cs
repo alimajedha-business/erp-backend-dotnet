@@ -10,20 +10,15 @@ namespace Weighing.Domain.Entities
     /// <summary>
     /// نوع بسته
     /// </summary>
-    [Table("package_types", Schema = "weighing")]
+    [Table("PackageType", Schema = "Weighing")]
     public partial class PackageType: BaseEntity
     {
-      
-
-        [Column("code")]
         [StringLength(10)]
         public string Code { get; set; } = null!;
-
-        [Column("name")]
+        
         [StringLength(100)]
         public string Name { get; set; } = null!;
 
-        [Column("description")]
         [StringLength(250)]
         public string? Description { get; set; }
 

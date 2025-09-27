@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Infrastructure.DataAccess.Configurations
+namespace Shared.Infrastructure.Persistence.Configurations
 {
     public class VehicleTypeConfiguration : IEntityTypeConfiguration<VehicleType>
     {
@@ -28,7 +28,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
 
             builder.HasIndex(e => new { e.CompanyId, e.Name }, "vehicle_types_company_id_name_uniq")
                 .IsUnique()
-                .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+                .HasFilter("([CompanyId] IS NOT NULL AND [name] IS NOT NULL)");
         }
     }
 }

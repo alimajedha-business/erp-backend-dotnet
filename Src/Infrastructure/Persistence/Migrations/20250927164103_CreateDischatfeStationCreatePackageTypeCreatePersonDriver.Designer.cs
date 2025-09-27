@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.DataAccess;
 
@@ -11,9 +12,11 @@ using Persistence.DataAccess;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250927164103_CreateDischatfeStationCreatePackageTypeCreatePersonDriver")]
+    partial class CreateDischatfeStationCreatePackageTypeCreatePersonDriver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10353,7 +10356,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex(new[] { "CompanyId", "Name" }, "vehicle_types_company_id_name_uniq")
                         .IsUnique()
-                        .HasFilter("([CompanyId] IS NOT NULL AND [name] IS NOT NULL)");
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
 
                     b.ToTable("VehicleType", "shared");
                 });
