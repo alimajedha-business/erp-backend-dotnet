@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83F3A65AF6E");
+            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83F661CEB9B");
 
             entity.ToTable("voucher_types", "accounting");
 
-            entity.HasIndex(e => e.NameFa, "UQ__voucher___2E0A7AA62E206246").IsUnique();
+            entity.HasIndex(e => e.NameFa, "UQ__voucher___2E0A7AA612570483").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Description)

@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<LedgerPeriod> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83F6DE635AD");
+            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83FCD7E44E8");
 
             entity.ToTable("ledger_periods", "accounting");
 

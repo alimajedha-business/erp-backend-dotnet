@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<DataImport> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__data_imp__3213E83F260CBFC5");
+            entity.HasKey(e => e.Id).HasName("PK__data_imp__3213E83F55523214");
 
             entity.ToTable("data_imports", "accounting");
 

@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<TtmsImportation> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__ttms_imp__3213E83F91DF5323");
+            entity.HasKey(e => e.Id).HasName("PK__ttms_imp__3213E83F540DEB5F");
 
             entity.ToTable("ttms_importations", "accounting");
 
-            entity.HasIndex(e => e.VoucherItemId, "UQ__ttms_imp__A2D3D11B86124CAE").IsUnique();
+            entity.HasIndex(e => e.VoucherItemId, "UQ__ttms_imp__A2D3D11BC040759A").IsUnique();
 
             entity.HasIndex(e => e.ArzTypeId, "ttms_importations_arz_type_id_66a0f015");
 

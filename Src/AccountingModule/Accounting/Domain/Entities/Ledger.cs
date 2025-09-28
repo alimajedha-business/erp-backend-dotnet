@@ -23,6 +23,8 @@ public partial class Ledger
 
     public DateTime? UpdatedAt { get; set; }
 
+    public int? CompanyId { get; set; }
+
     public virtual ICollection<AccountSet> AccountSets { get; set; } = new List<AccountSet>();
 
     public virtual ICollection<BalanceRelatedAccountDetail> BalanceRelatedAccountDetails { get; set; } = new List<BalanceRelatedAccountDetail>();

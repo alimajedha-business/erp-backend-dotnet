@@ -13,7 +13,15 @@ public partial class SlaveAccount
 
     public string Nature { get; set; }
 
+    public string ClosingType { get; set; }
+
+    public int SlaveCode { get; set; }
+
     public int Code { get; set; }
+
+    public short Level { get; set; }
+
+    public bool LastLevel { get; set; }
 
     public int? DetailedAccount1 { get; set; }
 
@@ -31,7 +39,7 @@ public partial class SlaveAccount
 
     public int CategoryId { get; set; }
 
-    public int? FromCompanyIdId { get; set; }
+    public int? FromCompanyId { get; set; }
 
     public int GroupId { get; set; }
 
@@ -39,15 +47,7 @@ public partial class SlaveAccount
 
     public int MasterId { get; set; }
 
-    public string ClosingType { get; set; }
-
     public int? ParentId { get; set; }
-
-    public bool LastLevel { get; set; }
-
-    public short Level { get; set; }
-
-    public int SlaveCode { get; set; }
 
     public virtual ICollection<AccountSetItem> AccountSetItems { get; set; } = new List<AccountSetItem>();
 

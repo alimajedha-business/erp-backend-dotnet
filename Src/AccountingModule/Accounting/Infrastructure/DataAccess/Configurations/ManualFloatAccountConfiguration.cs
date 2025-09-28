@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ManualFloatAccount> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__manual_f__3213E83F79B8ADA2");
+            entity.HasKey(e => e.Id).HasName("PK__manual_f__3213E83FCACCCBC5");
 
             entity.ToTable("manual_float_accounts", "accounting");
 

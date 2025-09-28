@@ -21,6 +21,10 @@ public partial class Period
 
     public DateTime? UpdatedAt { get; set; }
 
+    public int? CompanyId { get; set; }
+
+    public int? PreviousPeriodId { get; set; }
+
     public virtual ICollection<BalanceRelatedAccountDetail> BalanceRelatedAccountDetails { get; set; } = new List<BalanceRelatedAccountDetail>();
 
     public virtual ICollection<ClosingPatternSlaveCompany> ClosingPatternSlaveCompanies { get; set; } = new List<ClosingPatternSlaveCompany>();
@@ -33,11 +37,15 @@ public partial class Period
 
     public virtual ICollection<DataImport> DataImports { get; set; } = new List<DataImport>();
 
+    public virtual ICollection<Period> InversePreviousPeriod { get; set; } = new List<Period>();
+
     public virtual ICollection<LedgerPeriodCompany> LedgerPeriodCompanies { get; set; } = new List<LedgerPeriodCompany>();
 
     public virtual ICollection<LedgerPeriodCompanySetting> LedgerPeriodCompanySettings { get; set; } = new List<LedgerPeriodCompanySetting>();
 
     public virtual ICollection<LedgerPeriod> LedgerPeriods { get; set; } = new List<LedgerPeriod>();
+
+    public virtual Period PreviousPeriod { get; set; }
 
     public virtual ICollection<TrashVoucherItem> TrashVoucherItems { get; set; } = new List<TrashVoucherItem>();
 

@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<FloatAccountType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__float_ac__3213E83F2EA4CB1D");
+            entity.HasKey(e => e.Id).HasName("PK__float_ac__3213E83F1B40CB14");
 
             entity.ToTable("float_account_types", "accounting");
 
-            entity.HasIndex(e => e.NameFa, "UQ__float_ac__2E0A7AA653BB5215").IsUnique();
+            entity.HasIndex(e => e.NameFa, "UQ__float_ac__2E0A7AA640082C0A").IsUnique();
 
             entity.HasIndex(e => e.ParentId, "float_account_types_parent_id_4dd8ba99");
 

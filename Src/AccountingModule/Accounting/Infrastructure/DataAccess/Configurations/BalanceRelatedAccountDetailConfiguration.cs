@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BalanceRelatedAccountDetail> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__balance___3213E83F58334CF7");
+            entity.HasKey(e => e.Id).HasName("PK__balance___3213E83FF8AA1645");
 
             entity.ToTable("balance_related_account_details", "accounting");
 

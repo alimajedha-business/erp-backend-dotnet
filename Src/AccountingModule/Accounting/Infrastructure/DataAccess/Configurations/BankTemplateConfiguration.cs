@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BankTemplate> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__bank_tem__3213E83F444D69A3");
+            entity.HasKey(e => e.Id).HasName("PK__bank_tem__3213E83FBE9F31D0");
 
             entity.ToTable("bank_templates", "accounting");
 

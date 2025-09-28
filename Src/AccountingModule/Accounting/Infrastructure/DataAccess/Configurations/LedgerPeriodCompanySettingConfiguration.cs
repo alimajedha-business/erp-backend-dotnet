@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<LedgerPeriodCompanySetting> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83FA6E82736");
+            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83F939BD0F5");
 
             entity.ToTable("ledger_period_company_settings", "accounting");
 
-            entity.HasIndex(e => e.LedgerPeriodCompanyId, "UQ__ledger_p__8880943C4AE414BF").IsUnique();
+            entity.HasIndex(e => e.LedgerPeriodCompanyId, "UQ__ledger_p__8880943C687374A6").IsUnique();
 
             entity.HasIndex(e => e.CompanyId, "ledger_period_company_settings_company_id_a0d2dc4a");
 

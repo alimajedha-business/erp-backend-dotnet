@@ -11,25 +11,23 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherItemLog> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83FF23C9CEC");
+            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83F40BE9493");
 
             entity.ToTable("voucher_item_logs", "accounting");
 
-            entity.HasIndex(e => e.BankBranchForPayableDocId, "voucher_item_logs_bank_branch_for_payable_doc_id_2db629ab");
+            entity.HasIndex(e => e.BankAccountForBankOperationId, "voucher_item_logs_bank_account_for_bank_operation_id_85e1fa5c");
 
-            entity.HasIndex(e => e.BankBranchForReceivableDocId, "voucher_item_logs_bank_branch_for_receivable_doc_id_64132689");
+            entity.HasIndex(e => e.BankAccountForPayableDocId, "voucher_item_logs_bank_account_for_payable_doc_id_02b845e2");
 
             entity.HasIndex(e => e.BankForPayableDocId, "voucher_item_logs_bank_for_payable_doc_id_61e85f05");
 
             entity.HasIndex(e => e.BankForReceivableDocId, "voucher_item_logs_bank_for_receivable_doc_id_bf6c6f31");
 
-            entity.HasIndex(e => e.BankOperationBankAccountId, "voucher_item_logs_bank_operation_bank_account_id_44a79bf8");
+            entity.HasIndex(e => e.BankOperationBankId, "voucher_item_logs_bank_operation_bank_id_b643fc5c");
 
             entity.HasIndex(e => e.BankOperationTypeId, "voucher_item_logs_bank_operation_type_id_4dcc6132");
 
             entity.HasIndex(e => e.BranchId, "voucher_item_logs_branch_id_2c9e0bff");
-
-            entity.HasIndex(e => e.CashierPeriodId, "voucher_item_logs_cashier_period_id_c64d915f");
 
             entity.HasIndex(e => e.CompanyId, "voucher_item_logs_company_id_b3a353fc");
 
@@ -63,8 +61,6 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
 
             entity.HasIndex(e => e.PersonId, "voucher_item_logs_person_id_d42c3aaa");
 
-            entity.HasIndex(e => e.PettyCashierPeriodId, "voucher_item_logs_petty_cashier_period_id_6ca1cb8e");
-
             entity.HasIndex(e => e.ProjectContractId, "voucher_item_logs_project_contract_id_e8fd3c8e");
 
             entity.HasIndex(e => e.ProjectContractTypeId, "voucher_item_logs_project_contract_type_id_0a5b7cbb");
@@ -95,11 +91,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.Attaches)
                 .HasMaxLength(500)
                 .HasColumnName("attaches");
-            entity.Property(e => e.BankBranchForPayableDocId).HasColumnName("bank_branch_for_payable_doc_id");
-            entity.Property(e => e.BankBranchForReceivableDocId).HasColumnName("bank_branch_for_receivable_doc_id");
+            entity.Property(e => e.BankAccountForBankOperationId).HasColumnName("bank_account_for_bank_operation_id");
+            entity.Property(e => e.BankAccountForPayableDocId).HasColumnName("bank_account_for_payable_doc_id");
             entity.Property(e => e.BankForPayableDocId).HasColumnName("bank_for_payable_doc_id");
             entity.Property(e => e.BankForReceivableDocId).HasColumnName("bank_for_receivable_doc_id");
-            entity.Property(e => e.BankOperationBankAccountId).HasColumnName("bank_operation_bank_account_id");
+            entity.Property(e => e.BankOperationBankId).HasColumnName("bank_operation_bank_id");
             entity.Property(e => e.BankOperationCheckNo)
                 .HasMaxLength(30)
                 .HasColumnName("bank_operation_check_no");
@@ -107,11 +103,14 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.BankOperationReceipt).HasColumnName("bank_operation_receipt");
             entity.Property(e => e.BankOperationTypeId).HasColumnName("bank_operation_type_id");
             entity.Property(e => e.BranchId).HasColumnName("branch_id");
-            entity.Property(e => e.CashierPeriodId).HasColumnName("cashier_period_id");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");
-            entity.Property(e => e.CompanyUnitCode).HasColumnName("company_unit_code");
+            entity.Property(e => e.CompanyUnitCode)
+                .HasMaxLength(18)
+                .HasColumnName("company_unit_code");
             entity.Property(e => e.CompanyUnitId).HasColumnName("company_unit_id");
-            entity.Property(e => e.CostCenterCode).HasColumnName("cost_center_code");
+            entity.Property(e => e.CostCenterCode)
+                .HasMaxLength(18)
+                .HasColumnName("cost_center_code");
             entity.Property(e => e.CostCenterId).HasColumnName("cost_center_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.Credit).HasColumnName("credit");
@@ -127,6 +126,8 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
                 .HasColumnName("description");
+            entity.Property(e => e.DetailedAccount1).HasColumnName("detailed_account_1");
+            entity.Property(e => e.DetailedAccount2).HasColumnName("detailed_account_2");
             entity.Property(e => e.DueDate).HasColumnName("due_date");
             entity.Property(e => e.HaveAttach).HasColumnName("have_attach");
             entity.Property(e => e.IsModify).HasColumnName("is_modify");
@@ -215,13 +216,15 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.MasterCode).HasColumnName("master_code");
             entity.Property(e => e.MasterId).HasColumnName("master_id");
             entity.Property(e => e.OldSequence).HasColumnName("old_sequence");
+            entity.Property(e => e.PayableDocBankBranch)
+                .HasMaxLength(50)
+                .HasColumnName("payable_doc_bank_branch");
             entity.Property(e => e.PayableDocCheckNo)
                 .HasMaxLength(30)
                 .HasColumnName("payable_doc_check_no");
             entity.Property(e => e.PayableDocDate).HasColumnName("payable_doc_date");
             entity.Property(e => e.PeriodId).HasColumnName("period_id");
             entity.Property(e => e.PersonId).HasColumnName("person_id");
-            entity.Property(e => e.PettyCashierPeriodId).HasColumnName("petty_cashier_period_id");
             entity.Property(e => e.ProjectContractId).HasColumnName("project_contract_id");
             entity.Property(e => e.ProjectContractTypeId).HasColumnName("project_contract_type_id");
             entity.Property(e => e.ProjectDate).HasColumnName("project_date");
@@ -230,12 +233,16 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.ProjectStatusReport)
                 .HasMaxLength(30)
                 .HasColumnName("project_status_report");
+            entity.Property(e => e.ReceivableDocBankBranch)
+                .HasMaxLength(50)
+                .HasColumnName("receivable_doc_bank_branch");
             entity.Property(e => e.ReceivableDocCheckNo)
                 .HasMaxLength(30)
                 .HasColumnName("receivable_doc_check_no");
             entity.Property(e => e.ReceivableDocDate).HasColumnName("receivable_doc_date");
             entity.Property(e => e.ResourceAndExpenditureId).HasColumnName("resource_and_expenditure_id");
             entity.Property(e => e.Sequence).HasColumnName("sequence");
+            entity.Property(e => e.SlaveAccountSlaveCode).HasColumnName("slave_account_slave_code");
             entity.Property(e => e.SlaveCode).HasColumnName("slave_code");
             entity.Property(e => e.SlaveCompanyId).HasColumnName("slave_company_id");
             entity.Property(e => e.SlaveId).HasColumnName("slave_id");

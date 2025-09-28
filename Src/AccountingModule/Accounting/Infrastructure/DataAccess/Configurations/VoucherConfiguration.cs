@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Voucher> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F37737C08");
+            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83FD1C266AB");
 
             entity.ToTable("vouchers", "accounting");
 
@@ -27,6 +27,8 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
 
             entity.HasIndex(e => e.LastModifierId, "vouchers_last_modifier_id_61732409");
 
+            entity.HasIndex(e => e.LastStatusModifierId, "vouchers_last_status_modifier_id_f7d322ae");
+
             entity.HasIndex(e => e.LedgerId, "vouchers_ledger_id_25e3f63d");
 
             entity.HasIndex(e => e.ModuleId, "vouchers_module_id_65b2cf76");
@@ -36,6 +38,9 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.HasIndex(e => e.TypeId, "vouchers_type_id_05bcc3a6");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Attaches)
+                .HasMaxLength(500)
+                .HasColumnName("attaches");
             entity.Property(e => e.BranchId).HasColumnName("branch_id");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
@@ -46,6 +51,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
                 .HasColumnName("description");
             entity.Property(e => e.IdInitial).HasColumnName("id_initial");
             entity.Property(e => e.LastModifierId).HasColumnName("last_modifier_id");
+            entity.Property(e => e.LastStatusModifierId).HasColumnName("last_status_modifier_id");
             entity.Property(e => e.LedgerId).HasColumnName("ledger_id");
             entity.Property(e => e.ModuleId).HasColumnName("module_id");
             entity.Property(e => e.Number).HasColumnName("number");

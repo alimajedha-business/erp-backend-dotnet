@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<TrashVoucherItemAttach> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__trash_vo__3213E83F11360E3F");
+            entity.HasKey(e => e.Id).HasName("PK__trash_vo__3213E83F0BB07B03");
 
             entity.ToTable("trash_voucher_item_attaches", "accounting");
 

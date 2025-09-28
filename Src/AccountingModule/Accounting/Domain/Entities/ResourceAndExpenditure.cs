@@ -13,6 +13,8 @@ public partial class ResourceAndExpenditure
 
     public int Code { get; set; }
 
+    public string Type { get; set; }
+
     public bool IsActive { get; set; }
 
     public DateTime CreatedAt { get; set; }

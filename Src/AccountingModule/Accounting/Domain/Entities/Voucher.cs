@@ -21,6 +21,8 @@ public partial class Voucher
 
     public string Description { get; set; }
 
+    public string Attaches { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
@@ -32,6 +34,8 @@ public partial class Voucher
     public int CreatorId { get; set; }
 
     public int? LastModifierId { get; set; }
+
+    public int? LastStatusModifierId { get; set; }
 
     public int LedgerId { get; set; }
 

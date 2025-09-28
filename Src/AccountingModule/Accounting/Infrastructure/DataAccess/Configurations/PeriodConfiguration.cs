@@ -11,13 +11,20 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Period> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__periods__3213E83FFA2811B1");
+            entity.HasKey(e => e.Id).HasName("PK__periods__3213E83FFC21E5EB");
 
             entity.ToTable("periods", "accounting");
 
-            entity.HasIndex(e => e.Name, "UQ__periods__72E12F1BE18188D5").IsUnique();
+            entity.HasIndex(e => e.CompanyId, "periods_company_id_26f76f0a");
+
+            entity.HasIndex(e => new { e.CompanyId, e.Name }, "periods_company_id_name_ad5ced7a_uniq")
+                .IsUnique()
+                .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+
+            entity.HasIndex(e => e.PreviousPeriodId, "periods_previous_period_id_785fc09e");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.Description)
                 .HasMaxLength(1000)
@@ -27,8 +34,13 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
+            entity.Property(e => e.PreviousPeriodId).HasColumnName("previous_period_id");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasOne(d => d.PreviousPeriod).WithMany(p => p.InversePreviousPeriod)
+                .HasForeignKey(d => d.PreviousPeriodId)
+                .HasConstraintName("periods_previous_period_id_785fc09e_fk_periods_id");
 
             OnConfigurePartial(entity);
         }

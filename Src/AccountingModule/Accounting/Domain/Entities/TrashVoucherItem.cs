@@ -21,9 +21,9 @@ public partial class TrashVoucherItem
 
     public short? DealType { get; set; }
 
-    public int? CostCenterCode { get; set; }
+    public string CostCenterCode { get; set; }
 
-    public int? CompanyUnitCode { get; set; }
+    public string CompanyUnitCode { get; set; }
 
     public DateOnly? ProjectDate { get; set; }
 
@@ -53,9 +53,13 @@ public partial class TrashVoucherItem
 
     public string ReceivableDocCheckNo { get; set; }
 
+    public string ReceivableDocBankBranch { get; set; }
+
     public DateOnly? PayableDocDate { get; set; }
 
     public string PayableDocCheckNo { get; set; }
+
+    public string PayableDocBankBranch { get; set; }
 
     public string ManualFloat1Extra1 { get; set; }
 
@@ -121,21 +125,19 @@ public partial class TrashVoucherItem
 
     public bool IsTick { get; set; }
 
-    public int? BankBranchForPayableDocId { get; set; }
+    public int? BankAccountForBankOperationId { get; set; }
 
-    public int? BankBranchForReceivableDocId { get; set; }
+    public int? BankAccountForPayableDocId { get; set; }
 
     public int? BankForPayableDocId { get; set; }
 
     public int? BankForReceivableDocId { get; set; }
 
-    public int? BankOperationBankAccountId { get; set; }
+    public int? BankOperationBankId { get; set; }
 
     public int? BankOperationTypeId { get; set; }
 
     public int BranchId { get; set; }
-
-    public int? CashierPeriodId { get; set; }
 
     public int CompanyId { get; set; }
 
@@ -168,8 +170,6 @@ public partial class TrashVoucherItem
     public int PeriodId { get; set; }
 
     public int? PersonId { get; set; }
-
-    public int? PettyCashierPeriodId { get; set; }
 
     public int? ProjectId { get; set; }
 

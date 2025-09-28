@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Contradiction> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__contradi__3213E83FC9BAF683");
+            entity.HasKey(e => e.Id).HasName("PK__contradi__3213E83F231D5BE1");
 
             entity.ToTable("contradictions", "accounting");
 

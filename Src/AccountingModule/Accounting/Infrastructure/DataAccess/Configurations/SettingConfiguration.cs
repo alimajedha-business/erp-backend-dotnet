@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Setting> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__settings__3213E83F975C56ED");
+            entity.HasKey(e => e.Id).HasName("PK__settings__3213E83FBC61BF5A");
 
             entity.ToTable("settings", "accounting");
 
-            entity.HasIndex(e => e.DomainId, "UQ__settings__E72BC7677365AE8A").IsUnique();
+            entity.HasIndex(e => e.DomainId, "UQ__settings__E72BC7672241685D").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.DomainId).HasColumnName("domain_id");

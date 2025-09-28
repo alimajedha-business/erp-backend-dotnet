@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<SlaveAccountStandardDescription> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__slave_ac__3213E83F8F08DB1E");
+            entity.HasKey(e => e.Id).HasName("PK__slave_ac__3213E83F626F9FCD");
 
             entity.ToTable("slave_account_standard_descriptions", "accounting");
 

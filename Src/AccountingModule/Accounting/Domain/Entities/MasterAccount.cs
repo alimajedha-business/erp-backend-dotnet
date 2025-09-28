@@ -23,6 +23,8 @@ public partial class MasterAccount
 
     public string AuthorizedUsers { get; set; }
 
+    public int? CompanyId { get; set; }
+
     public int LedgerId { get; set; }
 
     public virtual ICollection<AccountSetItem> AccountSetItems { get; set; } = new List<AccountSetItem>();

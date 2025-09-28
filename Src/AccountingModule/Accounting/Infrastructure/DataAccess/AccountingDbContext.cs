@@ -109,53 +109,6 @@ public partial class AccountingDbContext : DbContext
     {
         modelBuilder.UseCollation("Persian_100_CI_AI");
 
-        modelBuilder.ApplyConfiguration(new Configurations.AccountCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.AccountGroupConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.AccountSetConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.AccountSetItemConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.BalanceRelatedAccountDetailConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.BankTemplateConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ClosingPatternConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ClosingPatternSlaveCompanyConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ClosingPatternTemporaryAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ContradictionConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ContradictionItemConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.DataImportConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.FloatAccountTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.LedgerConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.LedgerPeriodConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.LedgerPeriodCompanyConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.LedgerPeriodCompanySettingConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ManualFloatAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.MasterAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.PeriodConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.ResourceAndExpenditureConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.SlaveAccountConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.SlaveAccountCompanyConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.SlaveAccountStandardDescriptionConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TrashVoucherConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TrashVoucherItemConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TrashVoucherItemAttachConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsBuyConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsContractorInfoConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsEmployerInfoConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsExportationConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsImportationConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsLeaseAgreementConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsPreSellConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsProductTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsSellConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.TtmsWageConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherItemConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherItemAttachConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherItemLogConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherItemStandardDescriptionConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherLogConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.VoucherTypeConfiguration());
-        OnModelCreatingPartial(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

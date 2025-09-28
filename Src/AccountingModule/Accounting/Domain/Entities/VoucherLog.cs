@@ -33,6 +33,10 @@ public partial class VoucherLog
 
     public string OldDescription { get; set; }
 
+    public string Data { get; set; }
+
+    public string Attaches { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public int? BranchId { get; set; }
@@ -52,8 +56,6 @@ public partial class VoucherLog
     public int? VoucherId { get; set; }
 
     public int? VoucherTypeId { get; set; }
-
-    public string Data { get; set; }
 
     public virtual Ledger Ledger { get; set; }
 

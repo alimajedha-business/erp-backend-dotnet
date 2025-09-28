@@ -11,15 +11,15 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<LedgerPeriodCompany> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83F76D7AAD9");
+            entity.HasKey(e => e.Id).HasName("PK__ledger_p__3213E83FA4FC65EC");
 
             entity.ToTable("ledger_period_companies", "accounting");
 
             entity.HasIndex(e => e.CompanyId, "ledger_period_companies_company_id_b4e49be1");
 
-            entity.HasIndex(e => new { e.CompanyId, e.LedgerPeriodId }, "ledger_period_companies_company_id_ledger_period_id_08379790_uniq")
+            entity.HasIndex(e => new { e.CompanyId, e.LedgerId, e.PeriodId }, "ledger_period_companies_company_id_ledger_id_period_id_0cff0c7c_uniq")
                 .IsUnique()
-                .HasFilter("([company_id] IS NOT NULL AND [ledger_period_id] IS NOT NULL)");
+                .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL)");
 
             entity.HasIndex(e => e.LedgerId, "ledger_period_companies_ledger_id_52a61c2a");
 
@@ -43,7 +43,6 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
 
             entity.HasOne(d => d.LedgerPeriod).WithMany(p => p.LedgerPeriodCompanies)
                 .HasForeignKey(d => d.LedgerPeriodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ledger_period_companies_ledger_period_id_5656d93c_fk_ledger_periods_id");
 
             entity.HasOne(d => d.Period).WithMany(p => p.LedgerPeriodCompanies)

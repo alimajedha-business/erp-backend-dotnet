@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<AccountGroup> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__account___3213E83F4DE2EE95");
+            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FF243D197");
 
             entity.ToTable("account_groups", "accounting");
 

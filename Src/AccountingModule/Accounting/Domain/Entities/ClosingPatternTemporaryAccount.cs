@@ -15,6 +15,8 @@ public partial class ClosingPatternTemporaryAccount
 
     public int CompanyId { get; set; }
 
+    public int? DefaultCashierPeriodId { get; set; }
+
     public int? DefaultCompanyUnitId { get; set; }
 
     public int? DefaultCostCenterId { get; set; }
@@ -22,6 +24,8 @@ public partial class ClosingPatternTemporaryAccount
     public int? DefaultCurrencyId { get; set; }
 
     public int? DefaultPersonId { get; set; }
+
+    public int? DefaultPettyCashierPeriodId { get; set; }
 
     public int? DefaultProjectId { get; set; }
 
@@ -32,10 +36,6 @@ public partial class ClosingPatternTemporaryAccount
     public int LedgerId { get; set; }
 
     public int PeriodId { get; set; }
-
-    public int? DefaultCashierPeriodId { get; set; }
-
-    public int? DefaultPettyCashierPeriodId { get; set; }
 
     public virtual ResourceAndExpenditure DefaultResourceAndExpenditure { get; set; }
 

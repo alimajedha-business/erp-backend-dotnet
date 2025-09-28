@@ -11,11 +11,11 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<AccountCategory> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__account___3213E83F523151EB");
+            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FA1A74D01");
 
             entity.ToTable("account_categories", "accounting");
 
-            entity.HasIndex(e => e.Name, "UQ__account___72E12F1B3B565389").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__account___72E12F1BBA97A93B").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)

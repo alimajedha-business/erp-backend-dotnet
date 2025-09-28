@@ -15,7 +15,7 @@ public partial class LedgerPeriodCompany
 
     public int LedgerId { get; set; }
 
-    public int LedgerPeriodId { get; set; }
+    public int? LedgerPeriodId { get; set; }
 
     public int PeriodId { get; set; }
 

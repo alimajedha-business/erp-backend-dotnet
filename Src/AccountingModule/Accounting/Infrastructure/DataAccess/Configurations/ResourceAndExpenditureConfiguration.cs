@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ResourceAndExpenditure> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__resource__3213E83F849557AA");
+            entity.HasKey(e => e.Id).HasName("PK__resource__3213E83FDA45EACF");
 
             entity.ToTable("resource_and_expenditures", "accounting");
 
@@ -37,6 +37,10 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(11)
+                .HasColumnName("type");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             OnConfigurePartial(entity);

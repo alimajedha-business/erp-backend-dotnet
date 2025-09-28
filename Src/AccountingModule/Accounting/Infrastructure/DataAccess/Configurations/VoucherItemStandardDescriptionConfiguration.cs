@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherItemStandardDescription> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83F47C24B20");
+            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83F05F75178");
 
             entity.ToTable("voucher_item_standard_descriptions", "accounting");
 

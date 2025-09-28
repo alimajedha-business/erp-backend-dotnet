@@ -11,21 +11,24 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<MasterAccount> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__master_a__3213E83FDB1E8845");
+            entity.HasKey(e => e.Id).HasName("PK__master_a__3213E83F45489EAE");
 
             entity.ToTable("master_accounts", "accounting");
 
+            entity.HasIndex(e => e.CompanyId, "master_accounts_company_id_8105f0fd");
+
             entity.HasIndex(e => e.LedgerId, "master_accounts_ledger_id_b94026a2");
 
-            entity.HasIndex(e => new { e.LedgerId, e.Code }, "master_accounts_ledger_id_code_7b97c8b2_uniq")
+            entity.HasIndex(e => new { e.LedgerId, e.Code, e.CompanyId }, "master_accounts_ledger_id_code_company_id_ad25ea34_uniq")
                 .IsUnique()
-                .HasFilter("([ledger_id] IS NOT NULL AND [code] IS NOT NULL)");
+                .HasFilter("([ledger_id] IS NOT NULL AND [code] IS NOT NULL AND [company_id] IS NOT NULL)");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AuthorizedUsers)
                 .HasMaxLength(1000)
                 .HasColumnName("authorized_users");
             entity.Property(e => e.Code).HasColumnName("code");
+            entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.LedgerId).HasColumnName("ledger_id");

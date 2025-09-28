@@ -11,21 +11,13 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<SlaveAccount> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__slave_ac__3213E83FA165931F");
+            entity.HasKey(e => e.Id).HasName("PK__slave_ac__3213E83F3CF7412F");
 
             entity.ToTable("slave_accounts", "accounting");
 
             entity.HasIndex(e => e.CategoryId, "slave_accounts_category_id_79276cde");
 
-            entity.HasIndex(e => new { e.CategoryId, e.GroupId, e.LedgerId, e.MasterId, e.Code, e.DetailedAccount1 }, "slave_accounts_category_id_group_id_ledger_id_master_id_code_detailed_account_1_2ebf0ffa_uniq")
-                .IsUnique()
-                .HasFilter("([category_id] IS NOT NULL AND [group_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [master_id] IS NOT NULL AND [code] IS NOT NULL AND [detailed_account_1] IS NOT NULL)");
-
-            entity.HasIndex(e => new { e.CategoryId, e.GroupId, e.LedgerId, e.MasterId, e.Code, e.DetailedAccount1, e.DetailedAccount2 }, "slave_accounts_category_id_group_id_ledger_id_master_id_code_detailed_account_1_detailed_account_2_1409df48_uniq")
-                .IsUnique()
-                .HasFilter("([category_id] IS NOT NULL AND [group_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [master_id] IS NOT NULL AND [code] IS NOT NULL AND [detailed_account_1] IS NOT NULL AND [detailed_account_2] IS NOT NULL)");
-
-            entity.HasIndex(e => e.FromCompanyIdId, "slave_accounts_from_company_id_id_be582ecc");
+            entity.HasIndex(e => e.FromCompanyId, "slave_accounts_from_company_id_6eb00e83");
 
             entity.HasIndex(e => e.GroupId, "slave_accounts_group_id_d226c356");
 
@@ -45,7 +37,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.DetailedAccount1).HasColumnName("detailed_account_1");
             entity.Property(e => e.DetailedAccount2).HasColumnName("detailed_account_2");
-            entity.Property(e => e.FromCompanyIdId).HasColumnName("from_company_id_id");
+            entity.Property(e => e.FromCompanyId).HasColumnName("from_company_id");
             entity.Property(e => e.GroupId).HasColumnName("group_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.LastLevel).HasColumnName("last_level");

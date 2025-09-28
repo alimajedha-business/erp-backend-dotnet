@@ -11,11 +11,15 @@ public partial class ClosingPatternSlaveCompany
 
     public int CompanyId { get; set; }
 
+    public int? DefaultCashierPeriodId { get; set; }
+
     public int? DefaultCompanyUnitId { get; set; }
 
     public int? DefaultCurrencyId { get; set; }
 
     public int? DefaultPersonId { get; set; }
+
+    public int? DefaultPettyCashierPeriodId { get; set; }
 
     public int? DefaultProjectId { get; set; }
 
@@ -28,10 +32,6 @@ public partial class ClosingPatternSlaveCompany
     public int PeriodId { get; set; }
 
     public int SlaveCompanyId { get; set; }
-
-    public int? DefaultCashierPeriodId { get; set; }
-
-    public int? DefaultPettyCashierPeriodId { get; set; }
 
     public virtual ResourceAndExpenditure DefaultResourceAndExpenditure { get; set; }
 

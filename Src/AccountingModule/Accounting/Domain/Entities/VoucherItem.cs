@@ -15,6 +15,12 @@ public partial class VoucherItem
 
     public int MasterCode { get; set; }
 
+    public int? SlaveAccountSlaveCode { get; set; }
+
+    public int? DetailedAccount1Code { get; set; }
+
+    public int? DetailedAccount2Code { get; set; }
+
     public int SlaveCode { get; set; }
 
     public int Sequence { get; set; }
@@ -29,11 +35,13 @@ public partial class VoucherItem
 
     public string ProjectStatusReport { get; set; }
 
-    public long? ProjectReceipt { get; set; }
+    public string ProjectReceipt { get; set; }
 
     public string StoreDocType { get; set; }
 
     public string StoreGoodCode { get; set; }
+
+    public string StoreDocument { get; set; }
 
     public decimal? StoreGoodUnitPrice { get; set; }
 
@@ -43,7 +51,7 @@ public partial class VoucherItem
 
     public decimal? CurrencyExchangeRate { get; set; }
 
-    public long? BankOperationReceipt { get; set; }
+    public string BankOperationReceipt { get; set; }
 
     public DateOnly? BankOperationDate { get; set; }
 
@@ -53,9 +61,13 @@ public partial class VoucherItem
 
     public string ReceivableDocCheckNo { get; set; }
 
+    public string ReceivableDocBankBranch { get; set; }
+
     public DateOnly? PayableDocDate { get; set; }
 
     public string PayableDocCheckNo { get; set; }
+
+    public string PayableDocBankBranch { get; set; }
 
     public string ManualFloat1Extra1 { get; set; }
 
@@ -105,9 +117,9 @@ public partial class VoucherItem
 
     public string ManualFloat8Extra3 { get; set; }
 
-    public long? Debit { get; set; }
+    public decimal? Debit { get; set; }
 
-    public long? Credit { get; set; }
+    public decimal? Credit { get; set; }
 
     public string Description { get; set; }
 
@@ -121,21 +133,21 @@ public partial class VoucherItem
 
     public bool IsTick { get; set; }
 
-    public int? BankBranchForPayableDocId { get; set; }
+    public int? BankAccountForBankOperationId { get; set; }
 
-    public int? BankBranchForReceivableDocId { get; set; }
+    public int? BankAccountForPayableDocId { get; set; }
 
     public int? BankForPayableDocId { get; set; }
 
     public int? BankForReceivableDocId { get; set; }
 
-    public int? BankOperationBankAccountId { get; set; }
+    public int? BankOperationBankId { get; set; }
 
     public int? BankOperationTypeId { get; set; }
 
-    public int BranchId { get; set; }
+    public int? BankOperationTypeForPayableDocId { get; set; }
 
-    public int? CashierPeriodId { get; set; }
+    public int BranchId { get; set; }
 
     public int CompanyId { get; set; }
 
@@ -168,8 +180,6 @@ public partial class VoucherItem
     public int PeriodId { get; set; }
 
     public int? PersonId { get; set; }
-
-    public int? PettyCashierPeriodId { get; set; }
 
     public int? ProjectId { get; set; }
 

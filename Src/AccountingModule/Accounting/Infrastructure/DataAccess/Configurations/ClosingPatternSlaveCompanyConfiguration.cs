@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ClosingPatternSlaveCompany> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__closing___3213E83F69E4AA3B");
+            entity.HasKey(e => e.Id).HasName("PK__closing___3213E83FCF3D5CDC");
 
             entity.ToTable("closing_pattern_slave_companies", "accounting");
 

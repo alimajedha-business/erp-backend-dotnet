@@ -11,7 +11,7 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<VoucherLog> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83FCD79D7C6");
+            entity.HasKey(e => e.Id).HasName("PK__voucher___3213E83FFDA3BE8A");
 
             entity.ToTable("voucher_logs", "accounting");
 
@@ -36,6 +36,9 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
             entity.HasIndex(e => e.VoucherTypeId, "voucher_logs_voucher_type_id_5ba5b90d");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Attaches)
+                .HasMaxLength(500)
+                .HasColumnName("attaches");
             entity.Property(e => e.BranchId).HasColumnName("branch_id");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");

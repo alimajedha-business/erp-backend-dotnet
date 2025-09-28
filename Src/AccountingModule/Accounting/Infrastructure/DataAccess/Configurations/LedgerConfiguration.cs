@@ -11,18 +11,27 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Ledger> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__ledgers__3213E83F7B5B3C2B");
+            entity.HasKey(e => e.Id).HasName("PK__ledgers__3213E83F96A0D23B");
 
             entity.ToTable("ledgers", "accounting");
 
-            entity.HasIndex(e => e.Code, "UQ__ledgers__357D4CF92E60519D").IsUnique();
+            entity.HasIndex(e => e.CompanyId, "ledgers_company_id_2826278c");
 
-            entity.HasIndex(e => e.Name, "UQ__ledgers__72E12F1B2CE796EF").IsUnique();
+            entity.HasIndex(e => new { e.CompanyId, e.Code }, "ledgers_company_id_code_bcef292e_uniq")
+                .IsUnique()
+                .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
 
-            entity.HasIndex(e => e.Name2, "UQ__ledgers__F0B628432B41C06C").IsUnique();
+            entity.HasIndex(e => new { e.CompanyId, e.Name2 }, "ledgers_company_id_name2_189873b9_uniq")
+                .IsUnique()
+                .HasFilter("([company_id] IS NOT NULL AND [name2] IS NOT NULL)");
+
+            entity.HasIndex(e => new { e.CompanyId, e.Name }, "ledgers_company_id_name_9745962f_uniq")
+                .IsUnique()
+                .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code).HasColumnName("code");
+            entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.Description)
                 .HasMaxLength(1000)
@@ -33,7 +42,6 @@ namespace Accounting.Infrastructure.DataAccess.Configurations
                 .HasMaxLength(100)
                 .HasColumnName("name");
             entity.Property(e => e.Name2)
-                .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name2");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
