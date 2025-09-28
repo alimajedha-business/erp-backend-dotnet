@@ -20,15 +20,13 @@ namespace Persistence.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
+            modelBuilder.UseCollation("Persian_100_CI_AI");
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GeneralDbContext).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PayrollDbContext).Assembly);
-
-
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SharedDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(PayrollDbContext).Assembly);            
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);            
 
             base.OnModelCreating(modelBuilder);
         }

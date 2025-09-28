@@ -13,16 +13,13 @@ namespace Weighing.Domain.Entities
     /// <summary>
     /// جایگاه تخلیه
     /// </summary>
-    [Table("discharge_stations", Schema = "weighing")]
+    [Table("DischargeStation", Schema = "Weighing")]
     public partial class DischargeStation: BaseEntity
     {
-      
-
-        [Column("code")]
+              
         [StringLength(10)]
         public string Code { get; set; } = null!;
-
-        [Column("name")]
+        
         [StringLength(100)]
         public string Name { get; set; } = null!;
 

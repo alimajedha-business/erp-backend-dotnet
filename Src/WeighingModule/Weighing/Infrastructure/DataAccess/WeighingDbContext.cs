@@ -20,17 +20,16 @@ namespace Weighing.Infrastructure.DataAccess
         {
         }
 
-       public DbSet<DischargeStation> DischargeStations { get; set; } = null!;
+        public DbSet<DischargeStation> DischargeStations { get; set; } = null!;
         public DbSet<PackageType> PackageTypes { get; set; } = null!;
-        public DbSet<PersonDriver> PersonDrivers{ get; set; } = null!;
+        public DbSet<PersonDriver> PersonDrivers { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // این خط همه‌ی کانفیگوریشن‌های موجود در اسمبلی رو پیدا و اعمال می‌کنه
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
         }
     }
 }
