@@ -20,6 +20,7 @@ namespace Persistence.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.UseCollation("Persian_100_CI_AI");
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GeneralDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SharedDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
