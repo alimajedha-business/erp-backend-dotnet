@@ -15,7 +15,7 @@ namespace Common.Infrastructure.DataAccess
         this IServiceCollection services, IConfiguration configuration) where TContext : DbContext
         {
             services.AddDbContext<TContext>(opts =>
-                opts.UseSqlServer(configuration.GetConnectionString("NGERPDatabase")));
+                opts.UseSqlServer(configuration.GetConnectionString("NGERPDATABASE")));
             return services;
         }
     }

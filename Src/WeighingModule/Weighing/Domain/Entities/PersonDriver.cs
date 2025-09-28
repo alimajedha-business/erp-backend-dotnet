@@ -11,23 +11,21 @@ using Weighing.Domain.Enums;
 
 namespace Weighing.Domain.Entities
 {
-    [Table("person_driver", Schema = "weighing")]
+    [Table("PersonDriver", Schema = "Weighing")]
     public class PersonDriver:BaseEntity
-    {
-        [Column("person_id")]
+    {        
         public int PersonId { get; set; }
+       
         public Person Person { get; set; } = null!;
-
-        [Column("vehicle_type_id")]
+        
         public int VehicleTypeId { get; set; }
-        public VehicleType VehicleType { get; set; } = null!;
-        [Column("vehicle_name")]
+              
         public string VehicleName { get; set; } = null!;
-        [Column("plate_number")]
+        
         public string PlateNumber { get; set; } = null!;
-        [Column("initial_weight")]
+
         public decimal? InitialWeight { get; set; }
-        [Column("driver_type")]
+        
         public DriverType DriverType { get; set; }
     }
 }

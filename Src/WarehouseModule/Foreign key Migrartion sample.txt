@@ -1,0 +1,16 @@
+// Custom migration
+public partial class AddCompanyForeignKey : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql(@"
+            ALTER TABLE WarehouseStocks 
+            ADD CONSTRAINT FK_WarehouseStocks_Companies_CompanyId 
+            FOREIGN KEY (CompanyId) REFERENCES Companies(Id)");
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("ALTER TABLE WarehouseStocks DROP CONSTRAINT FK_WarehouseStocks_Companies_CompanyId");
+    }
+}

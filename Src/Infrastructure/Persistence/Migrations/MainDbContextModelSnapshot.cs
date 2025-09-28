@@ -17,6 +17,7 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .UseCollation("Persian_100_CI_AI")
                 .HasAnnotation("ProductVersion", "8.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -37,9 +38,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__account___3213E83FA1A74D01");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__account___72E12F1B3B565389")
+                    b.HasIndex(new[] { "Name" }, "UQ__account___72E12F1BBA97A93B")
                         .IsUnique();
 
                     b.ToTable("account_categories", "accounting");
@@ -68,9 +70,18 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__account___3213E83FF243D197");
 
                     b.HasIndex(new[] { "CategoryId" }, "account_groups_category_id_af0c53e8");
+
+                    b.HasIndex(new[] { "CategoryId", "Code" }, "account_groups_category_id_code_2b62c6b4_uniq")
+                        .IsUnique()
+                        .HasFilter("([category_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CategoryId", "Name" }, "account_groups_category_id_name_8880b185_uniq")
+                        .IsUnique()
+                        .HasFilter("([category_id] IS NOT NULL AND [name] IS NOT NULL)");
 
                     b.ToTable("account_groups", "accounting");
                 });
@@ -98,9 +109,14 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("title");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__account___3213E83FAC9A8426");
 
                     b.HasIndex(new[] { "CompanyId" }, "account_sets_company_id_227009e4");
+
+                    b.HasIndex(new[] { "CompanyId", "Title" }, "account_sets_company_id_title_b34aa998_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [title] IS NOT NULL)");
 
                     b.HasIndex(new[] { "LedgerId" }, "account_sets_ledger_id_31846310");
 
@@ -128,9 +144,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("slave_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__account___3213E83FA949F926");
 
                     b.HasIndex(new[] { "AccountSetId" }, "account_set_items_account_set_id_c6a49338");
+
+                    b.HasIndex(new[] { "AccountSetId", "MasterId", "SlaveId" }, "account_set_items_account_set_id_master_id_slave_id_c5ba8c71_uniq")
+                        .IsUnique()
+                        .HasFilter("([account_set_id] IS NOT NULL AND [master_id] IS NOT NULL AND [slave_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "MasterId" }, "account_set_items_master_id_e12671e4");
 
@@ -486,7 +507,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("store_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__balance___3213E83FF8AA1645");
 
                     b.HasIndex(new[] { "BankBranchForPayableDocId" }, "balance_related_account_details_bank_branch_for_payable_doc_id_f62750bd");
 
@@ -547,6 +569,51 @@ namespace Persistence.Migrations
                     b.HasIndex(new[] { "StoreId" }, "balance_related_account_details_store_id_9f40ae42");
 
                     b.ToTable("balance_related_account_details", "accounting");
+                });
+
+            modelBuilder.Entity("Accounting.Domain.Entities.BankTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("ReportKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("report_key");
+
+                    b.Property<string>("Template")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("template");
+
+                    b.HasKey("Id")
+                        .HasName("PK__bank_tem__3213E83FBE9F31D0");
+
+                    b.HasIndex(new[] { "CompanyId" }, "bank_templates_company_id_2c793700");
+
+                    b.HasIndex(new[] { "CreatorId" }, "bank_templates_creator_id_3c99db7f");
+
+                    b.ToTable("bank_templates", "accounting");
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.ClosingPattern", b =>
@@ -612,9 +679,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("period_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__closing___3213E83F32E72338");
 
                     b.HasIndex(new[] { "CompanyId" }, "closing_patterns_company_id_9cd07d27");
+
+                    b.HasIndex(new[] { "CompanyId", "LedgerId", "PeriodId", "FloatTypeSet" }, "closing_patterns_company_id_ledger_id_period_id_float_type_set_70e51708_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL AND [float_type_set] IS NOT NULL)");
 
                     b.HasIndex(new[] { "DefaultCashierPeriodId" }, "closing_patterns_default_cashier_period_id_2116c839");
 
@@ -696,9 +768,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("slave_company_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__closing___3213E83FCF3D5CDC");
 
                     b.HasIndex(new[] { "CompanyId" }, "closing_pattern_slave_companies_company_id_d40fc855");
+
+                    b.HasIndex(new[] { "CompanyId", "LedgerId", "PeriodId", "SlaveCompanyId" }, "closing_pattern_slave_companies_company_id_ledger_id_period_id_slave_company_id_772b00bd_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL AND [slave_company_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "DefaultCashierPeriodId" }, "closing_pattern_slave_companies_default_cashier_period_id_92a586f2");
 
@@ -792,9 +869,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("period_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__closing___3213E83F6F99372D");
 
                     b.HasIndex(new[] { "CompanyId" }, "closing_pattern_temporary_accounts_company_id_952b9b60");
+
+                    b.HasIndex(new[] { "CompanyId", "LedgerId", "PeriodId", "FloatTypeSet" }, "closing_pattern_temporary_accounts_company_id_ledger_id_period_id_float_type_set_2bc966ac_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL AND [float_type_set] IS NOT NULL)");
 
                     b.HasIndex(new[] { "DefaultCashierPeriodId" }, "closing_pattern_temporary_accounts_default_cashier_period_id_d8091266");
 
@@ -858,7 +940,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("period_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__contradi__3213E83F231D5BE1");
 
                     b.HasIndex(new[] { "BankAccountId" }, "contradictions_bank_account_id_e4432ed1");
 
@@ -917,7 +1000,8 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("is_tick");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__contradi__3213E83F1C73FCF1");
 
                     b.HasIndex(new[] { "ContradictionId" }, "contradiction_items_contradiction_id_1494f375");
 
@@ -986,7 +1070,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(18)")
                         .HasColumnName("status");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__data_imp__3213E83F55523214");
 
                     b.HasIndex(new[] { "CompanyId" }, "data_imports_company_id_eda746f3");
 
@@ -1092,12 +1177,17 @@ namespace Persistence.Migrations
                         .HasColumnType("smallint")
                         .HasColumnName("voucher_item_float_level");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__float_ac__3213E83F1B40CB14");
 
-                    b.HasIndex(new[] { "NameFa" }, "UQ__float_ac__2E0A7AA653BB5215")
+                    b.HasIndex(new[] { "NameFa" }, "UQ__float_ac__2E0A7AA640082C0A")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ParentId" }, "float_account_types_parent_id_4dd8ba99");
+
+                    b.HasIndex(new[] { "VoucherItemFloatLevel" }, "float_account_types_voucher_item_float_level_b985d2e4_uniq")
+                        .IsUnique()
+                        .HasFilter("([voucher_item_float_level] IS NOT NULL)");
 
                     b.ToTable("float_account_types", "accounting");
                 });
@@ -1114,6 +1204,10 @@ namespace Persistence.Migrations
                     b.Property<short>("Code")
                         .HasColumnType("smallint")
                         .HasColumnName("code");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1135,7 +1229,6 @@ namespace Persistence.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("Name2")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name2");
@@ -1144,30 +1237,24 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ledgers__3213E83F96A0D23B");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__ledgers__357D4CF92E60519D")
-                        .IsUnique();
+                    b.HasIndex(new[] { "CompanyId" }, "ledgers_company_id_2826278c");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__ledgers__72E12F1B2CE796EF")
-                        .IsUnique();
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "ledgers_company_id_code_bcef292e_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
 
-                    b.HasIndex(new[] { "Name2" }, "UQ__ledgers__F0B628432B41C06C")
-                        .IsUnique();
+                    b.HasIndex(new[] { "CompanyId", "Name2" }, "ledgers_company_id_name2_189873b9_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name2] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Name" }, "ledgers_company_id_name_9745962f_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
 
                     b.ToTable("ledgers", "accounting");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = (short)1,
-                            CreatedAt = new DateTime(2025, 9, 21, 12, 16, 27, 260, DateTimeKind.Utc).AddTicks(4925),
-                            Description = "",
-                            IsLeading = true,
-                            Name = "دفتر کل اصلی",
-                            Name2 = "Main Ledger"
-                        });
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.LedgerPeriod", b =>
@@ -1187,9 +1274,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("period_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ledger_p__3213E83FCD7E44E8");
 
                     b.HasIndex(new[] { "LedgerId" }, "ledger_periods_ledger_id_c70ff025");
+
+                    b.HasIndex(new[] { "LedgerId", "PeriodId" }, "ledger_periods_ledger_id_period_id_5d05e0eb_uniq")
+                        .IsUnique()
+                        .HasFilter("([ledger_id] IS NOT NULL AND [period_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "PeriodId" }, "ledger_periods_period_id_2953e5ba");
 
@@ -1218,7 +1310,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ledger_id");
 
-                    b.Property<int>("LedgerPeriodId")
+                    b.Property<int?>("LedgerPeriodId")
                         .HasColumnType("int")
                         .HasColumnName("ledger_period_id");
 
@@ -1226,9 +1318,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("period_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ledger_p__3213E83FA4FC65EC");
 
                     b.HasIndex(new[] { "CompanyId" }, "ledger_period_companies_company_id_b4e49be1");
+
+                    b.HasIndex(new[] { "CompanyId", "LedgerId", "PeriodId" }, "ledger_period_companies_company_id_ledger_id_period_id_0cff0c7c_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "LedgerId" }, "ledger_period_companies_ledger_id_52a61c2a");
 
@@ -1337,12 +1434,17 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ledger_p__3213E83F939BD0F5");
 
-                    b.HasIndex(new[] { "LedgerPeriodCompanyId" }, "UQ__ledger_p__8880943C4AE414BF")
+                    b.HasIndex(new[] { "LedgerPeriodCompanyId" }, "UQ__ledger_p__8880943C687374A6")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CompanyId" }, "ledger_period_company_settings_company_id_a0d2dc4a");
+
+                    b.HasIndex(new[] { "CompanyId", "LedgerPeriodCompanyId" }, "ledger_period_company_settings_company_id_ledger_period_company_id_e87be1b5_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_period_company_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "LedgerId" }, "ledger_period_company_settings_ledger_id_c37251eb");
 
@@ -1409,9 +1511,22 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__manual_f__3213E83FCACCCBC5");
 
                     b.HasIndex(new[] { "CompanyId" }, "manual_float_accounts_company_id_c4223ce2");
+
+                    b.HasIndex(new[] { "CompanyId", "FloatAccountTypeId", "Code" }, "manual_float_accounts_company_id_float_account_type_id_code_7e28c5e8_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [float_account_type_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "FloatAccountTypeId", "Title2" }, "manual_float_accounts_company_id_float_account_type_id_title2_11d5aa07_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [float_account_type_id] IS NOT NULL AND [title2] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "FloatAccountTypeId", "Title" }, "manual_float_accounts_company_id_float_account_type_id_title_ad80fe99_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [float_account_type_id] IS NOT NULL AND [title] IS NOT NULL)");
 
                     b.HasIndex(new[] { "FloatAccountTypeId" }, "manual_float_accounts_float_account_type_id_b211d188");
 
@@ -1437,6 +1552,10 @@ namespace Persistence.Migrations
                     b.Property<int>("Code")
                         .HasColumnType("int")
                         .HasColumnName("code");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1465,9 +1584,16 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__master_a__3213E83F45489EAE");
+
+                    b.HasIndex(new[] { "CompanyId" }, "master_accounts_company_id_8105f0fd");
 
                     b.HasIndex(new[] { "LedgerId" }, "master_accounts_ledger_id_b94026a2");
+
+                    b.HasIndex(new[] { "LedgerId", "Code", "CompanyId" }, "master_accounts_ledger_id_code_company_id_ad25ea34_uniq")
+                        .IsUnique()
+                        .HasFilter("([ledger_id] IS NOT NULL AND [code] IS NOT NULL AND [company_id] IS NOT NULL)");
 
                     b.ToTable("master_accounts", "accounting");
                 });
@@ -1480,6 +1606,10 @@ namespace Persistence.Migrations
                         .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1500,6 +1630,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
+                    b.Property<int?>("PreviousPeriodId")
+                        .HasColumnType("int")
+                        .HasColumnName("previous_period_id");
+
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
@@ -1508,10 +1642,16 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__periods__3213E83FFC21E5EB");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__periods__72E12F1BE18188D5")
-                        .IsUnique();
+                    b.HasIndex(new[] { "CompanyId" }, "periods_company_id_26f76f0a");
+
+                    b.HasIndex(new[] { "CompanyId", "Name" }, "periods_company_id_name_ad5ced7a_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "PreviousPeriodId" }, "periods_previous_period_id_785fc09e");
 
                     b.ToTable("periods", "accounting");
                 });
@@ -1552,15 +1692,56 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)")
+                        .HasColumnName("type");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__resource__3213E83FDA45EACF");
 
                     b.HasIndex(new[] { "CompanyId" }, "resource_and_expenditures_company_id_5d08b6e8");
 
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "resource_and_expenditures_company_id_code_75192806_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Name" }, "resource_and_expenditures_company_id_name_1605dd8e_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+
                     b.ToTable("resource_and_expenditures", "accounting");
+                });
+
+            modelBuilder.Entity("Accounting.Domain.Entities.Setting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DomainId")
+                        .HasColumnType("int")
+                        .HasColumnName("domain_id");
+
+                    b.Property<bool>("S1")
+                        .HasColumnType("bit")
+                        .HasColumnName("s1");
+
+                    b.HasKey("Id")
+                        .HasName("PK__settings__3213E83FBC61BF5A");
+
+                    b.HasIndex(new[] { "DomainId" }, "UQ__settings__E72BC7672241685D")
+                        .IsUnique();
+
+                    b.ToTable("settings", "accounting");
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.SlaveAccount", b =>
@@ -1598,9 +1779,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("detailed_account_2");
 
-                    b.Property<int?>("FromCompanyIdId")
+                    b.Property<int?>("FromCompanyId")
                         .HasColumnType("int")
-                        .HasColumnName("from_company_id_id");
+                        .HasColumnName("from_company_id");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("int")
@@ -1661,11 +1842,12 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__slave_ac__3213E83F3CF7412F");
 
                     b.HasIndex(new[] { "CategoryId" }, "slave_accounts_category_id_79276cde");
 
-                    b.HasIndex(new[] { "FromCompanyIdId" }, "slave_accounts_from_company_id_id_be582ecc");
+                    b.HasIndex(new[] { "FromCompanyId" }, "slave_accounts_from_company_id_6eb00e83");
 
                     b.HasIndex(new[] { "GroupId" }, "slave_accounts_group_id_d226c356");
 
@@ -1792,7 +1974,8 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__slave_ac__3213E83FD842CE45");
 
                     b.HasIndex(new[] { "CompanyId" }, "slave_account_companies_company_id_10f63c16");
 
@@ -1815,6 +1998,10 @@ namespace Persistence.Migrations
                     b.HasIndex(new[] { "LedgerId" }, "slave_account_companies_ledger_id_b40ad4d0");
 
                     b.HasIndex(new[] { "MasterId" }, "slave_account_companies_master_id_bacd3012");
+
+                    b.HasIndex(new[] { "SlaveId", "CompanyId" }, "slave_account_companies_slave_id_company_id_d7bc5f10_uniq")
+                        .IsUnique()
+                        .HasFilter("([slave_id] IS NOT NULL AND [company_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "SlaveId" }, "slave_account_companies_slave_id_edd3dcf5");
 
@@ -1844,9 +2031,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("slave_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__slave_ac__3213E83F626F9FCD");
 
                     b.HasIndex(new[] { "CompanyId" }, "slave_account_standard_descriptions_company_id_a2d12c8c");
+
+                    b.HasIndex(new[] { "CompanyId", "SlaveId", "Description" }, "slave_account_standard_descriptions_company_id_slave_id_description_fcd17f45_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [slave_id] IS NOT NULL AND [description] IS NOT NULL)");
 
                     b.HasIndex(new[] { "SlaveId" }, "slave_account_standard_descriptions_slave_id_b64d916e");
 
@@ -1929,7 +2121,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_id_initial");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__trash_vo__3213E83F5C11B883");
 
                     b.HasIndex(new[] { "BranchId" }, "trash_vouchers_branch_id_4da4e4fa");
 
@@ -1966,13 +2159,13 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("attaches");
 
-                    b.Property<int?>("BankBranchForPayableDocId")
+                    b.Property<int?>("BankAccountForBankOperationId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_payable_doc_id");
+                        .HasColumnName("bank_account_for_bank_operation_id");
 
-                    b.Property<int?>("BankBranchForReceivableDocId")
+                    b.Property<int?>("BankAccountForPayableDocId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_receivable_doc_id");
+                        .HasColumnName("bank_account_for_payable_doc_id");
 
                     b.Property<int?>("BankForPayableDocId")
                         .HasColumnType("int")
@@ -1982,9 +2175,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("bank_for_receivable_doc_id");
 
-                    b.Property<int?>("BankOperationBankAccountId")
+                    b.Property<int?>("BankOperationBankId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_operation_bank_account_id");
+                        .HasColumnName("bank_operation_bank_id");
 
                     b.Property<string>("BankOperationCheckNo")
                         .HasMaxLength(30)
@@ -2007,24 +2200,22 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("branch_id");
 
-                    b.Property<int?>("CashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("cashier_period_id");
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
 
-                    b.Property<int?>("CompanyUnitCode")
-                        .HasColumnType("int")
+                    b.Property<string>("CompanyUnitCode")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)")
                         .HasColumnName("company_unit_code");
 
                     b.Property<int?>("CompanyUnitId")
                         .HasColumnType("int")
                         .HasColumnName("company_unit_id");
 
-                    b.Property<int?>("CostCenterCode")
-                        .HasColumnType("int")
+                    b.Property<string>("CostCenterCode")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)")
                         .HasColumnName("cost_center_code");
 
                     b.Property<int?>("CostCenterId")
@@ -2240,6 +2431,11 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("master_id");
 
+                    b.Property<string>("PayableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payable_doc_bank_branch");
+
                     b.Property<string>("PayableDocCheckNo")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
@@ -2256,10 +2452,6 @@ namespace Persistence.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("int")
                         .HasColumnName("person_id");
-
-                    b.Property<int?>("PettyCashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("petty_cashier_period_id");
 
                     b.Property<bool>("Printed")
                         .HasColumnType("bit")
@@ -2289,6 +2481,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
                         .HasColumnName("project_status_report");
+
+                    b.Property<string>("ReceivableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("receivable_doc_bank_branch");
 
                     b.Property<string>("ReceivableDocCheckNo")
                         .HasMaxLength(30)
@@ -2348,23 +2545,22 @@ namespace Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("voucher_item_id_initial");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__trash_vo__3213E83F233BD0D7");
 
-                    b.HasIndex(new[] { "BankBranchForPayableDocId" }, "trash_voucher_items_bank_branch_for_payable_doc_id_c7192fe1");
+                    b.HasIndex(new[] { "BankAccountForBankOperationId" }, "trash_voucher_items_bank_account_for_bank_operation_id_e76292ef");
 
-                    b.HasIndex(new[] { "BankBranchForReceivableDocId" }, "trash_voucher_items_bank_branch_for_receivable_doc_id_18f99fa4");
+                    b.HasIndex(new[] { "BankAccountForPayableDocId" }, "trash_voucher_items_bank_account_for_payable_doc_id_7f5e5951");
 
                     b.HasIndex(new[] { "BankForPayableDocId" }, "trash_voucher_items_bank_for_payable_doc_id_b0e53bf9");
 
                     b.HasIndex(new[] { "BankForReceivableDocId" }, "trash_voucher_items_bank_for_receivable_doc_id_52a2c187");
 
-                    b.HasIndex(new[] { "BankOperationBankAccountId" }, "trash_voucher_items_bank_operation_bank_account_id_2cdf8f2c");
+                    b.HasIndex(new[] { "BankOperationBankId" }, "trash_voucher_items_bank_operation_bank_id_bb1c1a26");
 
                     b.HasIndex(new[] { "BankOperationTypeId" }, "trash_voucher_items_bank_operation_type_id_4f027778");
 
                     b.HasIndex(new[] { "BranchId" }, "trash_voucher_items_branch_id_1cd5a4ea");
-
-                    b.HasIndex(new[] { "CashierPeriodId" }, "trash_voucher_items_cashier_period_id_ec0ac32d");
 
                     b.HasIndex(new[] { "CompanyId" }, "trash_voucher_items_company_id_b595ca9c");
 
@@ -2397,8 +2593,6 @@ namespace Persistence.Migrations
                     b.HasIndex(new[] { "PeriodId" }, "trash_voucher_items_period_id_e1c57ee1");
 
                     b.HasIndex(new[] { "PersonId" }, "trash_voucher_items_person_id_0cca821d");
-
-                    b.HasIndex(new[] { "PettyCashierPeriodId" }, "trash_voucher_items_petty_cashier_period_id_1e714a51");
 
                     b.HasIndex(new[] { "ProjectContractId" }, "trash_voucher_items_project_contract_id_967b39b0");
 
@@ -2446,7 +2640,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("trash_voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__trash_vo__3213E83F0BB07B03");
 
                     b.HasIndex(new[] { "TrashVoucherId" }, "trash_voucher_item_attaches_trash_voucher_id_aea53052");
 
@@ -2653,9 +2848,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_buy__3213E83F47578066");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_buy__A2D3D11B3AE62649")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_buy__A2D3D11BC2C7726D")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_buys_arz_type_id_842752a5");
@@ -2879,9 +3075,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_con__3213E83FD517199C");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_con__A2D3D11B3E04D101")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_con__A2D3D11BA8538DEB")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_contractor_infos_arz_type_id_2564bca6");
@@ -3109,9 +3306,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_emp__3213E83F35813795");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_emp__A2D3D11B5AB028CE")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_emp__A2D3D11BFA67BAD0")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_employer_infos_arz_type_id_64a2746a");
@@ -3260,9 +3458,9 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("kala_khadamat_name");
 
-                    b.Property<int?>("KalaTypeId")
+                    b.Property<string>("KalaTypeId")
                         .HasMaxLength(10)
-                        .HasColumnType("int")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("kala_type_id");
 
                     b.Property<int?>("KharidarAddressId")
@@ -3385,9 +3583,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_exp__3213E83FE823D67B");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_exp__A2D3D11B14C08510")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_exp__A2D3D11BD5437FE0")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_exportations_arz_type_id_a88c4e64");
@@ -3547,9 +3746,9 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("kala_khadamat_name");
 
-                    b.Property<int?>("KalaTypeId")
+                    b.Property<string>("KalaTypeId")
                         .HasMaxLength(10)
-                        .HasColumnType("int")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("kala_type_id");
 
                     b.Property<short?>("KharidType")
@@ -3661,9 +3860,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_imp__3213E83F540DEB5F");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_imp__A2D3D11B86124CAE")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_imp__A2D3D11BC040759A")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_importations_arz_type_id_66a0f015");
@@ -3906,9 +4106,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_lea__3213E83FCB177D07");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_lea__A2D3D11BF7748A1E")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_lea__A2D3D11B4215A57D")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_lease_agreements_arz_type_id_eb4b0083");
@@ -4059,9 +4260,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_pre__3213E83FEFE02301");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_pre__A2D3D11BC3C56D57")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_pre__A2D3D11B6438312A")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_pre_sells_arz_type_id_141bbcfb");
@@ -4110,9 +4312,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("title");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_pro__3213E83F247EC098");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__ttms_pro__357D4CF9F1A81110")
+                    b.HasIndex(new[] { "Code" }, "UQ__ttms_pro__357D4CF9C0B0C704")
                         .IsUnique();
 
                     b.ToTable("ttms_product_types", "accounting");
@@ -4225,9 +4428,9 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("kala_khadamat_name");
 
-                    b.Property<int?>("KalaTypeId")
+                    b.Property<string>("KalaTypeId")
                         .HasMaxLength(10)
-                        .HasColumnType("int")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("kala_type_id");
 
                     b.Property<int?>("KharidarAddressId")
@@ -4317,9 +4520,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_sel__3213E83F8F41EC75");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_sel__A2D3D11B5AFD5124")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_sel__A2D3D11B288B1E3D")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_sells_arz_type_id_6035a895");
@@ -4660,9 +4864,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__ttms_wag__3213E83F9301933C");
 
-                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_wag__A2D3D11BC43A0393")
+                    b.HasIndex(new[] { "VoucherItemId" }, "UQ__ttms_wag__A2D3D11BF10A8DFE")
                         .IsUnique();
 
                     b.HasIndex(new[] { "ArzTypeId" }, "ttms_wages_arz_type_id_aefc4dc1");
@@ -4703,6 +4908,11 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Attaches")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("attaches");
+
                     b.Property<int>("BranchId")
                         .HasColumnType("int")
                         .HasColumnName("branch_id");
@@ -4735,6 +4945,10 @@ namespace Persistence.Migrations
                     b.Property<int?>("LastModifierId")
                         .HasColumnType("int")
                         .HasColumnName("last_modifier_id");
+
+                    b.Property<int?>("LastStatusModifierId")
+                        .HasColumnType("int")
+                        .HasColumnName("last_status_modifier_id");
 
                     b.Property<int>("LedgerId")
                         .HasColumnType("int")
@@ -4770,15 +4984,22 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__vouchers__3213E83FD1C266AB");
 
                     b.HasIndex(new[] { "BranchId" }, "vouchers_branch_id_f6f281ae");
 
                     b.HasIndex(new[] { "CompanyId" }, "vouchers_company_id_87927ee9");
 
+                    b.HasIndex(new[] { "CompanyId", "LedgerId", "PeriodId", "Number" }, "vouchers_company_id_ledger_id_period_id_number_10cfc9fc_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [ledger_id] IS NOT NULL AND [period_id] IS NOT NULL AND [number] IS NOT NULL)");
+
                     b.HasIndex(new[] { "CreatorId" }, "vouchers_creator_id_b7f0b4f8");
 
                     b.HasIndex(new[] { "LastModifierId" }, "vouchers_last_modifier_id_61732409");
+
+                    b.HasIndex(new[] { "LastStatusModifierId" }, "vouchers_last_status_modifier_id_f7d322ae");
 
                     b.HasIndex(new[] { "LedgerId" }, "vouchers_ledger_id_25e3f63d");
 
@@ -4805,13 +5026,13 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("attaches");
 
-                    b.Property<int?>("BankBranchForPayableDocId")
+                    b.Property<int?>("BankAccountForBankOperationId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_payable_doc_id");
+                        .HasColumnName("bank_account_for_bank_operation_id");
 
-                    b.Property<int?>("BankBranchForReceivableDocId")
+                    b.Property<int?>("BankAccountForPayableDocId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_receivable_doc_id");
+                        .HasColumnName("bank_account_for_payable_doc_id");
 
                     b.Property<int?>("BankForPayableDocId")
                         .HasColumnType("int")
@@ -4821,9 +5042,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("bank_for_receivable_doc_id");
 
-                    b.Property<int?>("BankOperationBankAccountId")
+                    b.Property<int?>("BankOperationBankId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_operation_bank_account_id");
+                        .HasColumnName("bank_operation_bank_id");
 
                     b.Property<string>("BankOperationCheckNo")
                         .HasMaxLength(30)
@@ -4834,9 +5055,14 @@ namespace Persistence.Migrations
                         .HasColumnType("date")
                         .HasColumnName("bank_operation_date");
 
-                    b.Property<long?>("BankOperationReceipt")
-                        .HasColumnType("bigint")
+                    b.Property<string>("BankOperationReceipt")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("bank_operation_receipt");
+
+                    b.Property<int?>("BankOperationTypeForPayableDocId")
+                        .HasColumnType("int")
+                        .HasColumnName("bank_operation_type_for_payable_doc_id");
 
                     b.Property<int?>("BankOperationTypeId")
                         .HasColumnType("int")
@@ -4845,10 +5071,6 @@ namespace Persistence.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int")
                         .HasColumnName("branch_id");
-
-                    b.Property<int?>("CashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("cashier_period_id");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("int")
@@ -4872,8 +5094,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("cost_center_id");
 
-                    b.Property<long?>("Credit")
-                        .HasColumnType("bigint")
+                    b.Property<decimal?>("Credit")
+                        .HasColumnType("numeric(18, 2)")
                         .HasColumnName("credit");
 
                     b.Property<string>("CrossReferenceId")
@@ -4897,14 +5119,22 @@ namespace Persistence.Migrations
                         .HasColumnType("smallint")
                         .HasColumnName("deal_type");
 
-                    b.Property<long?>("Debit")
-                        .HasColumnType("bigint")
+                    b.Property<decimal?>("Debit")
+                        .HasColumnType("numeric(18, 2)")
                         .HasColumnName("debit");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("description");
+
+                    b.Property<int?>("DetailedAccount1Code")
+                        .HasColumnType("int")
+                        .HasColumnName("detailed_account_1_code");
+
+                    b.Property<int?>("DetailedAccount2Code")
+                        .HasColumnType("int")
+                        .HasColumnName("detailed_account_2_code");
 
                     b.Property<DateOnly?>("DueDate")
                         .HasColumnType("date")
@@ -5086,6 +5316,11 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("master_id");
 
+                    b.Property<string>("PayableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payable_doc_bank_branch");
+
                     b.Property<string>("PayableDocCheckNo")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
@@ -5102,10 +5337,6 @@ namespace Persistence.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("int")
                         .HasColumnName("person_id");
-
-                    b.Property<int?>("PettyCashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("petty_cashier_period_id");
 
                     b.Property<bool>("Printed")
                         .HasColumnType("bit")
@@ -5127,14 +5358,20 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("project_id");
 
-                    b.Property<long?>("ProjectReceipt")
-                        .HasColumnType("bigint")
+                    b.Property<string>("ProjectReceipt")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("project_receipt");
 
                     b.Property<string>("ProjectStatusReport")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
                         .HasColumnName("project_status_report");
+
+                    b.Property<string>("ReceivableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("receivable_doc_bank_branch");
 
                     b.Property<string>("ReceivableDocCheckNo")
                         .HasMaxLength(30)
@@ -5153,6 +5390,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("sequence");
 
+                    b.Property<int?>("SlaveAccountSlaveCode")
+                        .HasColumnType("int")
+                        .HasColumnName("slave_account_slave_code");
+
                     b.Property<int>("SlaveCode")
                         .HasColumnType("int")
                         .HasColumnName("slave_code");
@@ -5169,6 +5410,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("store_doc_type");
+
+                    b.Property<string>("StoreDocument")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("store_document");
 
                     b.Property<string>("StoreGoodCode")
                         .HasMaxLength(13)
@@ -5191,23 +5437,24 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83FB72E008A");
 
-                    b.HasIndex(new[] { "BankBranchForPayableDocId" }, "voucher_items_bank_branch_for_payable_doc_id_305a9b46");
+                    b.HasIndex(new[] { "BankAccountForBankOperationId" }, "voucher_items_bank_account_for_bank_operation_id_80a91c5d");
 
-                    b.HasIndex(new[] { "BankBranchForReceivableDocId" }, "voucher_items_bank_branch_for_receivable_doc_id_7e2ff8a1");
+                    b.HasIndex(new[] { "BankAccountForPayableDocId" }, "voucher_items_bank_account_for_payable_doc_id_e32d7b72");
 
                     b.HasIndex(new[] { "BankForPayableDocId" }, "voucher_items_bank_for_payable_doc_id_e602a063");
 
                     b.HasIndex(new[] { "BankForReceivableDocId" }, "voucher_items_bank_for_receivable_doc_id_5b97c79f");
 
-                    b.HasIndex(new[] { "BankOperationBankAccountId" }, "voucher_items_bank_operation_bank_account_id_5fe511b5");
+                    b.HasIndex(new[] { "BankOperationBankId" }, "voucher_items_bank_operation_bank_id_4c8c62c1");
+
+                    b.HasIndex(new[] { "BankOperationTypeForPayableDocId" }, "voucher_items_bank_operation_type_for_payable_doc_id_8181f587");
 
                     b.HasIndex(new[] { "BankOperationTypeId" }, "voucher_items_bank_operation_type_id_2ea895a7");
 
                     b.HasIndex(new[] { "BranchId" }, "voucher_items_branch_id_e26c223a");
-
-                    b.HasIndex(new[] { "CashierPeriodId" }, "voucher_items_cashier_period_id_a6ab7714");
 
                     b.HasIndex(new[] { "CompanyId" }, "voucher_items_company_id_6d32d694");
 
@@ -5215,7 +5462,13 @@ namespace Persistence.Migrations
 
                     b.HasIndex(new[] { "CostCenterId" }, "voucher_items_cost_center_id_4afbb6e5");
 
+                    b.HasIndex(new[] { "CrossReferenceId" }, "voucher_items_cross_reference_id_4dd4e885");
+
                     b.HasIndex(new[] { "CurrencyId" }, "voucher_items_currency_id_85cae847");
+
+                    b.HasIndex(new[] { "IdInitial" }, "voucher_items_id_initial_3062338f_uniq")
+                        .IsUnique()
+                        .HasFilter("([id_initial] IS NOT NULL)");
 
                     b.HasIndex(new[] { "LedgerId" }, "voucher_items_ledger_id_439dcc5d");
 
@@ -5240,8 +5493,6 @@ namespace Persistence.Migrations
                     b.HasIndex(new[] { "PeriodId" }, "voucher_items_period_id_3525580e");
 
                     b.HasIndex(new[] { "PersonId" }, "voucher_items_person_id_754c8c99");
-
-                    b.HasIndex(new[] { "PettyCashierPeriodId" }, "voucher_items_petty_cashier_period_id_df390d00");
 
                     b.HasIndex(new[] { "ProjectContractId" }, "voucher_items_project_contract_id_90384ab2");
 
@@ -5289,7 +5540,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_item_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83FE1BDB7DC");
 
                     b.HasIndex(new[] { "VoucherId" }, "voucher_item_attaches_voucher_id_05221da5");
 
@@ -5318,13 +5570,13 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("attaches");
 
-                    b.Property<int?>("BankBranchForPayableDocId")
+                    b.Property<int?>("BankAccountForBankOperationId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_payable_doc_id");
+                        .HasColumnName("bank_account_for_bank_operation_id");
 
-                    b.Property<int?>("BankBranchForReceivableDocId")
+                    b.Property<int?>("BankAccountForPayableDocId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_branch_for_receivable_doc_id");
+                        .HasColumnName("bank_account_for_payable_doc_id");
 
                     b.Property<int?>("BankForPayableDocId")
                         .HasColumnType("int")
@@ -5334,9 +5586,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("bank_for_receivable_doc_id");
 
-                    b.Property<int?>("BankOperationBankAccountId")
+                    b.Property<int?>("BankOperationBankId")
                         .HasColumnType("int")
-                        .HasColumnName("bank_operation_bank_account_id");
+                        .HasColumnName("bank_operation_bank_id");
 
                     b.Property<string>("BankOperationCheckNo")
                         .HasMaxLength(30)
@@ -5359,24 +5611,22 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("branch_id");
 
-                    b.Property<int?>("CashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("cashier_period_id");
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
 
-                    b.Property<int?>("CompanyUnitCode")
-                        .HasColumnType("int")
+                    b.Property<string>("CompanyUnitCode")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)")
                         .HasColumnName("company_unit_code");
 
                     b.Property<int?>("CompanyUnitId")
                         .HasColumnType("int")
                         .HasColumnName("company_unit_id");
 
-                    b.Property<int?>("CostCenterCode")
-                        .HasColumnType("int")
+                    b.Property<string>("CostCenterCode")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)")
                         .HasColumnName("cost_center_code");
 
                     b.Property<int?>("CostCenterId")
@@ -5415,6 +5665,14 @@ namespace Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("description");
+
+                    b.Property<int?>("DetailedAccount1")
+                        .HasColumnType("int")
+                        .HasColumnName("detailed_account_1");
+
+                    b.Property<int?>("DetailedAccount2")
+                        .HasColumnType("int")
+                        .HasColumnName("detailed_account_2");
 
                     b.Property<DateOnly?>("DueDate")
                         .HasColumnType("date")
@@ -5600,6 +5858,11 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("old_sequence");
 
+                    b.Property<string>("PayableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payable_doc_bank_branch");
+
                     b.Property<string>("PayableDocCheckNo")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
@@ -5616,10 +5879,6 @@ namespace Persistence.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("int")
                         .HasColumnName("person_id");
-
-                    b.Property<int?>("PettyCashierPeriodId")
-                        .HasColumnType("int")
-                        .HasColumnName("petty_cashier_period_id");
 
                     b.Property<int?>("ProjectContractId")
                         .HasColumnType("int")
@@ -5646,6 +5905,11 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasColumnName("project_status_report");
 
+                    b.Property<string>("ReceivableDocBankBranch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("receivable_doc_bank_branch");
+
                     b.Property<string>("ReceivableDocCheckNo")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
@@ -5662,6 +5926,10 @@ namespace Persistence.Migrations
                     b.Property<int>("Sequence")
                         .HasColumnType("int")
                         .HasColumnName("sequence");
+
+                    b.Property<int>("SlaveAccountSlaveCode")
+                        .HasColumnType("int")
+                        .HasColumnName("slave_account_slave_code");
 
                     b.Property<int>("SlaveCode")
                         .HasColumnType("int")
@@ -5713,23 +5981,22 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_log_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83F40BE9493");
 
-                    b.HasIndex(new[] { "BankBranchForPayableDocId" }, "voucher_item_logs_bank_branch_for_payable_doc_id_2db629ab");
+                    b.HasIndex(new[] { "BankAccountForBankOperationId" }, "voucher_item_logs_bank_account_for_bank_operation_id_85e1fa5c");
 
-                    b.HasIndex(new[] { "BankBranchForReceivableDocId" }, "voucher_item_logs_bank_branch_for_receivable_doc_id_64132689");
+                    b.HasIndex(new[] { "BankAccountForPayableDocId" }, "voucher_item_logs_bank_account_for_payable_doc_id_02b845e2");
 
                     b.HasIndex(new[] { "BankForPayableDocId" }, "voucher_item_logs_bank_for_payable_doc_id_61e85f05");
 
                     b.HasIndex(new[] { "BankForReceivableDocId" }, "voucher_item_logs_bank_for_receivable_doc_id_bf6c6f31");
 
-                    b.HasIndex(new[] { "BankOperationBankAccountId" }, "voucher_item_logs_bank_operation_bank_account_id_44a79bf8");
+                    b.HasIndex(new[] { "BankOperationBankId" }, "voucher_item_logs_bank_operation_bank_id_b643fc5c");
 
                     b.HasIndex(new[] { "BankOperationTypeId" }, "voucher_item_logs_bank_operation_type_id_4dcc6132");
 
                     b.HasIndex(new[] { "BranchId" }, "voucher_item_logs_branch_id_2c9e0bff");
-
-                    b.HasIndex(new[] { "CashierPeriodId" }, "voucher_item_logs_cashier_period_id_c64d915f");
 
                     b.HasIndex(new[] { "CompanyId" }, "voucher_item_logs_company_id_b3a353fc");
 
@@ -5763,8 +6030,6 @@ namespace Persistence.Migrations
 
                     b.HasIndex(new[] { "PersonId" }, "voucher_item_logs_person_id_d42c3aaa");
 
-                    b.HasIndex(new[] { "PettyCashierPeriodId" }, "voucher_item_logs_petty_cashier_period_id_6ca1cb8e");
-
                     b.HasIndex(new[] { "ProjectContractId" }, "voucher_item_logs_project_contract_id_e8fd3c8e");
 
                     b.HasIndex(new[] { "ProjectContractTypeId" }, "voucher_item_logs_project_contract_type_id_0a5b7cbb");
@@ -5790,6 +6055,37 @@ namespace Persistence.Migrations
                     b.ToTable("voucher_item_logs", "accounting");
                 });
 
+            modelBuilder.Entity("Accounting.Domain.Entities.VoucherItemStandardDescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("description");
+
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83F05F75178");
+
+                    b.HasIndex(new[] { "CompanyId" }, "voucher_item_standard_descriptions_company_id_c35a06a8");
+
+                    b.HasIndex(new[] { "CompanyId", "Description" }, "voucher_item_standard_descriptions_company_id_description_40767b2a_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [description] IS NOT NULL)");
+
+                    b.ToTable("voucher_item_standard_descriptions", "accounting");
+                });
+
             modelBuilder.Entity("Accounting.Domain.Entities.VoucherLog", b =>
                 {
                     b.Property<int>("Id")
@@ -5798,6 +6094,11 @@ namespace Persistence.Migrations
                         .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Attaches")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("attaches");
 
                     b.Property<int?>("BranchId")
                         .HasColumnType("int")
@@ -5898,7 +6199,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("voucher_type_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83FFDA3BE8A");
 
                     b.HasIndex(new[] { "BranchId" }, "voucher_logs_branch_id_099c72df");
 
@@ -5952,9 +6254,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name_fa");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__voucher___3213E83F661CEB9B");
 
-                    b.HasIndex(new[] { "NameFa" }, "UQ__voucher___2E0A7AA62E206246")
+                    b.HasIndex(new[] { "NameFa" }, "UQ__voucher___2E0A7AA612570483")
                         .IsUnique();
 
                     b.ToTable("voucher_types", "accounting");
@@ -5983,7 +6286,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__areas__3213E83F4E6D45E1");
 
                     b.HasIndex(new[] { "CreatorId" }, "areas_creator_id_9f75521a");
 
@@ -6005,12 +6309,85 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__banks__3213E83F1399B003");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__banks__72E12F1BD4395708")
+                    b.HasIndex(new[] { "Name" }, "UQ__banks__72E12F1BAEFE9E5E")
                         .IsUnique();
 
                     b.ToTable("banks", "general");
+                });
+
+            modelBuilder.Entity("General.Domain.Entities.BankAccountType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("HasChequeBook")
+                        .HasColumnType("bit")
+                        .HasColumnName("has_cheque_book");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__bank_acc__3213E83F1A2A955F");
+
+                    b.ToTable("bank_account_types", "general");
+                });
+
+            modelBuilder.Entity("General.Domain.Entities.BankOperationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__bank_ope__3213E83FB66226B4");
+
+                    b.HasIndex(new[] { "Code" }, "UQ__bank_ope__357D4CF98B86A8C8")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "Name" }, "UQ__bank_ope__72E12F1BB777BDE5")
+                        .IsUnique();
+
+                    b.ToTable("bank_operation_types", "general");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.BankStatementPattern", b =>
@@ -6066,9 +6443,10 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__bank_sta__3213E83F9F2ED696");
 
-                    b.HasIndex(new[] { "BankId" }, "UQ__bank_sta__4076F702CA9D216F")
+                    b.HasIndex(new[] { "BankId" }, "UQ__bank_sta__4076F70269DE7D7F")
                         .IsUnique();
 
                     b.ToTable("bank_statement_patterns", "general");
@@ -6105,10 +6483,19 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("province_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__cities__3213E83F57F6C537");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__cities__357D4CF991D1106C")
+                    b.HasIndex(new[] { "Code" }, "UQ__cities__357D4CF98A5D25D9")
                         .IsUnique();
+
+                    b.HasIndex(new[] { "Code2" }, "cities_code2_fc22c31a_uniq")
+                        .IsUnique()
+                        .HasFilter("([code2] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "Code3" }, "cities_code3_cfe7131c_uniq")
+                        .IsUnique()
+                        .HasFilter("([code3] IS NOT NULL)");
 
                     b.HasIndex(new[] { "ProvinceId" }, "cities_province_id_799ae9a0");
 
@@ -6143,7 +6530,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__companie__3213E83FBE2524AA");
 
                     b.HasIndex(new[] { "DomainId" }, "companies_domain_id_51b444a3");
 
@@ -6175,9 +6563,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__company___3213E83F107ADA07");
 
                     b.HasIndex(new[] { "AdminId" }, "company_admins_admin_id_7fe4b0ca");
+
+                    b.HasIndex(new[] { "CompanyId", "AdminId" }, "company_admins_company_id_admin_id_53861a81_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [admin_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "CompanyId" }, "company_admins_company_id_dc4e1bcb");
 
@@ -6203,9 +6596,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("module_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__company___3213E83F5A305B17");
 
                     b.HasIndex(new[] { "CompanyId" }, "company_modules_company_id_98c248b4");
+
+                    b.HasIndex(new[] { "CompanyId", "ModuleId" }, "company_modules_company_id_module_id_2dc7a72c_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [module_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "ModuleId" }, "company_modules_module_id_85bfd47f");
 
@@ -6239,15 +6637,20 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("tax_code");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__countrie__3213E83FA8F8A627");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__countrie__357D4CF98C0F73DF")
+                    b.HasIndex(new[] { "Code" }, "UQ__countrie__357D4CF992BD5944")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "Name" }, "UQ__countrie__72E12F1B7CCF347E")
+                    b.HasIndex(new[] { "Name" }, "UQ__countrie__72E12F1B07ACC871")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CurrencyId" }, "countries_currency_id_3d87434c");
+
+                    b.HasIndex(new[] { "TaxCode" }, "countries_tax_code_99e2105c_uniq")
+                        .IsUnique()
+                        .HasFilter("([tax_code] IS NOT NULL)");
 
                     b.ToTable("countries", "general");
                 });
@@ -6270,7 +6673,6 @@ namespace Persistence.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Iso")
-                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("nvarchar(3)")
                         .HasColumnName("iso");
@@ -6290,9 +6692,10 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__currenci__3213E83F9B15A5E8");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__currenci__357D4CF907683F55")
+                    b.HasIndex(new[] { "Code" }, "UQ__currenci__357D4CF9D837DF27")
                         .IsUnique();
 
                     b.ToTable("currencies", "general");
@@ -6307,11 +6710,21 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AllowedIps")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("allowed_ips");
+
                     b.Property<string>("ApiKey")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
                         .HasColumnName("api_key");
+
+                    b.Property<string>("ArchitectureType")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("nvarchar(35)")
+                        .HasColumnName("architecture_type");
 
                     b.Property<string>("AuthMethod")
                         .IsRequired()
@@ -6324,9 +6737,17 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(12)")
                         .HasColumnName("auth_send_type");
 
+                    b.Property<TimeOnly?>("BlockDuration")
+                        .HasColumnType("time")
+                        .HasColumnName("block_duration");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("created_at");
+
+                    b.Property<int>("DefaultCurrencyId")
+                        .HasColumnType("int")
+                        .HasColumnName("default_currency_id");
 
                     b.Property<string>("Holding")
                         .HasMaxLength(100)
@@ -6339,9 +6760,17 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("hostname");
 
+                    b.Property<bool>("IsUniquePerson")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_unique_person");
+
                     b.Property<int>("LanguageId")
                         .HasColumnType("int")
                         .HasColumnName("language_id");
+
+                    b.Property<int?>("MaxFailedLoginAttempts")
+                        .HasColumnType("int")
+                        .HasColumnName("max_failed_login_attempts");
 
                     b.Property<string>("PasswordLevel")
                         .IsRequired()
@@ -6349,20 +6778,27 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(7)")
                         .HasColumnName("password_level");
 
-                    b.Property<string>("TemplateName")
-                        .IsRequired()
+                    b.Property<string>("SenderNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("sender_number");
+
+                    b.Property<string>("Template")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("template_name");
+                        .HasColumnName("template");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__domains__3213E83F7880908D");
 
-                    b.HasIndex(new[] { "Hostname" }, "UQ__domains__DA92E433B526F86E")
+                    b.HasIndex(new[] { "Hostname" }, "UQ__domains__DA92E43327641AAF")
                         .IsUnique();
+
+                    b.HasIndex(new[] { "DefaultCurrencyId" }, "domains_default_currency_id_06c302a4");
 
                     b.HasIndex(new[] { "LanguageId" }, "domains_language_id_a7140b25");
 
@@ -6398,9 +6834,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("tax_educational_degree");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__educatio__3213E83F5CD5C6F4");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__educatio__72E12F1B3436D9CA")
+                    b.HasIndex(new[] { "Name" }, "UQ__educatio__72E12F1BED95894B")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "educational_degrees_creator_id_693f4fac");
@@ -6431,7 +6868,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__employme__3213E83FDDA602DA");
 
                     b.HasIndex(new[] { "CreatorId" }, "employment_contract_Descriptions_creator_id_2fcb5dd9");
 
@@ -6461,9 +6899,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__employme__3213E83F56B8CDCE");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__employme__72E12F1B6B3538D6")
+                    b.HasIndex(new[] { "Name" }, "UQ__employme__72E12F1BF5BAE67B")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "employment_contract_titles_creator_id_f0cd95e9");
@@ -6542,6 +6981,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name_fa");
 
+                    b.Property<short?>("Ordering")
+                        .HasColumnType("smallint")
+                        .HasColumnName("ordering");
+
                     b.Property<bool>("Permissible")
                         .HasColumnType("bit")
                         .HasColumnName("permissible");
@@ -6554,13 +6997,31 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("readable");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__entity_t__3213E83F1AD03745");
 
                     b.HasIndex(new[] { "ContentTypeId" }, "entity_types_content_type_id_b7d4130b");
 
                     b.HasIndex(new[] { "ModuleId" }, "entity_types_module_id_55d1da29");
 
-                    b.ToTable("entity_types", "general");
+                    b.HasIndex(new[] { "ModuleId", "Key" }, "entity_types_module_id_key_8a42bbcf_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [key] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "ModuleId", "NameEn" }, "entity_types_module_id_name_en_2858063b_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [name_en] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "ModuleId", "NameFa" }, "entity_types_module_id_name_fa_060eefd9_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [name_fa] IS NOT NULL)");
+
+                    b.ToTable("entity_types", "general", t =>
+                        {
+                            t.HasTrigger("trg_EntityType_Protect_Delete");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("General.Domain.Entities.EntityTypeCommand", b =>
@@ -6594,9 +7055,22 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name_fa");
 
-                    b.HasKey("Id");
+                    b.Property<short?>("Ordering")
+                        .HasColumnType("smallint")
+                        .HasColumnName("ordering");
+
+                    b.Property<bool>("Permissible")
+                        .HasColumnType("bit")
+                        .HasColumnName("permissible");
+
+                    b.HasKey("Id")
+                        .HasName("PK__entity_t__3213E83FCFCBD04F");
 
                     b.HasIndex(new[] { "EntityTypeId" }, "entity_type_commands_entity_type_id_c94a0ef5");
+
+                    b.HasIndex(new[] { "EntityTypeId", "Key" }, "entity_type_commands_entity_type_id_key_0d06ffe6_uniq")
+                        .IsUnique()
+                        .HasFilter("([entity_type_id] IS NOT NULL AND [key] IS NOT NULL)");
 
                     b.ToTable("entity_type_commands", "general");
                 });
@@ -6648,6 +7122,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name_fa");
 
+                    b.Property<short?>("Ordering")
+                        .HasColumnType("smallint")
+                        .HasColumnName("ordering");
+
                     b.Property<bool>("Printable")
                         .HasColumnType("bit")
                         .HasColumnName("printable");
@@ -6656,9 +7134,14 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("readable");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__entity_t__3213E83FF883D863");
 
                     b.HasIndex(new[] { "EntityTypeId" }, "entity_type_constraints_entity_type_id_a7b4c730");
+
+                    b.HasIndex(new[] { "EntityTypeId", "FieldName" }, "entity_type_constraints_entity_type_id_field_name_b4ec14c6_uniq")
+                        .IsUnique()
+                        .HasFilter("([entity_type_id] IS NOT NULL AND [field_name] IS NOT NULL)");
 
                     b.ToTable("entity_type_constraints", "general");
                 });
@@ -6716,7 +7199,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("required_entity_type_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__entity_t__3213E83F6CD8EDE8");
 
                     b.HasIndex(new[] { "EntityTypeId" }, "entity_type_dependencies_entity_type_id_e631567c");
 
@@ -6779,96 +7263,12 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__error_lo__3213E83F5550F3FA");
 
                     b.HasIndex(new[] { "UserId" }, "error_logs_user_id_ac744206");
 
                     b.ToTable("error_logs", "general");
-                });
-
-            modelBuilder.Entity("General.Domain.Entities.File", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("File1")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("file");
-
-                    b.Property<long>("Filesize")
-                        .HasColumnType("bigint")
-                        .HasColumnName("filesize");
-
-                    b.Property<string>("Guid")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)")
-                        .HasColumnName("guid");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Sha1")
-                        .IsRequired()
-                        .HasMaxLength(42)
-                        .HasColumnType("nvarchar(42)")
-                        .HasColumnName("sha1");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Sha1" }, "UQ__files__2FC437B2639CC3A2")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "Guid" }, "UQ__files__497F6CB5C8798DFD")
-                        .IsUnique();
-
-                    b.ToTable("files", "general");
-                });
-
-            modelBuilder.Entity("General.Domain.Entities.FileEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
-
-                    b.Property<int>("EntityTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("entity_type_id");
-
-                    b.Property<int>("FileId")
-                        .HasColumnType("int")
-                        .HasColumnName("file_id");
-
-                    b.Property<long?>("ObjectId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("object_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "EntityTypeId" }, "file_entities_entity_type_id_addc8bf3");
-
-                    b.HasIndex(new[] { "FileId" }, "file_entities_file_id_1c97e002");
-
-                    b.ToTable("file_entities", "general");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.ForeignLanguage", b =>
@@ -6894,9 +7294,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__foreign___3213E83F15916AB6");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__foreign___72E12F1B6F35B462")
+                    b.HasIndex(new[] { "Name" }, "UQ__foreign___72E12F1BBAF9E6BE")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "foreign_languages_creator_id_f2c0414f");
@@ -6927,9 +7328,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__housing___3213E83FD3EDA6F5");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__housing___72E12F1BF71088F1")
+                    b.HasIndex(new[] { "Name" }, "UQ__housing___72E12F1B5272DF3E")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "housing_statuses_creator_id_b7300b34");
@@ -6966,9 +7368,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__jobs__3213E83F4FDD96B8");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__jobs__72E12F1BF4AE1530")
+                    b.HasIndex(new[] { "Name" }, "UQ__jobs__72E12F1BEA327090")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "jobs_creator_id_56b9cd05");
@@ -6999,9 +7402,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__job_posi__3213E83FC70FA7E0");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__job_posi__72E12F1B18289596")
+                    b.HasIndex(new[] { "Name" }, "UQ__job_posi__72E12F1B0D466C43")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "job_positions_creator_id_361c185c");
@@ -7032,9 +7436,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__job_rank__3213E83F299081EA");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__job_rank__72E12F1B78A994B0")
+                    b.HasIndex(new[] { "Name" }, "UQ__job_rank__72E12F1B165A18B3")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "job_ranks_creator_id_06b134a2");
@@ -7069,12 +7474,13 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__language__3213E83F0C66BE2A");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__language__357D4CF9757EF7F8")
+                    b.HasIndex(new[] { "Code" }, "UQ__language__357D4CF92530AEF6")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "Name" }, "UQ__language__72E12F1BD0EA1B2E")
+                    b.HasIndex(new[] { "Name" }, "UQ__language__72E12F1B290D8129")
                         .IsUnique();
 
                     b.ToTable("languages", "general");
@@ -7131,17 +7537,24 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("object_repr");
 
+                    b.Property<int?>("PeriodId")
+                        .HasColumnType("int")
+                        .HasColumnName("period_id");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__logs__3213E83FB734E2C5");
 
                     b.HasIndex(new[] { "CompanyId" }, "logs_company_id_ed2c29a1");
 
                     b.HasIndex(new[] { "EntityTypeId" }, "logs_entity_type_id_87a8fbba");
 
                     b.HasIndex(new[] { "ModuleId" }, "logs_module_id_c6447665");
+
+                    b.HasIndex(new[] { "PeriodId" }, "logs_period_id_ea07e698");
 
                     b.HasIndex(new[] { "UserId" }, "logs_user_id_237f5f83");
 
@@ -7176,9 +7589,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("tax_code");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__measurem__3213E83F9EFC8026");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__measurem__72E12F1BFC5E9180")
+                    b.HasIndex(new[] { "Name" }, "UQ__measurem__72E12F1BC848976E")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "measurement_units_creator_id_adca9822");
@@ -7251,13 +7665,22 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasColumnName("standard_page");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__menu_ite__3213E83F467DEF67");
 
                     b.HasIndex(new[] { "EntityTypeCommandId" }, "menu_items_entity_type_command_id_4319057f");
 
                     b.HasIndex(new[] { "EntityTypeId" }, "menu_items_entity_type_id_412db7e8");
 
                     b.HasIndex(new[] { "ModuleId" }, "menu_items_module_id_56dd60a4");
+
+                    b.HasIndex(new[] { "ModuleId", "NameEn", "ParentId" }, "menu_items_module_id_name_en_parent_id_01a9ca6d_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [name_en] IS NOT NULL AND [parent_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "ModuleId", "NameFa", "ParentId" }, "menu_items_module_id_name_fa_parent_id_3c2380ac_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [name_fa] IS NOT NULL AND [parent_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "ParentId" }, "menu_items_parent_id_7032fad2");
 
@@ -7287,9 +7710,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__military__3213E83F50066676");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__military__72E12F1BB332E6F2")
+                    b.HasIndex(new[] { "Name" }, "UQ__military__72E12F1B10BA3724")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "military_service_statuses_creator_id_2264fea4");
@@ -7354,9 +7778,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("parametric_custom_formula");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__mission___3213E83F055055A9");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__mission___72E12F1BF6C8C347")
+                    b.HasIndex(new[] { "Name" }, "UQ__mission___72E12F1B61A08770")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "mission_types_creator_id_17915c73");
@@ -7397,12 +7822,13 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(40)")
                         .HasColumnName("prefix");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__modules__3213E83F0BA52FF9");
 
-                    b.HasIndex(new[] { "NameEn" }, "UQ__modules__2E0A72B0D7D1DAD7")
+                    b.HasIndex(new[] { "NameEn" }, "UQ__modules__2E0A72B054632985")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "NameFa" }, "UQ__modules__2E0A7AA66BFF07F4")
+                    b.HasIndex(new[] { "NameFa" }, "UQ__modules__2E0A7AA60B667EF1")
                         .IsUnique();
 
                     b.ToTable("modules", "general");
@@ -7425,9 +7851,14 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("person_group_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__module_p__3213E83F28F3FE6D");
 
                     b.HasIndex(new[] { "ModuleId" }, "module_person_groups_module_id_64506255");
+
+                    b.HasIndex(new[] { "ModuleId", "PersonGroupId" }, "module_person_groups_module_id_person_group_id_0362b292_uniq")
+                        .IsUnique()
+                        .HasFilter("([module_id] IS NOT NULL AND [person_group_id] IS NOT NULL)");
 
                     b.HasIndex(new[] { "PersonGroupId" }, "module_person_groups_person_group_id_1b684782");
 
@@ -7482,7 +7913,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__notifica__3213E83FF9C80CEB");
 
                     b.HasIndex(new[] { "ModuleId" }, "notifications_module_id_31f93f98");
 
@@ -7685,18 +8117,33 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__persons__3213E83FA537E099");
 
-                    b.HasIndex(new[] { "Code" }, "UQ__persons__357D4CF9AE8920EA")
+                    b.HasIndex(new[] { "Code" }, "UQ__persons__357D4CF9A4AE2BBE")
                         .IsUnique();
 
                     b.HasIndex(new[] { "BirthCityId" }, "persons_birth_city_id_9fea3d98");
+
+                    b.HasIndex(new[] { "CitizenCode" }, "persons_citizen_code_430dc102_uniq")
+                        .IsUnique()
+                        .HasFilter("([citizen_code] IS NOT NULL)");
 
                     b.HasIndex(new[] { "CitizenNationalityId" }, "persons_citizen_nationality_id_ecc47f36");
 
                     b.HasIndex(new[] { "HousingStatusId" }, "persons_housing_status_id_c8e37e67");
 
+                    b.HasIndex(new[] { "LegalRegisterNo" }, "persons_legal_register_no_22c0875c_uniq")
+                        .IsUnique()
+                        .HasFilter("([legal_register_no] IS NOT NULL)");
+
                     b.HasIndex(new[] { "MilitaryServiceStatusId" }, "persons_military_service_status_id_31e57348");
+
+                    b.HasIndex(new[] { "NaturalNationalCode" }, "persons_natural_national_code_49221b45");
+
+                    b.HasIndex(new[] { "PassportNumber" }, "persons_passport_number_dff3f3fd_uniq")
+                        .IsUnique()
+                        .HasFilter("([passport_number] IS NOT NULL)");
 
                     b.HasIndex(new[] { "ReligionId" }, "persons_religion_id_bf81e08d");
 
@@ -7758,11 +8205,16 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_a__3213E83FE16C68D2");
 
                     b.HasIndex(new[] { "CityId" }, "person_addresses_city_id_bda2a750");
 
                     b.HasIndex(new[] { "CountryId" }, "person_addresses_country_id_1fb41b6e");
+
+                    b.HasIndex(new[] { "PersonId", "CityId", "Address" }, "person_addresses_person_id_city_id_address_74e8c5b2_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [city_id] IS NOT NULL AND [address] IS NOT NULL)");
 
                     b.HasIndex(new[] { "PersonId" }, "person_addresses_person_id_d67d7fc6");
 
@@ -7784,6 +8236,16 @@ namespace Persistence.Migrations
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)")
                         .HasColumnName("account_number");
+
+                    b.Property<int?>("BankBranchCode")
+                        .HasColumnType("int")
+                        .HasColumnName("bank_branch_code");
+
+                    b.Property<string>("BankBranchName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("bank_branch_name");
 
                     b.Property<int>("BankId")
                         .HasColumnType("int")
@@ -7820,9 +8282,22 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_b__3213E83FBCD68BC6");
 
                     b.HasIndex(new[] { "BankId" }, "person_bank_accounts_bank_id_f4412c39");
+
+                    b.HasIndex(new[] { "PersonId", "BankId", "AccountNumber" }, "person_bank_accounts_person_id_bank_id_account_number_b2edcc75_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [account_number] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "PersonId", "BankId", "CardNumber" }, "person_bank_accounts_person_id_bank_id_card_number_721eadc4_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [card_number] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "PersonId", "BankId", "Iban" }, "person_bank_accounts_person_id_bank_id_iban_011ebeeb_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [iban] IS NOT NULL)");
 
                     b.HasIndex(new[] { "PersonId" }, "person_bank_accounts_person_id_cea19acc");
 
@@ -7880,7 +8355,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("study_field");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_e__3213E83F256860BE");
 
                     b.HasIndex(new[] { "CreatorId" }, "person_educational_degrees_creator_id_29916c83");
 
@@ -7927,9 +8403,14 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_e__3213E83F3B78C1DD");
 
                     b.HasIndex(new[] { "PersonId" }, "person_emails_person_id_7ab1a818");
+
+                    b.HasIndex(new[] { "PersonId", "Email" }, "person_emails_person_id_email_09d42bf7_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [email] IS NOT NULL)");
 
                     b.ToTable("person_emails", "general");
                 });
@@ -7975,9 +8456,14 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_f__3213E83F6572A638");
 
                     b.HasIndex(new[] { "PersonId" }, "person_faxes_person_id_aeabbb62");
+
+                    b.HasIndex(new[] { "PersonId", "Code", "Fax" }, "person_faxes_person_id_code_fax_2b464685_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [code] IS NOT NULL AND [fax] IS NOT NULL)");
 
                     b.ToTable("person_faxes", "general");
                 });
@@ -8005,11 +8491,18 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(23)
+                        .HasColumnType("nvarchar(23)")
+                        .HasColumnName("type");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_g__3213E83FD9150C37");
 
                     b.ToTable("person_groups", "general");
                 });
@@ -8050,9 +8543,14 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_m__3213E83F324FA343");
 
                     b.HasIndex(new[] { "PersonId" }, "person_mobiles_person_id_ab811f2d");
+
+                    b.HasIndex(new[] { "PersonId", "Mobile" }, "person_mobiles_person_id_mobile_e26483eb_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [mobile] IS NOT NULL)");
 
                     b.ToTable("person_mobiles", "general");
                 });
@@ -8098,9 +8596,14 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_p__3213E83FE7054445");
 
                     b.HasIndex(new[] { "PersonId" }, "person_phones_person_id_ad2cd17d");
+
+                    b.HasIndex(new[] { "PersonId", "Code", "Phone" }, "person_phones_person_id_code_phone_29edc351_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [code] IS NOT NULL AND [phone] IS NOT NULL)");
 
                     b.ToTable("person_phones", "general");
                 });
@@ -8175,7 +8678,8 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("under_guardianship");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_r__3213E83F488EC393");
 
                     b.HasIndex(new[] { "BirthCityId" }, "person_relatives_birth_city_id_6e4fe77e");
 
@@ -8222,9 +8726,14 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("website");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__person_w__3213E83F3EE363BA");
 
                     b.HasIndex(new[] { "PersonId" }, "person_websites_person_id_2bf2e8a6");
+
+                    b.HasIndex(new[] { "PersonId", "Website" }, "person_websites_person_id_website_c64285de_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [website] IS NOT NULL)");
 
                     b.ToTable("person_websites", "general");
                 });
@@ -8252,9 +8761,18 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__province__3213E83F6DDFBA22");
 
                     b.HasIndex(new[] { "CountryId" }, "provinces_country_id_8ee0b7b3");
+
+                    b.HasIndex(new[] { "CountryId", "Code" }, "provinces_country_id_code_8b417d3f_uniq")
+                        .IsUnique()
+                        .HasFilter("([country_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CountryId", "Name" }, "provinces_country_id_name_9930a650_uniq")
+                        .IsUnique()
+                        .HasFilter("([country_id] IS NOT NULL AND [name] IS NOT NULL)");
 
                     b.ToTable("provinces", "general");
                 });
@@ -8282,9 +8800,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__religion__3213E83F14A489F8");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__religion__72E12F1B16AF9102")
+                    b.HasIndex(new[] { "Name" }, "UQ__religion__72E12F1B76222047")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "religions_creator_id_65bb4aaf");
@@ -8302,8 +8821,8 @@ namespace Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Command")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("command");
 
                     b.Property<int?>("CompanyId")
@@ -8336,7 +8855,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__select_l__3213E83F9F91C3A2");
 
                     b.HasIndex(new[] { "CompanyId" }, "select_logs_company_id_36cbe9f3");
 
@@ -8358,9 +8878,22 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<TimeOnly?>("AccessEndTime")
+                        .HasColumnType("time")
+                        .HasColumnName("access_end_time");
+
+                    b.Property<TimeOnly?>("AccessStartTime")
+                        .HasColumnType("time")
+                        .HasColumnName("access_start_time");
+
                     b.Property<string>("AccessToken")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("access_token");
+
+                    b.Property<string>("AllowedIps")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("allowed_ips");
 
                     b.Property<string>("AuthSendType")
                         .HasMaxLength(12)
@@ -8376,6 +8909,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("ExpireDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expire_date");
 
                     b.Property<string>("FontFamily")
                         .IsRequired()
@@ -8429,6 +8966,11 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("refresh_token");
 
+                    b.Property<string>("Signature")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("signature");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
@@ -8444,15 +8986,20 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasColumnName("username_encrypted");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__users__3213E83F46F42FAE");
 
-                    b.HasIndex(new[] { "PersonId" }, "UQ__users__543848DE030F1F1D")
+                    b.HasIndex(new[] { "PersonId" }, "UQ__users__543848DEDC3064CE")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "Username" }, "UQ__users__F3DBC57279382736")
+                    b.HasIndex(new[] { "Username" }, "UQ__users__F3DBC572C97AEEDB")
                         .IsUnique();
 
                     b.HasIndex(new[] { "LanguageId" }, "users_language_id_9c707b57");
+
+                    b.HasIndex(new[] { "UsernameEncrypted" }, "users_username_encrypted_508d3951_uniq")
+                        .IsUnique()
+                        .HasFilter("([username_encrypted] IS NOT NULL)");
 
                     b.ToTable("users", "general");
                 });
@@ -8484,7 +9031,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__user_con__3213E83F56E35490");
 
                     b.HasIndex(new[] { "ModuleId" }, "user_configs_module_id_015d8e4f");
 
@@ -8520,9 +9068,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("work_place_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__work_dep__3213E83F31AD08A1");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__work_dep__72E12F1B9A5F7AEA")
+                    b.HasIndex(new[] { "Name" }, "UQ__work_dep__72E12F1B8BC40DD8")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "work_departments_creator_id_7fdcedc2");
@@ -8558,9 +9107,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("work_department_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__work_ope__3213E83F77B06DBE");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__work_ope__737584F65F7907DF")
+                    b.HasIndex(new[] { "Name" }, "UQ__work_ope__737584F614BC657A")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "work_operations_creator_id_d10b2154");
@@ -8593,9 +9143,10 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__workplac__3213E83FA78C10C5");
 
-                    b.HasIndex(new[] { "Name" }, "UQ__workplac__72E12F1B6F317AC7")
+                    b.HasIndex(new[] { "Name" }, "UQ__workplac__72E12F1B6E1EA09C")
                         .IsUnique();
 
                     b.HasIndex(new[] { "CreatorId" }, "workplaces_creator_id_0cc80a6d");
@@ -8603,7 +9154,7 @@ namespace Persistence.Migrations
                     b.ToTable("workplaces", "general");
                 });
 
-            modelBuilder.Entity("Shared.Domain.Entities.VehicleType", b =>
+            modelBuilder.Entity("Shared.Domain.Entities.BankAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -8611,6 +9162,529 @@ namespace Persistence.Migrations
                         .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)")
+                        .HasColumnName("account_number");
+
+                    b.Property<DateOnly?>("AccountOpeningDate")
+                        .HasColumnType("date")
+                        .HasColumnName("account_opening_date");
+
+                    b.Property<string>("AccountOwner")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("account_owner");
+
+                    b.Property<string>("AccountType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("account_type");
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("BankBranchId")
+                        .HasColumnType("int")
+                        .HasColumnName("bank_branch_id");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int")
+                        .HasColumnName("bank_id");
+
+                    b.Property<string>("CardNumber")
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)")
+                        .HasColumnName("card_number");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CurrencyId")
+                        .HasColumnType("int")
+                        .HasColumnName("currency_id");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Iban")
+                        .HasMaxLength(26)
+                        .HasColumnType("nvarchar(26)")
+                        .HasColumnName("iban");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("NationalCode")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)")
+                        .HasColumnName("national_code");
+
+                    b.Property<DateOnly?>("SignatureExpiryDate")
+                        .HasColumnType("date")
+                        .HasColumnName("signature_expiry_date");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("type_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UserSignatory1Id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_signatory_1_id");
+
+                    b.Property<int?>("UserSignatory2Id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_signatory_2_id");
+
+                    b.Property<int?>("UserSignatory3Id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_signatory_3_id");
+
+                    b.Property<int?>("UserSignatory4Id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_signatory_4_id");
+
+                    b.Property<int?>("UserSignatory5Id")
+                        .HasColumnType("int")
+                        .HasColumnName("user_signatory_5_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__bank_acc__3213E83FEDB13419");
+
+                    b.HasIndex(new[] { "BankBranchId" }, "bank_accounts_bank_branch_id_f4462cb3");
+
+                    b.HasIndex(new[] { "BankId" }, "bank_accounts_bank_id_76519d0e");
+
+                    b.HasIndex(new[] { "CompanyId" }, "bank_accounts_company_id_a0fdfe1f");
+
+                    b.HasIndex(new[] { "CompanyId", "BankId", "AccountNumber" }, "bank_accounts_company_id_bank_id_account_number_dde4bd1e_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [account_number] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "BankId", "CardNumber" }, "bank_accounts_company_id_bank_id_card_number_fbf237d1_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [card_number] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "BankId", "Iban" }, "bank_accounts_company_id_bank_id_iban_077a9abd_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [iban] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CurrencyId" }, "bank_accounts_currency_id_932d5611");
+
+                    b.HasIndex(new[] { "TypeId" }, "bank_accounts_type_id_50bc1431");
+
+                    b.HasIndex(new[] { "UserSignatory1Id" }, "bank_accounts_user_signatory_1_id_0cad9553");
+
+                    b.HasIndex(new[] { "UserSignatory2Id" }, "bank_accounts_user_signatory_2_id_a7593d15");
+
+                    b.HasIndex(new[] { "UserSignatory3Id" }, "bank_accounts_user_signatory_3_id_d48c50a6");
+
+                    b.HasIndex(new[] { "UserSignatory4Id" }, "bank_accounts_user_signatory_4_id_da60748f");
+
+                    b.HasIndex(new[] { "UserSignatory5Id" }, "bank_accounts_user_signatory_5_id_0c19f838");
+
+                    b.ToTable("bank_accounts", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.BankBranch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("address");
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int")
+                        .HasColumnName("bank_id");
+
+                    b.Property<int?>("BranchNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("branch_number");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("phone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__bank_bra__3213E83F897FA9C3");
+
+                    b.HasIndex(new[] { "BankId" }, "bank_branches_bank_id_5eff2bac");
+
+                    b.HasIndex(new[] { "CompanyId" }, "bank_branches_company_id_4a52d712");
+
+                    b.HasIndex(new[] { "CompanyId", "BankId", "BranchNumber" }, "bank_branches_company_id_bank_id_branch_number_f4f0441e_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [branch_number] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "BankId", "Name" }, "bank_branches_company_id_bank_id_name_e96f3efa_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [bank_id] IS NOT NULL AND [name] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "bank_branches_company_id_code_edffeec5_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.ToTable("bank_branches", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Branch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_static");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Name2")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__branches__3213E83F5CEAB5D1");
+
+                    b.HasIndex(new[] { "CompanyId" }, "branches_company_id_c17fd5ca");
+
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "branches_company_id_code_2a76aa26_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Name" }, "branches_company_id_name_0b77f2d0_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+
+                    b.ToTable("branches", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Cashier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int")
+                        .HasColumnName("person_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__cashiers__3213E83FDA6EC626");
+
+                    b.HasIndex(new[] { "CompanyId" }, "cashiers_company_id_e24f4c24");
+
+                    b.HasIndex(new[] { "CompanyId", "PersonId" }, "cashiers_company_id_person_id_f0a0aa02_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [person_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CreatorId" }, "cashiers_creator_id_cd8bd2ff");
+
+                    b.HasIndex(new[] { "PersonId" }, "cashiers_person_id_2b0579d0");
+
+                    b.ToTable("cashiers", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CompanySetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("CompanyProductLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("company_product_level");
+
+                    b.Property<int>("CompanyUnitLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("company_unit_level");
+
+                    b.Property<int>("CostCenterLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("cost_center_level");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__company___3213E83F58F5955D");
+
+                    b.HasIndex(new[] { "CompanyId" }, "UQ__company___3E2672348C06AA9B")
+                        .IsUnique();
+
+                    b.ToTable("company_settings", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CompanyUnit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("LastLevel")
+                        .HasColumnType("bit")
+                        .HasColumnName("last_level");
+
+                    b.Property<short>("Level")
+                        .HasColumnType("smallint")
+                        .HasColumnName("level");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__company___3213E83F1DB44160");
+
+                    b.HasIndex(new[] { "CompanyId" }, "company_units_company_id_0a433407");
+
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "company_units_company_id_code_af9699c4_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Name", "ParentId" }, "company_units_company_id_name_parent_id_131855b6_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL AND [parent_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "ParentId" }, "company_units_parent_id_c41b621a");
+
+                    b.ToTable("company_units", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CostCenter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("LastLevel")
+                        .HasColumnType("bit")
+                        .HasColumnName("last_level");
+
+                    b.Property<short>("Level")
+                        .HasColumnType("smallint")
+                        .HasColumnName("level");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("PK__cost_cen__3213E83FF0CF4150");
+
+                    b.HasIndex(new[] { "CompanyId" }, "cost_centers_company_id_5390b4ec");
+
+                    b.HasIndex(new[] { "CompanyId", "Code" }, "cost_centers_company_id_code_153ce7ab_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [code] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CompanyId", "Name", "ParentId" }, "cost_centers_company_id_name_parent_id_44518991_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL AND [parent_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "ParentId" }, "cost_centers_parent_id_eba90f6c");
+
+                    b.ToTable("cost_centers", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Foo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(10, 2)")
+                        .HasColumnName("amount");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -8621,6 +9695,10 @@ namespace Persistence.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int")
+                        .HasColumnName("count");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -8628,124 +9706,1130 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("PK__foos__3213E83FB3E52432");
+
+                    b.HasIndex(new[] { "CompanyId" }, "foos_company_id_1a5e3040");
+
+                    b.HasIndex(new[] { "ProductId" }, "foos_product_id_64577d3d");
+
+                    b.ToTable("foos", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.PersonCompany", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int")
+                        .HasColumnName("person_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__person_c__3213E83F638FAE93");
+
+                    b.HasIndex(new[] { "CompanyId" }, "person_companies_company_id_8d893c9c");
+
+                    b.HasIndex(new[] { "PersonId" }, "person_companies_person_id_01c9a592");
+
+                    b.HasIndex(new[] { "PersonId", "CompanyId" }, "person_companies_person_id_company_id_7ccc3e32_uniq")
+                        .IsUnique()
+                        .HasFilter("([person_id] IS NOT NULL AND [company_id] IS NOT NULL)");
+
+                    b.ToTable("person_companies", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.PersonGroupMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int")
+                        .HasColumnName("member_id");
+
+                    b.Property<int>("PersonGroupId")
+                        .HasColumnType("int")
+                        .HasColumnName("person_group_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__person_g__3213E83FDFED9134");
+
+                    b.HasIndex(new[] { "CompanyId" }, "person_group_members_company_id_730c5fff");
+
+                    b.HasIndex(new[] { "CompanyId", "PersonGroupId", "MemberId" }, "person_group_members_company_id_person_group_id_member_id_b5c20e26_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [person_group_id] IS NOT NULL AND [member_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "MemberId" }, "person_group_members_member_id_fb0c85d9");
+
+                    b.HasIndex(new[] { "PersonGroupId" }, "person_group_members_person_group_id_34698b20");
+
+                    b.ToTable("person_group_members", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.PettyCashier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int")
+                        .HasColumnName("person_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__petty_ca__3213E83F06194128");
+
+                    b.HasIndex(new[] { "CompanyId" }, "petty_cashiers_company_id_adaef187");
+
+                    b.HasIndex(new[] { "CompanyId", "PersonId" }, "petty_cashiers_company_id_person_id_d434ff7c_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [person_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CreatorId" }, "petty_cashiers_creator_id_d570b446");
+
+                    b.HasIndex(new[] { "PersonId" }, "petty_cashiers_person_id_5a0c025f");
+
+                    b.ToTable("petty_cashiers", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<int?>("FirstMeasurementId")
+                        .HasColumnType("int")
+                        .HasColumnName("first_measurement_id");
+
+                    b.Property<int?>("ForthMeasurementId")
+                        .HasColumnType("int")
+                        .HasColumnName("forth_measurement_id");
+
+                    b.Property<short?>("Level")
+                        .HasColumnType("smallint")
+                        .HasColumnName("level");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id");
+
+                    b.Property<int?>("SecondMeasurementId")
+                        .HasColumnType("int")
+                        .HasColumnName("second_measurement_id");
+
+                    b.Property<int?>("ThirdMeasurementId")
+                        .HasColumnType("int")
+                        .HasColumnName("third_measurement_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__products__3213E83F9A5A602E");
+
+                    b.HasIndex(new[] { "CompanyId" }, "products_company_id_85cab11e");
+
+                    b.HasIndex(new[] { "CreatorId" }, "products_creator_id_f217ad7d");
+
+                    b.HasIndex(new[] { "FirstMeasurementId" }, "products_first_measurement_id_c9eb56e6");
+
+                    b.HasIndex(new[] { "ForthMeasurementId" }, "products_forth_measurement_id_2571e159");
+
+                    b.HasIndex(new[] { "ParentId" }, "products_parent_id_6d11d0e1");
+
+                    b.HasIndex(new[] { "SecondMeasurementId" }, "products_second_measurement_id_9e456e28");
+
+                    b.HasIndex(new[] { "ThirdMeasurementId" }, "products_third_measurement_id_40c75e99");
+
+                    b.ToTable("products", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(10, 2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int")
+                        .HasColumnName("count");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("PK__Purchase__3213E83F706A62B0");
+
+                    b.HasIndex(new[] { "CompanyId" }, "Purchases_company_id_a3e8b6cd");
+
+                    b.HasIndex(new[] { "ProductId" }, "Purchases_product_id_d1413dc0");
+
+                    b.ToTable("Purchases", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.ReportTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int")
+                        .HasColumnName("creator_id");
+
+                    b.Property<int>("ModuleId")
+                        .HasColumnType("int")
+                        .HasColumnName("module_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("ReportKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("report_key");
+
+                    b.Property<string>("Template")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("template");
+
+                    b.HasKey("Id")
+                        .HasName("PK__report_t__3213E83F0D6D3A08");
+
+                    b.HasIndex(new[] { "CompanyId" }, "report_templates_company_id_d546fa98");
+
+                    b.HasIndex(new[] { "CompanyId", "ReportKey", "Name" }, "report_templates_company_id_report_key_name_f3282f81_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [report_key] IS NOT NULL AND [name] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "CreatorId" }, "report_templates_creator_id_1650956e");
+
+                    b.HasIndex(new[] { "ModuleId" }, "report_templates_module_id_e5a4ce8d");
+
+                    b.ToTable("report_templates", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Restriction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("EntityTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("entity_type_id");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__restrict__3213E83F533B4486");
+
+                    b.HasIndex(new[] { "CompanyId" }, "restrictions_company_id_e24e8bce");
+
+                    b.HasIndex(new[] { "CompanyId", "EntityTypeId", "UserId" }, "restrictions_company_id_entity_type_id_user_id_2296a366_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [entity_type_id] IS NOT NULL AND [user_id] IS NOT NULL)");
+
+                    b.HasIndex(new[] { "EntityTypeId" }, "restrictions_entity_type_id_5861bb50");
+
+                    b.HasIndex(new[] { "UserId" }, "restrictions_user_id_1ef45563");
+
+                    b.ToTable("restrictions", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_static");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("PK__roles__3213E83F56963A72");
+
+                    b.HasIndex(new[] { "CompanyId" }, "roles_company_id_f4c539e9");
+
+                    b.HasIndex(new[] { "CompanyId", "Name" }, "roles_company_id_name_35c99075_uniq")
+                        .IsUnique()
+                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+
+                    b.ToTable("roles", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RoleMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizedUsers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("authorized_users");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int")
+                        .HasColumnName("member_id");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__role_mem__3213E83FB8167B1B");
+
+                    b.HasIndex(new[] { "CompanyId" }, "role_members_company_id_c28413ce");
+
+                    b.HasIndex(new[] { "MemberId" }, "role_members_member_id_0a61f922");
+
+                    b.HasIndex(new[] { "RoleId" }, "role_members_role_id_3742ecb7");
+
+                    b.HasIndex(new[] { "RoleId", "MemberId" }, "role_members_role_id_member_id_22328589_uniq")
+                        .IsUnique()
+                        .HasFilter("([role_id] IS NOT NULL AND [member_id] IS NOT NULL)");
+
+                    b.ToTable("role_members", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Create")
+                        .HasColumnType("bit")
+                        .HasColumnName("create");
+
+                    b.Property<bool>("Delete")
+                        .HasColumnType("bit")
+                        .HasColumnName("delete");
+
+                    b.Property<bool>("Edit")
+                        .HasColumnType("bit")
+                        .HasColumnName("edit");
+
+                    b.Property<int>("EntityTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("entity_type_id");
+
+                    b.Property<bool>("Exp")
+                        .HasColumnType("bit")
+                        .HasColumnName("exp");
+
+                    b.Property<bool>("IfNotCreator")
+                        .HasColumnType("bit")
+                        .HasColumnName("if_not_creator");
+
+                    b.Property<bool>("Imp")
+                        .HasColumnType("bit")
+                        .HasColumnName("imp");
+
+                    b.Property<bool>("Log")
+                        .HasColumnType("bit")
+                        .HasColumnName("log");
+
+                    b.Property<int>("ModuleId")
+                        .HasColumnType("int")
+                        .HasColumnName("module_id");
+
+                    b.Property<bool>("Print")
+                        .HasColumnType("bit")
+                        .HasColumnName("print");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("bit")
+                        .HasColumnName("read");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__role_per__3213E83F54061F44");
+
+                    b.HasIndex(new[] { "EntityTypeId" }, "role_permissions_entity_type_id_74eb6fa5");
+
+                    b.HasIndex(new[] { "ModuleId" }, "role_permissions_module_id_f6701517");
+
+                    b.HasIndex(new[] { "RoleId" }, "role_permissions_role_id_216516f2");
+
+                    b.HasIndex(new[] { "RoleId", "EntityTypeId" }, "role_permissions_role_id_entity_type_id_285eba22_uniq")
+                        .IsUnique()
+                        .HasFilter("([role_id] IS NOT NULL AND [entity_type_id] IS NOT NULL)");
+
+                    b.ToTable("role_permissions", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermissionCommand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CommandKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("command_key");
+
+                    b.Property<int>("EntityTypeCommandId")
+                        .HasColumnType("int")
+                        .HasColumnName("entity_type_command_id");
+
+                    b.Property<int>("EntityTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("entity_type_id");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_id");
+
+                    b.Property<int>("RolePermissionId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_permission_id");
+
+                    b.Property<bool>("Value")
+                        .HasColumnType("bit")
+                        .HasColumnName("value");
+
+                    b.HasKey("Id")
+                        .HasName("PK__role_per__3213E83F15286D44");
+
+                    b.HasIndex(new[] { "EntityTypeCommandId" }, "role_permission_commands_entity_type_command_id_9e625b38");
+
+                    b.HasIndex(new[] { "EntityTypeId" }, "role_permission_commands_entity_type_id_a3513f52");
+
+                    b.HasIndex(new[] { "RoleId" }, "role_permission_commands_role_id_5d1758cb");
+
+                    b.HasIndex(new[] { "RolePermissionId" }, "role_permission_commands_role_permission_id_40a8626f");
+
+                    b.HasIndex(new[] { "RolePermissionId", "EntityTypeCommandId" }, "role_permission_commands_role_permission_id_entity_type_command_id_9f7be0a3_uniq")
+                        .IsUnique()
+                        .HasFilter("([role_permission_id] IS NOT NULL AND [entity_type_command_id] IS NOT NULL)");
+
+                    b.ToTable("role_permission_commands", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermissionConstraint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Create")
+                        .HasColumnType("bit")
+                        .HasColumnName("create");
+
+                    b.Property<bool>("Edit")
+                        .HasColumnType("bit")
+                        .HasColumnName("edit");
+
+                    b.Property<int>("EntityTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("entity_type_id");
+
+                    b.Property<bool>("Exp")
+                        .HasColumnType("bit")
+                        .HasColumnName("exp");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("field_name");
+
+                    b.Property<bool>("Imp")
+                        .HasColumnType("bit")
+                        .HasColumnName("imp");
+
+                    b.Property<bool>("Print")
+                        .HasColumnType("bit")
+                        .HasColumnName("print");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("bit")
+                        .HasColumnName("read");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_id");
+
+                    b.Property<int>("RolePermissionId")
+                        .HasColumnType("int")
+                        .HasColumnName("role_permission_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__role_per__3213E83FE3441D6A");
+
+                    b.HasIndex(new[] { "EntityTypeId" }, "role_permission_constraints_entity_type_id_183e495f");
+
+                    b.HasIndex(new[] { "RoleId" }, "role_permission_constraints_role_id_3ad70fc8");
+
+                    b.HasIndex(new[] { "RolePermissionId" }, "role_permission_constraints_role_permission_id_678eb8f6");
+
+                    b.HasIndex(new[] { "RolePermissionId", "FieldName" }, "role_permission_constraints_role_permission_id_field_name_6671fb32_uniq")
+                        .IsUnique()
+                        .HasFilter("([role_permission_id] IS NOT NULL AND [field_name] IS NOT NULL)");
+
+                    b.ToTable("role_permission_constraints", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Sale", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(10, 2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("code");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int")
+                        .HasColumnName("count");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("PK__sales__3213E83F036DC29E");
+
+                    b.HasIndex(new[] { "CompanyId" }, "sales_company_id_1480331f");
+
+                    b.HasIndex(new[] { "ProductId" }, "sales_product_id_a179a813");
+
+                    b.ToTable("sales", "shared");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.VehicleType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "CompanyId", "Name" }, "vehicle_types_company_id_name_uniq")
                         .IsUnique()
-                        .HasFilter("([company_id] IS NOT NULL AND [name] IS NOT NULL)");
+                        .HasFilter("([CompanyId] IS NOT NULL AND [name] IS NOT NULL)");
 
-                    b.ToTable("vehicle_types", "shared");
+                    b.ToTable("VehicleType", "shared");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FifthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FifthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("FifthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("FirstLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstLevelName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("FourthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FourthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("FourthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SecondLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecondLevelName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("SeventhLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeventhLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("SeventhNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("SixthLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SixthLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("SixthNextLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ThirdLevelCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ThirdLevelName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("ThirdNextLevel")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CompanyId" }, "ProductCode_CompanyId");
+
+                    b.ToTable("ProductCode", "warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductHierarchy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("FifthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FifthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte>("FirstLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FirstLevelType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("FourthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FourthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte>("SecondLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SecondLevelType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("SeventhLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SeventhLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("SixthLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SixthLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte?>("ThirdLevelSize")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("ThirdLevelType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CompanyId" }, "ProductHierarchy_CompanyId");
+
+                    b.ToTable("ProductHierarchy", "warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseStock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CompanyUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ContractorAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ContractorDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContractorDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContractorMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContractorSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ExportAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ExportDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExportSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MaxAssetValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("PurchaseReturnAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("PurchaseReturnDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseReturnSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ReturnAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ReturnDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SalesAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("SalesDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalesSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("WarehouseAccountIsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("WarehouseDetail1Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDetail2Account")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseMasterAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseSlaveAccount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "CompanyId" }, "WarehouseStock_CompanyId");
+
+                    b.HasIndex(new[] { "CompanyUnitId" }, "WarehouseStock_CompanyUnitId");
+
+                    b.HasIndex(new[] { "WarehouseTypeId" }, "WarehouseStock_WarehouseTypeId");
+
+                    b.ToTable("WarehouseStock", "warehouse");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WarehouseType", "warehouse");
                 });
 
             modelBuilder.Entity("Weighing.Domain.Entities.DischargeStation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("code");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("CompanyId")
-                        .HasColumnType("int")
-                        .HasColumnName("company_id");
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("discharge_stations", "weighing");
+                    b.ToTable("DischargeStation", "Weighing");
                 });
 
             modelBuilder.Entity("Weighing.Domain.Entities.PackageType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("code");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("CompanyId")
-                        .HasColumnType("int")
-                        .HasColumnName("company_id");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)")
-                        .HasColumnName("description");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("package_types", "weighing");
+                    b.ToTable("PackageType", "Weighing");
                 });
 
             modelBuilder.Entity("Weighing.Domain.Entities.PersonDriver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CompanyId")
-                        .HasColumnType("int")
-                        .HasColumnName("company_id");
+                        .HasColumnType("int");
 
                     b.Property<int>("DriverType")
-                        .HasColumnType("int")
-                        .HasColumnName("driver_type");
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("InitialWeight")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("initial_weight");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("PersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("person_id");
+                        .HasColumnType("int");
 
                     b.Property<string>("PlateNumber")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("plate_number");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("VehicleName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("vehicle_name");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("VehicleTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("vehicle_type_id");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -8753,9 +10837,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.HasIndex("VehicleTypeId");
-
-                    b.ToTable("person_driver", "weighing");
+                    b.ToTable("PersonDriver", "Weighing");
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.AccountGroup", b =>
@@ -8763,8 +10845,8 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.AccountCategory", "Category")
                         .WithMany("AccountGroups")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("account_groups_category_id_af0c53e8_fk_account_categories_id");
 
                     b.Navigation("Category");
                 });
@@ -8774,8 +10856,8 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("AccountSets")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("account_sets_ledger_id_31846310_fk_ledgers_id");
 
                     b.Navigation("Ledger");
                 });
@@ -8785,16 +10867,18 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.AccountSet", "AccountSet")
                         .WithMany("AccountSetItems")
                         .HasForeignKey("AccountSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("account_set_items_account_set_id_c6a49338_fk_account_sets_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("AccountSetItems")
-                        .HasForeignKey("MasterId");
+                        .HasForeignKey("MasterId")
+                        .HasConstraintName("account_set_items_master_id_e12671e4_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("AccountSetItems")
-                        .HasForeignKey("SlaveId");
+                        .HasForeignKey("SlaveId")
+                        .HasConstraintName("account_set_items_slave_id_a5287d0f_fk_slave_accounts_id");
 
                     b.Navigation("AccountSet");
 
@@ -8808,62 +10892,71 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("BalanceRelatedAccountDetails")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("balance_related_account_details_ledger_id_1fcf3bc8_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat1")
                         .WithMany("BalanceRelatedAccountDetailManualFloat1s")
-                        .HasForeignKey("ManualFloat1Id");
+                        .HasForeignKey("ManualFloat1Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_1_id_3cf4e319_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat2")
                         .WithMany("BalanceRelatedAccountDetailManualFloat2s")
-                        .HasForeignKey("ManualFloat2Id");
+                        .HasForeignKey("ManualFloat2Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_2_id_79cca910_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat3")
                         .WithMany("BalanceRelatedAccountDetailManualFloat3s")
-                        .HasForeignKey("ManualFloat3Id");
+                        .HasForeignKey("ManualFloat3Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_3_id_c7afe8b7_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat4")
                         .WithMany("BalanceRelatedAccountDetailManualFloat4s")
-                        .HasForeignKey("ManualFloat4Id");
+                        .HasForeignKey("ManualFloat4Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_4_id_bba5925c_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat5")
                         .WithMany("BalanceRelatedAccountDetailManualFloat5s")
-                        .HasForeignKey("ManualFloat5Id");
+                        .HasForeignKey("ManualFloat5Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_5_id_2f0ad7f7_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat6")
                         .WithMany("BalanceRelatedAccountDetailManualFloat6s")
-                        .HasForeignKey("ManualFloat6Id");
+                        .HasForeignKey("ManualFloat6Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_6_id_eeaf3bf1_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat7")
                         .WithMany("BalanceRelatedAccountDetailManualFloat7s")
-                        .HasForeignKey("ManualFloat7Id");
+                        .HasForeignKey("ManualFloat7Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_7_id_c140028e_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat8")
                         .WithMany("BalanceRelatedAccountDetailManualFloat8s")
-                        .HasForeignKey("ManualFloat8Id");
+                        .HasForeignKey("ManualFloat8Id")
+                        .HasConstraintName("balance_related_account_details_manual_float_8_id_68b0bdc0_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("BalanceRelatedAccountDetails")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("balance_related_account_details_master_id_f76438d4_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("BalanceRelatedAccountDetails")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("balance_related_account_details_period_id_2b2d6794_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "ResourceAndExpenditure")
                         .WithMany("BalanceRelatedAccountDetails")
-                        .HasForeignKey("ResourceAndExpenditureId");
+                        .HasForeignKey("ResourceAndExpenditureId")
+                        .HasConstraintName("balance_related_account_details_resource_and_expenditure_id_78f2b804_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("BalanceRelatedAccountDetails")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("balance_related_account_details_slave_id_8bf18f14_fk_slave_accounts_id");
 
                     b.Navigation("Ledger");
 
@@ -8896,19 +10989,20 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "DefaultResourceAndExpenditure")
                         .WithMany("ClosingPatterns")
-                        .HasForeignKey("DefaultResourceAndExpenditureId");
+                        .HasForeignKey("DefaultResourceAndExpenditureId")
+                        .HasConstraintName("closing_patterns_default_resource_and_expenditure_id_6ef35f22_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("ClosingPatterns")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_patterns_ledger_id_394ee754_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("ClosingPatterns")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_patterns_period_id_8a00d0d0_fk_periods_id");
 
                     b.Navigation("DefaultResourceAndExpenditure");
 
@@ -8921,25 +11015,26 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "DefaultResourceAndExpenditure")
                         .WithMany("ClosingPatternSlaveCompanies")
-                        .HasForeignKey("DefaultResourceAndExpenditureId");
+                        .HasForeignKey("DefaultResourceAndExpenditureId")
+                        .HasConstraintName("closing_pattern_slave_companies_default_resource_and_expenditure_id_d8808ca1_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("ClosingPatternSlaveCompanies")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_pattern_slave_companies_ledger_id_b7344906_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("ClosingPatternSlaveCompanies")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_pattern_slave_companies_period_id_7d4ec4d3_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccountCompany", "SlaveCompany")
                         .WithMany("ClosingPatternSlaveCompanies")
                         .HasForeignKey("SlaveCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_pattern_slave_companies_slave_company_id_e971e36e_fk_slave_account_companies_id");
 
                     b.Navigation("DefaultResourceAndExpenditure");
 
@@ -8954,19 +11049,20 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "DefaultResourceAndExpenditure")
                         .WithMany("ClosingPatternTemporaryAccounts")
-                        .HasForeignKey("DefaultResourceAndExpenditureId");
+                        .HasForeignKey("DefaultResourceAndExpenditureId")
+                        .HasConstraintName("closing_pattern_temporary_accounts_default_resource_and_expenditure_id_dcf3d48a_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("ClosingPatternTemporaryAccounts")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_pattern_temporary_accounts_ledger_id_8d2baceb_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("ClosingPatternTemporaryAccounts")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("closing_pattern_temporary_accounts_period_id_897435aa_fk_periods_id");
 
                     b.Navigation("DefaultResourceAndExpenditure");
 
@@ -8980,20 +11076,20 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.DataImport", "DataImport")
                         .WithMany("Contradictions")
                         .HasForeignKey("DataImportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("contradictions_data_import_id_65a4748b_fk_data_imports_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("Contradictions")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("contradictions_ledger_id_85776d2a_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("Contradictions")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("contradictions_period_id_538ee815_fk_periods_id");
 
                     b.Navigation("DataImport");
 
@@ -9007,8 +11103,8 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Contradiction", "Contradiction")
                         .WithMany("ContradictionItems")
                         .HasForeignKey("ContradictionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("contradiction_items_contradiction_id_1494f375_fk_contradictions_id");
 
                     b.Navigation("Contradiction");
                 });
@@ -9018,14 +11114,14 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("DataImports")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("data_imports_ledger_id_fd1c5e0d_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("DataImports")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("data_imports_period_id_aef725fd_fk_periods_id");
 
                     b.Navigation("Ledger");
 
@@ -9036,7 +11132,8 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "Parent")
                         .WithMany("InverseParent")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("float_account_types_parent_id_4dd8ba99_fk_float_account_types_id");
 
                     b.Navigation("Parent");
                 });
@@ -9046,14 +11143,14 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("LedgerPeriods")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_periods_ledger_id_c70ff025_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("LedgerPeriods")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_periods_period_id_2953e5ba_fk_periods_id");
 
                     b.Navigation("Ledger");
 
@@ -9065,20 +11162,19 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("LedgerPeriodCompanies")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_period_companies_ledger_id_52a61c2a_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.LedgerPeriod", "LedgerPeriod")
                         .WithMany("LedgerPeriodCompanies")
                         .HasForeignKey("LedgerPeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasConstraintName("ledger_period_companies_ledger_period_id_5656d93c_fk_ledger_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("LedgerPeriodCompanies")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_period_companies_period_id_0828d8ca_fk_periods_id");
 
                     b.Navigation("Ledger");
 
@@ -9092,20 +11188,20 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("LedgerPeriodCompanySettings")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_period_company_settings_ledger_id_c37251eb_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.LedgerPeriodCompany", "LedgerPeriodCompany")
                         .WithOne("LedgerPeriodCompanySetting")
                         .HasForeignKey("Accounting.Domain.Entities.LedgerPeriodCompanySetting", "LedgerPeriodCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_period_company_settings_ledger_period_company_id_880b5330_fk_ledger_period_companies_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("LedgerPeriodCompanySettings")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ledger_period_company_settings_period_id_2389d1c0_fk_periods_id");
 
                     b.Navigation("Ledger");
 
@@ -9119,12 +11215,13 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatAccountType")
                         .WithMany("ManualFloatAccounts")
                         .HasForeignKey("FloatAccountTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("manual_float_accounts_float_account_type_id_b211d188_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "Parent")
                         .WithMany("InverseParent")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("manual_float_accounts_parent_id_4b9bca91_fk_manual_float_accounts_id");
 
                     b.Navigation("FloatAccountType");
 
@@ -9136,10 +11233,20 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("MasterAccounts")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("master_accounts_ledger_id_b94026a2_fk_ledgers_id");
 
                     b.Navigation("Ledger");
+                });
+
+            modelBuilder.Entity("Accounting.Domain.Entities.Period", b =>
+                {
+                    b.HasOne("Accounting.Domain.Entities.Period", "PreviousPeriod")
+                        .WithMany("InversePreviousPeriod")
+                        .HasForeignKey("PreviousPeriodId")
+                        .HasConstraintName("periods_previous_period_id_785fc09e_fk_periods_id");
+
+                    b.Navigation("PreviousPeriod");
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.SlaveAccount", b =>
@@ -9147,30 +11254,31 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.AccountCategory", "Category")
                         .WithMany("SlaveAccounts")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_accounts_category_id_79276cde_fk_account_categories_id");
 
                     b.HasOne("Accounting.Domain.Entities.AccountGroup", "Group")
                         .WithMany("SlaveAccounts")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_accounts_group_id_d226c356_fk_account_groups_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("SlaveAccounts")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_accounts_ledger_id_e9bba48c_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("SlaveAccounts")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_accounts_master_id_d8364647_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Parent")
                         .WithMany("InverseParent")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("slave_accounts_parent_id_b5e3fe05_fk_slave_accounts_id");
 
                     b.Navigation("Category");
 
@@ -9187,53 +11295,61 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType1")
                         .WithMany("SlaveAccountCompanyFloatType1s")
-                        .HasForeignKey("FloatType1Id");
+                        .HasForeignKey("FloatType1Id")
+                        .HasConstraintName("slave_account_companies_float_type_1_id_dcee560d_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType2")
                         .WithMany("SlaveAccountCompanyFloatType2s")
-                        .HasForeignKey("FloatType2Id");
+                        .HasForeignKey("FloatType2Id")
+                        .HasConstraintName("slave_account_companies_float_type_2_id_c218860a_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType3")
                         .WithMany("SlaveAccountCompanyFloatType3s")
-                        .HasForeignKey("FloatType3Id");
+                        .HasForeignKey("FloatType3Id")
+                        .HasConstraintName("slave_account_companies_float_type_3_id_653411c6_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType4")
                         .WithMany("SlaveAccountCompanyFloatType4s")
-                        .HasForeignKey("FloatType4Id");
+                        .HasForeignKey("FloatType4Id")
+                        .HasConstraintName("slave_account_companies_float_type_4_id_57254460_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType5")
                         .WithMany("SlaveAccountCompanyFloatType5s")
-                        .HasForeignKey("FloatType5Id");
+                        .HasForeignKey("FloatType5Id")
+                        .HasConstraintName("slave_account_companies_float_type_5_id_896ccdfc_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType6")
                         .WithMany("SlaveAccountCompanyFloatType6s")
-                        .HasForeignKey("FloatType6Id");
+                        .HasForeignKey("FloatType6Id")
+                        .HasConstraintName("slave_account_companies_float_type_6_id_a486a7f8_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType7")
                         .WithMany("SlaveAccountCompanyFloatType7s")
-                        .HasForeignKey("FloatType7Id");
+                        .HasForeignKey("FloatType7Id")
+                        .HasConstraintName("slave_account_companies_float_type_7_id_f5d8293e_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.FloatAccountType", "FloatType8")
                         .WithMany("SlaveAccountCompanyFloatType8s")
-                        .HasForeignKey("FloatType8Id");
+                        .HasForeignKey("FloatType8Id")
+                        .HasConstraintName("slave_account_companies_float_type_8_id_ab2b63c8_fk_float_account_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("SlaveAccountCompanies")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_account_companies_ledger_id_b40ad4d0_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("SlaveAccountCompanies")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_account_companies_master_id_bacd3012_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("SlaveAccountCompanies")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_account_companies_slave_id_edd3dcf5_fk_slave_accounts_id");
 
                     b.Navigation("FloatType1");
 
@@ -9263,8 +11379,8 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("SlaveAccountStandardDescriptions")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("slave_account_standard_descriptions_slave_id_b64d916e_fk_slave_accounts_id");
 
                     b.Navigation("Slave");
                 });
@@ -9274,20 +11390,20 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TrashVouchers")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_vouchers_ledger_id_e6d73246_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TrashVouchers")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_vouchers_period_id_f1b414ea_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherType", "Type")
                         .WithMany("TrashVouchers")
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_vouchers_type_id_62c0b2ab_fk_voucher_types_id");
 
                     b.Navigation("Ledger");
 
@@ -9301,74 +11417,83 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_ledger_id_58204329_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat1")
                         .WithMany("TrashVoucherItemManualFloat1s")
-                        .HasForeignKey("ManualFloat1Id");
+                        .HasForeignKey("ManualFloat1Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_1_id_0cdae92d_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat2")
                         .WithMany("TrashVoucherItemManualFloat2s")
-                        .HasForeignKey("ManualFloat2Id");
+                        .HasForeignKey("ManualFloat2Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_2_id_985905b9_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat3")
                         .WithMany("TrashVoucherItemManualFloat3s")
-                        .HasForeignKey("ManualFloat3Id");
+                        .HasForeignKey("ManualFloat3Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_3_id_11645efa_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat4")
                         .WithMany("TrashVoucherItemManualFloat4s")
-                        .HasForeignKey("ManualFloat4Id");
+                        .HasForeignKey("ManualFloat4Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_4_id_60ae5d18_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat5")
                         .WithMany("TrashVoucherItemManualFloat5s")
-                        .HasForeignKey("ManualFloat5Id");
+                        .HasForeignKey("ManualFloat5Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_5_id_3eb06b68_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat6")
                         .WithMany("TrashVoucherItemManualFloat6s")
-                        .HasForeignKey("ManualFloat6Id");
+                        .HasForeignKey("ManualFloat6Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_6_id_a4afd007_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat7")
                         .WithMany("TrashVoucherItemManualFloat7s")
-                        .HasForeignKey("ManualFloat7Id");
+                        .HasForeignKey("ManualFloat7Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_7_id_85ed9abc_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat8")
                         .WithMany("TrashVoucherItemManualFloat8s")
-                        .HasForeignKey("ManualFloat8Id");
+                        .HasForeignKey("ManualFloat8Id")
+                        .HasConstraintName("trash_voucher_items_manual_float_8_id_d2f59901_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_master_id_0c48bb81_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_period_id_e1c57ee1_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "ResourceAndExpenditure")
                         .WithMany("TrashVoucherItems")
-                        .HasForeignKey("ResourceAndExpenditureId");
+                        .HasForeignKey("ResourceAndExpenditureId")
+                        .HasConstraintName("trash_voucher_items_resource_and_expenditure_id_fb349f90_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccountCompany", "SlaveCompany")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("SlaveCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_slave_company_id_976d2e14_fk_slave_account_companies_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_slave_id_8ef343db_fk_slave_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.TrashVoucher", "TrashVoucher")
                         .WithMany("TrashVoucherItems")
                         .HasForeignKey("TrashVoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_items_trash_voucher_id_4c9d9a23_fk_trash_vouchers_id");
 
                     b.Navigation("Ledger");
 
@@ -9406,14 +11531,14 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.TrashVoucher", "TrashVoucher")
                         .WithMany("TrashVoucherItemAttaches")
                         .HasForeignKey("TrashVoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_item_attaches_trash_voucher_id_aea53052_fk_trash_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.TrashVoucherItem", "TrashVoucherItem")
                         .WithMany("TrashVoucherItemAttaches")
                         .HasForeignKey("TrashVoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("trash_voucher_item_attaches_trash_voucher_item_id_f86212d2_fk_trash_voucher_items_id");
 
                     b.Navigation("TrashVoucher");
 
@@ -9424,31 +11549,32 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.TtmsProductType", "KalaType")
                         .WithMany("TtmsBuys")
-                        .HasForeignKey("KalaTypeId");
+                        .HasForeignKey("KalaTypeId")
+                        .HasConstraintName("ttms_buys_kala_type_id_acc1c01e_fk_ttms_product_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsBuys")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_buys_ledger_id_4592b702_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsBuys")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_buys_period_id_b172660c_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsBuys")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_buys_voucher_id_932f90cb_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsBuy")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsBuy", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_buys_voucher_item_id_f176cf2a_fk_voucher_items_id");
 
                     b.Navigation("KalaType");
 
@@ -9466,26 +11592,26 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsContractorInfos")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_contractor_infos_ledger_id_866da6c0_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsContractorInfos")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_contractor_infos_period_id_0b3cc826_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsContractorInfos")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_contractor_infos_voucher_id_4561f0d4_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsContractorInfo")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsContractorInfo", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_contractor_infos_voucher_item_id_f0e62792_fk_voucher_items_id");
 
                     b.Navigation("Ledger");
 
@@ -9501,26 +11627,26 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsEmployerInfos")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_employer_infos_ledger_id_4e6cb6c7_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsEmployerInfos")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_employer_infos_period_id_f2de7f69_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsEmployerInfos")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_employer_infos_voucher_id_c3d5dd84_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsEmployerInfo")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsEmployerInfo", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_employer_infos_voucher_item_id_1756b20f_fk_voucher_items_id");
 
                     b.Navigation("Ledger");
 
@@ -9535,31 +11661,33 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.TtmsProductType", "KalaType")
                         .WithMany("TtmsExportations")
-                        .HasForeignKey("KalaTypeId");
+                        .HasForeignKey("KalaTypeId")
+                        .HasPrincipalKey("Code")
+                        .HasConstraintName("ttms_exportations_kala_type_id_c8a03da3_fk_ttms_product_types_code");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsExportations")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_exportations_ledger_id_b7fff67d_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsExportations")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_exportations_period_id_7c7cf71b_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsExportations")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_exportations_voucher_id_14d3710f_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsExportation")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsExportation", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_exportations_voucher_item_id_0ac158de_fk_voucher_items_id");
 
                     b.Navigation("KalaType");
 
@@ -9576,31 +11704,33 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.TtmsProductType", "KalaType")
                         .WithMany("TtmsImportations")
-                        .HasForeignKey("KalaTypeId");
+                        .HasForeignKey("KalaTypeId")
+                        .HasPrincipalKey("Code")
+                        .HasConstraintName("ttms_importations_kala_type_id_cb9fffb1_fk_ttms_product_types_code");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsImportations")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_importations_ledger_id_a8e87721_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsImportations")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_importations_period_id_e707fd86_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsImportations")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_importations_voucher_id_e6c6d27d_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsImportation")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsImportation", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_importations_voucher_item_id_7d74fcd3_fk_voucher_items_id");
 
                     b.Navigation("KalaType");
 
@@ -9618,26 +11748,26 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsLeaseAgreements")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_lease_agreements_ledger_id_fbcd73fe_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsLeaseAgreements")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_lease_agreements_period_id_b7dd6e0b_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsLeaseAgreements")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_lease_agreements_voucher_id_38801563_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsLeaseAgreement")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsLeaseAgreement", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_lease_agreements_voucher_item_id_580d9a03_fk_voucher_items_id");
 
                     b.Navigation("Ledger");
 
@@ -9653,26 +11783,26 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsPreSells")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_pre_sells_ledger_id_e56cf010_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsPreSells")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_pre_sells_period_id_d371cddf_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsPreSells")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_pre_sells_voucher_id_58f4d88f_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsPreSell")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsPreSell", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_pre_sells_voucher_item_id_13de02d7_fk_voucher_items_id");
 
                     b.Navigation("Ledger");
 
@@ -9687,31 +11817,33 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.TtmsProductType", "KalaType")
                         .WithMany("TtmsSells")
-                        .HasForeignKey("KalaTypeId");
+                        .HasForeignKey("KalaTypeId")
+                        .HasPrincipalKey("Code")
+                        .HasConstraintName("ttms_sells_kala_type_id_49581b94_fk_ttms_product_types_code");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsSells")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_sells_ledger_id_e8e19e1e_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsSells")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_sells_period_id_bdec3655_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsSells")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_sells_voucher_id_96da188f_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsSell")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsSell", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_sells_voucher_item_id_99608a2c_fk_voucher_items_id");
 
                     b.Navigation("KalaType");
 
@@ -9728,31 +11860,32 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Accounting.Domain.Entities.TtmsProductType", "KalaType")
                         .WithMany("TtmsWages")
-                        .HasForeignKey("KalaTypeId");
+                        .HasForeignKey("KalaTypeId")
+                        .HasConstraintName("ttms_wages_kala_type_id_8ee391b0_fk_ttms_product_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("TtmsWages")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_wages_ledger_id_2e5fbf4c_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("TtmsWages")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_wages_period_id_7e023cdd_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("TtmsWages")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_wages_voucher_id_ebeeee11_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithOne("TtmsWage")
                         .HasForeignKey("Accounting.Domain.Entities.TtmsWage", "VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("ttms_wages_voucher_item_id_6c48028f_fk_voucher_items_id");
 
                     b.Navigation("KalaType");
 
@@ -9770,20 +11903,20 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("Vouchers")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("vouchers_ledger_id_25e3f63d_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("Vouchers")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("vouchers_period_id_800ded6b_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherType", "Type")
                         .WithMany("Vouchers")
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("vouchers_type_id_05bcc3a6_fk_voucher_types_id");
 
                     b.Navigation("Ledger");
 
@@ -9797,74 +11930,83 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("VoucherItems")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_ledger_id_439dcc5d_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat1")
                         .WithMany("VoucherItemManualFloat1s")
-                        .HasForeignKey("ManualFloat1Id");
+                        .HasForeignKey("ManualFloat1Id")
+                        .HasConstraintName("voucher_items_manual_float_1_id_a2c88b6e_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat2")
                         .WithMany("VoucherItemManualFloat2s")
-                        .HasForeignKey("ManualFloat2Id");
+                        .HasForeignKey("ManualFloat2Id")
+                        .HasConstraintName("voucher_items_manual_float_2_id_60bbb623_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat3")
                         .WithMany("VoucherItemManualFloat3s")
-                        .HasForeignKey("ManualFloat3Id");
+                        .HasForeignKey("ManualFloat3Id")
+                        .HasConstraintName("voucher_items_manual_float_3_id_4f9d7506_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat4")
                         .WithMany("VoucherItemManualFloat4s")
-                        .HasForeignKey("ManualFloat4Id");
+                        .HasForeignKey("ManualFloat4Id")
+                        .HasConstraintName("voucher_items_manual_float_4_id_35e1cb30_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat5")
                         .WithMany("VoucherItemManualFloat5s")
-                        .HasForeignKey("ManualFloat5Id");
+                        .HasForeignKey("ManualFloat5Id")
+                        .HasConstraintName("voucher_items_manual_float_5_id_a5393d5c_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat6")
                         .WithMany("VoucherItemManualFloat6s")
-                        .HasForeignKey("ManualFloat6Id");
+                        .HasForeignKey("ManualFloat6Id")
+                        .HasConstraintName("voucher_items_manual_float_6_id_a56fc8dc_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat7")
                         .WithMany("VoucherItemManualFloat7s")
-                        .HasForeignKey("ManualFloat7Id");
+                        .HasForeignKey("ManualFloat7Id")
+                        .HasConstraintName("voucher_items_manual_float_7_id_858fb1f1_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat8")
                         .WithMany("VoucherItemManualFloat8s")
-                        .HasForeignKey("ManualFloat8Id");
+                        .HasForeignKey("ManualFloat8Id")
+                        .HasConstraintName("voucher_items_manual_float_8_id_a738253d_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("VoucherItems")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_master_id_f8105cae_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("VoucherItems")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_period_id_3525580e_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "ResourceAndExpenditure")
                         .WithMany("VoucherItems")
-                        .HasForeignKey("ResourceAndExpenditureId");
+                        .HasForeignKey("ResourceAndExpenditureId")
+                        .HasConstraintName("voucher_items_resource_and_expenditure_id_c457dd03_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccountCompany", "SlaveCompany")
                         .WithMany("VoucherItems")
                         .HasForeignKey("SlaveCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_slave_company_id_51b34aa7_fk_slave_account_companies_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("VoucherItems")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_slave_id_36e4e833_fk_slave_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("VoucherItems")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_items_voucher_id_e75336c1_fk_vouchers_id");
 
                     b.Navigation("Ledger");
 
@@ -9902,14 +12044,14 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("VoucherItemAttaches")
                         .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_attaches_voucher_id_05221da5_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherItem", "VoucherItem")
                         .WithMany("VoucherItemAttaches")
                         .HasForeignKey("VoucherItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_attaches_voucher_item_id_3f1216ab_fk_voucher_items_id");
 
                     b.Navigation("Voucher");
 
@@ -9921,78 +12063,88 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_ledger_id_8b5e1cd0_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat1")
                         .WithMany("VoucherItemLogManualFloat1s")
-                        .HasForeignKey("ManualFloat1Id");
+                        .HasForeignKey("ManualFloat1Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_1_id_58b6802b_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat2")
                         .WithMany("VoucherItemLogManualFloat2s")
-                        .HasForeignKey("ManualFloat2Id");
+                        .HasForeignKey("ManualFloat2Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_2_id_38f71036_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat3")
                         .WithMany("VoucherItemLogManualFloat3s")
-                        .HasForeignKey("ManualFloat3Id");
+                        .HasForeignKey("ManualFloat3Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_3_id_aab41fd4_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat4")
                         .WithMany("VoucherItemLogManualFloat4s")
-                        .HasForeignKey("ManualFloat4Id");
+                        .HasForeignKey("ManualFloat4Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_4_id_f5608169_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat5")
                         .WithMany("VoucherItemLogManualFloat5s")
-                        .HasForeignKey("ManualFloat5Id");
+                        .HasForeignKey("ManualFloat5Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_5_id_d6f8534e_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat6")
                         .WithMany("VoucherItemLogManualFloat6s")
-                        .HasForeignKey("ManualFloat6Id");
+                        .HasForeignKey("ManualFloat6Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_6_id_356cdede_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat7")
                         .WithMany("VoucherItemLogManualFloat7s")
-                        .HasForeignKey("ManualFloat7Id");
+                        .HasForeignKey("ManualFloat7Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_7_id_c6d1e3a4_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.ManualFloatAccount", "ManualFloat8")
                         .WithMany("VoucherItemLogManualFloat8s")
-                        .HasForeignKey("ManualFloat8Id");
+                        .HasForeignKey("ManualFloat8Id")
+                        .HasConstraintName("voucher_item_logs_manual_float_8_id_97e9e83b_fk_manual_float_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.MasterAccount", "Master")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_master_id_6b97e99d_fk_master_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_period_id_41dea737_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.ResourceAndExpenditure", "ResourceAndExpenditure")
                         .WithMany("VoucherItemLogs")
-                        .HasForeignKey("ResourceAndExpenditureId");
+                        .HasForeignKey("ResourceAndExpenditureId")
+                        .HasConstraintName("voucher_item_logs_resource_and_expenditure_id_6baa8522_fk_resource_and_expenditures_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccountCompany", "SlaveCompany")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("SlaveCompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_slave_company_id_d30d38dd_fk_slave_account_companies_id");
 
                     b.HasOne("Accounting.Domain.Entities.SlaveAccount", "Slave")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("SlaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_slave_id_bcc29d21_fk_slave_accounts_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("VoucherItemLogs")
-                        .HasForeignKey("VoucherId");
+                        .HasForeignKey("VoucherId")
+                        .HasConstraintName("voucher_item_logs_voucher_id_37e41a3c_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherLog", "VoucherLog")
                         .WithMany("VoucherItemLogs")
                         .HasForeignKey("VoucherLogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_item_logs_voucher_log_id_4528bfd9_fk_voucher_logs_id");
 
                     b.Navigation("Ledger");
 
@@ -10032,26 +12184,29 @@ namespace Persistence.Migrations
                     b.HasOne("Accounting.Domain.Entities.Ledger", "Ledger")
                         .WithMany("VoucherLogs")
                         .HasForeignKey("LedgerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_logs_ledger_id_b35b1cc4_fk_ledgers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherType", "OldVoucherType")
                         .WithMany("VoucherLogOldVoucherTypes")
-                        .HasForeignKey("OldVoucherTypeId");
+                        .HasForeignKey("OldVoucherTypeId")
+                        .HasConstraintName("voucher_logs_old_voucher_type_id_e9551d26_fk_voucher_types_id");
 
                     b.HasOne("Accounting.Domain.Entities.Period", "Period")
                         .WithMany("VoucherLogs")
                         .HasForeignKey("PeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("voucher_logs_period_id_02857e11_fk_periods_id");
 
                     b.HasOne("Accounting.Domain.Entities.Voucher", "Voucher")
                         .WithMany("VoucherLogs")
-                        .HasForeignKey("VoucherId");
+                        .HasForeignKey("VoucherId")
+                        .HasConstraintName("voucher_logs_voucher_id_34970cb1_fk_vouchers_id");
 
                     b.HasOne("Accounting.Domain.Entities.VoucherType", "VoucherType")
                         .WithMany("VoucherLogVoucherTypes")
-                        .HasForeignKey("VoucherTypeId");
+                        .HasForeignKey("VoucherTypeId")
+                        .HasConstraintName("voucher_logs_voucher_type_id_5ba5b90d_fk_voucher_types_id");
 
                     b.Navigation("Ledger");
 
@@ -10069,8 +12224,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("Areas")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("areas_creator_id_9f75521a_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10080,8 +12235,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Bank", "Bank")
                         .WithOne("BankStatementPattern")
                         .HasForeignKey("General.Domain.Entities.BankStatementPattern", "BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("bank_statement_patterns_bank_id_85d1bd4e_fk_banks_id");
 
                     b.Navigation("Bank");
                 });
@@ -10091,8 +12246,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Province", "Province")
                         .WithMany("Cities")
                         .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("cities_province_id_799ae9a0_fk_provinces_id");
 
                     b.Navigation("Province");
                 });
@@ -10102,8 +12257,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Domain", "Domain")
                         .WithMany("Companies")
                         .HasForeignKey("DomainId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("companies_domain_id_51b444a3_fk_domains_id");
 
                     b.Navigation("Domain");
                 });
@@ -10113,18 +12268,19 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Admin")
                         .WithMany("CompanyAdminAdmins")
                         .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("company_admins_admin_id_7fe4b0ca_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.Company", "Company")
                         .WithMany("CompanyAdmins")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .HasConstraintName("company_admins_company_id_dc4e1bcb_fk_companies_id");
 
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("CompanyAdminCreators")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("company_admins_creator_id_af4a192b_fk_users_id");
 
                     b.Navigation("Admin");
 
@@ -10138,14 +12294,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Company", "Company")
                         .WithMany("CompanyModules")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("company_modules_company_id_98c248b4_fk_companies_id");
 
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("CompanyModules")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("company_modules_module_id_85bfd47f_fk_modules_id");
 
                     b.Navigation("Company");
 
@@ -10156,18 +12312,27 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.Currency", "Currency")
                         .WithMany("Countries")
-                        .HasForeignKey("CurrencyId");
+                        .HasForeignKey("CurrencyId")
+                        .HasConstraintName("countries_currency_id_3d87434c_fk_currencies_id");
 
                     b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.Domain", b =>
                 {
+                    b.HasOne("General.Domain.Entities.Currency", "DefaultCurrency")
+                        .WithMany("Domains")
+                        .HasForeignKey("DefaultCurrencyId")
+                        .IsRequired()
+                        .HasConstraintName("domains_default_currency_id_06c302a4_fk_currencies_id");
+
                     b.HasOne("General.Domain.Entities.Language", "Language")
                         .WithMany("Domains")
                         .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("domains_language_id_a7140b25_fk_languages_id");
+
+                    b.Navigation("DefaultCurrency");
 
                     b.Navigation("Language");
                 });
@@ -10177,8 +12342,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("EducationalDegrees")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("educational_degrees_creator_id_693f4fac_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10188,8 +12353,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("EmploymentContractDescriptions")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("employment_contract_Descriptions_creator_id_2fcb5dd9_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10199,8 +12364,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("EmploymentContractTitles")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("employment_contract_titles_creator_id_f0cd95e9_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10210,8 +12375,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("EntityTypes")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("entity_types_module_id_55d1da29_fk_modules_id");
 
                     b.Navigation("Module");
                 });
@@ -10221,8 +12386,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("EntityTypeCommands")
                         .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("entity_type_commands_entity_type_id_c94a0ef5_fk_entity_types_id");
 
                     b.Navigation("EntityType");
                 });
@@ -10232,8 +12397,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("EntityTypeConstraints")
                         .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("entity_type_constraints_entity_type_id_a7b4c730_fk_entity_types_id");
 
                     b.Navigation("EntityType");
                 });
@@ -10243,14 +12408,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("EntityTypeDependencyEntityTypes")
                         .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("entity_type_dependencies_entity_type_id_e631567c_fk_entity_types_id");
 
                     b.HasOne("General.Domain.Entities.EntityType", "RequiredEntityType")
                         .WithMany("EntityTypeDependencyRequiredEntityTypes")
                         .HasForeignKey("RequiredEntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("entity_type_dependencies_required_entity_type_id_64bab813_fk_entity_types_id");
 
                     b.Navigation("EntityType");
 
@@ -10261,28 +12426,10 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.User", "User")
                         .WithMany("ErrorLogs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("error_logs_user_id_ac744206_fk_users_id");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("General.Domain.Entities.FileEntity", b =>
-                {
-                    b.HasOne("General.Domain.Entities.EntityType", "EntityType")
-                        .WithMany("FileEntities")
-                        .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("General.Domain.Entities.File", "File")
-                        .WithMany("FileEntities")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntityType");
-
-                    b.Navigation("File");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.ForeignLanguage", b =>
@@ -10290,8 +12437,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("ForeignLanguages")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("foreign_languages_creator_id_f2c0414f_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10301,8 +12448,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("HousingStatuses")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("housing_statuses_creator_id_b7300b34_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10312,8 +12459,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("Jobs")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("jobs_creator_id_56b9cd05_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10323,8 +12470,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("JobPositions")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("job_positions_creator_id_361c185c_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10334,8 +12481,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("JobRanks")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("job_ranks_creator_id_06b134a2_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10344,25 +12491,26 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.Company", "Company")
                         .WithMany("Logs")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .HasConstraintName("logs_company_id_ed2c29a1_fk_companies_id");
 
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("Logs")
                         .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("logs_entity_type_id_87a8fbba_fk_entity_types_id");
 
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("Logs")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("logs_module_id_c6447665_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.User", "User")
                         .WithMany("Logs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("logs_user_id_237f5f83_fk_users_id");
 
                     b.Navigation("Company");
 
@@ -10378,8 +12526,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("MeasurementUnits")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("measurement_units_creator_id_adca9822_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10388,21 +12536,24 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.EntityTypeCommand", "EntityTypeCommand")
                         .WithMany("MenuItems")
-                        .HasForeignKey("EntityTypeCommandId");
+                        .HasForeignKey("EntityTypeCommandId")
+                        .HasConstraintName("menu_items_entity_type_command_id_4319057f_fk_entity_type_commands_id");
 
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("MenuItems")
-                        .HasForeignKey("EntityTypeId");
+                        .HasForeignKey("EntityTypeId")
+                        .HasConstraintName("menu_items_entity_type_id_412db7e8_fk_entity_types_id");
 
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("MenuItems")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("menu_items_module_id_56dd60a4_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.MenuItem", "Parent")
                         .WithMany("InverseParent")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("menu_items_parent_id_7032fad2_fk_menu_items_id");
 
                     b.Navigation("EntityType");
 
@@ -10418,8 +12569,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("MilitaryServiceStatuses")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("military_service_statuses_creator_id_2264fea4_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10429,8 +12580,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("MissionTypes")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("mission_types_creator_id_17915c73_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10440,14 +12591,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("ModulePersonGroups")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("module_person_groups_module_id_64506255_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.PersonGroup", "PersonGroup")
                         .WithMany("ModulePersonGroups")
                         .HasForeignKey("PersonGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("module_person_groups_person_group_id_1b684782_fk_person_groups_id");
 
                     b.Navigation("Module");
 
@@ -10459,18 +12610,19 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("Notifications")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("notifications_module_id_31f93f98_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.User", "User2")
                         .WithMany("NotificationUser2s")
-                        .HasForeignKey("User2Id");
+                        .HasForeignKey("User2Id")
+                        .HasConstraintName("notifications_user2_id_8fe256fe_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.User", "User")
                         .WithMany("NotificationUsers")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("notifications_user_id_468e288d_fk_users_id");
 
                     b.Navigation("Module");
 
@@ -10483,23 +12635,28 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.City", "BirthCity")
                         .WithMany("People")
-                        .HasForeignKey("BirthCityId");
+                        .HasForeignKey("BirthCityId")
+                        .HasConstraintName("persons_birth_city_id_9fea3d98_fk_cities_id");
 
                     b.HasOne("General.Domain.Entities.Country", "CitizenNationality")
                         .WithMany("People")
-                        .HasForeignKey("CitizenNationalityId");
+                        .HasForeignKey("CitizenNationalityId")
+                        .HasConstraintName("persons_citizen_nationality_id_ecc47f36_fk_countries_id");
 
                     b.HasOne("General.Domain.Entities.HousingStatus", "HousingStatus")
                         .WithMany("People")
-                        .HasForeignKey("HousingStatusId");
+                        .HasForeignKey("HousingStatusId")
+                        .HasConstraintName("persons_housing_status_id_c8e37e67_fk_housing_statuses_id");
 
                     b.HasOne("General.Domain.Entities.MilitaryServiceStatus", "MilitaryServiceStatus")
                         .WithMany("People")
-                        .HasForeignKey("MilitaryServiceStatusId");
+                        .HasForeignKey("MilitaryServiceStatusId")
+                        .HasConstraintName("persons_military_service_status_id_31e57348_fk_military_service_statuses_id");
 
                     b.HasOne("General.Domain.Entities.Religion", "Religion")
                         .WithMany("People")
-                        .HasForeignKey("ReligionId");
+                        .HasForeignKey("ReligionId")
+                        .HasConstraintName("persons_religion_id_bf81e08d_fk_religions_id");
 
                     b.Navigation("BirthCity");
 
@@ -10517,26 +12674,26 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.City", "City")
                         .WithMany("PersonAddresses")
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_addresses_city_id_bda2a750_fk_cities_id");
 
                     b.HasOne("General.Domain.Entities.Country", "Country")
                         .WithMany("PersonAddresses")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_addresses_country_id_1fb41b6e_fk_countries_id");
 
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonAddresses")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_addresses_person_id_d67d7fc6_fk_persons_id");
 
                     b.HasOne("General.Domain.Entities.Province", "Province")
                         .WithMany("PersonAddresses")
                         .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_addresses_province_id_6ed2a37d_fk_provinces_id");
 
                     b.Navigation("City");
 
@@ -10552,14 +12709,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Bank", "Bank")
                         .WithMany("PersonBankAccounts")
                         .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_bank_accounts_bank_id_f4412c39_fk_banks_id");
 
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonBankAccounts")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_bank_accounts_person_id_cea19acc_fk_persons_id");
 
                     b.Navigation("Bank");
 
@@ -10571,20 +12728,20 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("PersonEducationalDegrees")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_educational_degrees_creator_id_29916c83_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.EducationalDegree", "EducationalDegree")
                         .WithMany("PersonEducationalDegrees")
                         .HasForeignKey("EducationalDegreeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_educational_degrees_educational_degree_id_59f16fbf_fk_educational_degrees_id");
 
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonEducationalDegrees")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_educational_degrees_person_id_c8759020_fk_persons_id");
 
                     b.Navigation("Creator");
 
@@ -10598,8 +12755,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonEmails")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_emails_person_id_7ab1a818_fk_persons_id");
 
                     b.Navigation("Person");
                 });
@@ -10609,8 +12766,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonFaxes")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_faxes_person_id_aeabbb62_fk_persons_id");
 
                     b.Navigation("Person");
                 });
@@ -10620,8 +12777,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonMobiles")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_mobiles_person_id_ab811f2d_fk_persons_id");
 
                     b.Navigation("Person");
                 });
@@ -10631,8 +12788,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonPhones")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_phones_person_id_ad2cd17d_fk_persons_id");
 
                     b.Navigation("Person");
                 });
@@ -10641,19 +12798,20 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.City", "BirthCity")
                         .WithMany("PersonRelatives")
-                        .HasForeignKey("BirthCityId");
+                        .HasForeignKey("BirthCityId")
+                        .HasConstraintName("person_relatives_birth_city_id_6e4fe77e_fk_cities_id");
 
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("PersonRelatives")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_relatives_creator_id_2e5156c1_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonRelatives")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_relatives_person_id_0ab58207_fk_persons_id");
 
                     b.Navigation("BirthCity");
 
@@ -10667,8 +12825,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithMany("PersonWebsites")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("person_websites_person_id_2bf2e8a6_fk_persons_id");
 
                     b.Navigation("Person");
                 });
@@ -10678,8 +12836,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Country", "Country")
                         .WithMany("Provinces")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("provinces_country_id_8ee0b7b3_fk_countries_id");
 
                     b.Navigation("Country");
                 });
@@ -10689,8 +12847,8 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("Religions")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("religions_creator_id_65bb4aaf_fk_users_id");
 
                     b.Navigation("Creator");
                 });
@@ -10699,25 +12857,26 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("General.Domain.Entities.Company", "Company")
                         .WithMany("SelectLogs")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .HasConstraintName("select_logs_company_id_36cbe9f3_fk_companies_id");
 
                     b.HasOne("General.Domain.Entities.EntityType", "EntityType")
                         .WithMany("SelectLogs")
                         .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("select_logs_entity_type_id_1ff059a2_fk_entity_types_id");
 
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("SelectLogs")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("select_logs_module_id_94ef8091_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.User", "User")
                         .WithMany("SelectLogs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("select_logs_user_id_e7ccfdfc_fk_users_id");
 
                     b.Navigation("Company");
 
@@ -10733,14 +12892,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Language", "Language")
                         .WithMany("Users")
                         .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("users_language_id_9c707b57_fk_languages_id");
 
                     b.HasOne("General.Domain.Entities.Person", "Person")
                         .WithOne("User")
                         .HasForeignKey("General.Domain.Entities.User", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("users_person_id_5146b3bd_fk_persons_id");
 
                     b.Navigation("Language");
 
@@ -10752,14 +12911,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.Module", "Module")
                         .WithMany("UserConfigs")
                         .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("user_configs_module_id_015d8e4f_fk_modules_id");
 
                     b.HasOne("General.Domain.Entities.User", "User")
                         .WithMany("UserConfigs")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("user_configs_user_id_c0e78255_fk_users_id");
 
                     b.Navigation("Module");
 
@@ -10771,14 +12930,14 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("WorkDepartments")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("work_departments_creator_id_7fdcedc2_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.Workplace", "WorkPlace")
                         .WithMany("WorkDepartments")
                         .HasForeignKey("WorkPlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("work_departments_work_place_id_182cba09_fk_workplaces_id");
 
                     b.Navigation("Creator");
 
@@ -10790,12 +12949,13 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("WorkOperations")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("work_operations_creator_id_d10b2154_fk_users_id");
 
                     b.HasOne("General.Domain.Entities.WorkDepartment", "WorkDepartment")
                         .WithMany("WorkOperations")
-                        .HasForeignKey("WorkDepartmentId");
+                        .HasForeignKey("WorkDepartmentId")
+                        .HasConstraintName("work_operations_work_department_id_a9f7d3e8_fk_work_departments_id");
 
                     b.Navigation("Creator");
 
@@ -10807,10 +12967,189 @@ namespace Persistence.Migrations
                     b.HasOne("General.Domain.Entities.User", "Creator")
                         .WithMany("Workplaces")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("workplaces_creator_id_0cc80a6d_fk_users_id");
 
                     b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.BankAccount", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.BankBranch", "BankBranch")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("BankBranchId")
+                        .IsRequired()
+                        .HasConstraintName("bank_accounts_bank_branch_id_f4462cb3_fk_bank_branches_id");
+
+                    b.Navigation("BankBranch");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CompanyUnit", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.CompanyUnit", "Parent")
+                        .WithMany("InverseParent")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("company_units_parent_id_c41b621a_fk_company_units_id");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CostCenter", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.CostCenter", "Parent")
+                        .WithMany("InverseParent")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("cost_centers_parent_id_eba90f6c_fk_cost_centers_id");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Foo", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Product", "Product")
+                        .WithMany("Foos")
+                        .HasForeignKey("ProductId")
+                        .IsRequired()
+                        .HasConstraintName("foos_product_id_64577d3d_fk_products_id");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Product", "Parent")
+                        .WithMany("InverseParent")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("products_parent_id_6d11d0e1_fk_products_id");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Purchase", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Product", "Product")
+                        .WithMany("Purchases")
+                        .HasForeignKey("ProductId")
+                        .IsRequired()
+                        .HasConstraintName("Purchases_product_id_d1413dc0_fk_products_id");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RoleMember", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Role", "Role")
+                        .WithMany("RoleMembers")
+                        .HasForeignKey("RoleId")
+                        .IsRequired()
+                        .HasConstraintName("role_members_role_id_3742ecb7_fk_roles_id");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .IsRequired()
+                        .HasConstraintName("role_permissions_role_id_216516f2_fk_roles_id");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermissionCommand", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Role", "Role")
+                        .WithMany("RolePermissionCommands")
+                        .HasForeignKey("RoleId")
+                        .IsRequired()
+                        .HasConstraintName("role_permission_commands_role_id_5d1758cb_fk_roles_id");
+
+                    b.HasOne("Shared.Domain.Entities.RolePermission", "RolePermission")
+                        .WithMany("RolePermissionCommands")
+                        .HasForeignKey("RolePermissionId")
+                        .IsRequired()
+                        .HasConstraintName("role_permission_commands_role_permission_id_40a8626f_fk_role_permissions_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("RolePermission");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermissionConstraint", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Role", "Role")
+                        .WithMany("RolePermissionConstraints")
+                        .HasForeignKey("RoleId")
+                        .IsRequired()
+                        .HasConstraintName("role_permission_constraints_role_id_3ad70fc8_fk_roles_id");
+
+                    b.HasOne("Shared.Domain.Entities.RolePermission", "RolePermission")
+                        .WithMany("RolePermissionConstraints")
+                        .HasForeignKey("RolePermissionId")
+                        .IsRequired()
+                        .HasConstraintName("role_permission_constraints_role_permission_id_678eb8f6_fk_role_permissions_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("RolePermission");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Sale", b =>
+                {
+                    b.HasOne("Shared.Domain.Entities.Product", "Product")
+                        .WithMany("Sales")
+                        .HasForeignKey("ProductId")
+                        .IsRequired()
+                        .HasConstraintName("sales_product_id_a179a813_fk_products_id");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductCode", b =>
+                {
+                    b.HasOne("General.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.ProductHierarchy", b =>
+                {
+                    b.HasOne("General.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseStock", b =>
+                {
+                    b.HasOne("General.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Domain.Entities.CompanyUnit", "CompanyUnit")
+                        .WithMany()
+                        .HasForeignKey("CompanyUnitId");
+
+                    b.HasOne("Warehouse.Domain.Entities.WarehouseType", "WarehouseType")
+                        .WithMany()
+                        .HasForeignKey("WarehouseTypeId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("CompanyUnit");
+
+                    b.Navigation("WarehouseType");
                 });
 
             modelBuilder.Entity("Weighing.Domain.Entities.DischargeStation", b =>
@@ -10849,17 +13188,9 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Shared.Domain.Entities.VehicleType", "VehicleType")
-                        .WithMany()
-                        .HasForeignKey("VehicleTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Company");
 
                     b.Navigation("Person");
-
-                    b.Navigation("VehicleType");
                 });
 
             modelBuilder.Entity("Accounting.Domain.Entities.AccountCategory", b =>
@@ -11081,6 +13412,8 @@ namespace Persistence.Migrations
 
                     b.Navigation("DataImports");
 
+                    b.Navigation("InversePreviousPeriod");
+
                     b.Navigation("LedgerPeriodCompanies");
 
                     b.Navigation("LedgerPeriodCompanySettings");
@@ -11297,6 +13630,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("General.Domain.Entities.Currency", b =>
                 {
                     b.Navigation("Countries");
+
+                    b.Navigation("Domains");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.Domain", b =>
@@ -11319,8 +13654,6 @@ namespace Persistence.Migrations
 
                     b.Navigation("EntityTypeDependencyRequiredEntityTypes");
 
-                    b.Navigation("FileEntities");
-
                     b.Navigation("Logs");
 
                     b.Navigation("MenuItems");
@@ -11331,11 +13664,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("General.Domain.Entities.EntityTypeCommand", b =>
                 {
                     b.Navigation("MenuItems");
-                });
-
-            modelBuilder.Entity("General.Domain.Entities.File", b =>
-                {
-                    b.Navigation("FileEntities");
                 });
 
             modelBuilder.Entity("General.Domain.Entities.HousingStatus", b =>
@@ -11482,6 +13810,50 @@ namespace Persistence.Migrations
             modelBuilder.Entity("General.Domain.Entities.Workplace", b =>
                 {
                     b.Navigation("WorkDepartments");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.BankBranch", b =>
+                {
+                    b.Navigation("BankAccounts");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CompanyUnit", b =>
+                {
+                    b.Navigation("InverseParent");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.CostCenter", b =>
+                {
+                    b.Navigation("InverseParent");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("Foos");
+
+                    b.Navigation("InverseParent");
+
+                    b.Navigation("Purchases");
+
+                    b.Navigation("Sales");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("RoleMembers");
+
+                    b.Navigation("RolePermissionCommands");
+
+                    b.Navigation("RolePermissionConstraints");
+
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Shared.Domain.Entities.RolePermission", b =>
+                {
+                    b.Navigation("RolePermissionCommands");
+
+                    b.Navigation("RolePermissionConstraints");
                 });
 #pragma warning restore 612, 618
         }

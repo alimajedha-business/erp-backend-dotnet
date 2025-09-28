@@ -17,9 +17,6 @@ namespace Weighing.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
-
-      
-
             builder.Property(x => x.VehicleName)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -31,9 +28,6 @@ namespace Weighing.Infrastructure.Persistence.Configurations
             builder.Property(x => x.InitialWeight)
                 .HasColumnType("decimal(18,2)");
 
-
-
-
             builder.Property(x => x.DriverType)
                 .HasConversion<int>()
                 .IsRequired();
@@ -43,10 +37,10 @@ namespace Weighing.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.PersonId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.VehicleType)
-                .WithMany()
-                .HasForeignKey(x => x.VehicleTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(x => x.VehicleType)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.VehicleTypeId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 
