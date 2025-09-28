@@ -1,0 +1,7 @@
+package manager console
+
+add-migration Test -context MainDbContext
+
+Remove-Migration -context MainDbContext
+
+update-database -context MainDbContext

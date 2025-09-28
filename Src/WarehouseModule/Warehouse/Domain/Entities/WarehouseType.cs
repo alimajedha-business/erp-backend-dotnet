@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Domain.Entities
 {
-    [Table("WarehouseTypes", Schema = "Warehouse")]
+    [Table("WarehouseType", Schema = "warehouse")]
     public partial class WarehouseType
     {
         [Key]
         public int Id { get; set; }
 
-        public int TypeCode { get; set; } 
+        public required int Code { get; set; } 
 
         [StringLength(50)]
-        public string TypeName { get; set; } = String.Empty;
+        public required string Name { get; set; }
 
-        public ICollection<WarehouseStock>? WarehouseStocks { get; set; }
+        public ICollection<WarehouseStock>? WarehouseStock { get; set; }
 
     }
 }

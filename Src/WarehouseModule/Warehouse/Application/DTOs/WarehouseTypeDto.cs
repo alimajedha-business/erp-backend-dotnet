@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Application.DTOs
 {
-    public record class WarehouseTypeDto(int Id,int TypeCode, string TypeName);
+    public record class WarehouseTypeDto(int Id,int Code, string Name);
 }

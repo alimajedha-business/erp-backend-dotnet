@@ -15,6 +15,8 @@ namespace Warehouse.Application.Services
     {
         private readonly Lazy<IWarehouseTypeService> _WarehouseTypeService;
         private readonly Lazy<IWarehouseStockService> _WarehouseStockService;
+        private readonly Lazy<IProductHierarchyService> _ProductHierarchyService;
+        private readonly Lazy<IProductCodeService> _ProductCodeService;
 
 
         public ServiceManager(IWarehouseRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
@@ -25,11 +27,19 @@ namespace Warehouse.Application.Services
             _WarehouseStockService = new Lazy<IWarehouseStockService>(() =>
             new WarehouseStockService(repositoryManager, logger, mapper));
 
+            _ProductHierarchyService = new Lazy<IProductHierarchyService>(() =>
+            new ProductHierarchyService(repositoryManager, logger, mapper));
+
+            _ProductCodeService = new Lazy<IProductCodeService>(() =>
+            new ProductCodeService(repositoryManager, logger, mapper));
         }
         public IWarehouseTypeService WarehouseTypeService => _WarehouseTypeService.Value;
 
 
         public IWarehouseStockService WarehouseStockService => _WarehouseStockService.Value;
+
+        public IProductHierarchyService ProductHierarchyService => _ProductHierarchyService.Value;
+        public IProductCodeService ProductCodeService => _ProductCodeService.Value;
 
     }
 }

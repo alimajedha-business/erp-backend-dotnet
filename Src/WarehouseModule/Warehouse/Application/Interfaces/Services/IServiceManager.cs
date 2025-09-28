@@ -13,5 +13,9 @@ namespace Warehouse.Application.Interfaces.Services
 
         IWarehouseStockService WarehouseStockService { get; }
 
+        IProductHierarchyService ProductHierarchyService { get; }
+
+        IProductCodeService ProductCodeService { get; }
+
     }
 }

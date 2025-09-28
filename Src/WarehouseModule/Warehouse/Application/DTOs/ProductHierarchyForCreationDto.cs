@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Application.DTOs
 {
-    public record ProductHierarchyForCreationDto : ProductHierarchyForManiPulationDto;
+    public record ProductHierarchyForCreationDto : ProductHierarchyForManipulationDto;
 }

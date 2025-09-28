@@ -36,6 +36,7 @@ namespace Warehouse.Application.Services
         {
             var WarehouseStockEntity = _mapper.Map<WarehouseStock>(WarehouseStock);
             _repository.WarehouseStock.Create(WarehouseStockEntity);
+
             _repository.Save();
             var WarehouseStockToReturn = _mapper.Map<WarehouseStockDto>(WarehouseStockEntity);
             return WarehouseStockToReturn;

@@ -2,7 +2,7 @@
 using General.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Payroll.Infrastructure.DataAccess;
-using Shared.Intrastructure.DataAccess;
+using Shared.Infrastructure.DataAccess;
 using Warehouse.Infrastructure.DataAccess;
 using Weighing.Infrastructure.DataAccess;
 

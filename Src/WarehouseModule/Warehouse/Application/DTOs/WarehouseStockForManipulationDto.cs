@@ -9,13 +9,13 @@ namespace Warehouse.Application.DTOs
 {
     public abstract record WarehouseStockForManipulationDto
     {
-        [Required(ErrorMessage = "WarehouseCode is a required field.")]
-        public int WarehouseCode { get; set; }
+        [Required(ErrorMessage = "Code is a required field.")]
+        public int Code { get; set; }
 
   
-        [Required(ErrorMessage = "WarehouseName is a required field.")]
+        [Required(ErrorMessage = "Name is a required field.")]
         [MaxLength(150, ErrorMessage = "Maximum length for the Name is 150 characters.")]
-        public string? WarehouseName { get; set; }
+        public required string Name { get; set; }
 
 
         [Required(ErrorMessage = "CompanyId is a required field.")]
@@ -23,7 +23,7 @@ namespace Warehouse.Application.DTOs
 
         [Required(ErrorMessage = "WarehouseTypeId is a required field.")]
         public int WarehouseTypeId { get; set; }
-        public int? BranchId { get; set; }
+      //  public int? CompanyUnitId { get; set; }
 
         // public IEnumerable<WarehouseStockForCreationDto>? WarehouseType { get; init; }
 

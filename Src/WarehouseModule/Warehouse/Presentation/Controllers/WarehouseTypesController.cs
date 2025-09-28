@@ -8,7 +8,7 @@ using System.ComponentModel.Design;
 
 namespace Warehouse.Presentation.Controllers
 {
-    [Route("api/Warehouse/WarehouseTypes")]
+    [Route("api/Warehouse/WarehouseType")]
     [ApiController]
     public class WarehouseTypesController : ControllerBase
     {

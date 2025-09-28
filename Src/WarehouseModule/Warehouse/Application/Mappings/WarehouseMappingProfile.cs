@@ -15,24 +15,30 @@ namespace Warehouse.Application.Mappings
         {
             CreateMap<WarehouseType, WarehouseTypeDto>()
                 .ForCtorParam("Id", opt => opt.MapFrom(src => src.Id))
-                .ForCtorParam("TypeCode", opt => opt.MapFrom(src => src.TypeCode))
-                .ForCtorParam("TypeName", opt => opt.MapFrom(src => src.TypeName));
+                .ForCtorParam("Code", opt => opt.MapFrom(src => src.Code))
+                .ForCtorParam("Name", opt => opt.MapFrom(src => src.Name));
+
+            //CreateMap<WarehouseTypeForCreationDto, WarehouseType>()
+            //    .ForMember(d => d.Code, opt => opt.MapFrom(src => src.Code))
+            //    .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Name))
+            //    .ForMember(d => d.WarehouseStocks, opt => opt.Ignore());
 
             CreateMap<WarehouseTypeForCreationDto, WarehouseType>()
-                .ForMember(dest => dest.TypeCode, opt => opt.MapFrom(src => src.TypeCode))
-                .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.TypeName))
-                .ForMember(dest=>dest.WarehouseStocks,opt=>opt.Ignore());
-
-            CreateMap<WarehouseTypeForCreationDto, WarehouseType>()
-                .ForMember(dest => dest.TypeCode, opt => opt.MapFrom(src => src.TypeCode))
-                .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.TypeName));
+                .ForMember(d => d.Code, opt => opt.MapFrom(src => src.Code))
+                .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Name));
 
 ///////////////////////////////////////////////////////////
 
             CreateMap<WarehouseStock, WarehouseStockDto>();
             CreateMap<WarehouseStockForCreationDto, WarehouseStock>();
-            CreateMap<WarehouseStockForCreationDto, WarehouseStock>();
 
+            ///////////////////////////////////////////////////////////  
+            CreateMap<ProductHierarchy, ProductHierarchyDto>();
+            CreateMap<ProductHierarchyForCreationDto, ProductHierarchy>();
+
+            ///////////////////////////////////////////////////////////  
+            CreateMap<ProductCode, ProductCodeDto>();
+            CreateMap<ProductCodeForCreationDto, ProductCode>();
         }
     }
 }

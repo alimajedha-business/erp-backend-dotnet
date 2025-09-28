@@ -19,11 +19,11 @@ namespace Warehouse.Infrastructure.DataAccess.Repositories
 
         public IEnumerable<WarehouseType> GetAll(bool trackChanges) =>
              FindAll(trackChanges)
-            .OrderBy(l => l.TypeCode)
+            .OrderBy(l => l.Code)
             .ToList();
 
         public WarehouseType? Get(int Id,  bool trackChanges) =>
-            FindByCondition(a => a.TypeCode.Equals(Id) , trackChanges)
+            FindByCondition(a => a.Code.Equals(Id) , trackChanges)
             .SingleOrDefault();
 
         public new void Create(WarehouseType warehouseType)

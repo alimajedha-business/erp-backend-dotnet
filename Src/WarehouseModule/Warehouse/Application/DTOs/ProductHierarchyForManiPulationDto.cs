@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Application.DTOs
 {
-    public abstract record ProductHierarchyForManiPulationDto
+    public abstract record ProductHierarchyForManipulationDto
     {
         [Required(ErrorMessage = "CompanyId is a required field.")]
         public int CompanyId;
@@ -34,7 +34,7 @@ namespace Warehouse.Application.DTOs
 
 
         [MaxLength(10, ErrorMessage = "Maximum length for the Description is 10 characters.")]
-        public string? FourthLeveltype { get; init; }
+        public string? FourthLevelType { get; init; }
 
 
         [MaxLength(10, ErrorMessage = "Maximum length for the Description is 10 characters.")]

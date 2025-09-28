@@ -1,30 +1,38 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using General.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Warehouse.Domain.Entities
 {
-    [Table("ProductHierarchies", Schema = "Warehouse")]
+    [Table("ProductHierarchy", Schema = "warehouse")]
+    [Index("CompanyId", Name = "ProductHierarchy_CompanyId")]
     public class ProductHierarchy
     {
         [Key]
         public int Id { get; set; }
 
-        public byte FirstLevelSize { get; set; } = 0!;
+
+        public required int CompanyId { get; set; }
+        [ForeignKey("CompanyId")]
+        public required virtual ICollection<Company> Companies { get; set; }
+
+        public required byte FirstLevelSize { get; set; } 
 
         [StringLength(10)]
-        public string FirstLevelType { get; set; } = null!;
+        public required string FirstLevelType { get; set; }
 
 
-        public byte SecondLevelSize { get; set; } = 0!;
+        public required byte SecondLevelSize { get; set; }
 
         [StringLength(10)]
-        public string SecondLevelType { get; set; } = null!;
+        public required string SecondLevelType { get; set; }
 
 
         public byte? ThirdLevelSize { get; set; }
@@ -49,5 +57,10 @@ namespace Warehouse.Domain.Entities
 
         [StringLength(10)]
         public string? SixthLevelType { get; set; }
+
+        public byte? SeventhLevelSize { get; set; }
+
+        [StringLength(10)]
+        public string? SeventhLevelType { get; set; }
     }
 }

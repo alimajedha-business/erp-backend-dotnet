@@ -9,18 +9,18 @@ namespace Warehouse.Application.DTOs
     public record class WarehouseStockDto
     {
         public int Id { get; init; } = 0!;
-        public int WarehouseCode { get; init; }
-        public string WarehouseName { get; init; } = string.Empty;
+        public required int Code { get; init; }
+        public required string Name { get; init; }
         public int CompanyId { get; init; }
         public decimal MaxAssetValue { get; init; }
-        public int BranchId { get; init; }
+        public int CompanyUnitId { get; init; }
         public int WarehouseTypeId { get; init; }
         public int WarehouseMasterAccount { get; init; }
         public int WarehouseSlaveAccount { get; init; }
         public int WarehouseDetail1Account { get; init; }
         public int WarehouseDetail2Account { get; init; }
-        public bool WarehouseAccountFixed { get; init; }
-        public int SalesMasterAccoun { get; init; }
+        public bool WarehouseAccountIsStatic { get; init; }
+        public int SalesMasterAccount { get; init; }
         public int SalesSlaveAccount { get; init; }
         public int SalesDetail1Account { get; init; }
         public int SalesDetail2Account { get; init; }
@@ -40,5 +40,11 @@ namespace Warehouse.Application.DTOs
         public int PurchaseReturnDetail1Account { get; init; }
         public int PurchaseReturnDetail2Account { get; init; }
         public bool PurchaseReturnAccountIsStatic { get; init; }
+
+        public int ContractorMasterAccount { get; init; }
+        public int ContractorSlaveAccount { get; init; }
+        public int ContractorDetail1Account { get; init; }
+        public int ContractorDetail2Account { get; init; }
+        public bool ContractorAccountIsStatic { get; init; }
     }
 }

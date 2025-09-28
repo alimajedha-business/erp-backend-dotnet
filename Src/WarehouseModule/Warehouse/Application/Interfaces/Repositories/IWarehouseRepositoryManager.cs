@@ -11,6 +11,10 @@ namespace Warehouse.Application.Interfaces.Repositories
         IWarehouseTypeRepository WarehouseType { get; }
         IWarehouseStockRepository WarehouseStock { get; }
 
+        IProductHierarchyRepository ProductHierarchy { get; }
+
+        IProductCodeRepository ProductCode { get; }
+
         void Save();
     }
 }
