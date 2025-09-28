@@ -57,11 +57,10 @@ public partial class SharedDbContext : DbContext
 
     public virtual DbSet<Sale> Sales { get; set; }
 
-    public virtual DbSet<VehicleType> VehicleTypes { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Persian_100_CI_AI");
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SharedDbContext).Assembly);
     }
 }

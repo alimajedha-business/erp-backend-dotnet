@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83FF1D516A7");
+            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83F56963A72");
 
             entity.ToTable("roles", "shared");
 

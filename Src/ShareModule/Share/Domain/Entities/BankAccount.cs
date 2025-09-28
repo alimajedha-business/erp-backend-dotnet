@@ -27,16 +27,6 @@ public partial class BankAccount
 
     public string NationalCode { get; set; }
 
-    public string Signatory1 { get; set; }
-
-    public string Signatory2 { get; set; }
-
-    public string Signatory3 { get; set; }
-
-    public string Signatory4 { get; set; }
-
-    public string Signatory5 { get; set; }
-
     public bool IsActive { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -54,6 +44,16 @@ public partial class BankAccount
     public int? CurrencyId { get; set; }
 
     public int TypeId { get; set; }
+
+    public int? UserSignatory1Id { get; set; }
+
+    public int? UserSignatory2Id { get; set; }
+
+    public int? UserSignatory3Id { get; set; }
+
+    public int? UserSignatory4Id { get; set; }
+
+    public int? UserSignatory5Id { get; set; }
 
     public virtual BankBranch BankBranch { get; set; }
 }

@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ReportTemplate> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F97AEB692");
+            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F0D6D3A08");
 
             entity.ToTable("report_templates", "shared");
 

@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Sale> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__sales__3213E83FDEDC98F0");
+            entity.HasKey(e => e.Id).HasName("PK__sales__3213E83F036DC29E");
 
             entity.ToTable("sales", "shared");
 

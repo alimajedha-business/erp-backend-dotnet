@@ -11,11 +11,11 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<CompanySetting> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__company___3213E83F44690446");
+            entity.HasKey(e => e.Id).HasName("PK__company___3213E83F58F5955D");
 
             entity.ToTable("company_settings", "shared");
 
-            entity.HasIndex(e => e.CompanyId, "UQ__company___3E2672341BAB4B8B").IsUnique();
+            entity.HasIndex(e => e.CompanyId, "UQ__company___3E2672348C06AA9B").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");

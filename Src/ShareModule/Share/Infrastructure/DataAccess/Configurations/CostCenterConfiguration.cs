@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<CostCenter> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__cost_cen__3213E83FF8026CF8");
+            entity.HasKey(e => e.Id).HasName("PK__cost_cen__3213E83FF0CF4150");
 
             entity.ToTable("cost_centers", "shared");
 
@@ -33,7 +33,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
                 .HasColumnName("authorized_users");
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(18)
+                .HasMaxLength(21)
                 .HasColumnName("code");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");

@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Restriction> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__restrict__3213E83F37293154");
+            entity.HasKey(e => e.Id).HasName("PK__restrict__3213E83F533B4486");
 
             entity.ToTable("restrictions", "shared");
 

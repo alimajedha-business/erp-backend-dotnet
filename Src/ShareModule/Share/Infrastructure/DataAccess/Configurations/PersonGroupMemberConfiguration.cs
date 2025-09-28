@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonGroupMember> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_g__3213E83F33F883A4");
+            entity.HasKey(e => e.Id).HasName("PK__person_g__3213E83FDFED9134");
 
             entity.ToTable("person_group_members", "shared");
 

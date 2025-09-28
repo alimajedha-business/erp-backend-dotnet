@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BankAccount> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__bank_acc__3213E83F744A2E6C");
+            entity.HasKey(e => e.Id).HasName("PK__bank_acc__3213E83FEDB13419");
 
             entity.ToTable("bank_accounts", "shared");
 
@@ -37,8 +37,19 @@ namespace Shared.Infrastructure.DataAccess.Configurations
 
             entity.HasIndex(e => e.TypeId, "bank_accounts_type_id_50bc1431");
 
+            entity.HasIndex(e => e.UserSignatory1Id, "bank_accounts_user_signatory_1_id_0cad9553");
+
+            entity.HasIndex(e => e.UserSignatory2Id, "bank_accounts_user_signatory_2_id_a7593d15");
+
+            entity.HasIndex(e => e.UserSignatory3Id, "bank_accounts_user_signatory_3_id_d48c50a6");
+
+            entity.HasIndex(e => e.UserSignatory4Id, "bank_accounts_user_signatory_4_id_da60748f");
+
+            entity.HasIndex(e => e.UserSignatory5Id, "bank_accounts_user_signatory_5_id_0c19f838");
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AccountNumber)
+                .IsRequired()
                 .HasMaxLength(24)
                 .HasColumnName("account_number");
             entity.Property(e => e.AccountOpeningDate).HasColumnName("account_opening_date");
@@ -69,24 +80,14 @@ namespace Shared.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.NationalCode)
                 .HasMaxLength(11)
                 .HasColumnName("national_code");
-            entity.Property(e => e.Signatory1)
-                .HasMaxLength(150)
-                .HasColumnName("signatory_1");
-            entity.Property(e => e.Signatory2)
-                .HasMaxLength(150)
-                .HasColumnName("signatory_2");
-            entity.Property(e => e.Signatory3)
-                .HasMaxLength(150)
-                .HasColumnName("signatory_3");
-            entity.Property(e => e.Signatory4)
-                .HasMaxLength(150)
-                .HasColumnName("signatory_4");
-            entity.Property(e => e.Signatory5)
-                .HasMaxLength(150)
-                .HasColumnName("signatory_5");
             entity.Property(e => e.SignatureExpiryDate).HasColumnName("signature_expiry_date");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            entity.Property(e => e.UserSignatory1Id).HasColumnName("user_signatory_1_id");
+            entity.Property(e => e.UserSignatory2Id).HasColumnName("user_signatory_2_id");
+            entity.Property(e => e.UserSignatory3Id).HasColumnName("user_signatory_3_id");
+            entity.Property(e => e.UserSignatory4Id).HasColumnName("user_signatory_4_id");
+            entity.Property(e => e.UserSignatory5Id).HasColumnName("user_signatory_5_id");
 
             entity.HasOne(d => d.BankBranch).WithMany(p => p.BankAccounts)
                 .HasForeignKey(d => d.BankBranchId)

@@ -11,7 +11,7 @@ namespace Shared.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Branch> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__branches__3213E83F59453D0A");
+            entity.HasKey(e => e.Id).HasName("PK__branches__3213E83F5CEAB5D1");
 
             entity.ToTable("branches", "shared");
 
