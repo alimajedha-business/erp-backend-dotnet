@@ -8,7 +8,6 @@ using Morcatko.AspNetCore.JsonMergePatch;
 using Common.Infrastructure.Logging;
 using General.Infrastructure.DataAccess;
 using Warehouse.Infrastructure.DataAccess;
-using Warehouse.Application.Mappings;
 using Accounting.Application.Mappings;
 using Common.Application.Mappings;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +29,7 @@ try
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
-    builder.Services.AddAutoMapper(typeof(WarehouseMappingProfile).Assembly);
+    //builder.Services.AddAutoMapper(typeof(WarehouseMappingProfile).Assembly);
     builder.Services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
