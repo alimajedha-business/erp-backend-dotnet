@@ -27,6 +27,8 @@ public partial class Log
 
     public int ModuleId { get; set; }
 
+    public int? PeriodId { get; set; }
+
     public int UserId { get; set; }
 
     public virtual Company Company { get; set; }

@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<EmploymentContractTitle> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__employme__3213E83F82C22F82");
+            entity.HasKey(e => e.Id).HasName("PK__employme__3213E83F56B8CDCE");
 
             entity.ToTable("employment_contract_titles", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__employme__72E12F1B6B3538D6").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__employme__72E12F1BF5BAE67B").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "employment_contract_titles_creator_id_f0cd95e9");
 

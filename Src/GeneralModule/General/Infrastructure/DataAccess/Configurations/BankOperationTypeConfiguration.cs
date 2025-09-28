@@ -11,13 +11,13 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BankOperationType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__bank_ope__3213E83F8731515E");
+            entity.HasKey(e => e.Id).HasName("PK__bank_ope__3213E83FB66226B4");
 
             entity.ToTable("bank_operation_types", "general");
 
-            entity.HasIndex(e => e.Code, "UQ__bank_ope__357D4CF9707FC79A").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__bank_ope__357D4CF98B86A8C8").IsUnique();
 
-            entity.HasIndex(e => e.Name, "UQ__bank_ope__72E12F1B40012EEB").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__bank_ope__72E12F1BB777BDE5").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code).HasColumnName("code");

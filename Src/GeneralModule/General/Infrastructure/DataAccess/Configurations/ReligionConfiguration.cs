@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Religion> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__religion__3213E83F8F5C0419");
+            entity.HasKey(e => e.Id).HasName("PK__religion__3213E83F14A489F8");
 
             entity.ToTable("religions", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__religion__72E12F1B16AF9102").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__religion__72E12F1B76222047").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "religions_creator_id_65bb4aaf");
 

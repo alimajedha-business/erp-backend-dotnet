@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<HousingStatus> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__housing___3213E83F883A7B34");
+            entity.HasKey(e => e.Id).HasName("PK__housing___3213E83FD3EDA6F5");
 
             entity.ToTable("housing_statuses", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__housing___72E12F1BF71088F1").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__housing___72E12F1B5272DF3E").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "housing_statuses_creator_id_b7300b34");
 

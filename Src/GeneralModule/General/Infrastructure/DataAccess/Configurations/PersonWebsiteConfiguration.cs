@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonWebsite> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_w__3213E83F354F2664");
+            entity.HasKey(e => e.Id).HasName("PK__person_w__3213E83F3EE363BA");
 
             entity.ToTable("person_websites", "general");
 

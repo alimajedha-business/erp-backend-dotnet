@@ -11,9 +11,9 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<EntityType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83F53BACB44");
+            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83F1AD03745");
 
-            entity.ToTable("entity_types", "general");
+            entity.ToTable("entity_types", "general", tb => tb.HasTrigger("trg_EntityType_Protect_Delete"));
 
             entity.HasIndex(e => e.ContentTypeId, "entity_types_content_type_id_b7d4130b");
 
@@ -55,6 +55,7 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name_fa");
+            entity.Property(e => e.Ordering).HasColumnName("ordering");
             entity.Property(e => e.Permissible).HasColumnName("permissible");
             entity.Property(e => e.Printable).HasColumnName("printable");
             entity.Property(e => e.Readable).HasColumnName("readable");

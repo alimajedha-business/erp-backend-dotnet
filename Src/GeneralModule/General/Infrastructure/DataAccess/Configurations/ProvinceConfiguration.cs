@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Province> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FC4AE030D");
+            entity.HasKey(e => e.Id).HasName("PK__province__3213E83F6DDFBA22");
 
             entity.ToTable("provinces", "general");
 

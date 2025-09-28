@@ -22,4 +22,6 @@ public partial class Currency
     public DateTime? UpdatedAt { get; set; }
 
     public virtual ICollection<Country> Countries { get; set; } = new List<Country>();
+
+    public virtual ICollection<Domain> Domains { get; set; } = new List<Domain>();
 }

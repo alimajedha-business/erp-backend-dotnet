@@ -11,12 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BankAccountType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__bank_acc__3213E83F6744CAF0");
+            entity.HasKey(e => e.Id).HasName("PK__bank_acc__3213E83F1A2A955F");
 
             entity.ToTable("bank_account_types", "general");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CanWithdrawal).HasColumnName("can_withdrawal");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.HasChequeBook).HasColumnName("has_cheque_book");
             entity.Property(e => e.Name)

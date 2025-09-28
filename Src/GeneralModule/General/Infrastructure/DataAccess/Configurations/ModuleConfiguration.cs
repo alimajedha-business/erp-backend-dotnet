@@ -11,13 +11,13 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Module> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__modules__3213E83F5BA46A5C");
+            entity.HasKey(e => e.Id).HasName("PK__modules__3213E83F0BA52FF9");
 
             entity.ToTable("modules", "general");
 
-            entity.HasIndex(e => e.NameEn, "UQ__modules__2E0A72B0D7D1DAD7").IsUnique();
+            entity.HasIndex(e => e.NameEn, "UQ__modules__2E0A72B054632985").IsUnique();
 
-            entity.HasIndex(e => e.NameFa, "UQ__modules__2E0A7AA66BFF07F4").IsUnique();
+            entity.HasIndex(e => e.NameFa, "UQ__modules__2E0A7AA60B667EF1").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Color)

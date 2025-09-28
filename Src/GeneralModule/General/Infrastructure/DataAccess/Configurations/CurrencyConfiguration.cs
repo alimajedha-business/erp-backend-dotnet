@@ -11,17 +11,16 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Currency> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__currenci__3213E83FAD2B263C");
+            entity.HasKey(e => e.Id).HasName("PK__currenci__3213E83F9B15A5E8");
 
             entity.ToTable("currencies", "general");
 
-            entity.HasIndex(e => e.Code, "UQ__currenci__357D4CF907683F55").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__currenci__357D4CF9D837DF27").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.Iso)
-                .IsRequired()
                 .HasMaxLength(3)
                 .HasColumnName("iso");
             entity.Property(e => e.Name)

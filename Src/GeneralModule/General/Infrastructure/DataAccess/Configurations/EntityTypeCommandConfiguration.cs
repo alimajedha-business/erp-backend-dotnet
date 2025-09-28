@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<EntityTypeCommand> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83F70F7B33A");
+            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83FCFCBD04F");
 
             entity.ToTable("entity_type_commands", "general");
 
@@ -35,6 +35,8 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name_fa");
+            entity.Property(e => e.Ordering).HasColumnName("ordering");
+            entity.Property(e => e.Permissible).HasColumnName("permissible");
 
             entity.HasOne(d => d.EntityType).WithMany(p => p.EntityTypeCommands)
                 .HasForeignKey(d => d.EntityTypeId)

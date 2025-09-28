@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonEducationalDegree> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_e__3213E83F6B2086D0");
+            entity.HasKey(e => e.Id).HasName("PK__person_e__3213E83F256860BE");
 
             entity.ToTable("person_educational_degrees", "general");
 

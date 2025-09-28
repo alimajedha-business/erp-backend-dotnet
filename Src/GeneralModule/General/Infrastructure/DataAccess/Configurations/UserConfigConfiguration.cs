@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<UserConfig> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__user_con__3213E83F1E698839");
+            entity.HasKey(e => e.Id).HasName("PK__user_con__3213E83F56E35490");
 
             entity.ToTable("user_configs", "general");
 

@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonFaxis> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_f__3213E83F90B59B82");
+            entity.HasKey(e => e.Id).HasName("PK__person_f__3213E83F6572A638");
 
             entity.ToTable("person_faxes", "general");
 

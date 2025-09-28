@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ErrorLog> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__error_lo__3213E83F9EC25649");
+            entity.HasKey(e => e.Id).HasName("PK__error_lo__3213E83F5550F3FA");
 
             entity.ToTable("error_logs", "general");
 

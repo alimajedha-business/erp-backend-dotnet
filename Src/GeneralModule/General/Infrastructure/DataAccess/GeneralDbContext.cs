@@ -55,10 +55,6 @@ public partial class GeneralDbContext : DbContext
 
     public virtual DbSet<ErrorLog> ErrorLogs { get; set; }
 
-    public virtual DbSet<General.Domain.Entities.File> Files { get; set; }
-
-    public virtual DbSet<FileEntity> FileEntities { get; set; }
-
     public virtual DbSet<ForeignLanguage> ForeignLanguages { get; set; }
 
     public virtual DbSet<HousingStatus> HousingStatuses { get; set; }
@@ -127,6 +123,8 @@ public partial class GeneralDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("Persian_100_CI_AI");
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(GeneralDbContext).Assembly);
     }
 

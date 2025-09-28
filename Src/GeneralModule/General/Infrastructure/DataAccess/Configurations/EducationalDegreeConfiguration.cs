@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<EducationalDegree> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__educatio__3213E83FEDB51C60");
+            entity.HasKey(e => e.Id).HasName("PK__educatio__3213E83F5CD5C6F4");
 
             entity.ToTable("educational_degrees", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__educatio__72E12F1B3436D9CA").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__educatio__72E12F1BED95894B").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "educational_degrees_creator_id_693f4fac");
 

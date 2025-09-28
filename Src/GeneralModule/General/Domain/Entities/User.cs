@@ -15,6 +15,8 @@ public partial class User
 
     public string UsernameEncrypted { get; set; }
 
+    public string Signature { get; set; }
+
     public bool IsSuperuser { get; set; }
 
     public bool IsStaff { get; set; }
@@ -35,6 +37,18 @@ public partial class User
 
     public DateTime? LastLogin { get; set; }
 
+    public string AccessToken { get; set; }
+
+    public string RefreshToken { get; set; }
+
+    public TimeOnly? AccessStartTime { get; set; }
+
+    public TimeOnly? AccessEndTime { get; set; }
+
+    public DateTime? ExpireDate { get; set; }
+
+    public string AllowedIps { get; set; }
+
     public DateTime? UpdatedAt { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -42,10 +56,6 @@ public partial class User
     public int LanguageId { get; set; }
 
     public int PersonId { get; set; }
-
-    public string AccessToken { get; set; }
-
-    public string RefreshToken { get; set; }
 
     public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
 

@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<BankStatementPattern> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__bank_sta__3213E83FBC9D1695");
+            entity.HasKey(e => e.Id).HasName("PK__bank_sta__3213E83F9F2ED696");
 
             entity.ToTable("bank_statement_patterns", "general");
 
-            entity.HasIndex(e => e.BankId, "UQ__bank_sta__4076F702CA9D216F").IsUnique();
+            entity.HasIndex(e => e.BankId, "UQ__bank_sta__4076F70269DE7D7F").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BankId).HasColumnName("bank_id");

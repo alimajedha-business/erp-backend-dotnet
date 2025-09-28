@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<MeasurementUnit> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__measurem__3213E83F2FAD5529");
+            entity.HasKey(e => e.Id).HasName("PK__measurem__3213E83F9EFC8026");
 
             entity.ToTable("measurement_units", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__measurem__72E12F1BFC5E9180").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__measurem__72E12F1BC848976E").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "measurement_units_creator_id_adca9822");
 

@@ -11,13 +11,13 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Country> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__countrie__3213E83FA0D1526C");
+            entity.HasKey(e => e.Id).HasName("PK__countrie__3213E83FA8F8A627");
 
             entity.ToTable("countries", "general");
 
-            entity.HasIndex(e => e.Code, "UQ__countrie__357D4CF98C0F73DF").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__countrie__357D4CF992BD5944").IsUnique();
 
-            entity.HasIndex(e => e.Name, "UQ__countrie__72E12F1B7CCF347E").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__countrie__72E12F1B07ACC871").IsUnique();
 
             entity.HasIndex(e => e.CurrencyId, "countries_currency_id_3d87434c");
 

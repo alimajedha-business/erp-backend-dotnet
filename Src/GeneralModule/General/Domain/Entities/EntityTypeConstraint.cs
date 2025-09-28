@@ -27,6 +27,8 @@ public partial class EntityTypeConstraint
 
     public bool Exportable { get; set; }
 
+    public short? Ordering { get; set; }
+
     public int EntityTypeId { get; set; }
 
     public virtual EntityType EntityType { get; set; }

@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonEmail> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_e__3213E83FB51284E9");
+            entity.HasKey(e => e.Id).HasName("PK__person_e__3213E83F3B78C1DD");
 
             entity.ToTable("person_emails", "general");
 

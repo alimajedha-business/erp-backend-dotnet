@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonGroup> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_g__3213E83F713F046A");
+            entity.HasKey(e => e.Id).HasName("PK__person_g__3213E83FD9150C37");
 
             entity.ToTable("person_groups", "general");
 
@@ -22,6 +22,10 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(23)
+                .HasColumnName("type");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             OnConfigurePartial(entity);

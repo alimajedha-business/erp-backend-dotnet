@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<SelectLog> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__select_l__3213E83F0CA38568");
+            entity.HasKey(e => e.Id).HasName("PK__select_l__3213E83F9F91C3A2");
 
             entity.ToTable("select_logs", "general");
 
@@ -25,7 +25,7 @@ namespace General.Infrastructure.DataAccess.Configurations
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Command)
-                .HasMaxLength(30)
+                .HasMaxLength(100)
                 .HasColumnName("command");
             entity.Property(e => e.CompanyId).HasColumnName("company_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");

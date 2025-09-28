@@ -15,7 +15,11 @@ public partial class EntityTypeCommand
 
     public string NameEn { get; set; }
 
+    public short? Ordering { get; set; }
+
     public int EntityTypeId { get; set; }
+
+    public bool Permissible { get; set; }
 
     public virtual EntityType EntityType { get; set; }
 

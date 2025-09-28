@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<MissionType> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__mission___3213E83FFEB65382");
+            entity.HasKey(e => e.Id).HasName("PK__mission___3213E83F055055A9");
 
             entity.ToTable("mission_types", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__mission___72E12F1BF6C8C347").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__mission___72E12F1B61A08770").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "mission_types_creator_id_17915c73");
 

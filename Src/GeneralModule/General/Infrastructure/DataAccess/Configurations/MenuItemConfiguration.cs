@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<MenuItem> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__menu_ite__3213E83FEE18BEF4");
+            entity.HasKey(e => e.Id).HasName("PK__menu_ite__3213E83F467DEF67");
 
             entity.ToTable("menu_items", "general");
 

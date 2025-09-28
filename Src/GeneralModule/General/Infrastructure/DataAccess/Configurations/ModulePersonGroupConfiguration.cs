@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ModulePersonGroup> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__module_p__3213E83F21B30295");
+            entity.HasKey(e => e.Id).HasName("PK__module_p__3213E83F28F3FE6D");
 
             entity.ToTable("module_person_groups", "general");
 

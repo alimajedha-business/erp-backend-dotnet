@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<ForeignLanguage> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__foreign___3213E83FCB6AAAF4");
+            entity.HasKey(e => e.Id).HasName("PK__foreign___3213E83F15916AB6");
 
             entity.ToTable("foreign_languages", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__foreign___72E12F1B6F35B462").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__foreign___72E12F1BBAF9E6BE").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "foreign_languages_creator_id_f2c0414f");
 

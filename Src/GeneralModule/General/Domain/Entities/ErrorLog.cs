@@ -11,6 +11,8 @@ public partial class ErrorLog
 
     public DateTime Timestamp { get; set; }
 
+    public string Code { get; set; }
+
     public string Path { get; set; }
 
     public string Method { get; set; }
@@ -21,13 +23,11 @@ public partial class ErrorLog
 
     public string Traceback { get; set; }
 
-    public int? UserId { get; set; }
-
-    public string Code { get; set; }
-
     public string Extra { get; set; }
 
     public string CurlCommand { get; set; }
+
+    public int? UserId { get; set; }
 
     public virtual User User { get; set; }
 }

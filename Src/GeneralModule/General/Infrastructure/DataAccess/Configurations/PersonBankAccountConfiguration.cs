@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonBankAccount> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_b__3213E83FE40439CC");
+            entity.HasKey(e => e.Id).HasName("PK__person_b__3213E83FBCD68BC6");
 
             entity.ToTable("person_bank_accounts", "general");
 
@@ -35,6 +35,11 @@ namespace General.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.AccountNumber)
                 .HasMaxLength(24)
                 .HasColumnName("account_number");
+            entity.Property(e => e.BankBranchCode).HasColumnName("bank_branch_code");
+            entity.Property(e => e.BankBranchName)
+                .IsRequired()
+                .HasMaxLength(150)
+                .HasColumnName("bank_branch_name");
             entity.Property(e => e.BankId).HasColumnName("bank_id");
             entity.Property(e => e.CardNumber)
                 .HasMaxLength(24)

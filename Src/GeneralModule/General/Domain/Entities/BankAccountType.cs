@@ -13,8 +13,6 @@ public partial class BankAccountType
 
     public bool HasChequeBook { get; set; }
 
-    public bool CanWithdrawal { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

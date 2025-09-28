@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<JobPosition> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__job_posi__3213E83F10667423");
+            entity.HasKey(e => e.Id).HasName("PK__job_posi__3213E83FC70FA7E0");
 
             entity.ToTable("job_positions", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__job_posi__72E12F1B18289596").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__job_posi__72E12F1B0D466C43").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "job_positions_creator_id_361c185c");
 

@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Person> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__persons__3213E83F42B94BB7");
+            entity.HasKey(e => e.Id).HasName("PK__persons__3213E83FA537E099");
 
             entity.ToTable("persons", "general");
 
-            entity.HasIndex(e => e.Code, "UQ__persons__357D4CF9AE8920EA").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__persons__357D4CF9A4AE2BBE").IsUnique();
 
             entity.HasIndex(e => e.BirthCityId, "persons_birth_city_id_9fea3d98");
 
@@ -27,19 +27,13 @@ namespace General.Infrastructure.DataAccess.Configurations
 
             entity.HasIndex(e => e.HousingStatusId, "persons_housing_status_id_c8e37e67");
 
-            entity.HasIndex(e => e.LegalNationalCode, "persons_legal_national_code_4397975a_uniq")
-                .IsUnique()
-                .HasFilter("([legal_national_code] IS NOT NULL)");
-
             entity.HasIndex(e => e.LegalRegisterNo, "persons_legal_register_no_22c0875c_uniq")
                 .IsUnique()
                 .HasFilter("([legal_register_no] IS NOT NULL)");
 
             entity.HasIndex(e => e.MilitaryServiceStatusId, "persons_military_service_status_id_31e57348");
 
-            entity.HasIndex(e => e.NaturalNationalCode, "persons_natural_national_code_49221b45_uniq")
-                .IsUnique()
-                .HasFilter("([natural_national_code] IS NOT NULL)");
+            entity.HasIndex(e => e.NaturalNationalCode, "persons_natural_national_code_49221b45");
 
             entity.HasIndex(e => e.PassportNumber, "persons_passport_number_dff3f3fd_uniq")
                 .IsUnique()

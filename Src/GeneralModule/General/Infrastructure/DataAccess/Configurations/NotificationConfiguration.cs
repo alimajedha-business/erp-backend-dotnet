@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Notification> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__notifica__3213E83F652845FC");
+            entity.HasKey(e => e.Id).HasName("PK__notifica__3213E83FF9C80CEB");
 
             entity.ToTable("notifications", "general");
 

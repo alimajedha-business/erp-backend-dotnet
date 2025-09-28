@@ -11,13 +11,13 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Language> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__language__3213E83F82D76FFA");
+            entity.HasKey(e => e.Id).HasName("PK__language__3213E83F0C66BE2A");
 
             entity.ToTable("languages", "general");
 
-            entity.HasIndex(e => e.Code, "UQ__language__357D4CF9757EF7F8").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__language__357D4CF92530AEF6").IsUnique();
 
-            entity.HasIndex(e => e.Name, "UQ__language__72E12F1BD0EA1B2E").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__language__72E12F1B290D8129").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code)

@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Bank> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__banks__3213E83F860C06C1");
+            entity.HasKey(e => e.Id).HasName("PK__banks__3213E83F1399B003");
 
             entity.ToTable("banks", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__banks__72E12F1BD4395708").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__banks__72E12F1BAEFE9E5E").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)

@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Log> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__logs__3213E83F54D67D04");
+            entity.HasKey(e => e.Id).HasName("PK__logs__3213E83FB734E2C5");
 
             entity.ToTable("logs", "general");
 
@@ -20,6 +20,8 @@ namespace General.Infrastructure.DataAccess.Configurations
             entity.HasIndex(e => e.EntityTypeId, "logs_entity_type_id_87a8fbba");
 
             entity.HasIndex(e => e.ModuleId, "logs_module_id_c6447665");
+
+            entity.HasIndex(e => e.PeriodId, "logs_period_id_ea07e698");
 
             entity.HasIndex(e => e.UserId, "logs_user_id_237f5f83");
 
@@ -42,6 +44,7 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("object_repr");
+            entity.Property(e => e.PeriodId).HasColumnName("period_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Company).WithMany(p => p.Logs)

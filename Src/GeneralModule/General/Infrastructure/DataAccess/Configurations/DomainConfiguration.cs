@@ -11,19 +11,27 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<General.Domain.Entities.Domain> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__domains__3213E83FF0E52661");
+            entity.HasKey(e => e.Id).HasName("PK__domains__3213E83F7880908D");
 
             entity.ToTable("domains", "general");
 
-            entity.HasIndex(e => e.Hostname, "UQ__domains__DA92E433B526F86E").IsUnique();
+            entity.HasIndex(e => e.Hostname, "UQ__domains__DA92E43327641AAF").IsUnique();
+
+            entity.HasIndex(e => e.DefaultCurrencyId, "domains_default_currency_id_06c302a4");
 
             entity.HasIndex(e => e.LanguageId, "domains_language_id_a7140b25");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AllowedIps)
+                .HasMaxLength(1000)
+                .HasColumnName("allowed_ips");
             entity.Property(e => e.ApiKey)
-                .IsRequired()
-                .HasMaxLength(100)
+                .HasMaxLength(1000)
                 .HasColumnName("api_key");
+            entity.Property(e => e.ArchitectureType)
+                .IsRequired()
+                .HasMaxLength(35)
+                .HasColumnName("architecture_type");
             entity.Property(e => e.AuthMethod)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -31,7 +39,9 @@ namespace General.Infrastructure.DataAccess.Configurations
             entity.Property(e => e.AuthSendType)
                 .HasMaxLength(12)
                 .HasColumnName("auth_send_type");
+            entity.Property(e => e.BlockDuration).HasColumnName("block_duration");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.DefaultCurrencyId).HasColumnName("default_currency_id");
             entity.Property(e => e.Holding)
                 .HasMaxLength(100)
                 .HasColumnName("holding");
@@ -39,16 +49,25 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("hostname");
+            entity.Property(e => e.IsUniquePerson).HasColumnName("is_unique_person");
             entity.Property(e => e.LanguageId).HasColumnName("language_id");
+            entity.Property(e => e.MaxFailedLoginAttempts).HasColumnName("max_failed_login_attempts");
             entity.Property(e => e.PasswordLevel)
                 .IsRequired()
                 .HasMaxLength(7)
                 .HasColumnName("password_level");
-            entity.Property(e => e.TemplateName)
-                .IsRequired()
+            entity.Property(e => e.SenderNumber)
+                .HasMaxLength(20)
+                .HasColumnName("sender_number");
+            entity.Property(e => e.Template)
                 .HasMaxLength(100)
-                .HasColumnName("template_name");
+                .HasColumnName("template");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasOne(d => d.DefaultCurrency).WithMany(p => p.Domains)
+                .HasForeignKey(d => d.DefaultCurrencyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("domains_default_currency_id_06c302a4_fk_currencies_id");
 
             entity.HasOne(d => d.Language).WithMany(p => p.Domains)
                 .HasForeignKey(d => d.LanguageId)

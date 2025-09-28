@@ -11,11 +11,11 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<MilitaryServiceStatus> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__military__3213E83F1BCBA74A");
+            entity.HasKey(e => e.Id).HasName("PK__military__3213E83F50066676");
 
             entity.ToTable("military_service_statuses", "general");
 
-            entity.HasIndex(e => e.Name, "UQ__military__72E12F1BB332E6F2").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__military__72E12F1B10BA3724").IsUnique();
 
             entity.HasIndex(e => e.CreatorId, "military_service_statuses_creator_id_2264fea4");
 

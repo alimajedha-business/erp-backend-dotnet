@@ -11,6 +11,10 @@ public partial class PersonBankAccount
 
     public string Title { get; set; }
 
+    public int? BankBranchCode { get; set; }
+
+    public string BankBranchName { get; set; }
+
     public string Iban { get; set; }
 
     public string AccountNumber { get; set; }

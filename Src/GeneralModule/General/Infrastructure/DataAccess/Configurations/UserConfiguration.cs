@@ -11,13 +11,13 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<User> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__users__3213E83FA39B6DD7");
+            entity.HasKey(e => e.Id).HasName("PK__users__3213E83F46F42FAE");
 
             entity.ToTable("users", "general");
 
-            entity.HasIndex(e => e.PersonId, "UQ__users__543848DE030F1F1D").IsUnique();
+            entity.HasIndex(e => e.PersonId, "UQ__users__543848DEDC3064CE").IsUnique();
 
-            entity.HasIndex(e => e.Username, "UQ__users__F3DBC57279382736").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__users__F3DBC572C97AEEDB").IsUnique();
 
             entity.HasIndex(e => e.LanguageId, "users_language_id_9c707b57");
 
@@ -26,7 +26,12 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .HasFilter("([username_encrypted] IS NOT NULL)");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccessEndTime).HasColumnName("access_end_time");
+            entity.Property(e => e.AccessStartTime).HasColumnName("access_start_time");
             entity.Property(e => e.AccessToken).HasColumnName("access_token");
+            entity.Property(e => e.AllowedIps)
+                .HasMaxLength(1000)
+                .HasColumnName("allowed_ips");
             entity.Property(e => e.AuthSendType)
                 .HasMaxLength(12)
                 .HasColumnName("auth_send_type");
@@ -35,6 +40,7 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .HasMaxLength(10)
                 .HasColumnName("color_pallet");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.ExpireDate).HasColumnName("expire_date");
             entity.Property(e => e.FontFamily)
                 .IsRequired()
                 .HasMaxLength(10)
@@ -53,6 +59,9 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .HasColumnName("password");
             entity.Property(e => e.PersonId).HasColumnName("person_id");
             entity.Property(e => e.RefreshToken).HasColumnName("refresh_token");
+            entity.Property(e => e.Signature)
+                .HasMaxLength(100)
+                .HasColumnName("signature");
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.Username)
                 .IsRequired()

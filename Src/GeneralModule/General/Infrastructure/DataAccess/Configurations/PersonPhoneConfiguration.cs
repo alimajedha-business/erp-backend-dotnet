@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonPhone> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__person_p__3213E83F9005824C");
+            entity.HasKey(e => e.Id).HasName("PK__person_p__3213E83FE7054445");
 
             entity.ToTable("person_phones", "general");
 

@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<EntityTypeConstraint> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83FC1F58758");
+            entity.HasKey(e => e.Id).HasName("PK__entity_t__3213E83FF883D863");
 
             entity.ToTable("entity_type_constraints", "general");
 
@@ -39,6 +39,7 @@ namespace General.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name_fa");
+            entity.Property(e => e.Ordering).HasColumnName("ordering");
             entity.Property(e => e.Printable).HasColumnName("printable");
             entity.Property(e => e.Readable).HasColumnName("readable");
 

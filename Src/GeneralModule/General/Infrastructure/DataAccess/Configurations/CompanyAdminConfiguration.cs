@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<CompanyAdmin> entity)
         {
-            entity.HasKey(e => e.Id).HasName("PK__company___3213E83F53708EC0");
+            entity.HasKey(e => e.Id).HasName("PK__company___3213E83F107ADA07");
 
             entity.ToTable("company_admins", "general");
 

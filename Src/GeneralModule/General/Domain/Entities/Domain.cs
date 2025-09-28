@@ -13,6 +13,8 @@ public partial class Domain
 
     public string Holding { get; set; }
 
+    public string AllowedIps { get; set; }
+
     public string PasswordLevel { get; set; }
 
     public string AuthMethod { get; set; }
@@ -21,15 +23,29 @@ public partial class Domain
 
     public string ApiKey { get; set; }
 
-    public string TemplateName { get; set; }
+    public string Template { get; set; }
+
+    public int? MaxFailedLoginAttempts { get; set; }
+
+    public TimeOnly? BlockDuration { get; set; }
+
+    public string SenderNumber { get; set; }
+
+    public bool IsUniquePerson { get; set; }
+
+    public string ArchitectureType { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 
+    public int DefaultCurrencyId { get; set; }
+
     public int LanguageId { get; set; }
 
     public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
+
+    public virtual Currency DefaultCurrency { get; set; }
 
     public virtual Language Language { get; set; }
 }

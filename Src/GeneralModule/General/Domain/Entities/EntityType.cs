@@ -39,6 +39,8 @@ public partial class EntityType
 
     public bool HasConstraint { get; set; }
 
+    public short? Ordering { get; set; }
+
     public int? ContentTypeId { get; set; }
 
     public int ModuleId { get; set; }
@@ -50,8 +52,6 @@ public partial class EntityType
     public virtual ICollection<EntityTypeDependency> EntityTypeDependencyEntityTypes { get; set; } = new List<EntityTypeDependency>();
 
     public virtual ICollection<EntityTypeDependency> EntityTypeDependencyRequiredEntityTypes { get; set; } = new List<EntityTypeDependency>();
-
-    public virtual ICollection<FileEntity> FileEntities { get; set; } = new List<FileEntity>();
 
     public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
 
