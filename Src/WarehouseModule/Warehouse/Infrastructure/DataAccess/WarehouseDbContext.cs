@@ -15,17 +15,20 @@ namespace Warehouse.Infrastructure.DataAccess
         {
         }
 
+        public DbSet<ProductCode> ProductCodes { get; set; }
+        
         public DbSet<WarehouseType> WarehouseTypes { get; set; }
 
-       // public DbSet<WarehouseStock> WarehouseStocks { get; set; }
+        public DbSet<WarehouseStock> WarehouseStocks { get; set; }
 
-        //  public DbSet<ProductHierarchy> ProductHierarchies { get; set; }
-         //  public DbSet<ProductCode> ProductCodes { get; set; }
+        public DbSet<ProductHierarchy> ProductHierarchies { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);
         }
 
 

@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
     <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
+    <ProjectReference Include="..\..\ShareModule\Share\Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,27 +9,14 @@ using Warehouse.Domain.Entities;
 
 namespace Warehouse.Infrastructure.DataAccess.Configurations
 {
-    public class WarehouseStockConfiguration : IEntityTypeConfiguration<WarehouseStock>
+    public class WarehouseStockConfiguration : BaseConfiguration<WarehouseStock>
     {
-        public void Configure(EntityTypeBuilder<WarehouseStock> builder)
+        public override void Configure(EntityTypeBuilder<WarehouseStock> builder)
         {
-            builder.ToTable("WarehouseStock", "Warehouse");
+            base.Configure(builder);
 
-            builder.HasKey(p => p.Id);
-
-            builder.Property(p => p.CompanyId)
-               .IsRequired();
-
-            builder.HasOne(p => p.Company)
-               .WithMany()
-               .HasForeignKey(p => p.CompanyId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Property(w => w.CompanyUnitId);
-            builder.HasOne(w => w.CompanyUnit)
-                .WithMany()
-                .HasForeignKey(w => w.CompanyUnitId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.Property(w => w.MaxAssetValue)
+                .HasPrecision(18, 2);
         }
     }
 }

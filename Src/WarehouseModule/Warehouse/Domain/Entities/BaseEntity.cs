@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Weighing.Domain.Common
+namespace Warehouse.Domain.Entities
 {
     public abstract class BaseEntity
     {

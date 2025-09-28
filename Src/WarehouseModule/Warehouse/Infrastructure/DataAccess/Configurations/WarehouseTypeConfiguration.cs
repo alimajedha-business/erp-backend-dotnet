@@ -9,8 +9,11 @@ using Warehouse.Domain.Entities;
 
 namespace Warehouse.Infrastructure.DataAccess.Configurations
 {
-    public class ProductConfiguration : BaseConfiguration<ProductCode>
+    public class WarehouseTypeConfiguration : IEntityTypeConfiguration<WarehouseType>
     {
-      
+        public void Configure(EntityTypeBuilder<WarehouseType> builder)
+        {
+           
+        }
     }
 }

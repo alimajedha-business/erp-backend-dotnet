@@ -15,7 +15,7 @@ namespace Warehouse.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        public required int Code { get; set; } 
+        public required int Code { get; set; }
 
         [StringLength(50)]
         public required string Name { get; set; }

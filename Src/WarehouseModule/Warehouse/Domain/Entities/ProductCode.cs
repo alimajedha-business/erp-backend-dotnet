@@ -12,22 +12,12 @@ namespace Warehouse.Domain.Entities
 {
     [Table("ProductCode", Schema = "warehouse")]
     [Index("CompanyId", Name = "ProductCode_CompanyId")]
-    public class ProductCode
+    public class ProductCode:BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
-
-        public required int CompanyId { get; set; }
-        
-        [ForeignKey("CompanyId")]
-        public required virtual Company Company { get; set; }
-
         public required int FirstLevelCode { get; set; }
 
         [StringLength(100)]
         public required string FirstLevelName { get; set; }
-
 
         public required int SecondLevelCode { get; set; }
 
@@ -35,40 +25,39 @@ namespace Warehouse.Domain.Entities
         public required string SecondLevelName { get; set; }
 
         public bool ThirdNextLevel { get; set; }
+        
         public int? ThirdLevelCode { get; set; }
 
         [StringLength(100)]
         public string? ThirdLevelName { get; set; }
 
-
         public bool FourthNextLevel { get; set; }
+
         public int? FourthLevelCode { get; set; }
 
         [StringLength(100)]
         public string? FourthLevelName { get; set; }
 
-
         public bool FifthNextLevel { get; set; }
+
         public int? FifthLevelCode { get; set; }
 
         [StringLength(100)]
         public string? FifthLevelName { get; set; }
 
-
         public bool SixthNextLevel { get; set; }
+        
         public int? SixthLevelCode { get; set; }
 
         [StringLength(100)]
         public string? SixthLevelName { get; set; }
 
-
         public bool SeventhNextLevel { get; set; }
+        
         public int? SeventhLevelCode { get; set; }
 
         [StringLength(100)]
         public string? SeventhLevelName { get; set; }
-
-        
 
     }
 }

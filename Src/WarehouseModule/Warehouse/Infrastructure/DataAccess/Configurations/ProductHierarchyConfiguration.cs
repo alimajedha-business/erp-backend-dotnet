@@ -9,7 +9,7 @@ using Warehouse.Domain.Entities;
 
 namespace Warehouse.Infrastructure.DataAccess.Configurations
 {
-    public class ProductConfiguration : BaseConfiguration<ProductCode>
+    public class ProductHierarchyConfiguration : BaseConfiguration<ProductHierarchy>
     {
       
     }
