@@ -1,7 +1,7 @@
 ﻿using Accounting.Infrastructure.DataAccess;
 using General.Infrastructure.DataAccess;
+using HCM.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Payroll.Infrastructure.DataAccess;
 using Shared.Infrastructure.DataAccess;
 using Warehouse.Infrastructure.DataAccess;
 using Weighing.Infrastructure.DataAccess;
@@ -26,7 +26,7 @@ namespace Persistence.DataAccess
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountingDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeighingDbContext).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);            
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(WarehouseDbContext).Assembly);            
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(HCMDbContext).Assembly);            
 
             base.OnModelCreating(modelBuilder);
         }
