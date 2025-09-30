@@ -8,7 +8,7 @@ using System.ComponentModel.Design;
 
 namespace Accounting.Presentation.Controllers
 {
-    [Route("api/{companyId:int}/accounting/ledgers")]
+    [Route(RouteConstants.BaseUrl + "/{companyId:int}/accounting/ledgers")]
     [ApiController]
     public class LedgersController : ControllerBase
     {

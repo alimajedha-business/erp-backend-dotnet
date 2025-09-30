@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Accounting.Presentation.Controllers
 {
-    [Route("api/{companyId}/accounting/ledgers/{ledgerId}/accountsets")]
+    [Route(RouteConstants.BaseUrl + "/{companyId}/accounting/ledgers/{ledgerId}/accountsets")]
     [ApiController]
     public class AccountSetsController : ControllerBase
     {
@@ -48,8 +48,8 @@ namespace Accounting.Presentation.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAccountSetForLedger(int companyId, int ledgerId, int id)
         {
-           await _service.AccountSetService.DeleteAsync(companyId, ledgerId, id, trackChanges:
-            false);
+            await _service.AccountSetService.DeleteAsync(companyId, ledgerId, id, trackChanges:
+             false);
             return NoContent();
         }
 
