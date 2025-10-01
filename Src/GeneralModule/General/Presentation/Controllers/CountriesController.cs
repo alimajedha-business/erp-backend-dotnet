@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Common.Application.RequestParameters;
 using System.Text.Json;
+using Common.Presentation;
 
 namespace General.Presentation.Controllers
 {
-    [Route("api/general/countries")]
+    [Route(RouteConstants.BaseUrl + "/general/countries")]
     [ApiController]
     public class CountriesController : ControllerBase
     {
@@ -15,7 +16,7 @@ namespace General.Presentation.Controllers
         [HttpGet]
         public IActionResult GetCountries([FromQuery] CountryParameters countryParameters)
         {
-            var pagedResult = _service.CountryService.GetAll(countryParameters,trackChanges: false);
+            var pagedResult = _service.CountryService.GetAll(countryParameters, trackChanges: false);
             Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
             return Ok(pagedResult.countries);
         }
