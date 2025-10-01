@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.ComponentModel.Design;
+using Common.Presentation;
 
 namespace Accounting.Presentation.Controllers
 {
-    [Route("api/{companyId:int}/accounting/ledgers")]
+    [Route(RouteConstants.BaseUrl + "/{companyId:int}/accounting/ledgers")]
     [ApiController]
     public class LedgersController : ControllerBase
     {
