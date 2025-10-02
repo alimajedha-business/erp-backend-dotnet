@@ -55,7 +55,7 @@ try
     if (app.Environment.IsProduction())
         app.UseHsts();
 
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
     
     app.UseStaticFiles();
 
