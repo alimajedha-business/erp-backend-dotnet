@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace General.Domain.Entities;
 
@@ -59,8 +60,10 @@ public partial class User
 
     public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
 
+    [InverseProperty("Admin")]
     public virtual ICollection<CompanyAdmin> CompanyAdminAdmins { get; set; } = new List<CompanyAdmin>();
 
+    [InverseProperty("Creator")]
     public virtual ICollection<CompanyAdmin> CompanyAdminCreators { get; set; } = new List<CompanyAdmin>();
 
     public virtual ICollection<EducationalDegree> EducationalDegrees { get; set; } = new List<EducationalDegree>();
@@ -91,8 +94,10 @@ public partial class User
 
     public virtual ICollection<MissionType> MissionTypes { get; set; } = new List<MissionType>();
 
+    [InverseProperty("User2")]
     public virtual ICollection<Notification> NotificationUser2s { get; set; } = new List<Notification>();
 
+    [InverseProperty("User")]
     public virtual ICollection<Notification> NotificationUsers { get; set; } = new List<Notification>();
 
     public virtual Person Person { get; set; }

@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace General.Domain.Entities;
 
@@ -49,8 +50,10 @@ public partial class EntityType
 
     public virtual ICollection<EntityTypeConstraint> EntityTypeConstraints { get; set; } = new List<EntityTypeConstraint>();
 
+    [InverseProperty("EntityType")]
     public virtual ICollection<EntityTypeDependency> EntityTypeDependencyEntityTypes { get; set; } = new List<EntityTypeDependency>();
 
+    [InverseProperty("RequiredEntityType")]
     public virtual ICollection<EntityTypeDependency> EntityTypeDependencyRequiredEntityTypes { get; set; } = new List<EntityTypeDependency>();
 
     public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
