@@ -40,8 +40,7 @@ namespace API.Extentions
         {
             // Module infrastructure
             services.AddAccountingInfrastructure(configuration);
-            services.AddGeneralInfrastructure(configuration);
-            services.AddPersistenceInfrastructure(configuration);
+            services.AddGeneralInfrastructure(configuration);            
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
             return services;
         }
