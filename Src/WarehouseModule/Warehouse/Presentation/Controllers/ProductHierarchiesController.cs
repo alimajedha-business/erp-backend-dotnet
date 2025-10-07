@@ -1,14 +1,17 @@
-﻿using Warehouse.Application.DTOs;
-using Warehouse.Application.Interfaces.Services;
-using Warehouse.Presentation.ModelBinders;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.ComponentModel.Design;
+using Warehouse.Application.DTOs;
+using Warehouse.Application.Interfaces.Services;
+using Warehouse.Presentation.ModelBinders;
 
 namespace Warehouse.Presentation.Controllers
 {
-    [Route("api/Warehouse/ProductHierarchies")]
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-warehouse")]
+    [Route("api/v{version:apiVersion}/Warehouse/ProductHierarchies")]
     [ApiController]
     public class ProductHierarchiesController : ControllerBase
     {
