@@ -1,15 +1,17 @@
 ﻿using Accounting.Application.DTOs;
 using Accounting.Application.Interfaces.Services;
 using Accounting.Presentation.ModelBinders;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.ComponentModel.Design;
-using Common.Presentation;
 
 namespace Accounting.Presentation.Controllers
 {
-    [Route(RouteConstants.BaseUrl + "/{companyId:int}/accounting/ledgers")]
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-accounting")]
+    [Route("api/v{version:apiVersion}/{companyId:int}/accounting/ledgers")]
     [ApiController]
     public class LedgersController : ControllerBase
     {

@@ -1,12 +1,14 @@
-﻿using General.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
 using Common.Application.RequestParameters;
+using General.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using Common.Presentation;
 
 namespace General.Presentation.Controllers
 {
-    [Route(RouteConstants.BaseUrl + "/general/countries")]
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-general")]
+    [Route("api/v{version:apiVersion}/general/countries")]
     [ApiController]
     public class CountriesController : ControllerBase
     {

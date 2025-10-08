@@ -1,16 +1,19 @@
-using API.Extentions;
-using Microsoft.AspNetCore.HttpOverrides;
-using Serilog;
+using Accounting.Application.Mappings;
 using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Morcatko.AspNetCore.JsonMergePatch;
+using API.Extentions;
+using Asp.Versioning.Routing;
+using Common.Application;
+using Common.Application.Mappings;
 using Common.Infrastructure.Logging;
 using General.Infrastructure.DataAccess;
-using Warehouse.Infrastructure.DataAccess;
-using Accounting.Application.Mappings;
-using Common.Application.Mappings;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Morcatko.AspNetCore.JsonMergePatch;
+using Serilog;
+using Warehouse.Infrastructure.DataAccess;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -24,29 +27,25 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.Services.Configure<RouteOptions>(options =>
+    {
+        options.ConstraintMap.Add("apiVersion", typeof(ApiVersionRouteConstraint));
+    });
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
-    builder.Services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
-    //builder.Services.AddAutoMapper(typeof(WarehouseMappingProfile).Assembly);
-    builder.Services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
+    builder.Services.AddModuleAutoMappers();
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
     });
-    builder.Services.AddControllers(config =>
-    {
-        config.ReturnHttpNotAcceptable = true;
-    }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
-    .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
-    .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly);
+    builder.Services.AddModuleControllers();
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
-
-    
+    builder.Services.AddApiVersioning();
 
     var app = builder.Build();
 
@@ -55,24 +54,30 @@ try
     if (app.Environment.IsProduction())
         app.UseHsts();
 
-    app.UseHttpsRedirection();
-    
+    //app.UseHttpsRedirection();
+
     app.UseStaticFiles();
 
     app.UseForwardedHeaders(new ForwardedHeadersOptions
     {
         ForwardedHeaders = ForwardedHeaders.All
     });
+
     app.UseCors("CorsPolicy");
 
     app.UseAuthorization();
-
+    app.UseRouting();
     app.MapControllers();
 
     app.UseSwagger();
     app.UseSwaggerUI(s =>
     {
-        s.SwaggerEndpoint("/swagger/v1/swagger.json", "Noavaran ERP API v1");
+        foreach (var module in ProjectConstants.Modules)
+        {
+            var lower = module.ToLower();
+            s.SwaggerEndpoint($"/swagger/v1-{lower}/swagger.json", $"{module} API");
+            s.RoutePrefix = "doc/v1";
+        }
     });
 
     app.Run();
