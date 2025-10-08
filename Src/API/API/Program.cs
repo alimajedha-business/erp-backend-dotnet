@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Morcatko.AspNetCore.JsonMergePatch;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using Warehouse.Infrastructure.DataAccess;
 
 
@@ -76,8 +77,10 @@ try
         {
             var lower = module.ToLower();
             s.SwaggerEndpoint($"/swagger/v1-{lower}/swagger.json", $"{module} API");
-            s.RoutePrefix = "doc/v1";
         }
+        s.RoutePrefix = "doc/v1";
+        s.DocExpansion(DocExpansion.None); // Ensure all endpoints and tags are collapsed
+        s.ConfigObject.AdditionalItems["syntaxHighlight"] = false;
     });
 
     app.Run();
