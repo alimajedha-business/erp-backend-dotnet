@@ -71,7 +71,7 @@ namespace API.Extentions
                     {
                         Title = $"{module} API",
                         Version = "v1"
-                    });
+                    });                     
                 }
             });
         }
