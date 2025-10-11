@@ -8,12 +8,14 @@ using Common.Application.Mappings;
 using Common.Infrastructure.Logging;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Morcatko.AspNetCore.JsonMergePatch;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Globalization;
 using Warehouse.Infrastructure.DataAccess;
 
 
@@ -41,12 +43,21 @@ try
     {
         options.SuppressModelStateInvalidFilter = true;
     });
+
+    builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Localization");
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+     {
+         options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
+         options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+         options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+     });
     builder.Services.AddModuleControllers();
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
+    
 
     var app = builder.Build();
 
@@ -65,7 +76,8 @@ try
     });
 
     app.UseCors("CorsPolicy");
-
+    var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+    app.UseRequestLocalization(locOptions.Value);
     app.UseAuthorization();
     app.UseRouting();
     app.MapControllers();
