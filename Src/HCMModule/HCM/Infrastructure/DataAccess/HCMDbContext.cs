@@ -14,9 +14,10 @@ namespace HCM.Infrastructure.DataAccess
         public HCMDbContext(DbContextOptions<HCMDbContext> options)
             : base(options)
         {
-        }   
-        
-       public DbSet<Department> Departments { get; set; }
+        }
+
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

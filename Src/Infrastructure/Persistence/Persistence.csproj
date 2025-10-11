@@ -28,8 +28,4 @@
         <ProjectReference Include="..\..\WeighingModule\Weighing\Weighing.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations\" />
-    </ItemGroup>
-
 </Project>
