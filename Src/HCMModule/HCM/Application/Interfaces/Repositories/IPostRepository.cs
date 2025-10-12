@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace HCM.Application.Interfaces.Repositories
 {
-    public interface IHCMRepositoryManager
+    public interface IPostRepository
     {
-        IDepartmentRepository Department { get; }
-
-        IPostRepository Post { get; }
-
-        Task SaveAsync();
     }
 }

@@ -15,9 +15,11 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
             await FindAll(trackChanges)
             .OrderBy(l => l.Id)
             .ToListAsync();
+
         public async Task<Ledger?> GetAsync(int LedgerId, bool trackChanges) =>
           await FindByCondition(l => l.Id.Equals(LedgerId), trackChanges)
             .SingleOrDefaultAsync();
+
         public new void Create(Ledger ledger)
         {
             ledger.CreatedAt = DateTime.Now;
