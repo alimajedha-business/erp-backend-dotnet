@@ -9,25 +9,25 @@ namespace HCM.Infrastructure.DataAccess.Repositories
 {
     public sealed class HCMRepositoryManager : IHCMRepositoryManager
     {
-        private readonly HCMDbContext _repositoryContext=null!;
-        //private readonly Lazy<ICountryRepository> _countryRepository;
-        //private readonly Lazy<ICurrencyRepository> _currencyRepository;
-        //private readonly Lazy<IProvinceRepository> _provinceRepository;
-        //public GeneralRepositoryManager(HCMDbContext repositoryContext)
-        //{
-        //    _repositoryContext = repositoryContext;
-        //    _countryRepository = new Lazy<ICountryRepository>(() =>
-        //    new CountryRepository(repositoryContext));
-        //    _currencyRepository = new Lazy<ICurrencyRepository>(() =>
-        //    new CurrencyRepository(repositoryContext));
-        //    _provinceRepository = new Lazy<IProvinceRepository>(() =>
-        //    new ProvinceRepository(repositoryContext));
+        private readonly HCMDbContext _dbContext;
+        private readonly Lazy<IDepartmentRepository> _departmentRepository;
+        private readonly Lazy<IPostRepository> _postRepository;
 
-        //}
-        //public ICountryRepository Country => _countryRepository.Value;
-        //public ICurrencyRepository Currency => _currencyRepository.Value;
-        //public IProvinceRepository Province => _provinceRepository.Value;
-        public void Save() => _repositoryContext.SaveChanges();
+        public HCMRepositoryManager(HCMDbContext dbContext)
+        {
+            _dbContext = dbContext;
 
+            _departmentRepository = new Lazy<IDepartmentRepository>(() =>
+            new DepartmentRepository(_dbContext));
+
+            _postRepository = new Lazy<IPostRepository>(() =>
+            new PostRepository(_dbContext));
+        }
+
+        public IDepartmentRepository Department => _departmentRepository.Value;
+
+        public IPostRepository Post => _postRepository.Value;
+
+        public Task SaveAsync() => _dbContext.SaveChangesAsync();
     }
 }

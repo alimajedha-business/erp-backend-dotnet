@@ -15,7 +15,7 @@ namespace HCM.Application.Interfaces.Repositories
 
         Task<Department?> GetDepartmentAsync(int companyId, int departmentId, bool trackChanges);
 
-        void CreateDepartment(Department department);
+        void CreateDepartment(int companyId,Department department);
 
         Task<IEnumerable<Department>> GetByIdsAsync(IEnumerable<int> ids, bool trackChanges);
 
