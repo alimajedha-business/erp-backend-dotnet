@@ -43,7 +43,7 @@ try
     {
         options.SuppressModelStateInvalidFilter = true;
     });
-
+    builder.Services.AddMemoryCache();
     builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Localization");
     builder.Services.Configure<RequestLocalizationOptions>(options =>
      {

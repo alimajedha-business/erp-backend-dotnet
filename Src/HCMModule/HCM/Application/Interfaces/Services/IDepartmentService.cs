@@ -1,0 +1,21 @@
+﻿// Ignore Spelling: HCM
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HCM.Application.DTOs;
+
+namespace HCM.Application.Interfaces.Services
+{
+    internal interface IDepartmentService
+    {
+        Task<IEnumerable<DepartmentDto>> GetAllDepartmentAsync(int companyId, bool trackChanges);
+        Task<DepartmentDto?> GetDepartmentAsync(int companyId, int departmentId, bool trackChanges);
+        Task<DepartmentDto> CreateDepartmentForCompanyAsync(int companyId, DepartmentForCreationDto department, bool trackChanges);
+        Task DeleteDepartmentForCompanyAsync(int companyId, int departmentId, bool trackChanges);
+        Task UpdateAsync(int companyId, int departmentId, DepartmentForUpdateDto department, bool comTrackChanges,
+            bool depTrackChanges);
+    }
+}

@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿// Ignore Spelling: HCM
+
+using AutoMapper;
+using HCM.Application.DTOs;
 using HCM.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,8 +16,8 @@ namespace HCM.Application.Mappings
     {
         public MappingProfile()
         {
-            //CreateMap<Country, CountryDto>()
-            //    .ForMember("Currency", opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Name : null));
+            CreateMap<Department, DepartmentDto>();
+            CreateMap<DepartmentForCreationDto, Department>();
         }
     }
 }
