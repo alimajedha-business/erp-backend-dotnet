@@ -15,7 +15,11 @@ namespace General.Application.Mappings
         public MappingProfile()
         {
             CreateMap<Country, CountryDto>()
-                .ForMember("Currency", opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Name :null));
+                .ForMember("Currency", opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Name : null));
+            
+            CreateMap<Domain.Entities.Domain, DomainDto>();
+            
+            CreateMap<Company, CompanyDto>();
         }
     }
-} 
+}

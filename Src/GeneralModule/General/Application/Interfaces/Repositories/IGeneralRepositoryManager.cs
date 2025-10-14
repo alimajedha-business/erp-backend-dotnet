@@ -9,8 +9,11 @@ namespace General.Application.Interfaces.Repositories
     public interface IGeneralRepositoryManager
     {
         ICountryRepository Country { get; }
-        ICurrencyRepository Currency{ get; }
+        ICurrencyRepository Currency { get; }
         IProvinceRepository Province { get; }
+        IDomainRepository Domain { get; }
+        ICompanyRepository Company { get; }
+
         void Save();
     }
 }

@@ -1,0 +1,7 @@
+﻿msgid "Hello world!"
+msgstr "Bonjour le monde!"
+
+msgid "There is one item."
+msgid_plural "There are {0} items."
+msgstr[0] "Il y a un élément."
+msgstr[1] "Il y a {0} éléments."
