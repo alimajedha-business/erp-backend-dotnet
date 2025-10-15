@@ -13,9 +13,9 @@ namespace HCM.Application.Interfaces.Services
     {
         Task<IEnumerable<DepartmentDto>> GetAllDepartmentAsync(int companyId, bool trackChanges);
         Task<DepartmentDto?> GetDepartmentAsync(int companyId, int departmentId, bool trackChanges);
-        Task<DepartmentDto> CreateDepartmentForCompanyAsync(int companyId, DepartmentForCreationDto department, bool trackChanges);
+        Task<DepartmentDto> CreateDepartmentForCompanyAsync(int companyId, DepartmentForCreationDto departmentDto, bool trackChanges);
         Task DeleteDepartmentForCompanyAsync(int companyId, int departmentId, bool trackChanges);
-        Task UpdateAsync(int companyId, int departmentId, DepartmentForUpdateDto department, bool comTrackChanges,
+        Task UpdateAsync(int companyId, int departmentId, DepartmentForUpdateDto departmentDto, bool comTrackChanges,
             bool depTrackChanges);
     }
 }

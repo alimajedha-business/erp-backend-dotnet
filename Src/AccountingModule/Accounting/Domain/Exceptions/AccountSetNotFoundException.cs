@@ -9,8 +9,8 @@ namespace Accounting.Domain.Exceptions
 {
     internal class AccountSetNotFoundException : NotFoundException
     {
-        public AccountSetNotFoundException(int AccountSetId)
-        : base($"The AccountSet with id: {AccountSetId} doesn't exist in the database.")
+        public AccountSetNotFoundException(int accountSetId)
+            : base("AccountSetNotFound", accountSetId)
         {
         }
     }

@@ -43,21 +43,14 @@ try
     {
         options.SuppressModelStateInvalidFilter = true;
     });
-    builder.Services.AddMemoryCache();
-    builder.Services.AddPortableObjectLocalization(options => options.ResourcesPath = "Localization");
-    builder.Services.Configure<RequestLocalizationOptions>(options =>
-     {
-         options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
-         options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-         options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-     });
+    builder.Services.AddMultiLanguage();    
     builder.Services.AddModuleControllers();
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
-    
+
 
     var app = builder.Build();
 

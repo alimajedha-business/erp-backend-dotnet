@@ -8,7 +8,14 @@ namespace Common.Domain.Exceptions
 {
     public abstract class NotFoundException : Exception
     {
-        protected NotFoundException(string message) : base(message)
-        { }
+        public string LocalizationKey { get; }
+        public object[] Arguments { get; }
+
+        protected NotFoundException(string localizationKey, params object[] args)
+            : base(localizationKey) // base message = key, for backward compatibility
+        {
+            LocalizationKey = localizationKey;
+            Arguments = args;
+        }
     }
 }

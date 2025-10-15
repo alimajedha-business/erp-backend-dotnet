@@ -1,0 +1,5 @@
+﻿msgid "LedgerNotFound"
+msgstr "The ledger with id {0} doesn't exist in the database."
+
+msgid "AccountSetNotFound"
+msgstr "The Account set with id {0} doesn't exist in the database."

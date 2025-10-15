@@ -9,10 +9,9 @@ namespace Accounting.Domain.Exceptions
 {
     public sealed class LedgerNotFoundException : NotFoundException
     {
-        public LedgerNotFoundException(int LedgerId)
-        : base($"The ledger with id: {LedgerId} doesn't exist in the database.")
+        public LedgerNotFoundException(int ledgerId)
+            : base("LedgerNotFound", ledgerId)
         {
         }
-
     }
 }

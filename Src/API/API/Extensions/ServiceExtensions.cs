@@ -1,4 +1,6 @@
-﻿using Accounting.Application;
+﻿// Ignore Spelling: Extentions Cors
+
+using Accounting.Application;
 using Accounting.Application.Interfaces.Repositories;
 using Accounting.Application.Interfaces.Services;
 using Accounting.Application.Mappings;
@@ -10,11 +12,15 @@ using Common.Application.Mappings;
 using Common.Infrastructure.Logging;
 using General.Application;
 using General.Infrastructure.DataAccess;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Persistence.DataAccess;
+using System.Globalization;
 
 namespace API.Extentions
 {
@@ -71,7 +77,7 @@ namespace API.Extentions
                     {
                         Title = $"{module} API",
                         Version = "v1"
-                    });                     
+                    });
                 }
             });
         }
@@ -79,6 +85,23 @@ namespace API.Extentions
         {
             services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
             services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
+            return services;
+        }
+
+        public static IServiceCollection AddMultiLanguage(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddPortableObjectLocalization(options =>
+            {
+                options.ResourcesPath = "Localization";
+            });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
+                options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+                options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+            });
             return services;
         }
     }

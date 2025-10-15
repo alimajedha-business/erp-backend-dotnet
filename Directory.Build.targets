@@ -1,0 +1,16 @@
+<Project>
+  <Target Name="CopyModuleLocalizationFiles" AfterTargets="Build">
+    <!-- Search for Localization folders under Modules -->
+    <ItemGroup>
+      <ModuleLocalizationFiles 
+	  Include="$(SolutionDir)Src\**\Localization\*.po" 
+      Exclude="$(SolutionDir)Src\API\API\Localization\*.po"	  />
+    </ItemGroup>
+
+    <!-- Copy them to the host project's output directory -->
+    <Copy
+      SourceFiles="@(ModuleLocalizationFiles)"
+      DestinationFolder="$(SolutionDir)Src\API\API\Localization\"
+      SkipUnchangedFiles="true" />
+  </Target>
+</Project>
