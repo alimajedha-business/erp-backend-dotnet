@@ -23,6 +23,7 @@ using Persistence.DataAccess;
 using System.Globalization;
 using Accounting.Resources;
 using Common.Resources;
+using Common.Application.Services;
 
 
 namespace API.Extentions
@@ -132,6 +133,14 @@ namespace API.Extentions
 
             return services;
         }
-    }
 
+        public static IServiceCollection AddModuleResources(this IServiceCollection services)
+        {
+            services.AddScoped<ExceptionLocalizer<CommonResource>>();
+            services.AddScoped<ExceptionLocalizer<AccountingResource>>();
+
+            return services;
+        }
+
+    }
 }

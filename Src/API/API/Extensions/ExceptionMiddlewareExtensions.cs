@@ -19,33 +19,38 @@ namespace API.Extensions
             {
                 appError.Run(async context =>
                 {
-                    var logger = context.RequestServices.GetRequiredService<ILoggerService>();
-                    var exceptionLocalizer = context.RequestServices.GetRequiredService<IExceptionLocalizer>();
-
+                     var logger = context.RequestServices.GetRequiredService<ILoggerService>();
                     context.Response.ContentType = "application/json";
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
+                    if (contextFeature is null)
+                        return;
+
+                    var ex = contextFeature.Error;
+
+                    // Select proper status code
+                    context.Response.StatusCode = ex switch
                     {
-                        var error = contextFeature.Error;
+                        NotFoundException => StatusCodes.Status404NotFound,
+                        BadRequestException => StatusCodes.Status400BadRequest,
+                        _ => StatusCodes.Status500InternalServerError
+                    };
 
-                        context.Response.StatusCode = error switch
-                        {
-                            NotFoundException => StatusCodes.Status404NotFound,
-                            BadRequestException => StatusCodes.Status400BadRequest,
-                            _ => StatusCodes.Status500InternalServerError
-                        };
+                    // Get correct ExceptionLocalizer based on module/exception type
+                    var localizer = ExceptionLocalizerFactory.ResolveForException(context.RequestServices, ex);
 
-                        string localizedMessage = exceptionLocalizer.Localize(error);
+                    // Localize the message
+                    var localizedMessage = localizer.Localize(ex);
 
-                        logger.LogError(null, $"Something went wrong: {error}");
+                    // Log the original error
+                    logger.LogError(null, $"Something went wrong: {ex}");
 
-                        await context.Response.WriteAsync(new ErrorDetails
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = localizedMessage
-                        }.ToString());
-                    }
+                    // Return response
+                    await context.Response.WriteAsJsonAsync(new 
+                    {
+                        StatusCode = context.Response.StatusCode,
+                        Message = localizedMessage
+                    });
                 });
             });
         }

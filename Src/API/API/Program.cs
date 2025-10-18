@@ -1,11 +1,14 @@
 using Accounting.Application.Mappings;
 using Accounting.Infrastructure.DataAccess;
+using Accounting.Resources;
 using API.Extensions;
 using API.Extentions;
 using Asp.Versioning.Routing;
 using Common.Application;
 using Common.Application.Mappings;
+using Common.Application.Services;
 using Common.Infrastructure.Logging;
+using Common.Resources;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
@@ -36,6 +39,7 @@ try
     });
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
+    builder.Services.AddModuleResources();
     builder.Services.AddMultiLanguage();
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
@@ -43,7 +47,7 @@ try
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
-    });       
+    });
     builder.Services.AddModuleControllers();
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();
