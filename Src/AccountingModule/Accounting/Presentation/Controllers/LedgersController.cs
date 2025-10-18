@@ -1,11 +1,16 @@
 ﻿using Accounting.Application.DTOs;
 using Accounting.Application.Interfaces.Services;
 using Accounting.Presentation.ModelBinders;
+using Accounting.Resources;
 using Asp.Versioning;
+using Common;
+using Common.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.ComponentModel.Design;
+
 
 namespace Accounting.Presentation.Controllers
 {
@@ -16,8 +21,13 @@ namespace Accounting.Presentation.Controllers
     public class LedgersController : ControllerBase
     {
         private readonly IServiceManager _service;
+        private readonly IStringLocalizer<AccountingResource> _localizer;       
 
-        public LedgersController(IServiceManager service) => _service = service;
+        public LedgersController(IServiceManager service, IStringLocalizer<AccountingResource> localizer)
+        {
+            _service = service;
+            _localizer = localizer;            
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetLedgers()
@@ -37,7 +47,7 @@ namespace Accounting.Presentation.Controllers
         public async Task<IActionResult> CreateLedger(int companyId, [FromBody] LedgerForCreationDto ledger)
         {
             if (ledger is null)
-                return BadRequest("LedgerForCreationDto object is null");
+                return BadRequest(_localizer["Ledger object is null"].Value);
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
             var createdLedger = await _service.LedgerService.CreateAsync(ledger);
@@ -70,7 +80,7 @@ namespace Accounting.Presentation.Controllers
         public async Task<IActionResult> UpdateLedger(int id, [FromBody] LedgerForUpdateDto ledger)
         {
             if (ledger is null)
-                return BadRequest("Ledger object is null");
+                return BadRequest(_localizer["Ledger object is null"].Value);
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
             await _service.LedgerService.UpdateAsync(id, ledger, trackChanges: true);
@@ -83,7 +93,7 @@ namespace Accounting.Presentation.Controllers
         {
             if (ledgerPatch is null)
             {
-                return BadRequest("Ledger object is null.");
+                return BadRequest(_localizer["Ledger object is null"].Value);
             }
             var result = await _service.LedgerService.GetLedgerForPatchAsync(id, trackChanges: true);
             ledgerPatch.ApplyTo(result.ledgerForUpdate);

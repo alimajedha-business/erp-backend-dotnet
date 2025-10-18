@@ -21,6 +21,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Persistence.DataAccess;
 using System.Globalization;
+using Accounting.Resources;
+using Common.Resources;
+
 
 namespace API.Extentions
 {
@@ -90,19 +93,45 @@ namespace API.Extentions
 
         public static IServiceCollection AddMultiLanguage(this IServiceCollection services)
         {
-            services.AddMemoryCache();
-            services.AddPortableObjectLocalization(options =>
-            {
-                options.ResourcesPath = "Localization";
-            });
+            services.AddLocalization();
+
+            // For localized validation messages in API models
+            services.AddControllers()
+              .AddDataAnnotationsLocalization(options =>
+              {
+                  options.DataAnnotationLocalizerProvider = (type, factory) =>
+                  {
+                      // Try to find a matching module resource type
+                      if (type.Namespace != null)
+                      {
+                          if (type.Namespace.Contains("Accounting"))
+                              return factory.Create(typeof(AccountingResource));
+                          if (type.Namespace.Contains("HCM"))
+                              return factory.Create(typeof(HCM.HCMResource));
+                      }
+
+                      // Default fallback
+                      return factory.Create(typeof(CommonResource));
+                  };
+              });
+
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
+                options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
+                {
+                    // Example: Fetch from user claims or DB (inject services if needed)
+                    var userCulture = "fa";  // Replace with logic, e.g., from HttpContext.User
+                    return await Task.FromResult(new ProviderCultureResult(userCulture));
+                }));
                 options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
                 options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
                 options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+
             });
+
             return services;
         }
     }
+
 }

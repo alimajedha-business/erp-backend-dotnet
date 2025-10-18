@@ -36,14 +36,14 @@ try
     });
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
+    builder.Services.AddMultiLanguage();
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
     builder.Services.AddModuleAutoMappers();
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
-    });
-    builder.Services.AddMultiLanguage();    
+    });       
     builder.Services.AddModuleControllers();
     builder.Services.AddCustomLogging();
     builder.Services.AddControllers().AddSystemTextJsonMergePatch();

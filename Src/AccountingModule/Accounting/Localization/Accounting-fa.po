@@ -1,5 +1,0 @@
-﻿msgid "LedgerNotFound"
-msgstr "دفتر کل با شناسه {0} در پایگاه داده یافت نشد."
-
-msgid "AccountSetNotFound"
-msgstr "مجموعه حساب با شناسه {0} در پایگاه داده یافت نشد."
