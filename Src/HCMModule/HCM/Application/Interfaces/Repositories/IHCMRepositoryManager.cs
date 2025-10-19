@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Ignore Spelling: HCM
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,10 @@ namespace HCM.Application.Interfaces.Repositories
 {
     public interface IHCMRepositoryManager
     {
-    
-        void Save();
+        IDepartmentRepository Department { get; }
+
+        IPostRepository Post { get; }
+
+        Task SaveAsync();
     }
 }

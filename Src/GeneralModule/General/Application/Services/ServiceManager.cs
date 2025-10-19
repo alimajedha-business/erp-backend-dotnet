@@ -13,16 +13,26 @@ namespace General.Application.Services
     internal sealed class ServiceManager : IServiceManager
     {
         private readonly Lazy<ICountryService> _countryService;
-        //private readonly Lazy<IAccountSetService> _accountSetService;
+        private readonly Lazy<IDomainService> _domainService;
+        private readonly Lazy<ICompanyService> _companyService;
+
 
         public ServiceManager(IGeneralRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
         {
             _countryService = new Lazy<ICountryService>(() =>
             new CountryService(repositoryManager, logger, mapper));
-        //    _accountSetService = new Lazy<IAccountSetService>(() =>
-        //    new AccountSetService(repositoryManager, logger, mapper));
+
+            _domainService = new Lazy<IDomainService>(() =>
+            new DomainService(repositoryManager, logger, mapper));
+
+            _companyService = new Lazy<ICompanyService>(() =>
+            new CompanyService(repositoryManager, logger, mapper));
         }
         public ICountryService CountryService => _countryService.Value;
-        //public IAccountSetService AccountSetService => _accountSetService.Value;
+
+        public IDomainService DomainService => _domainService.Value;
+
+        public ICompanyService CompanyService => _companyService.Value;
+
     }
 }

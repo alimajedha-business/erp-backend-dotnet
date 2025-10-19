@@ -3,6 +3,9 @@ using Accounting.Application.Interfaces.Services;
 using Accounting.Application.Mappings;
 using Accounting.Application.Services;
 using Accounting.Infrastructure.DataAccess.Repositories;
+using Accounting.Resources;
+using Common.Application.Interfaces;
+using Common.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -18,6 +21,7 @@ namespace Accounting.Application
         {
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddAutoMapper(typeof(AccountingMappingProfile));
+            services.AddScoped<IExceptionLocalizer, ExceptionLocalizer<AccountingResource>>();
             return services;
         }
     }

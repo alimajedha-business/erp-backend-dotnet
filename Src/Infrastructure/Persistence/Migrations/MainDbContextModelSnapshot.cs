@@ -9154,6 +9154,114 @@ namespace Persistence.Migrations
                     b.ToTable("workplaces", "general");
                 });
 
+            modelBuilder.Entity("HCM.Domain.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ModifierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("StatusChangeDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ModifierId");
+
+                    b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("HCM.Domain.Entities.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ModifierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("StatusChangeDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ModifierId");
+
+                    b.ToTable("Post");
+                });
+
             modelBuilder.Entity("Shared.Domain.Entities.BankAccount", b =>
                 {
                     b.Property<int>("Id")
@@ -12973,6 +13081,56 @@ namespace Persistence.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("HCM.Domain.Entities.Department", b =>
+                {
+                    b.HasOne("General.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("General.Domain.Entities.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("General.Domain.Entities.User", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("HCM.Domain.Entities.Post", b =>
+                {
+                    b.HasOne("General.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("General.Domain.Entities.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("General.Domain.Entities.User", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Modifier");
+                });
+
             modelBuilder.Entity("Shared.Domain.Entities.BankAccount", b =>
                 {
                     b.HasOne("Shared.Domain.Entities.BankBranch", "BankBranch")
@@ -13142,7 +13300,7 @@ namespace Persistence.Migrations
                         .HasForeignKey("CompanyUnitId");
 
                     b.HasOne("Warehouse.Domain.Entities.WarehouseType", "WarehouseType")
-                        .WithMany()
+                        .WithMany("WarehouseStock")
                         .HasForeignKey("WarehouseTypeId");
 
                     b.Navigation("Company");
@@ -13854,6 +14012,11 @@ namespace Persistence.Migrations
                     b.Navigation("RolePermissionCommands");
 
                     b.Navigation("RolePermissionConstraints");
+                });
+
+            modelBuilder.Entity("Warehouse.Domain.Entities.WarehouseType", b =>
+                {
+                    b.Navigation("WarehouseStock");
                 });
 #pragma warning restore 612, 618
         }

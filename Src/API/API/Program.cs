@@ -1,19 +1,21 @@
 using Accounting.Application.Mappings;
 using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
-using API.Extentions;
 using Asp.Versioning.Routing;
 using Common.Application;
 using Common.Application.Mappings;
+using Common.Application.Services;
 using Common.Infrastructure.Logging;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Morcatko.AspNetCore.JsonMergePatch;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Globalization;
 using Warehouse.Infrastructure.DataAccess;
 
 
@@ -34,6 +36,8 @@ try
     });
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
+    builder.Services.ConfigureLocalization();
+    builder.Services.AddExceptionLocalizers();    
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
     builder.Services.AddModuleAutoMappers();
@@ -41,15 +45,17 @@ try
     {
         options.SuppressModelStateInvalidFilter = true;
     });
-    builder.Services.AddModuleControllers();
-    builder.Services.AddCustomLogging();
-    builder.Services.AddControllers().AddSystemTextJsonMergePatch();
+    builder.Services.ConfigureControllers();
+    builder.Services.AddCustomLogging();    
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
 
+
     var app = builder.Build();
 
+    var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+    app.UseRequestLocalization(locOptions.Value);
     app.UseSerilogRequestLogging();
     app.ConfigureExceptionHandler();
     if (app.Environment.IsProduction())
@@ -57,17 +63,18 @@ try
 
     //app.UseHttpsRedirection();
 
+    app.UseForwardedHeaders();
     app.UseStaticFiles();
 
-    app.UseForwardedHeaders(new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.All
-    });
+    //app.UseForwardedHeaders(new ForwardedHeadersOptions
+    //{
+    //    ForwardedHeaders = ForwardedHeaders.All
+    //});
 
     app.UseCors("CorsPolicy");
-
-    app.UseAuthorization();
     app.UseRouting();
+    //app.UseAuthentication();
+    app.UseAuthorization();  
     app.MapControllers();
 
     app.UseSwagger();
@@ -78,7 +85,7 @@ try
             var lower = module.ToLower();
             s.SwaggerEndpoint($"/swagger/v1-{lower}/swagger.json", $"{module} API");
         }
-        s.RoutePrefix = "doc/v1";
+        s.RoutePrefix = "/doc/v1";
         s.DocExpansion(DocExpansion.None); // Ensure all endpoints and tags are collapsed
         s.ConfigObject.AdditionalItems["syntaxHighlight"] = false;
     });

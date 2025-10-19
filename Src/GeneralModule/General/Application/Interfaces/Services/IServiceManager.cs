@@ -8,7 +8,8 @@ namespace General.Application.Interfaces.Services
 {
     public interface IServiceManager
     {
-        ICountryService CountryService{ get; }
-        //IAccountSetService AccountSetService { get; }
+        ICountryService CountryService{ get; }        
+        IDomainService DomainService { get; }
+        ICompanyService CompanyService { get; }
     }
 }

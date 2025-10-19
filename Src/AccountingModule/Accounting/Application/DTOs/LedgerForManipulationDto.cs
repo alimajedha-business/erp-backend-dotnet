@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Ignore Spelling: Dto
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,7 +17,6 @@ namespace Accounting.Application.DTOs
         [Required(ErrorMessage = "Name is a required field.")]
         [MaxLength(100, ErrorMessage = "Maximum length for the Name is 100 characters.")]
         public string? Name { get; init; }
-
 
         [Required(ErrorMessage = "Name2 is a required field.")]
         [MaxLength(100, ErrorMessage = "Maximum length for the Name2 is 100 characters.")]
