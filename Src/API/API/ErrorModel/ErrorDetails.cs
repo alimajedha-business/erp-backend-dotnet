@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Common.ErrorModel
 {
-    public class ErrorDetails
+    public record class ErrorDetails
     {
         public int StatusCode { get; set; }
         public string? Message { get; set; }
+        public string? TraceId { get; set; }
+        public string? Details { get; set; }
         public override string ToString() => JsonSerializer.Serialize(this);
     }
 }

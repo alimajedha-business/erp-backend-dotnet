@@ -6,6 +6,7 @@ using Common.ErrorModel;
 using Common.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Localization;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Reflection;
 
@@ -15,11 +16,11 @@ namespace API.Extensions
     {
         public static void ConfigureExceptionHandler(this WebApplication app)
         {
-            app.UseExceptionHandler(static appError =>
+            app.UseExceptionHandler(appError =>
             {
                 appError.Run(async context =>
                 {
-                     var logger = context.RequestServices.GetRequiredService<ILoggerService>();
+                    var logger = context.RequestServices.GetRequiredService<ILoggerService>();
                     context.Response.ContentType = "application/json";
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
@@ -29,28 +30,35 @@ namespace API.Extensions
                     var ex = contextFeature.Error;
 
                     // Select proper status code
-                    context.Response.StatusCode = ex switch
+                    var statusCode = ex switch
                     {
                         NotFoundException => StatusCodes.Status404NotFound,
-                        BadRequestException => StatusCodes.Status400BadRequest,
+                        BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
+                        UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                         _ => StatusCodes.Status500InternalServerError
                     };
+                    context.Response.StatusCode = statusCode;
 
-                    // Get correct ExceptionLocalizer based on module/exception type
+                    // Resolve localizer dynamically per module / exception
+                    var isDevelopment = app.Environment.IsDevelopment();
                     var localizer = ExceptionLocalizerFactory.ResolveForException(context.RequestServices, ex);
-
-                    // Localize the message
                     var localizedMessage = localizer.Localize(ex);
 
-                    // Log the original error
-                    logger.LogError(null, $"Something went wrong: {ex}");
+                    // Structured logging with more context
+                    logger.LogError(ex, "Exception occurred: {Message} | TraceId: {TraceId}",
+                        localizedMessage, context.TraceIdentifier);
 
-                    // Return response
-                    await context.Response.WriteAsJsonAsync(new 
+                    // Enhanced error response
+                    var errorResponse = new ErrorDetails
                     {
-                        StatusCode = context.Response.StatusCode,
-                        Message = localizedMessage
-                    });
+                        StatusCode = statusCode,
+                        Message = localizedMessage,//isDevelopment ? ex.Message : localizedMessage,
+                        TraceId = context.TraceIdentifier,
+                        Details = isDevelopment ? ex.StackTrace : null // Only in development
+                    };
+
+
+                    await context.Response.WriteAsJsonAsync(errorResponse);
                 });
             });
         }

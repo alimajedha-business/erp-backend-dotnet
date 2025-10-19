@@ -4,7 +4,6 @@ using Accounting.Presentation.ModelBinders;
 using Accounting.Resources;
 using Asp.Versioning;
 using Common;
-using Common.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;

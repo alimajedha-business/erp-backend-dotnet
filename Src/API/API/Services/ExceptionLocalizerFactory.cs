@@ -1,5 +1,4 @@
 ﻿using Common.Application.Interfaces;
-using Common.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,8 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Accounting.Domain.Exceptions;
 using Common.Application.Services;
-using Accounting.Resources;
 using HCM;
+using Common.Resources;
+using Accounting.Resources;
 
 namespace API
 {

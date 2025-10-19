@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Extentions Cors
+﻿// Ignore Spelling: Extentions Cors Localizers
 
 using Accounting.Application;
 using Accounting.Application.Interfaces.Repositories;
@@ -7,26 +7,28 @@ using Accounting.Application.Mappings;
 using Accounting.Application.Services;
 using Accounting.Infrastructure.DataAccess;
 using Accounting.Infrastructure.DataAccess.Repositories;
+using Accounting.Resources;
 using Common.Application;
 using Common.Application.Mappings;
+using Common.Application.Services;
 using Common.Infrastructure.Logging;
+using Common.Resources;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Morcatko.AspNetCore.JsonMergePatch;
 using Persistence.DataAccess;
 using System.Globalization;
-using Accounting.Resources;
-using Common.Resources;
-using Common.Application.Services;
 
 
-namespace API.Extentions
+namespace API.Extensions
 {
     public static class ServiceExtensions
     {
@@ -60,14 +62,36 @@ namespace API.Extentions
             return services;
         }
 
-        public static IServiceCollection AddModuleControllers(this IServiceCollection services)
+        public static IServiceCollection ConfigureControllers(this IServiceCollection services)
         {
             services.AddControllers(config =>
             {
                 config.ReturnHttpNotAcceptable = true;
-            }).AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
-            .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
-            .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly);
+            })
+                .AddSystemTextJsonMergePatch()
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                    {
+                        var module = ProjectConstants.Modules
+                        .FirstOrDefault(m => type.Namespace?.Contains(m) == true);
+                        if (module is not null)
+                        {
+                            var resourceTypeName = $"{module}.Resources.{module}Resource";
+                            var resourceType = AppDomain.CurrentDomain.GetAssemblies()
+                                .SelectMany(a => a.GetTypes())
+                                .FirstOrDefault(t => t.FullName == resourceTypeName);
+                            if (resourceType is not null)
+                                return factory.Create(resourceType);
+                        }
+
+                        // Fallback to shared/common resource
+                        return factory.Create(typeof(CommonResource));
+                    };
+                })
+                .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly);
             return services;
         }
 
@@ -80,66 +104,59 @@ namespace API.Extentions
                     s.SwaggerDoc($"v1-{module.ToLower()}", new OpenApiInfo
                     {
                         Title = $"{module} API",
-                        Version = "v1"
+                        Version = "v1",
+                        Description = $"{module} Module API"
                     });
                 }
+
+                // Add security definition if using authentication
+                //s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Description = "JWT Authorization header using the Bearer scheme.",
+                //    Name = "Authorization",
+                //    In = ParameterLocation.Header,
+                //    Type = SecuritySchemeType.ApiKey,
+                //    Scheme = "Bearer"
+                //});
+
+                //s.OperationFilter<AuthorizeCheckOperationFilter>(); // Custom filter if needed
             });
+
         }
+
         public static IServiceCollection AddModuleAutoMappers(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
             services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
             return services;
         }
-
-        public static IServiceCollection AddMultiLanguage(this IServiceCollection services)
-        {
-            services.AddLocalization();
-
-            // For localized validation messages in API models
-            services.AddControllers()
-              .AddDataAnnotationsLocalization(options =>
-              {
-                  options.DataAnnotationLocalizerProvider = (type, factory) =>
-                  {
-                      // Try to find a matching module resource type
-                      if (type.Namespace != null)
-                      {
-                          if (type.Namespace.Contains("Accounting"))
-                              return factory.Create(typeof(AccountingResource));
-                          if (type.Namespace.Contains("HCM"))
-                              return factory.Create(typeof(HCM.HCMResource));
-                      }
-
-                      // Default fallback
-                      return factory.Create(typeof(CommonResource));
-                  };
-              });
-
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
-                {
-                    // Example: Fetch from user claims or DB (inject services if needed)
-                    var userCulture = "fa";  // Replace with logic, e.g., from HttpContext.User
-                    return await Task.FromResult(new ProviderCultureResult(userCulture));
-                }));
-                options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
-                options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-                options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-
-            });
-
-            return services;
-        }
-
-        public static IServiceCollection AddModuleResources(this IServiceCollection services)
+      
+        public static IServiceCollection AddExceptionLocalizers(this IServiceCollection services)
         {
             services.AddScoped<ExceptionLocalizer<CommonResource>>();
             services.AddScoped<ExceptionLocalizer<AccountingResource>>();
 
             return services;
+        }
+
+        public static void ConfigureLocalization(this IServiceCollection services)
+        {
+            services.AddLocalization();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
+                options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+                options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+
+                // Derive culture from Accept-Language header
+                options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
+                {
+                    var lang = context.Request.Headers["Accept-Language"].FirstOrDefault();
+                    var culture = !string.IsNullOrEmpty(lang) ? lang : "fa";
+                    return await Task.FromResult(new ProviderCultureResult(culture));
+                }));     
+            });
         }
 
     }

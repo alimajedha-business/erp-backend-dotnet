@@ -1,6 +1,5 @@
 ﻿// Ignore Spelling: Dto
 
-using Accounting.Resources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
