@@ -1,4 +1,6 @@
-﻿using Common.Application.Interfaces;
+﻿// Ignore Spelling: Localizer
+
+using Common.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Accounting.Domain.Exceptions;
 using Common.Application.Services;
-using HCM;
+using HCM.Resources;
 using Common.Resources;
 using Accounting.Resources;
 

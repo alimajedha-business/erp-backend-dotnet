@@ -21,9 +21,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure\DataAccess\Repositories\Extensions\" />
-      <Folder Include="Presentation\Controllers\" />
+      <Compile Update="Resources\HCMResource.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>HCMResource.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\HCMResource.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>HCMResource.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
 
 
 </Project>
