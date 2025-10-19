@@ -29,9 +29,9 @@ namespace HCM.Application.Services
 
         public async Task<DepartmentDto> CreateDepartmentForCompanyAsync(int companyId, DepartmentForCreationDto departmentDto, bool trackChanges)
         {
-            var company = await _httpClient.GetFromJsonAsync<CompanyDto>($"api/companies/{companyId}");
-            if (company == null)
-                throw new Exception("Company not found");
+           // var company = await _httpClient.GetFromJsonAsync<CompanyDto>($"api/companies/{companyId}");
+            //if (company == null)
+            //    throw new Exception("Company not found");
             var department = _mapper.Map<Department>(departmentDto);
             _repository.Department.CreateDepartment(companyId, department);
             await _repository.SaveAsync();

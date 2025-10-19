@@ -21,14 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Resources\HCMResource.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>HCMResource.resx</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <EmbeddedResource Update="Resources\HCMResource.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>HCMResource.Designer.cs</LastGenOutput>

@@ -26,12 +26,17 @@ namespace General.Application.Services
 
         public async Task<DomainDto?> GetDomainAsync(int domainId, bool trackChanges)
         {
-            var domain = await _repository.Domain.GetDomainAsync(domainId, trackChanges);
-            if (domain == null)
-                throw new DomainNotFoundException(domainId);
-
+            var domain = await GetDomainAndCheckIfItExistsAsync(domainId, trackChanges);
             var domainDto = _mapper.Map<DomainDto>(domain);
             return domainDto;
+        }
+
+        private async Task<Domain.Entities.Domain> GetDomainAndCheckIfItExistsAsync(int domainId, bool trackChanges)
+        {
+            var domain = await _repository.Domain.GetDomainAsync(domainId, trackChanges);
+            if (domain is null)
+                throw new DomainNotFoundException(domainId);
+            return domain;
         }
     }
 }

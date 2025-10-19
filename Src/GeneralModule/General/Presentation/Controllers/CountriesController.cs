@@ -8,7 +8,7 @@ namespace General.Presentation.Controllers
 {
     [ApiVersion(1.0)]
     [ApiExplorerSettings(GroupName = "v1-general")]
-    [Route("api/v{version:apiVersion}/general/countries")]
+    [Route("api/v{version:apiVersion}/general/[controller]")]
     [ApiController]
     public class CountriesController : ControllerBase
     {

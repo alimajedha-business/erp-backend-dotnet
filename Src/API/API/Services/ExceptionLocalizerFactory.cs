@@ -12,6 +12,7 @@ using Common.Application.Services;
 using HCM.Resources;
 using Common.Resources;
 using Accounting.Resources;
+using General.Resources;
 
 namespace API
 {
@@ -38,6 +39,8 @@ namespace API
                 return sp.GetRequiredService<ExceptionLocalizer<AccountingResource>>();
             if (ns.Contains("HCM"))
                 return sp.GetRequiredService<ExceptionLocalizer<HCMResource>>();
+            if (ns.Contains("General"))
+                return sp.GetRequiredService<ExceptionLocalizer<GeneralResource>>();
 
             return sp.GetRequiredService<ExceptionLocalizer<CommonResource>>();
         }

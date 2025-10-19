@@ -9,8 +9,8 @@ namespace General.Domain.Exceptions
 {
     internal class DomainNotFoundException : NotFoundException
     {
-        public DomainNotFoundException(int domainId) : 
-            base($"The Domain with id: {domainId} doesn't exist in the database.")
+        public DomainNotFoundException(int domainId) :
+            base("DomainNotFound", domainId)
         {
         }
     }
