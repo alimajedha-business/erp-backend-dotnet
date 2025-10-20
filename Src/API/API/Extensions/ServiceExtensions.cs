@@ -13,6 +13,7 @@ using Common.Application.Mappings;
 using Common.Application.Services;
 using Common.Infrastructure.Logging;
 using Common.Resources;
+using General.Resources;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
@@ -24,7 +25,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Morcatko.AspNetCore.JsonMergePatch;
-using Persistence.DataAccess;
 using System.Globalization;
 
 
@@ -135,6 +135,7 @@ namespace API.Extensions
         {
             services.AddScoped<ExceptionLocalizer<CommonResource>>();
             services.AddScoped<ExceptionLocalizer<AccountingResource>>();
+            services.AddScoped<ExceptionLocalizer<GeneralResource>>();
 
             return services;
         }

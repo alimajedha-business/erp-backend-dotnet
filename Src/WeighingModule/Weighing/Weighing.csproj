@@ -16,10 +16,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.20" />
     </ItemGroup>
     
-    <ItemGroup>
-        <Folder Include="Application\" />
-        <Folder Include="Presentation\" />
-    </ItemGroup>
     
     <ItemGroup>
       <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />

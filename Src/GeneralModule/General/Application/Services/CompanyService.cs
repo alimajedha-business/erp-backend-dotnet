@@ -26,13 +26,23 @@ namespace General.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<CompanyDto?> GetCompanyAsync(int domainId, int companyId, bool trackChanges)
+        public async Task<CompanyDto?> GetCompanyAsync(int companyId, bool trackChanges)
+        {
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
+            if (company == null)
+                throw new CompanyNotFoundException(companyId);
+
+            var companyDto = _mapper.Map<CompanyDto>(company);
+            return companyDto;
+        }
+
+        public async Task<CompanyDto?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges)
         {
             var domain = await _repository.Domain.GetDomainAsync(domainId, trackChanges);
             if (domain == null)
                 throw new DomainNotFoundException(domainId);
 
-            var company = await _repository.Company.GetCompanyAsync(domainId, companyId, trackChanges);
+            var company = await _repository.Company.GetCompanyForDomainAsync(domainId, companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 

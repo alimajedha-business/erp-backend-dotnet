@@ -20,10 +20,5 @@
         <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Infrastructure\DataAccess\Repositories\Extensions\" />
-      <Folder Include="Presentation\Controllers\" />
-    </ItemGroup>
-
 
 </Project>

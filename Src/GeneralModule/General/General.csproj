@@ -19,5 +19,4 @@
         <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
     </ItemGroup>
 
-
 </Project>

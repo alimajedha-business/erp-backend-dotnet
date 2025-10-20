@@ -1,4 +1,6 @@
-﻿using Common.Application.Interfaces;
+﻿// Ignore Spelling: Localizer
+
+using Common.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,9 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Accounting.Domain.Exceptions;
 using Common.Application.Services;
-using HCM;
+using HCM.Resources;
 using Common.Resources;
 using Accounting.Resources;
+using General.Resources;
 
 namespace API
 {
@@ -36,6 +39,8 @@ namespace API
                 return sp.GetRequiredService<ExceptionLocalizer<AccountingResource>>();
             if (ns.Contains("HCM"))
                 return sp.GetRequiredService<ExceptionLocalizer<HCMResource>>();
+            if (ns.Contains("General"))
+                return sp.GetRequiredService<ExceptionLocalizer<GeneralResource>>();
 
             return sp.GetRequiredService<ExceptionLocalizer<CommonResource>>();
         }
