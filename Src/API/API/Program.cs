@@ -40,7 +40,7 @@ try
     builder.Services.AddExceptionLocalizers();    
     builder.Services.AddModuleApplications();
     builder.Services.AddInfrastructures(builder.Configuration);
-    builder.Services.AddModuleAutoMappers();
+    //builder.Services.AddModuleAutoMappers();
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
