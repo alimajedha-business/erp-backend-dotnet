@@ -9,6 +9,7 @@ namespace General.Application.Interfaces.Repositories
 {
     public interface ICompanyRepository
     {
-        Task<Company?> GetCompanyAsync(int domainId, int companyId, bool trackChanges);
+        Task<Company?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges);
+        Task<Company?> GetCompanyAsync(int companyId, bool trackChanges);
     }
 }

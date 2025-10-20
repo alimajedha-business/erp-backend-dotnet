@@ -14,7 +14,10 @@ namespace General.Infrastructure.DataAccess.Repositories
     {
         public CompanyRepository(GeneralDbContext dbContext) : base(dbContext) { }
 
-        public async Task<Company?> GetCompanyAsync(int domainId, int companyId, bool trackChanges) =>
-         await FindByCondition(d => d.DomainId.Equals(domainId) && d.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
+        public async Task<Company?> GetCompanyAsync(int companyId, bool trackChanges) =>
+             await FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
+
+        public async Task<Company?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges) =>
+            await FindByCondition(c => c.DomainId.Equals(domainId) && c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
     }
 }

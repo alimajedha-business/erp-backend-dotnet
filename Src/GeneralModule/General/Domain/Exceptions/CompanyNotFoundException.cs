@@ -10,7 +10,7 @@ namespace General.Domain.Exceptions
     internal class CompanyNotFoundException : NotFoundException
     {
         public CompanyNotFoundException(int companyId) :
-            base($"The Company with id: {companyId} doesn't exist in the database.")
+            base("CompanyNotFound", companyId)
         {
         }
     }

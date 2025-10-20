@@ -15,23 +15,24 @@ namespace General.Presentation.Controllers
 {
     [ApiVersion(1.0)]
     [ApiExplorerSettings(GroupName = "v1-general")]
-    [Route("api/v{version:apiVersion}/general/domains")]
+    [Route("api/v{version:apiVersion}/general/companies")]
     [ApiController]
-    public class DomainsController : ControllerBase
+    public class CompaniesController:ControllerBase
     {
         private readonly IServiceManager _service;
         private readonly IStringLocalizer<GeneralResource> _localizer;
-        public DomainsController(IServiceManager service, IStringLocalizer<GeneralResource> localizer)
+        
+        public CompaniesController(IServiceManager service, IStringLocalizer<GeneralResource> localizer)
         {
             _service = service;
             _localizer = localizer;
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult> GetDomain(int id)
+        public async Task<ActionResult> GetCompany(int id)
         {
-            var domain = await _service.DomainService.GetDomainAsync(id, false);
-            return Ok(domain);
-        }
+            var companyDto = await _service.CompanyService.GetCompanyAsync(id, false);
+            return Ok(companyDto);
+        }      
     }
 }

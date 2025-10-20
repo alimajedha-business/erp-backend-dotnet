@@ -117,7 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="domainnotfound" xml:space="preserve">
-    <value>هولدینگ با شناسه {0} یافت نشد.</value>
+  <data name="CompanyNotFound" xml:space="preserve">
+    <value>شرکت با شناسه {0} یافت نشد.</value>
+  </data>
+  <data name="DomainNotFound" xml:space="preserve">
+    <value>هلدینگ با شناسه {0} یافت نشد.</value>
   </data>
 </root>

@@ -10,6 +10,7 @@ namespace General.Application.Interfaces.Services
 {
     public interface ICompanyService
     {
-        Task<CompanyDto?> GetCompanyAsync(int domainId, int companyId, bool trackChanges);
+        Task<CompanyDto?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges);
+        Task<CompanyDto?> GetCompanyAsync(int companyId, bool trackChanges);
     }
 }

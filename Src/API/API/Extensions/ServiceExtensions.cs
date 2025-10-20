@@ -13,6 +13,7 @@ using Common.Application.Mappings;
 using Common.Application.Services;
 using Common.Infrastructure.Logging;
 using Common.Resources;
+using General.Resources;
 using General.Application;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
@@ -134,6 +135,7 @@ namespace API.Extensions
         {
             services.AddScoped<ExceptionLocalizer<CommonResource>>();
             services.AddScoped<ExceptionLocalizer<AccountingResource>>();
+            services.AddScoped<ExceptionLocalizer<GeneralResource>>();
 
             return services;
         }
