@@ -27,6 +27,8 @@ using Microsoft.OpenApi.Models;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.Globalization;
 using HCM.Resources;
+using HCM.Application;
+using HCM.Infrastructure.DataAccess;
 
 
 namespace API.Extensions
@@ -52,6 +54,8 @@ namespace API.Extensions
         {
             services.AddAccountingApplication();
             services.AddGeneralApplication();
+            //
+            services.AddHCMApplication();
         }
 
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
@@ -60,6 +64,7 @@ namespace API.Extensions
             services.AddAccountingInfrastructure(configuration);
             services.AddGeneralInfrastructure(configuration);
             // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
+            services.AddHCMlInfrastructure(configuration);
             return services;
         }
 
@@ -92,7 +97,9 @@ namespace API.Extensions
                 })
                 .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(HCM.Presentation.AssemblyReference).Assembly);
+
             return services;
         }
 
@@ -141,7 +148,7 @@ namespace API.Extensions
                     var lang = context.Request.Headers["Accept-Language"].FirstOrDefault();
                     var culture = !string.IsNullOrEmpty(lang) ? lang : "fa";
                     return await Task.FromResult(new ProviderCultureResult(culture));
-                }));     
+                }));
             });
         }
 

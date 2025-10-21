@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace General.Domain.Exceptions
 {
-    internal class CompanyNotFoundException : NotFoundException
+    public class CompanyNotFoundException : NotFoundException
     {
         public CompanyNotFoundException(int companyId) :
             base("CompanyNotFound", companyId)

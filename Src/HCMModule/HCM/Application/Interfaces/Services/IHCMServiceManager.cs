@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace HCM.Application.Interfaces.Services
 {
-    public interface IServiceManager
+    public interface IHCMServiceManager
     {
-       // ICountryService CountryService { get; }
-        //IAccountSetService AccountSetService { get; }
+        IDepartmentService DepartmentService { get; }
     }
 }

@@ -13,7 +13,7 @@ namespace HCM.Infrastructure.DataAccess
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddGeneralInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddHCMlInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IHCMRepositoryManager, HCMRepositoryManager>();
             services.AddSqlServerDbContext<HCMDbContext>(configuration);
