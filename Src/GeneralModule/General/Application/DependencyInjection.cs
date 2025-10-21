@@ -1,6 +1,9 @@
-﻿using General.Application.Interfaces.Services;
+﻿using Common.Application.Interfaces;
+using Common.Application.Services;
+using General.Application.Interfaces.Services;
 using General.Application.Mappings;
 using General.Application.Services;
+using General.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,6 +19,7 @@ namespace General.Application
         {
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
             return services;
         }
     }

@@ -21,7 +21,7 @@ namespace Accounting.Application
         {
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddAutoMapper(typeof(AccountingMappingProfile));
-            services.AddScoped<IExceptionLocalizer, ExceptionLocalizer<AccountingResource>>();
+            services.AddScoped<IExceptionLocalizer<AccountingResource>, ExceptionLocalizer<AccountingResource>>();
             return services;
         }
     }

@@ -26,6 +26,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.Globalization;
+using HCM.Resources;
 
 
 namespace API.Extensions
@@ -122,22 +123,6 @@ namespace API.Extensions
                 //s.OperationFilter<AuthorizeCheckOperationFilter>(); // Custom filter if needed
             });
 
-        }
-
-        public static IServiceCollection AddModuleAutoMappers(this IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
-            services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
-            return services;
-        }
-      
-        public static IServiceCollection AddExceptionLocalizers(this IServiceCollection services)
-        {
-            services.AddScoped<ExceptionLocalizer<CommonResource>>();
-            services.AddScoped<ExceptionLocalizer<AccountingResource>>();
-            services.AddScoped<ExceptionLocalizer<GeneralResource>>();
-
-            return services;
         }
 
         public static void ConfigureLocalization(this IServiceCollection services)
