@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Common.Application.Services
 {
-    public class ExceptionLocalizer<TEntityResource> : IExceptionLocalizer where TEntityResource : class
+    public class ExceptionLocalizer<TEntityResource> : IExceptionLocalizer<TEntityResource> where TEntityResource : class
     {
         private readonly IStringLocalizer<CommonResource> _commonLocalizer;
         private readonly IStringLocalizer<TEntityResource> _moduleLocalizer;

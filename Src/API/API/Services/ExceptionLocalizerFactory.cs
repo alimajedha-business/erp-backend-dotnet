@@ -18,31 +18,23 @@ namespace API
 {
     public static class ExceptionLocalizerFactory
     {
-        //public static IExceptionLocalizer ResolveForException(IServiceProvider sp, Exception ex)
-        //{
-        //    // Add specific mappings if needed
-        //    return ex switch
-        //    {
-        //        // Example: exceptions in the Accounting module
-        //        LedgerNotFoundException => sp.GetRequiredService<ExceptionLocalizer<AccountingResource>>(),
-
-        //        // Fallback to common
-        //        _ => sp.GetRequiredService<ExceptionLocalizer<CommonResource>>()
-        //    };
-        //}
-
         public static IExceptionLocalizer ResolveForException(IServiceProvider sp, Exception ex)
         {
             var ns = ex.GetType().Namespace ?? string.Empty;
 
-            if (ns.Contains("Accounting"))
-                return sp.GetRequiredService<ExceptionLocalizer<AccountingResource>>();
-            if (ns.Contains("HCM"))
-                return sp.GetRequiredService<ExceptionLocalizer<HCMResource>>();
-            if (ns.Contains("General"))
-                return sp.GetRequiredService<ExceptionLocalizer<GeneralResource>>();
+            var mapping = new (string key, Type resource)[]
+            {
+                ("Accounting", typeof(AccountingResource)),
+                ("HCM", typeof(HCMResource)),
+                ("General", typeof(GeneralResource)),
+            };
 
-            return sp.GetRequiredService<ExceptionLocalizer<CommonResource>>();
+            var match = mapping.FirstOrDefault(m => ns.Contains(m.key));
+
+            var resourceType = match.resource ?? typeof(CommonResource);
+            var serviceType = typeof(IExceptionLocalizer<>).MakeGenericType(resourceType);
+
+            return (IExceptionLocalizer)sp.GetRequiredService(serviceType);
         }
     }
 }

@@ -125,23 +125,6 @@ namespace API.Extensions
 
         }
 
-        //public static IServiceCollection AddModuleAutoMappers(this IServiceCollection services)
-        //{
-        //    services.AddAutoMapper(typeof(AccountingMappingProfile).Assembly);
-        //    services.AddAutoMapper(typeof(CommonMappingProfile).Assembly);
-        //    return services;
-        //}
-      
-        public static IServiceCollection AddExceptionLocalizers(this IServiceCollection services)
-        {
-            services.AddScoped<ExceptionLocalizer<CommonResource>>();
-            services.AddScoped<ExceptionLocalizer<AccountingResource>>();
-            services.AddScoped<ExceptionLocalizer<GeneralResource>>();
-            services.AddScoped<ExceptionLocalizer<HCMResource>>();
-
-            return services;
-        }
-
         public static void ConfigureLocalization(this IServiceCollection services)
         {
             services.AddLocalization();
