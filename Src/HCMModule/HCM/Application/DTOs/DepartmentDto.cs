@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM Dto
-
-using General.Domain.Entities;
+﻿using General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using HCM.Application.Interfaces.Repositories;
+﻿using HCM.Application.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

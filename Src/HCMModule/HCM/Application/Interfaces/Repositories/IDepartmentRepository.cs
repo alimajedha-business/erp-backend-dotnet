@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using HCM.Domain.Entities;
+﻿using HCM.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

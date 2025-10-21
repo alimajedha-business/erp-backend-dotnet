@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using HCM.Domain.Entities;
+﻿using HCM.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
