@@ -17,7 +17,7 @@ namespace General.Application
     {
         public static IServiceCollection AddGeneralApplication(this IServiceCollection services)
         {
-            services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<IGeneralServiceManager, GeneralServiceManager>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
             return services;

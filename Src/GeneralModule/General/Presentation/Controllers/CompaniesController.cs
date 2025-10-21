@@ -19,10 +19,10 @@ namespace General.Presentation.Controllers
     [ApiController]
     public class CompaniesController:ControllerBase
     {
-        private readonly IServiceManager _service;
+        private readonly IGeneralServiceManager _service;
         private readonly IStringLocalizer<GeneralResource> _localizer;
         
-        public CompaniesController(IServiceManager service, IStringLocalizer<GeneralResource> localizer)
+        public CompaniesController(IGeneralServiceManager service, IStringLocalizer<GeneralResource> localizer)
         {
             _service = service;
             _localizer = localizer;
