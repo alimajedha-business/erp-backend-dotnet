@@ -9,11 +9,11 @@ namespace HCM.Application.DTOs
 {
     public abstract record DepartmentForManipulationDto
     {
-        [MaxLength(10,ErrorMessage = "MaxLenCode")]
+        [MaxLength(10,ErrorMessage = "MaxLengthCode")]
         public string? Code { get; set; }
 
         [Required(ErrorMessage ="NameIsRequired")]
-        [MaxLength(200, ErrorMessage = "MaxLength{0}")]
+        [MaxLength(200, ErrorMessage = "MaxLengthName")]
         public required string Name { get; set; }
 
         public string? Description { get; set; }

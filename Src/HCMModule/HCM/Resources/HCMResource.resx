@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MaxLenCode" xml:space="preserve">
-    <value>Maximum length for the Code is {0} characters.</value>
+  <data name="MaxLengthCode" xml:space="preserve">
+    <value>Maximum length for the Code is {1} characters.</value>
+  </data>
+  <data name="MaxLengthName" xml:space="preserve">
+    <value>Maximum length for the Name is {1} characters.</value>
   </data>
   <data name="NameIsRequired" xml:space="preserve">
     <value>Name is a required field.</value>

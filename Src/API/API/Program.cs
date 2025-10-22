@@ -6,6 +6,7 @@ using Common.Application;
 using Common.Application.Mappings;
 using Common.Application.Services;
 using Common.Infrastructure.Logging;
+using Common.Presentation.ActionFilters;
 using General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
@@ -38,6 +39,7 @@ try
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureLocalization();    
     builder.Services.AddModuleApplications();
+    builder.Services.AddScoped<ValidationFilterAttribute>();
     builder.Services.AddInfrastructures(builder.Configuration);    
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
@@ -48,7 +50,6 @@ try
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
-
 
     var app = builder.Build();
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Presentation.ActionFilters;
 
 namespace HCM.Presentation.Controllers
 {
@@ -28,6 +29,7 @@ namespace HCM.Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateDepartmentForCompany(int companyId, [FromBody] DepartmentForCreationDto department)
         {
             var departmentToReturn = await _service.DepartmentService.CreateDepartmentForCompanyAsync(companyId, department,

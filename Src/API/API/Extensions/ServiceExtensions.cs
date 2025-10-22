@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: Extentions Cors Localizers
-
-using Accounting.Application;
+﻿using Accounting.Application;
 using Accounting.Application.Interfaces.Repositories;
 using Accounting.Application.Interfaces.Services;
 using Accounting.Application.Mappings;
