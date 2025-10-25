@@ -1,5 +1,6 @@
 ﻿using Common.Application.Interfaces;
 using Common.Application.Services;
+using FluentValidation;
 using General.Resources;
 using HCM.Application.Interfaces.Services;
 using HCM.Application.Mappings;

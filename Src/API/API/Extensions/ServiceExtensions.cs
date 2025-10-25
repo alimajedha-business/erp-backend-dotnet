@@ -27,6 +27,7 @@ using System.Globalization;
 using HCM.Resources;
 using HCM.Application;
 using HCM.Infrastructure.DataAccess;
+using FluentValidation;
 
 
 namespace API.Extensions
@@ -148,6 +149,11 @@ namespace API.Extensions
                     return await Task.FromResult(new ProviderCultureResult(culture));
                 }));
             });
+        }
+
+        public static void ConfigureValidations(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssembly(typeof());
         }
 
     }
