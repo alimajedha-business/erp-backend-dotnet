@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HCM.Application.Validators;
 
 namespace HCM.Application
 {
@@ -22,6 +23,7 @@ namespace HCM.Application
             services.AddScoped<IHCMServiceManager, HCMServiceManager>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
+            services.AddValidatorsFromAssemblyContaining<CreateDepartmentValidator>();
             return services;
         }
     }

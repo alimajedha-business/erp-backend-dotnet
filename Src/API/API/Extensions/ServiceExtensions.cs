@@ -150,11 +150,6 @@ namespace API.Extensions
                 }));
             });
         }
-
-        public static void ConfigureValidations(this IServiceCollection services)
-        {
-            services.AddValidatorsFromAssembly(typeof());
-        }
-
+    
     }
 }

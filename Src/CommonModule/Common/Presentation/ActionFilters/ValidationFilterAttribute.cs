@@ -10,20 +10,27 @@ namespace Common.Presentation.ActionFilters
 {
     public class ValidationFilterAttribute : IActionFilter
     {
+        private static readonly string[] _bodyVerbs = new[] { "POST", "PUT", "PATCH" };
         public ValidationFilterAttribute()
         {
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            var httpMethod = context.HttpContext.Request.Method.ToUpperInvariant();
+
+            if (!_bodyVerbs.Contains(httpMethod))
+                return;
+
             var action = context.RouteData.Values["action"];
             var controller = context.RouteData.Values["controller"];
 
-            var param = context.ActionArguments
-                .SingleOrDefault(x => x.Value?.ToString()?.Contains("Dto") == true).Value;
-            if (param is null)
+            if (context.ActionArguments.Values.Any(v => v == null))
             {
-                context.Result = new BadRequestObjectResult($"Object is null. Controller: {controller}, action: {action}");
+                context.Result = new BadRequestObjectResult(new
+                {
+                    message = $"Object is null. Controller: {controller}, action: {action}"
+                });
                 return;
             }
 
