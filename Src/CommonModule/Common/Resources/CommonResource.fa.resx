@@ -123,4 +123,7 @@
   <data name="NotFound" xml:space="preserve">
     <value>یافت نشد</value>
   </data>
+  <data name="ObjectIsNull" xml:space="preserve">
+    <value>بدنه درخواست تهی است</value>
+  </data>
 </root>

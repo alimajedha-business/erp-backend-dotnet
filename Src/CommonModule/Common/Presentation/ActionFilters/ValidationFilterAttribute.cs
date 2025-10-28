@@ -29,7 +29,8 @@ namespace Common.Presentation.ActionFilters
             {
                 context.Result = new BadRequestObjectResult(new
                 {
-                    message = $"Object is null. Controller: {controller}, action: {action}"
+                    //message = $"Object is null. Controller: {controller}, action: {action}"
+                    message = "ObjectIsNull"
                 });
                 return;
             }

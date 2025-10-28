@@ -23,7 +23,7 @@ namespace HCM.Application
             services.AddScoped<IHCMServiceManager, HCMServiceManager>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
-            services.AddValidatorsFromAssemblyContaining<CreateDepartmentValidator>();
+            //services.AddValidatorsFromAssemblyContaining<CreateDepartmentValidator>();
             return services;
         }
     }
