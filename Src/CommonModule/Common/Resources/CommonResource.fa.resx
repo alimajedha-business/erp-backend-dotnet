@@ -126,4 +126,10 @@
   <data name="ObjectIsNull" xml:space="preserve">
     <value>بدنه درخواست تهی است</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>تکمیل {0} اجباری است</value>
+  </data>
+  <data name="ValueIsInvalid" xml:space="preserve">
+    <value>تو را خدا</value>
+  </data>
 </root>

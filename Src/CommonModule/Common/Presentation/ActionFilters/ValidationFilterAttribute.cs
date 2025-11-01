@@ -22,21 +22,19 @@ namespace Common.Presentation.ActionFilters
             if (!_bodyVerbs.Contains(httpMethod))
                 return;
 
-            var action = context.RouteData.Values["action"];
-            var controller = context.RouteData.Values["controller"];
-
-            if (context.ActionArguments.Values.Any(v => v == null))
-            {
-                context.Result = new BadRequestObjectResult(new
-                {
-                    //message = $"Object is null. Controller: {controller}, action: {action}"
-                    message = "ObjectIsNull"
-                });
-                return;
-            }
-
             if (!context.ModelState.IsValid)
-                context.Result = new UnprocessableEntityObjectResult(context.ModelState);
+            {
+                context.Result = new UnprocessableEntityObjectResult(new
+                {
+                    message = "Validation failed.",
+                    errors = context.ModelState
+                        .Where(ms => ms.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                        )
+                });
+            }
         }
 
         public void OnActionExecuted(ActionExecutedContext context) { }

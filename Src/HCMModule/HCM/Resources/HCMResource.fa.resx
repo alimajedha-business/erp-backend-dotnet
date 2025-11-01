@@ -117,13 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MaxLengthCode" xml:space="preserve">
-    <value>حداکثر طول کد {1} کاراکتر است</value>
+  <data name="Code" xml:space="preserve">
+    <value>کد</value>
   </data>
-  <data name="MaxLengthName" xml:space="preserve">
-    <value>حداکثر طول نام {1} کاراکتر است</value>
+  <data name="MaxLength" xml:space="preserve">
+    <value>حداکثر طول {0} {1} کاراکتر است</value>
   </data>
-  <data name="NameIsRequired" xml:space="preserve">
-    <value>تکمیل نام ضروری است</value>
+  <data name="Name" xml:space="preserve">
+    <value>نام</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>تکمیل {0} اجباری است</value>
   </data>
 </root>

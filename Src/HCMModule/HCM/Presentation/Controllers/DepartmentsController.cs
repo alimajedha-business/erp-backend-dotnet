@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Presentation.ActionFilters;
+using Common.Resources;
 
 namespace HCM.Presentation.Controllers
 {
@@ -21,11 +22,14 @@ namespace HCM.Presentation.Controllers
     {
         private readonly IHCMServiceManager _service;
         private readonly IStringLocalizer<HCMResource> _localizer;
+        //private readonly IStringLocalizer<CommonResource> _commonLocalizer;
 
         public DepartmentsController(IHCMServiceManager service, IStringLocalizer<HCMResource> localizer)
+            //, IStringLocalizer<CommonResource> commonLocalizer)
         {
             _service = service;
             _localizer = localizer;
+           // _commonLocalizer = commonLocalizer;
         }
 
         [HttpPost]

@@ -126,4 +126,10 @@
   <data name="ObjectIsNull" xml:space="preserve">
     <value>Request body cannot be null.</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>The {0} field is required.</value>
+  </data>
+  <data name="ValueIsInvalid" xml:space="preserve">
+    <value>Value Is Invalid</value>
+  </data>
 </root>

@@ -117,13 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MaxLengthCode" xml:space="preserve">
-    <value>Maximum length for the Code is {1} characters.</value>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
   </data>
-  <data name="MaxLengthName" xml:space="preserve">
-    <value>Maximum length for the Name is {1} characters.</value>
+  <data name="MaxLength" xml:space="preserve">
+    <value>Maximum length for the {0} is {1} characters.</value>
   </data>
-  <data name="NameIsRequired" xml:space="preserve">
-    <value>Name is a required field.</value>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>The {0} field is required.</value>
   </data>
 </root>

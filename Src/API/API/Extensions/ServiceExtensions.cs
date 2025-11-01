@@ -7,15 +7,21 @@ using Accounting.Infrastructure.DataAccess;
 using Accounting.Infrastructure.DataAccess.Repositories;
 using Accounting.Resources;
 using Common.Application;
+using Common.Application.Interfaces;
 using Common.Application.Mappings;
 using Common.Application.Services;
 using Common.Infrastructure.Logging;
 using Common.Resources;
-using General.Resources;
+using FluentValidation;
 using General.Application;
 using General.Infrastructure.DataAccess;
+using General.Resources;
+using HCM.Application;
+using HCM.Infrastructure.DataAccess;
+using HCM.Resources;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -24,10 +30,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Morcatko.AspNetCore.JsonMergePatch;
 using System.Globalization;
-using HCM.Resources;
-using HCM.Application;
-using HCM.Infrastructure.DataAccess;
-using FluentValidation;
+using System.Reflection;
 
 
 namespace API.Extensions
@@ -51,9 +54,9 @@ namespace API.Extensions
 
         public static void AddModuleApplications(this IServiceCollection services)
         {
+            services.AddScoped<IExceptionLocalizer<CommonResource>, ExceptionLocalizer<CommonResource>>();
             services.AddAccountingApplication();
             services.AddGeneralApplication();
-            //
             services.AddHCMApplication();
         }
 
@@ -71,7 +74,7 @@ namespace API.Extensions
         {
             services.AddControllers(config =>
             {
-                config.ReturnHttpNotAcceptable = true;
+                config.ReturnHttpNotAcceptable = true;            
             })
                 .AddSystemTextJsonMergePatch()
                 .AddDataAnnotationsLocalization(options =>
@@ -99,6 +102,8 @@ namespace API.Extensions
                 .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(HCM.Presentation.AssemblyReference).Assembly);
 
+            // Register a configuration class that uses DI for localization
+            services.AddTransient<IConfigureOptions<MvcOptions>, ConfigureModelBindingMessages>();
             return services;
         }
 
@@ -150,6 +155,30 @@ namespace API.Extensions
                 }));
             });
         }
-    
+
+        /// <summary>
+        /// Configures localized model binding messages for Web API.
+        /// </summary>
+        public class ConfigureModelBindingMessages : IConfigureOptions<MvcOptions>
+        {
+            private readonly IStringLocalizer _localizer;
+
+            public ConfigureModelBindingMessages(IStringLocalizerFactory factory)
+            {
+                _localizer = factory.Create(typeof(CommonResource));
+            }
+
+            public void Configure(MvcOptions options)
+            {
+                var provider = options.ModelBindingMessageProvider;
+
+                provider.SetValueIsInvalidAccessor(_ => _localizer["ValueIsInvalid"]);
+                provider.SetMissingBindRequiredValueAccessor(fieldName => _localizer["MissingBindRequiredValue", fieldName]);
+                provider.SetMissingKeyOrValueAccessor(() => _localizer["MissingKeyOrValue"]);
+                provider.SetNonPropertyUnknownValueIsInvalidAccessor(() => _localizer["ValueIsInvalid"]);
+                provider.SetNonPropertyValueMustBeANumberAccessor(() => _localizer["ValueMustBeNumber"]);
+                provider.SetValueMustNotBeNullAccessor(_ => _localizer["ValueMustNotBeNull"]);
+            }
+        }
     }
 }
