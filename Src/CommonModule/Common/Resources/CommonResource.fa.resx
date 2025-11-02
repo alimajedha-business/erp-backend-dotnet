@@ -124,12 +124,15 @@
     <value>یافت نشد</value>
   </data>
   <data name="ObjectIsNull" xml:space="preserve">
-    <value>بدنه درخواست تهی است</value>
+    <value>بدنه درخواست نباید خالی باشد</value>
   </data>
   <data name="Required" xml:space="preserve">
     <value>تکمیل {0} اجباری است</value>
   </data>
-  <data name="ValueIsInvalid" xml:space="preserve">
-    <value>تو را خدا</value>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>مقدار وارد شده معتبر نیست.</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>اعتبارسنجی انجام نشد</value>
   </data>
 </root>

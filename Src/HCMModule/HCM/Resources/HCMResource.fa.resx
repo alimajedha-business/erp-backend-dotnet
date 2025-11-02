@@ -129,4 +129,7 @@
   <data name="Required" xml:space="preserve">
     <value>تکمیل {0} اجباری است</value>
   </data>
+  <data name="A non-empty request body is required." xml:space="preserve">
+    <value>بدنه درخواست نباید خالی باشد.</value>
+  </data>
 </root>

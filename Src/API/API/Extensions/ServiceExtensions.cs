@@ -65,7 +65,7 @@ namespace API.Extensions
             // Module infrastructure
             services.AddAccountingInfrastructure(configuration);
             services.AddGeneralInfrastructure(configuration);
-            // Add other modules (e.g., services.AddWarehouseInfrastructure(configuration))
+            //services.AddWarehouseInfrastructure(configuration);            
             services.AddHCMlInfrastructure(configuration);
             return services;
         }
@@ -74,7 +74,7 @@ namespace API.Extensions
         {
             services.AddControllers(config =>
             {
-                config.ReturnHttpNotAcceptable = true;            
+                config.ReturnHttpNotAcceptable = true;
             })
                 .AddSystemTextJsonMergePatch()
                 .AddDataAnnotationsLocalization(options =>
@@ -101,9 +101,6 @@ namespace API.Extensions
                 .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(HCM.Presentation.AssemblyReference).Assembly);
-
-            // Register a configuration class that uses DI for localization
-            services.AddTransient<IConfigureOptions<MvcOptions>, ConfigureModelBindingMessages>();
             return services;
         }
 
@@ -154,31 +151,6 @@ namespace API.Extensions
                     return await Task.FromResult(new ProviderCultureResult(culture));
                 }));
             });
-        }
-
-        /// <summary>
-        /// Configures localized model binding messages for Web API.
-        /// </summary>
-        public class ConfigureModelBindingMessages : IConfigureOptions<MvcOptions>
-        {
-            private readonly IStringLocalizer _localizer;
-
-            public ConfigureModelBindingMessages(IStringLocalizerFactory factory)
-            {
-                _localizer = factory.Create(typeof(CommonResource));
-            }
-
-            public void Configure(MvcOptions options)
-            {
-                var provider = options.ModelBindingMessageProvider;
-
-                provider.SetValueIsInvalidAccessor(_ => _localizer["ValueIsInvalid"]);
-                provider.SetMissingBindRequiredValueAccessor(fieldName => _localizer["MissingBindRequiredValue", fieldName]);
-                provider.SetMissingKeyOrValueAccessor(() => _localizer["MissingKeyOrValue"]);
-                provider.SetNonPropertyUnknownValueIsInvalidAccessor(() => _localizer["ValueIsInvalid"]);
-                provider.SetNonPropertyValueMustBeANumberAccessor(() => _localizer["ValueMustBeNumber"]);
-                provider.SetValueMustNotBeNullAccessor(_ => _localizer["ValueMustNotBeNull"]);
-            }
         }
     }
 }
