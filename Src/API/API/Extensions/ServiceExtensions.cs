@@ -11,6 +11,7 @@ using Common.Application.Interfaces;
 using Common.Application.Mappings;
 using Common.Application.Services;
 using Common.Infrastructure.Logging;
+using Common.Presentation.ActionFilters;
 using Common.Resources;
 using FluentValidation;
 using General.Application;
@@ -75,6 +76,7 @@ namespace API.Extensions
             services.AddControllers(config =>
             {
                 config.ReturnHttpNotAcceptable = true;
+                config.Filters.Add<ValidationFilterAttribute>();
             })
                 .AddSystemTextJsonMergePatch()
                 .AddDataAnnotationsLocalization(options =>
@@ -97,6 +99,7 @@ namespace API.Extensions
                         return factory.Create(typeof(CommonResource));
                     };
                 })
+                .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
                 .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)

@@ -32,8 +32,7 @@ namespace HCM.Presentation.Controllers
            // _commonLocalizer = commonLocalizer;
         }
 
-        [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [HttpPost]      
         public async Task<IActionResult> CreateDepartmentForCompany(int companyId, [FromBody] DepartmentForCreationDto department)
         {
             var departmentToReturn = await _service.DepartmentService.CreateDepartmentForCompanyAsync(companyId, department,

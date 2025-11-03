@@ -38,9 +38,8 @@ try
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureLocalization();    
-    builder.Services.AddModuleApplications();
-    builder.Services.AddScoped<ValidationFilterAttribute>();
-    builder.Services.AddInfrastructures(builder.Configuration);    
+    builder.Services.AddModuleApplications();    
+    builder.Services.AddInfrastructures(builder.Configuration);   
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
