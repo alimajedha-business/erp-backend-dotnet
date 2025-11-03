@@ -129,10 +129,13 @@
   <data name="Required" xml:space="preserve">
     <value>The {0} field is required.</value>
   </data>
-  <data name="InvalidValue" xml:space="preserve">
-    <value>Invalid Value</value>
-  </data>
   <data name="ValidationFailed" xml:space="preserve">
     <value>Validation failed.</value>
+  </data>
+  <data name="CouldNotConvert" xml:space="preserve">
+    <value>The value could not be converted.</value>
+  </data>
+  <data name="MissingRequiredProperties" xml:space="preserve">
+    <value>Missing required properties</value>
   </data>
 </root>

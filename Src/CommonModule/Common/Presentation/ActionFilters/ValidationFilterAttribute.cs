@@ -28,54 +28,47 @@ namespace Common.Presentation.ActionFilters
 
             if (!_bodyVerbs.Contains(httpMethod))
                 return;
-            
+
+            var bodyParameter = context.ActionDescriptor.Parameters
+                .FirstOrDefault(p => p.BindingInfo?.BindingSource == BindingSource.Body);
+
+            if (bodyParameter == null)
+                return;
+
             if (!context.ModelState.IsValid)
             {
-                // Replace known system errors with localized equivalents
-                foreach (var entry in context.ModelState)
-                {
-                    var errors = entry.Value?.Errors;
-                    if (errors == null || errors.Count == 0)
-                        continue;
-
-                    for (int i = 0; i < errors.Count; i++)
-                    {
-                        var errorMessage = errors[i].ErrorMessage;
-
-                        // Normalize and match known framework messages
-                        if (errorMessage.Contains("A non-empty request body is required.", StringComparison.OrdinalIgnoreCase))
-                            errorMessage = _localizer["ObjectIsNull"]; 
-
-                        else if (errorMessage.Contains("The", StringComparison.OrdinalIgnoreCase) &&
-                                 errorMessage.Contains("field is required.", StringComparison.OrdinalIgnoreCase))
-                            errorMessage = _localizer["Required"];
-
-                        if (errorMessage.Contains("could not be converted", StringComparison.OrdinalIgnoreCase))
-                            errorMessage = _localizer["InvalidValue"];
-
-                        else if (errorMessage.Contains("Unexpected character", StringComparison.OrdinalIgnoreCase))
-                            errorMessage = _localizer["InvalidJsonFormat"];
-
-                        // Replace the error text
-                        errors[i] = new ModelError(errorMessage);
-                    }
-                }
-
+                var errors = context.ModelState
+                    .Where(x => x.Value!.Errors.Count > 0 && x.Key != bodyParameter.Name)
+                    .ToDictionary(
+                        kvp => kvp.Key.Replace("$.", string.Empty).Replace("$", string.Empty),
+                        kvp => kvp.Value?.Errors.Select(e => LocalizeSystemError(e.ErrorMessage)).ToArray()
+                    );
                 context.Result = new UnprocessableEntityObjectResult(new
                 {
-                    message = (string)_localizer["ValidationFailed"], 
-                    errors = context.ModelState
-                        .Where(ms => ms.Value?.Errors.Count > 0)
-                        .ToDictionary(
-                            kvp => kvp.Key,
-                            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
-                        )
+                    message = _localizer["ValidationFailed"].Value,
+                    Errors = errors
                 });
-
                 return;
             }
         }
 
         public void OnActionExecuted(ActionExecutedContext context) { }
+
+        private string LocalizeSystemError(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return message;
+
+            if (message.Contains("A non-empty request body is required", StringComparison.OrdinalIgnoreCase))
+                return (string)_localizer["ObjectIsNull"];
+            if (message.Contains("missing required properties", StringComparison.OrdinalIgnoreCase))
+                return (string)_localizer["MissingRequiredProperties"];
+            if (message.Contains("JSON deserialization", StringComparison.OrdinalIgnoreCase))
+                return (string)_localizer["InvalidJsonFormat"];
+            if (message.Contains("could not be converted", StringComparison.OrdinalIgnoreCase))
+                return (string)_localizer["CouldNotConvert"];
+
+            return message;
+        }
     }
 }

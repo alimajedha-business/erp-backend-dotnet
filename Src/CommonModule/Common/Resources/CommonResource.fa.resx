@@ -129,10 +129,13 @@
   <data name="Required" xml:space="preserve">
     <value>تکمیل {0} اجباری است</value>
   </data>
-  <data name="InvalidValue" xml:space="preserve">
-    <value>مقدار وارد شده معتبر نیست.</value>
-  </data>
   <data name="ValidationFailed" xml:space="preserve">
     <value>اعتبارسنجی انجام نشد</value>
+  </data>
+  <data name="CouldNotConvert" xml:space="preserve">
+    <value>مقدار وارد شده معتبر نیست</value>
+  </data>
+  <data name="MissingRequiredProperties" xml:space="preserve">
+    <value>فیلدهای ضروری ارسال نشده است</value>
   </data>
 </root>
