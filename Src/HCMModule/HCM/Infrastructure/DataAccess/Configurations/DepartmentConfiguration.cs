@@ -13,6 +13,8 @@ namespace HCM.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
+            builder.ToTable("Department", "HCM");
+
             builder.Property(d => d.Status)
                 .IsRequired()
                 .HasDefaultValue(true);

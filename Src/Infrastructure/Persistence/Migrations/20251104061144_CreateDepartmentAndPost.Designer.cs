@@ -12,8 +12,8 @@ using Persistence.DataAccess;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20251011132411_CreateDepartmentAndPostTables")]
-    partial class CreateDepartmentAndPostTables
+    [Migration("20251104061144_CreateDepartmentAndPost")]
+    partial class CreateDepartmentAndPost
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -9208,7 +9208,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Department");
+                    b.ToTable("Department", "HCM");
                 });
 
             modelBuilder.Entity("HCM.Domain.Entities.Post", b =>
@@ -9262,7 +9262,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ModifierId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Post", "HCM");
                 });
 
             modelBuilder.Entity("Shared.Domain.Entities.BankAccount", b =>
