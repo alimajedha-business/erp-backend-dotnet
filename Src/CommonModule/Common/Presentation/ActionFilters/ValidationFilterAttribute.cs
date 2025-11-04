@@ -1,10 +1,12 @@
-﻿using Common.Resources;
+﻿using Common.ErrorModel;
+using Common.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,10 +45,11 @@ namespace Common.Presentation.ActionFilters
                         kvp => kvp.Key.Replace("$.", string.Empty).Replace("$", string.Empty),
                         kvp => kvp.Value?.Errors.Select(e => LocalizeSystemError(e.ErrorMessage)).ToArray()
                     );
-                context.Result = new UnprocessableEntityObjectResult(new
+                context.Result = new UnprocessableEntityObjectResult(new ErrorDetails 
                 {
-                    message = _localizer["ValidationFailed"].Value,
-                    Errors = errors
+                    Title = _localizer["ValidationFailed"].Value,
+                    Details = errors,
+                    TraceId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier
                 });
                 return;
             }
