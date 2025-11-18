@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +7,7 @@ using HCM.Application.DTOs;
 
 namespace HCM.Application.Interfaces.Services
 {
-    internal interface IDepartmentService
+    public interface IDepartmentService
     {
         Task<IEnumerable<DepartmentDto>> GetAllDepartmentAsync(int companyId, bool trackChanges);
         Task<DepartmentDto?> GetDepartmentAsync(int companyId, int departmentId, bool trackChanges);

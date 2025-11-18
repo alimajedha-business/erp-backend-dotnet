@@ -1,21 +1,29 @@
-﻿using HCM.Application.Interfaces.Services;
+﻿using Common.Application.Interfaces;
+using Common.Application.Services;
+using FluentValidation;
+using General.Resources;
+using HCM.Application.Interfaces.Services;
 using HCM.Application.Mappings;
 using HCM.Application.Services;
+using HCM.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HCM.Application.Validators;
 
 namespace HCM.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddGeneralApplication(this IServiceCollection services)
+        public static IServiceCollection AddHCMApplication(this IServiceCollection services)
         {
-            services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<IHCMServiceManager, HCMServiceManager>();
             services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
+            //services.AddValidatorsFromAssemblyContaining<CreateDepartmentValidator>();
             return services;
         }
     }

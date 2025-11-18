@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace General.Application.Interfaces.Services
 {
-    public interface IServiceManager
+    public interface IGeneralServiceManager
     {
         ICountryService CountryService{ get; }        
         IDomainService DomainService { get; }

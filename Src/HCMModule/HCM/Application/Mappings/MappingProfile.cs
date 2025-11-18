@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using AutoMapper;
+﻿using AutoMapper;
 using HCM.Application.DTOs;
 using HCM.Domain.Entities;
 using System;

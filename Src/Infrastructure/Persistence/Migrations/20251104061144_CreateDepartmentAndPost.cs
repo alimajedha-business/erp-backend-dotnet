@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDepartmentAndPostTables : Migration
+    public partial class CreateDepartmentAndPost : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "HCM");
+
             migrationBuilder.CreateTable(
                 name: "Department",
+                schema: "HCM",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -55,6 +59,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Post",
+                schema: "HCM",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -97,31 +102,37 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Department_CompanyId",
+                schema: "HCM",
                 table: "Department",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Department_CreatorId",
+                schema: "HCM",
                 table: "Department",
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Department_ModifierId",
+                schema: "HCM",
                 table: "Department",
                 column: "ModifierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_CompanyId",
+                schema: "HCM",
                 table: "Post",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_CreatorId",
+                schema: "HCM",
                 table: "Post",
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_ModifierId",
+                schema: "HCM",
                 table: "Post",
                 column: "ModifierId");
         }
@@ -130,10 +141,12 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Department");
+                name: "Department",
+                schema: "HCM");
 
             migrationBuilder.DropTable(
-                name: "Post");
+                name: "Post",
+                schema: "HCM");
         }
     }
 }

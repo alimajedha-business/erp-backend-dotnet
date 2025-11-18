@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Common.ErrorModel
 {
-    public record class ErrorDetails
+    public  record ErrorDetails
     {
-        public int StatusCode { get; set; }
-        public string? Message { get; set; }
+        public string? Title { get; set; }
         public string? TraceId { get; set; }
-        public string? Details { get; set; }
+        public IDictionary<string, string[]?>? Details { get; set; }
+
         public override string ToString() => JsonSerializer.Serialize(this);
     }
 }

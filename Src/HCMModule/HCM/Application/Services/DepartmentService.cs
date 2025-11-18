@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM Dto
-
-using AutoMapper;
+﻿using AutoMapper;
 using Common.Infrastructure.Logging;
 using HCM.Application.DTOs;
 using HCM.Application.Interfaces.Repositories;
@@ -11,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using General.Application.Interfaces;
+using General.Domain.Exceptions;
+using General.Application.Interfaces.Services;
 
 namespace HCM.Application.Services
 {
@@ -19,19 +20,21 @@ namespace HCM.Application.Services
         private readonly IHCMRepositoryManager _repository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly IGeneralServiceManager _generalServiceManager;
 
-        public DepartmentService(IHCMRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public DepartmentService(IHCMRepositoryManager repository, ILoggerService logger, IMapper mapper,
+            IGeneralServiceManager generalServiceManager)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _generalServiceManager = generalServiceManager;
         }
 
         public async Task<DepartmentDto> CreateDepartmentForCompanyAsync(int companyId, DepartmentForCreationDto departmentDto, bool trackChanges)
         {
-           // var company = await _httpClient.GetFromJsonAsync<CompanyDto>($"api/companies/{companyId}");
-            //if (company == null)
-            //    throw new Exception("Company not found");
+            await CheckIfCompanyExists(companyId, trackChanges);
+
             var department = _mapper.Map<Department>(departmentDto);
             _repository.Department.CreateDepartment(companyId, department);
             await _repository.SaveAsync();
@@ -41,6 +44,8 @@ namespace HCM.Application.Services
 
         public async Task DeleteDepartmentForCompanyAsync(int companyId, int departmentId, bool trackChanges)
         {
+            await CheckIfCompanyExists(companyId, trackChanges);
+
             var department = await _repository.Department.GetDepartmentAsync(companyId, departmentId, trackChanges);
             if (department != null)
                 throw new Exception();
@@ -67,6 +72,11 @@ namespace HCM.Application.Services
         public Task UpdateAsync(int companyId, int departmentId, DepartmentForUpdateDto department, bool comTrackChanges, bool depTrackChanges)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task CheckIfCompanyExists(int companyId, bool trackChanges)
+        {
+            var company = await _generalServiceManager.CompanyService.GetCompanyAsync(companyId, trackChanges);
         }
     }
 }

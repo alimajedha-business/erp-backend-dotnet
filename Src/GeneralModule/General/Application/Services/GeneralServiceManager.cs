@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace General.Application.Services
 {
-    internal sealed class ServiceManager : IServiceManager
+    internal sealed class GeneralServiceManager : IGeneralServiceManager
     {
         private readonly Lazy<ICountryService> _countryService;
         private readonly Lazy<IDomainService> _domainService;
         private readonly Lazy<ICompanyService> _companyService;
 
 
-        public ServiceManager(IGeneralRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
+        public GeneralServiceManager(IGeneralRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper)
         {
             _countryService = new Lazy<ICountryService>(() =>
             new CountryService(repositoryManager, logger, mapper));

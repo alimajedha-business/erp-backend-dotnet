@@ -19,9 +19,9 @@ namespace General.Presentation.Controllers
     [ApiController]
     public class DomainsController : ControllerBase
     {
-        private readonly IServiceManager _service;
+        private readonly IGeneralServiceManager _service;
         private readonly IStringLocalizer<GeneralResource> _localizer;
-        public DomainsController(IServiceManager service, IStringLocalizer<GeneralResource> localizer)
+        public DomainsController(IGeneralServiceManager service, IStringLocalizer<GeneralResource> localizer)
         {
             _service = service;
             _localizer = localizer;

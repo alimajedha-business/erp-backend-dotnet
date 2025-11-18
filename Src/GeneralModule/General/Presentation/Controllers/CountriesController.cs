@@ -12,8 +12,8 @@ namespace General.Presentation.Controllers
     [ApiController]
     public class CountriesController : ControllerBase
     {
-        private readonly IServiceManager _service;
-        public CountriesController(IServiceManager service) => _service = service;
+        private readonly IGeneralServiceManager _service;
+        public CountriesController(IGeneralServiceManager service) => _service = service;
 
         [HttpGet]
         public IActionResult GetCountries([FromQuery] CountryParameters countryParameters)

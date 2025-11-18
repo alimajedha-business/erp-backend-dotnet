@@ -39,24 +39,24 @@ namespace API.Extensions
                     };
                     context.Response.StatusCode = statusCode;
 
+                    // Structured logging with more context
+                    logger.LogError(ex, "Exception occurred: {Message} | TraceId: {TraceId}",
+                        ex.Message, context.TraceIdentifier);
+
                     // Resolve localizer dynamically per module / exception
                     var isDevelopment = app.Environment.IsDevelopment();
                     var localizer = ExceptionLocalizerFactory.ResolveForException(context.RequestServices, ex);
                     var localizedMessage = localizer.Localize(ex);
 
-                    // Structured logging with more context
-                    logger.LogError(ex, "Exception occurred: {Message} | TraceId: {TraceId}",
-                        localizedMessage, context.TraceIdentifier);
-
-                    // Enhanced error response
                     var errorResponse = new ErrorDetails
                     {
-                        StatusCode = statusCode,
-                        Message = localizedMessage,//isDevelopment ? ex.Message : localizedMessage,
+                        Title = localizedMessage,
                         TraceId = context.TraceIdentifier,
-                        Details = isDevelopment ? ex.StackTrace : null // Only in development
+                        Details = new Dictionary<string, string[]?>
+                        {
+                            { "exception", isDevelopment ? new[] {ex.InnerException != null?ex.InnerException.Message:"" } : null }
+                        }
                     };
-
 
                     await context.Response.WriteAsJsonAsync(errorResponse);
                 });

@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: HCM
-
-using HCM.Domain.Entities;
+﻿using HCM.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -15,6 +13,8 @@ namespace HCM.Infrastructure.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
+            builder.ToTable("Department", "HCM");
+
             builder.Property(d => d.Status)
                 .IsRequired()
                 .HasDefaultValue(true);

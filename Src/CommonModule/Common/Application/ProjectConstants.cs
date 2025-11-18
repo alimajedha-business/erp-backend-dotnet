@@ -8,7 +8,7 @@ namespace Common.Application
 {
     public static class ProjectConstants
     {
-        public static string[] Modules = { "General", "Accounting", "Warehouse" };
+        public static string[] Modules = { "General", "Accounting", "Warehouse","HCM" };
         public static string[] SupportedCultures = { "fa", "en", "ar" };
     }
 }
