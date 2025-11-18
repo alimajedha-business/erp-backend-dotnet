@@ -1,4 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
     {
-        public CompanyRepository(GeneralDbContext dbContext) : base(dbContext) { }
+        public CompanyRepository(IMainDbContext dbContext) : base(dbContext) { }
 
         public async Task<Company?> GetCompanyAsync(int companyId, bool trackChanges) =>
              await FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();

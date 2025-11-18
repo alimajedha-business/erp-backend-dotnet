@@ -1,18 +1,19 @@
-﻿using HCM.Application.Interfaces.Repositories;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
+using HCM.Application.Interfaces.Repositories;
+using HCM.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Infrastructure.DataAccess;
-using HCM.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace HCM.Infrastructure.DataAccess.Repositories
 {
     public class DepartmentRepository : RepositoryBase<Department>, IDepartmentRepository
     {
-        public DepartmentRepository(HCMDbContext context) : base(context)
+        public DepartmentRepository(IMainDbContext context) : base(context)
         {
         }
 

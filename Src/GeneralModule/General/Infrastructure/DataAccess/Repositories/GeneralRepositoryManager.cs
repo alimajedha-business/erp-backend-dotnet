@@ -1,4 +1,5 @@
-﻿using General.Application.Interfaces.Repositories;
+﻿using Common.Application.Interfaces;
+using General.Application.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public sealed class GeneralRepositoryManager : IGeneralRepositoryManager
     {
-        private readonly GeneralDbContext _repositoryContext;
+        private readonly IMainDbContext _repositoryContext;
         private readonly Lazy<ICountryRepository> _countryRepository;
         private readonly Lazy<ICurrencyRepository> _currencyRepository;
         private readonly Lazy<IProvinceRepository> _provinceRepository;
         private readonly Lazy<IDomainRepository> _domainRepository;
         private readonly Lazy<ICompanyRepository> _companyRepository;
-        public GeneralRepositoryManager(GeneralDbContext repositoryContext)
+        public GeneralRepositoryManager(IMainDbContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
 
@@ -46,7 +47,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 
         public ICompanyRepository Company => _companyRepository.Value;
 
-        public void Save() => _repositoryContext.SaveChanges();
+        public void Save() => _repositoryContext.SaveChangesAsync();
 
     }
 }

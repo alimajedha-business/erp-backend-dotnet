@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common.Application.Interfaces
 {
-    public interface IRepositoryBase<T>
+    public interface IRepositoryBase<T> where T : class
     {
         IQueryable<T> FindAll(bool trackChanges);
         

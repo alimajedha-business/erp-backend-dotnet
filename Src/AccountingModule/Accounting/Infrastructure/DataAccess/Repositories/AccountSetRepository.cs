@@ -1,5 +1,6 @@
 ﻿using Accounting.Application.Interfaces.Repositories;
 using Accounting.Domain.Entities;
+using Common.Application.Interfaces;
 using Common.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +14,7 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
 {
     public class AccountSetRepository : RepositoryBase<AccountSet>, IAccountSetRepository
     {
-        public AccountSetRepository(AccountingDbContext context) : base(context)
+        public AccountSetRepository(IMainDbContext context) : base(context)
         {
         }
 

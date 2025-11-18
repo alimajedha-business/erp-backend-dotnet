@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Application.Interfaces;
 
 namespace General.Infrastructure.DataAccess.Repositories
 {
     public class CurrencyRepository : RepositoryBase<Currency>, ICurrencyRepository
     {
-        public CurrencyRepository(DbContext repositoryContext) : base(repositoryContext)
+        public CurrencyRepository(IMainDbContext repositoryContext) : base(repositoryContext)
         {
         }
 

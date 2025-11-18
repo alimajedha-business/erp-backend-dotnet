@@ -11,9 +11,9 @@ namespace Common.Infrastructure.DataAccess
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected DbContext RepositoryContext;
+        protected IMainDbContext RepositoryContext;
 
-        public RepositoryBase(DbContext repositoryContext) => RepositoryContext = repositoryContext;
+        public RepositoryBase(IMainDbContext repositoryContext) => RepositoryContext = repositoryContext;
 
         public IQueryable<T> FindAll(bool trackChanges) =>
             !trackChanges ? RepositoryContext.Set<T>().AsNoTracking() : RepositoryContext.Set<T>();

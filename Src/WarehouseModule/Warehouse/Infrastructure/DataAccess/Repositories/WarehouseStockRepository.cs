@@ -1,5 +1,4 @@
-﻿using Warehouse.Application.Interfaces.Repositories;
-using Warehouse.Domain.Entities;
+﻿using Common.Application.Interfaces;
 using Common.Infrastructure.DataAccess;
 using System;
 using System.Collections.Generic;
@@ -7,12 +6,14 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Warehouse.Application.Interfaces.Repositories;
+using Warehouse.Domain.Entities;
 
 namespace Warehouse.Infrastructure.DataAccess.Repositories
 {
     public class WarehouseStockRepository : RepositoryBase<WarehouseStock>, IWarehouseStockRepository
     {
-        public WarehouseStockRepository(WarehouseDbContext context) : base(context)
+        public WarehouseStockRepository(IMainDbContext context) : base(context)
         {
         }
 

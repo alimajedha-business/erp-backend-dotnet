@@ -1,4 +1,5 @@
-﻿using HCM.Application.Interfaces.Repositories;
+﻿using Common.Application.Interfaces;
+using HCM.Application.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace HCM.Infrastructure.DataAccess.Repositories
 {
     public sealed class HCMRepositoryManager : IHCMRepositoryManager
     {
-        private readonly HCMDbContext _dbContext;
+        private readonly IMainDbContext _dbContext;
         private readonly Lazy<IDepartmentRepository> _departmentRepository;
         private readonly Lazy<IPostRepository> _postRepository;
 
-        public HCMRepositoryManager(HCMDbContext dbContext)
+        public HCMRepositoryManager(IMainDbContext dbContext)
         {
             _dbContext = dbContext;
 

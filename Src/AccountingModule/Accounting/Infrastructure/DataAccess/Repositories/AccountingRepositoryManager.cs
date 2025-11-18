@@ -1,4 +1,5 @@
 ﻿using Accounting.Application.Interfaces.Repositories;
+using Common.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Accounting.Infrastructure.DataAccess.Repositories
 {
     public sealed class AccountingRepositoryManager : IAccountingRepositoryManager
     {
-        private readonly AccountingDbContext _repositoryContext;
+        private readonly IMainDbContext _repositoryContext;
         private readonly Lazy<ILedgerRepository> _ledgerRepository;
         private readonly Lazy<IAccountSetRepository> _accountSetRepository;
-        public AccountingRepositoryManager(AccountingDbContext repositoryContext)
+        public AccountingRepositoryManager(IMainDbContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
             _ledgerRepository = new Lazy<ILedgerRepository>(() =>

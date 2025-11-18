@@ -25,5 +25,9 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\DataAccess\Migrations\" />
+  </ItemGroup>
+
 
 </Project>

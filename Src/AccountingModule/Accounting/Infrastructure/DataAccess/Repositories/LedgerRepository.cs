@@ -3,12 +3,13 @@ using Accounting.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Accounting.Application.Interfaces.Repositories;
 using Common.Infrastructure.DataAccess;
+using Common.Application.Interfaces;
 
 namespace Accounting.Infrastructure.DataAccess.Repositories
 {
     public sealed class LedgerRepository : RepositoryBase<Ledger>, ILedgerRepository
     {
-        public LedgerRepository(AccountingDbContext context) : base(context)
+        public LedgerRepository(IMainDbContext context) : base(context)
         {
         }
         public async Task<IEnumerable<Ledger>> GetAllAsync(bool trackChanges) =>

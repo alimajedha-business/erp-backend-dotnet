@@ -1,4 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class DomainRepository : RepositoryBase<Domain.Entities.Domain>, IDomainRepository
     {
-        public DomainRepository(GeneralDbContext dbContext) : base(dbContext)
+        public DomainRepository(IMainDbContext dbContext) : base(dbContext)
         {
         }
 

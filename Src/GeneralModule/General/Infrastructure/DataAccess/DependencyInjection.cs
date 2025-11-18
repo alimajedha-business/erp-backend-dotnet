@@ -15,8 +15,7 @@ namespace General.Infrastructure.DataAccess
     {
         public static IServiceCollection AddGeneralInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IGeneralRepositoryManager, GeneralRepositoryManager>();
-            services.AddSqlServerDbContext<GeneralDbContext>(configuration);
+            services.AddScoped<IGeneralRepositoryManager, GeneralRepositoryManager>();            
             return services;
         }
     }

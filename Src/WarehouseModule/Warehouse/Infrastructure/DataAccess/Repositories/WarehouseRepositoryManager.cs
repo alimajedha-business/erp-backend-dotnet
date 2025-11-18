@@ -1,20 +1,21 @@
-﻿using Warehouse.Application.Interfaces.Repositories;
+﻿using Common.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Warehouse.Application.Interfaces.Repositories;
 
 namespace Warehouse.Infrastructure.DataAccess.Repositories
 {
     public sealed class WarehouseRepositoryManager : IWarehouseRepositoryManager
     {
-        private readonly WarehouseDbContext _repositoryContext;
+        private readonly IMainDbContext _repositoryContext;
         private readonly Lazy<IWarehouseTypeRepository> _warehouseTypeRepository;
         private readonly Lazy<IWarehouseStockRepository> _warehouseStockRepository;
         private readonly Lazy<IProductHierarchyRepository> _productHierarchyRepository;
         private readonly Lazy<IProductCodeRepository> _productCodeRepository;
-        public WarehouseRepositoryManager(WarehouseDbContext repositoryContext)
+        public WarehouseRepositoryManager(IMainDbContext repositoryContext)
         {
             _repositoryContext = repositoryContext;
 
@@ -37,7 +38,7 @@ namespace Warehouse.Infrastructure.DataAccess.Repositories
         public IProductHierarchyRepository ProductHierarchy => _productHierarchyRepository.Value;
 
         public IProductCodeRepository ProductCode => _productCodeRepository.Value;
-        public void Save() => _repositoryContext.SaveChanges();
+        public void Save() => _repositoryContext.SaveChangesAsync();
 
     }
 }

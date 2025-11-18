@@ -1,4 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
 using HCM.Application.Interfaces.Repositories;
 using HCM.Domain.Entities;
 using System;
@@ -11,7 +12,7 @@ namespace HCM.Infrastructure.DataAccess.Repositories
 {
     public class PostRepository : RepositoryBase<Post>, IPostRepository
     {
-        public PostRepository(HCMDbContext context) : base(context)
+        public PostRepository(IMainDbContext context) : base(context)
         {
 
         }
