@@ -77,8 +77,6 @@ namespace HCM.Application.Services
         private async Task CheckIfCompanyExists(int companyId, bool trackChanges)
         {
             var company = await _generalServiceManager.CompanyService.GetCompanyAsync(companyId, trackChanges);
-            if (company is null)
-                throw new CompanyNotFoundException(companyId);
         }
     }
 }
