@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Weighing.Domain.Common;
 
-namespace Weighing.Infrastructure.Persistence.Common
+namespace Weighing.Infrastructure.DataAccess.Configurations
 {
     public abstract class BaseConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : BaseEntity
     {

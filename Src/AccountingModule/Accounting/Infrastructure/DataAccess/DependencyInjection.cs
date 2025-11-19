@@ -16,7 +16,6 @@ namespace Accounting.Infrastructure.DataAccess
         public static IServiceCollection AddAccountingInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAccountingRepositoryManager, AccountingRepositoryManager>();
-            services.AddSqlServerDbContext<AccountingDbContext>(configuration);
             return services;
         }
     }

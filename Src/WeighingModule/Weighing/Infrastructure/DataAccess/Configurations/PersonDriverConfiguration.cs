@@ -6,9 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Weighing.Domain.Entities;
-using Weighing.Infrastructure.Persistence.Common;
 
-namespace Weighing.Infrastructure.Persistence.Configurations
+namespace Weighing.Infrastructure.DataAccess.Configurations
 {
     public class PersonDriverConfiguration : BaseConfiguration<PersonDriver>
     {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Weighing.Domain.Entities;
-using Weighing.Infrastructure.Persistence.Common;
 
-namespace Weighing.Infrastructure.Persistence.Configurations
+namespace Weighing.Infrastructure.DataAccess.Configurations
 {
     public class DischargeStationConfiguration : BaseConfiguration<DischargeStation>
     {

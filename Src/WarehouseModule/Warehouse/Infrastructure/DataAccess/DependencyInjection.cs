@@ -15,8 +15,7 @@ namespace Warehouse.Infrastructure.DataAccess
     {
         public static IServiceCollection AddWarehouseInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IWarehouseRepositoryManager, WarehouseRepositoryManager>();
-            services.AddSqlServerDbContext<WarehouseDbContext>(configuration);
+            services.AddScoped<IWarehouseRepositoryManager, WarehouseRepositoryManager>();            
             return services;
         }
     }

@@ -15,8 +15,7 @@ namespace HCM.Infrastructure.DataAccess
     {
         public static IServiceCollection AddHCMlInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IHCMRepositoryManager, HCMRepositoryManager>();
-            services.AddSqlServerDbContext<HCMDbContext>(configuration);
+            services.AddScoped<IHCMRepositoryManager, HCMRepositoryManager>();            
             return services;
         }
     }
