@@ -1,23 +1,11 @@
-using Accounting.Application.Mappings;
-using Accounting.Infrastructure.DataAccess;
 using API.Extensions;
 using Asp.Versioning.Routing;
 using Common.Application;
-using Common.Application.Mappings;
-using Common.Application.Services;
 using Common.Infrastructure.Logging;
-using Common.Presentation.ActionFilters;
-using General.Infrastructure.DataAccess;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Morcatko.AspNetCore.JsonMergePatch;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Globalization;
-using Warehouse.Infrastructure.DataAccess;
 
 
 Log.Logger = new LoggerConfiguration()

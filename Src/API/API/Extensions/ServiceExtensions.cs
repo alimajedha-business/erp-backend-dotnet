@@ -1,36 +1,19 @@
 ﻿using Accounting.Application;
-using Accounting.Application.Interfaces.Repositories;
-using Accounting.Application.Interfaces.Services;
-using Accounting.Application.Mappings;
-using Accounting.Application.Services;
 using Accounting.Infrastructure.DataAccess;
-using Accounting.Infrastructure.DataAccess.Repositories;
-using Accounting.Resources;
 using Common.Application;
 using Common.Application.Interfaces;
-using Common.Application.Mappings;
 using Common.Application.Services;
-using Common.Infrastructure.Logging;
 using Common.Presentation.ActionFilters;
 using Common.Resources;
 using General.Application;
 using General.Infrastructure.DataAccess;
-using General.Resources;
 using HCM.Application;
 using HCM.Infrastructure.DataAccess;
-using HCM.Resources;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Morcatko.AspNetCore.JsonMergePatch;
+using Persistence.DataAccess;
 using System.Globalization;
-using System.Reflection;
 
 
 namespace API.Extensions
@@ -63,10 +46,12 @@ namespace API.Extensions
         public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
         {
             // Module infrastructure
+            services.AddPersistenceInfrastructure(configuration);
             services.AddAccountingInfrastructure(configuration);
             services.AddGeneralInfrastructure(configuration);
             //services.AddWarehouseInfrastructure(configuration);            
             services.AddHCMlInfrastructure(configuration);
+
             return services;
         }
 

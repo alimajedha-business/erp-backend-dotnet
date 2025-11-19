@@ -27,6 +27,7 @@
         <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
         <ProjectReference Include="..\..\HCMModule\HCM\HCM.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Persistence\Persistence.csproj" />
         <ProjectReference Include="..\..\ShareModule\Share\Shared.csproj" />
         <ProjectReference Include="..\..\WarehouseModule\Warehouse\Warehouse.csproj" />
         <ProjectReference Include="..\..\WeighingModule\Weighing\Weighing.csproj" />

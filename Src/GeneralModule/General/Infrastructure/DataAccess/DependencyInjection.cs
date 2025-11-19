@@ -1,4 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Infrastructure.DataAccess.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,7 @@ namespace General.Infrastructure.DataAccess
     public static class DependencyInjection
     {
         public static IServiceCollection AddGeneralInfrastructure(this IServiceCollection services, IConfiguration configuration)
-        {
+        {            
             services.AddScoped<IGeneralRepositoryManager, GeneralRepositoryManager>();            
             return services;
         }
