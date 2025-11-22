@@ -1,8 +1,8 @@
 ﻿// Ignore Spelling: localizer
 
 using Asp.Versioning;
-using General.Application.Interfaces.Services;
-using General.Resources;
+using General.Service.Interfaces.Services;
+using General.Service.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Presentation.Controllers
+namespace General.API.Controllers
 {
     [ApiVersion(1.0)]
     [ApiExplorerSettings(GroupName = "v1-general")]

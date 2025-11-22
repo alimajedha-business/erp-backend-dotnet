@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.DTOs
+namespace General.Service.DTOs
 {
     public record CompanyDto(int Id,string Name);
    

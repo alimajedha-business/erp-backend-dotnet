@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Application.Interfaces
+namespace Base.Service.Interfaces
 {
 
     public interface IExceptionLocalizer

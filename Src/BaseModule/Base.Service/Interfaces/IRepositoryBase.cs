@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Application.Interfaces
+namespace Base.Service.Interfaces
 {
     public interface IRepositoryBase<T> where T : class
     {

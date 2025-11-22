@@ -1,7 +1,7 @@
 ﻿using Common.Application.Interfaces;
-using Common.Application.RequestParameters;
-using Common.Infrastructure.DataAccess;
-using General.Application.Interfaces.Repositories;
+using Base.Service.RequestParameters;
+using Base.Infrastructure.DataAccess;
+using General.Service.Interfaces.Repositories;
 using General.Domain.Entities;
 using General.Infrastructure.DataAccess.Repositories.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class CountryRepository : RepositoryBase<Country>, ICountryRepository
     {
-        public CountryRepository(IMainDbContext repositoryContext) : base(repositoryContext)
+        public CountryRepository(MainDbContext repositoryContext) : base(repositoryContext)
         {
         }
 

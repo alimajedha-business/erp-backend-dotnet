@@ -1,11 +1,11 @@
-﻿using General.Application.DTOs;
+﻿using General.Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.Interfaces.Services
+namespace General.Service.Interfaces.Services
 {
     public interface IDomainService
     {

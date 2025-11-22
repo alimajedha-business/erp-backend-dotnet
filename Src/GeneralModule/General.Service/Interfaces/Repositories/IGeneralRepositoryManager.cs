@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.Interfaces.Repositories
+namespace General.Service.Interfaces.Repositories
 {
     public interface IGeneralRepositoryManager
     {

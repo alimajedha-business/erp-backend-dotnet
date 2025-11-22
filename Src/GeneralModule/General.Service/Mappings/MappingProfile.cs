@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using General.Application.DTOs;
+using General.Service.DTOs;
 using General.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace General.Application.Mappings
+namespace General.Service.Mappings
 {
     public class MappingProfile : Profile
     {

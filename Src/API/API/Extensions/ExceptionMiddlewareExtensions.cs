@@ -1,11 +1,9 @@
 ﻿// Ignore Spelling: Middleware
 
-using Common.Application.Interfaces;
-using Common.Domain.Exceptions;
-using Common.ErrorModel;
-using Common.Infrastructure.Logging;
+using Base.Domain.Exceptions;
+using Base.Domain.ErrorModel;
+using Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Reflection;

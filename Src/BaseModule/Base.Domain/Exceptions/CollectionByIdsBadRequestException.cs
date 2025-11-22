@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Domain.Exceptions
+namespace Base.Domain.Exceptions
 {
     public sealed class CollectionByIdsBadRequestException : BadRequestException
     {

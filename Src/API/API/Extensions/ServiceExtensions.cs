@@ -1,20 +1,15 @@
-﻿using Accounting.Application;
-using Accounting.Infrastructure.DataAccess;
-using Common.Application;
-using Common.Application.Interfaces;
-using Common.Application.Services;
-using Common.Presentation.ActionFilters;
-using Common.Resources;
-using General.Application;
+﻿using Base.Service.Services;
+using Base.Service.Interfaces;
+using Base.Service.Resources;
+using General.Service;
 using General.Infrastructure.DataAccess;
-using HCM.Application;
-using HCM.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
-using Morcatko.AspNetCore.JsonMergePatch;
-using Persistence.DataAccess;
+using Base.Infrastructure.DataAccess;
 using System.Globalization;
-
+using Base.Service;
+using Base.API.ActionFilters;
+using Morcatko.AspNetCore.JsonMergePatch;
 
 namespace API.Extensions
 {
@@ -35,22 +30,16 @@ namespace API.Extensions
             {
             });
 
-        public static void AddModuleApplications(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IExceptionLocalizer<CommonResource>, ExceptionLocalizer<CommonResource>>();
-            services.AddAccountingApplication();
-            services.AddGeneralApplication();
-            services.AddHCMApplication();
+            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
+            services.AddGeneralServices();
         }
 
-        public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            // Module infrastructure
-            services.AddPersistenceInfrastructure(configuration);
-            services.AddAccountingInfrastructure(configuration);
-            services.AddGeneralInfrastructure(configuration);
-            //services.AddWarehouseInfrastructure(configuration);            
-            services.AddHCMlInfrastructure(configuration);
+            services.AddBaseInfrastructureServices(configuration);
+            services.AddGeneralInfrastructureServices(configuration);
 
             return services;
         }
@@ -80,14 +69,11 @@ namespace API.Extensions
                         }
 
                         // Fallback to shared/common resource
-                        return factory.Create(typeof(CommonResource));
+                        return factory.Create(typeof(BaseResource));
                     };
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(HCM.Presentation.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly);
             return services;
         }
 

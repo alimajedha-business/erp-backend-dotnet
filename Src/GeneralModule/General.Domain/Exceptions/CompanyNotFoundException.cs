@@ -1,4 +1,4 @@
-﻿using Common.Domain.Exceptions;
+﻿using Base.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

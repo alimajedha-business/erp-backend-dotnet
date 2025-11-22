@@ -1,10 +1,11 @@
 using API.Extensions;
 using Asp.Versioning.Routing;
-using Common.Application;
-using Common.Infrastructure.Logging;
+using Base.Service;
+using Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Serilog;
+
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 
@@ -26,8 +27,8 @@ try
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureLocalization();    
-    builder.Services.AddModuleApplications();    
-    builder.Services.AddInfrastructures(builder.Configuration);   
+    builder.Services.AddServices();    
+    builder.Services.AddInfrastructureServices(builder.Configuration);   
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;

@@ -1,5 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
-using General.Application.Interfaces.Repositories;
+﻿using Base.Infrastructure.DataAccess;
+using General.Service.Interfaces.Repositories;
 using General.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +13,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class CurrencyRepository : RepositoryBase<Currency>, ICurrencyRepository
     {
-        public CurrencyRepository(IMainDbContext repositoryContext) : base(repositoryContext)
+        public CurrencyRepository(MainDbContext repositoryContext) : base(repositoryContext)
         {
         }
 

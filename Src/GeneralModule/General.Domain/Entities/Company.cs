@@ -2,19 +2,23 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace General.Domain.Entities;
 
+[Table("companies", Schema = "general")]
 public partial class Company
-{
+{    
     public int Id { get; set; }
 
     public string Name { get; set; }
 
     public string Name2 { get; set; }
 
+    [Column("created_at")]
     public DateTime CreatedAt { get; set; }
-
+    
+    [Column("domain_id")]
     public int DomainId { get; set; }
 
     public virtual ICollection<CompanyAdmin> CompanyAdmins { get; set; } = new List<CompanyAdmin>();

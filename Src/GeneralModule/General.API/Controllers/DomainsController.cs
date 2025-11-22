@@ -1,8 +1,8 @@
 ﻿// Ignore Spelling: localizer
 
 using Asp.Versioning;
-using General.Application.Interfaces.Services;
-using General.Resources;
+using General.Service.Interfaces.Services;
+using General.Service.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System;

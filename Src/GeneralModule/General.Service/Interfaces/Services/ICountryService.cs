@@ -1,12 +1,12 @@
-﻿using Common.Application.RequestParameters;
-using General.Application.DTOs;
+﻿using Base.Service.RequestParameters;
+using General.Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.Interfaces.Services
+namespace General.Service.Interfaces.Services
 {
     public interface ICountryService
     {

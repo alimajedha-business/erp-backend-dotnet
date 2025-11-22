@@ -1,4 +1,4 @@
-﻿using Common.Application.Interfaces;
+﻿using Base.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,13 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Infrastructure.DataAccess
+namespace Base.Infrastructure.DataAccess
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected IMainDbContext RepositoryContext;
+        protected MainDbContext RepositoryContext;
 
-        public RepositoryBase(IMainDbContext repositoryContext) => RepositoryContext = repositoryContext;
+        public RepositoryBase(MainDbContext repositoryContext) => RepositoryContext = repositoryContext;
 
         public IQueryable<T> FindAll(bool trackChanges) =>
             !trackChanges ? RepositoryContext.Set<T>().AsNoTracking() : RepositoryContext.Set<T>();

@@ -1,5 +1,5 @@
 ﻿
-namespace General.Resources
+namespace General.Service.Resources
 {
     public class GeneralResource
     {

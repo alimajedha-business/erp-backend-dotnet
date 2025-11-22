@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Common.Application.RequestParameters;
-using Common.Infrastructure.Logging;
-using General.Application.DTOs;
-using General.Application.Interfaces.Repositories;
-using General.Application.Interfaces.Services;
+using Base.Service.RequestParameters;
+using Base.Infrastructure.Logging;
+using General.Service.DTOs;
+using General.Service.Interfaces.Repositories;
+using General.Service.Interfaces.Services;
 using General.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.Services
+namespace General.Service.Services
 {
     public sealed class CountryService : ICountryService
     {

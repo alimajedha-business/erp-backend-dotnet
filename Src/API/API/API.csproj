@@ -12,25 +12,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\AccountingModule\Accounting\Accounting.csproj" />
-        <ProjectReference Include="..\..\CommonModule\Common\Common.csproj" />
-        <ProjectReference Include="..\..\GeneralModule\General\General.csproj" />
-        <ProjectReference Include="..\..\HCMModule\HCM\HCM.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\Persistence\Persistence.csproj" />
-        <ProjectReference Include="..\..\ShareModule\Share\Shared.csproj" />
-        <ProjectReference Include="..\..\WarehouseModule\Warehouse\Warehouse.csproj" />
-        <ProjectReference Include="..\..\WeighingModule\Weighing\Weighing.csproj" />
+        <ProjectReference Include="..\..\BaseModule\Base.API\Base.API.csproj" />
+        <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\Base.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\BaseModule\Base.Service\Base.Service.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.API\General.API.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.Infrastructure\General.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.Service\General.Service.csproj" />
     </ItemGroup>
 
 </Project>

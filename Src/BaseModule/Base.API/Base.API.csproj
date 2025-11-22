@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+    <PackageReference Include="Morcatko.AspNetCore.JsonMergePatch.SystemText" Version="6.0.4" />
   </ItemGroup>
 
   <ItemGroup>
