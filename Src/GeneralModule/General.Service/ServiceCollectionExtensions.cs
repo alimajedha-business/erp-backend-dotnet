@@ -1,10 +1,10 @@
-﻿using Base.Service.Interfaces;
-using Base.Service.Services;
-using General.Service.Interfaces;
-using General.Service.Interfaces.Services;
-using General.Service.Mappings;
-using General.Service.Resources;
-using General.Service.Services;
+﻿using NGErp.Base.Service.Interfaces;
+using NGErp.Base.Service.Services;
+using NGErp.General.Service.Interfaces;
+using NGErp.General.Service.Interfaces.Services;
+using NGErp.General.Service.Mappings;
+using NGErp.General.Service.Resources;
+using NGErp.General.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Service
+namespace NGErp.General.Service
 {
     public static class ServiceCollectionExtensions
     {

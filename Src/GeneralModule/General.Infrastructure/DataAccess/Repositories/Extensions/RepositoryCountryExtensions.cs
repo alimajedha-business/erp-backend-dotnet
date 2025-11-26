@@ -1,4 +1,4 @@
-﻿using General.Domain.Entities;
+﻿using NGErp.General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
-using Common.Infrastructure.DataAccess.Repositories.Extensions.Utility;
+using NGErp.Base.Infrastructure.DataAccess.Repositories.Extensions.Utility;
 
-namespace General.Infrastructure.DataAccess.Repositories.Extensions
+namespace NGErp.General.Infrastructure.DataAccess.Repositories.Extensions
 {
     public static class RepositoryCountryExtensions
     {

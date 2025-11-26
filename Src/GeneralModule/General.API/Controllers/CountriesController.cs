@@ -1,10 +1,10 @@
 ﻿using Asp.Versioning;
-using Base.Service.RequestParameters;
-using General.Service.Interfaces.Services;
+using NGErp.Base.Service.RequestParameters;
+using NGErp.General.Service.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace General.API.Controllers
+namespace NGErp.General.API.Controllers
 {
     [ApiVersion(1.0)]
     [ApiExplorerSettings(GroupName = "v1-general")]

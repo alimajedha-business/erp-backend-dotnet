@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using Base.Infrastructure.Logging;
-using General.Service.Interfaces.Repositories;
-using General.Service.Interfaces.Services;
+using NGErp.Base.Infrastructure.Logging;
+using NGErp.General.Service.Interfaces.Repositories;
+using NGErp.General.Service.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Service.Services
+namespace NGErp.General.Service.Services
 {
     internal sealed class GeneralServiceManager : IGeneralServiceManager
     {

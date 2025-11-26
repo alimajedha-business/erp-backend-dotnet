@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using Base.Service.RequestParameters;
-using Base.Infrastructure.Logging;
-using General.Service.DTOs;
-using General.Service.Interfaces.Repositories;
-using General.Service.Interfaces.Services;
-using General.Domain.Entities;
+using NGErp.Base.Service.RequestParameters;
+using NGErp.Base.Infrastructure.Logging;
+using NGErp.General.Service.DTOs;
+using NGErp.General.Service.Interfaces.Repositories;
+using NGErp.General.Service.Interfaces.Services;
+using NGErp.General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Service.Services
+namespace NGErp.General.Service.Services
 {
     public sealed class CountryService : ICountryService
     {

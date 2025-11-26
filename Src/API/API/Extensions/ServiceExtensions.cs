@@ -1,17 +1,18 @@
-﻿using Base.Service.Services;
-using Base.Service.Interfaces;
-using Base.Service.Resources;
-using General.Service;
-using General.Infrastructure.DataAccess;
+﻿using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Interfaces;
+using NGErp.Base.Service.Resources;
+using NGErp.General.Service;
+using NGErp.General.API;
+using NGErp.General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
-using Base.Infrastructure.DataAccess;
+using NGErp.Base.Infrastructure.DataAccess;
 using System.Globalization;
-using Base.Service;
-using Base.API.ActionFilters;
+using NGErp.Base.Service;
+using NGErp.Base.API.ActionFilters;
 using Morcatko.AspNetCore.JsonMergePatch;
 
-namespace API.Extensions
+namespace NGErp.API.Extensions
 {
     public static class ServiceExtensions
     {
@@ -73,7 +74,7 @@ namespace API.Extensions
                     };
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(NGErp.General.API.AssemblyReference).Assembly);
             return services;
         }
 

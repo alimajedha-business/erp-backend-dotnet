@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Application.Interfaces.Services
+namespace NGErp.General.Application.Interfaces.Services
 {
     public interface IProvinceService
     {

@@ -1,4 +1,4 @@
-﻿using General.Domain.Entities;
+﻿using NGErp.General.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 

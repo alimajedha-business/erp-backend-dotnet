@@ -1,14 +1,13 @@
-﻿using Common.Application.Interfaces;
-using Base.Infrastructure.DataAccess;
-using General.Service.Interfaces.Repositories;
-using General.Domain.Entities;
+﻿using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.General.Service.Interfaces.Repositories;
+using NGErp.General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Infrastructure.DataAccess.Repositories
+namespace NGErp.General.Infrastructure.DataAccess.Repositories
 {
     public class ProvinceRepository : RepositoryBase<Province>, IProvinceRepository
     {

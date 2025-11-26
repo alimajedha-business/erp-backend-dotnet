@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "Integra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GeneralModule", "GeneralModule", "{C9D6E282-5A34-4CC4-B8E3-7E59CCEB696C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "Src\API\API\API.csproj", "{4E3574E3-62B2-42CF-B9D0-7D5A8F48C1AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NGErp.API", "Src\API\API\NGErp.API.csproj", "{4E3574E3-62B2-42CF-B9D0-7D5A8F48C1AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BaseModule", "BaseModule", "{46757AAA-6EB2-413C-AC09-5FB2C4E1E239}"
 EndProject
@@ -25,13 +25,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Base.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Base.API", "Src\BaseModule\Base.API\NGErp.Base.API.csproj", "{56C1C57C-A20E-428C-BAB1-EE987F8C8012}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.API", "Src\GeneralModule\General.API\General.API.csproj", "{71728620-D27E-4D0B-9712-97DDF54FF172}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.API", "Src\GeneralModule\General.API\NGErp.General.API.csproj", "{71728620-D27E-4D0B-9712-97DDF54FF172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Domain", "Src\GeneralModule\General.Domain\General.Domain.csproj", "{3B991EA3-9F82-47BB-BD68-F09194147969}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.Domain", "Src\GeneralModule\General.Domain\NGErp.General.Domain.csproj", "{3B991EA3-9F82-47BB-BD68-F09194147969}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Infrastructure", "Src\GeneralModule\General.Infrastructure\General.Infrastructure.csproj", "{F353BF1F-3F1B-47F2-9781-7CEBDF11B925}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.Infrastructure", "Src\GeneralModule\General.Infrastructure\NGErp.General.Infrastructure.csproj", "{F353BF1F-3F1B-47F2-9781-7CEBDF11B925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Service", "Src\GeneralModule\General.Service\General.Service.csproj", "{9E0BEB72-C727-4189-B1D5-5C95AECBB785}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.Service", "Src\GeneralModule\General.Service\NGErp.General.Service.csproj", "{9E0BEB72-C727-4189-B1D5-5C95AECBB785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

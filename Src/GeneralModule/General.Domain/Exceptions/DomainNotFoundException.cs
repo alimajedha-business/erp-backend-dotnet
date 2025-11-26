@@ -1,11 +1,11 @@
-﻿using Base.Domain.Exceptions;
+﻿using NGErp.Base.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Domain.Exceptions
+namespace NGErp.General.Domain.Exceptions
 {
     public class DomainNotFoundException : NotFoundException
     {

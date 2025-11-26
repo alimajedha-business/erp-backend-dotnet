@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace General.Domain.Entities;
+namespace NGErp.General.Domain.Entities;
 
 [Table("companies", Schema = "general")]
 public partial class Company

@@ -1,13 +1,13 @@
-﻿using Common.Application.Interfaces;
-using Base.Service.RequestParameters;
-using Base.Infrastructure.DataAccess;
-using General.Service.Interfaces.Repositories;
-using General.Domain.Entities;
-using General.Infrastructure.DataAccess.Repositories.Extensions;
+﻿
+using NGErp.Base.Service.RequestParameters;
+using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.General.Service.Interfaces.Repositories;
+using NGErp.General.Domain.Entities;
+using NGErp.General.Infrastructure.DataAccess.Repositories.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
 
-namespace General.Infrastructure.DataAccess.Repositories
+namespace NGErp.General.Infrastructure.DataAccess.Repositories
 {
     public class CountryRepository : RepositoryBase<Country>, ICountryRepository
     {

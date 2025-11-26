@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace General.Service.DTOs
+namespace NGErp.General.Service.DTOs
 {
     public record class CountryDto(int Id,string Name,int Code, int? TaxCode, string? Currency);
    

@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace General.Domain.Entities;
+namespace NGErp.General.Domain.Entities;
 
 public partial class EntityTypeConstraint
 {

@@ -1,7 +1,7 @@
-using API.Extensions;
+using NGErp.API.Extensions;
 using Asp.Versioning.Routing;
-using Base.Service;
-using Base.Infrastructure.Logging;
+using NGErp.Base.Service;
+using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Serilog;

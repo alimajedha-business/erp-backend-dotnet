@@ -1,17 +1,16 @@
 ﻿// Ignore Spelling: Localizer
 
-using Base.Service.Interfaces;
+using NGErp.Base.Service.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Application.Services;
-using Base.Service.Resources;
-using General.Service.Resources;
+using NGErp.Base.Service.Resources;
+using NGErp.General.Service.Resources;
 
-namespace API
+namespace NGErp.API.Services
 {
     public static class ExceptionLocalizerFactory
     {

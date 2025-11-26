@@ -19,9 +19,9 @@
         <ProjectReference Include="..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
-        <ProjectReference Include="..\..\GeneralModule\General.API\General.API.csproj" />
-        <ProjectReference Include="..\..\GeneralModule\General.Infrastructure\General.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\GeneralModule\General.Service\General.Service.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.API\NGErp.General.API.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.Infrastructure\NGErp.General.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\GeneralModule\General.Service\NGErp.General.Service.csproj" />
     </ItemGroup>
 
 </Project>
