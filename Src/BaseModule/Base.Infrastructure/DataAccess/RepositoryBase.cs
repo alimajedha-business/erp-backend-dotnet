@@ -1,4 +1,4 @@
-﻿using Base.Service.Interfaces;
+﻿using NGErp.Base.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Infrastructure.DataAccess
+namespace NGErp.Base.Infrastructure.DataAccess
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

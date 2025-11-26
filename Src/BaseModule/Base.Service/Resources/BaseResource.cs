@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Service.Resources
+namespace NGErp.Base.Service.Resources
 {
     public class BaseResource
     {

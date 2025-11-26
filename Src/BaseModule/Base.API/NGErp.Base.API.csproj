@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Base.Domain\Base.Domain.csproj" />
-    <ProjectReference Include="..\Base.Service\Base.Service.csproj" />
+    <ProjectReference Include="..\Base.Domain\NGErp.Base.Domain.csproj" />
+    <ProjectReference Include="..\Base.Service\NGErp.Base.Service.csproj" />
   </ItemGroup>
 
 </Project>

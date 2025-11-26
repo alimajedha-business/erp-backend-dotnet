@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Service
+namespace NGErp.Base.Service
 {
     public static class ProjectConstants
     {

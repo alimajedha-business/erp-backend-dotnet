@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Base.Domain\Base.Domain.csproj" />
+    <ProjectReference Include="..\Base.Domain\NGErp.Base.Domain.csproj" />
   </ItemGroup>
 
 </Project>

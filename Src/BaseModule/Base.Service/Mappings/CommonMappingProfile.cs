@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Service.Mappings
+namespace NGErp.Base.Service.Mappings
 {
     public class CommonMappingProfile:Profile
     {

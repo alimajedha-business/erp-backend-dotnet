@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseModule\Base.API\Base.API.csproj" />
-    <ProjectReference Include="..\..\BaseModule\Base.Service\Base.Service.csproj" />
+    <ProjectReference Include="..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
+    <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
     <ProjectReference Include="..\General.Service\General.Service.csproj" />
   </ItemGroup>
 

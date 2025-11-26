@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Application.Interfaces
+namespace NGErp.Base.Service.Interfaces
 {
     public interface IDataShaper<T>
     {

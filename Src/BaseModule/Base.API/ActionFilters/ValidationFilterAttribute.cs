@@ -1,5 +1,5 @@
-﻿using Base.Service.Resources;
-using Base.Domain.ErrorModel;
+﻿using NGErp.Base.Service.Resources;
+using NGErp.Base.Domain.ErrorModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 
-namespace Base.API.ActionFilters
+namespace NGErp.Base.API.ActionFilters
 {
     public class ValidationFilterAttribute : IActionFilter
     {

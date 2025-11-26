@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Infrastructure.DataAccess
+namespace NGErp.Base.Infrastructure.DataAccess
 {
     public static class ServiceCollectionExtensions
     {

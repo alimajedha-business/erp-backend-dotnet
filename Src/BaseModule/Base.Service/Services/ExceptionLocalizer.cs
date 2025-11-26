@@ -1,8 +1,8 @@
 ﻿// Ignore Spelling: Localizer
 
-using Base.Service.Interfaces;
-using Base.Domain.Exceptions;
-using Base.Service.Resources;
+using NGErp.Base.Service.Interfaces;
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.Resources;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Service.Services
+namespace NGErp.Base.Service.Services
 {
     public class ExceptionLocalizer<TEntityResource> : IExceptionLocalizer<TEntityResource> where TEntityResource : class
     {

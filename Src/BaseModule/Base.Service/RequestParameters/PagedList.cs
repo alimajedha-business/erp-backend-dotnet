@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Base.Service.RequestParameters
+namespace NGErp.Base.Service.RequestParameters
 {
     public class PagedList<T> : List<T>
     {

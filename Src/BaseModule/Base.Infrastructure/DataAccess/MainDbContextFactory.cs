@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Base.Infrastructure.DataAccess
+namespace NGErp.Base.Infrastructure.DataAccess
 {
     public class MainDbContextFactory : IDesignTimeDbContextFactory<MainDbContext>
     {

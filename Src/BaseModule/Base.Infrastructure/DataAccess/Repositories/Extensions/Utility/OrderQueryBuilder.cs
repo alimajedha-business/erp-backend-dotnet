@@ -1,12 +1,11 @@
-﻿using Common.Infrastructure.DataAccess.Repositories.Extensions.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Infrastructure.DataAccess.Repositories.Extensions.Utility
+namespace NGErp.Base.Infrastructure.DataAccess.Repositories.Extensions.Utility
 {
     public static class OrderQueryBuilder
     {

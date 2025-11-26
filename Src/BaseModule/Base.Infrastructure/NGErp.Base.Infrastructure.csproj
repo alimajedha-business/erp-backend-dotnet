@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GeneralModule\General.Domain\General.Domain.csproj" />
-    <ProjectReference Include="..\Base.Service\Base.Service.csproj" />
+    <ProjectReference Include="..\Base.Service\NGErp.Base.Service.csproj" />
   </ItemGroup>
 
 </Project>

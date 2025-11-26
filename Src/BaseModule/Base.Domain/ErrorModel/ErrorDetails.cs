@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Base.Domain.ErrorModel
+namespace NGErp.Base.Domain.ErrorModel
 {
     public  record ErrorDetails
     {

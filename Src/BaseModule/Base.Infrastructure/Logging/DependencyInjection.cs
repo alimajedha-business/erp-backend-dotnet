@@ -2,7 +2,7 @@
 using Serilog;
 
 
-namespace Base.Infrastructure.Logging
+namespace NGErp.Base.Infrastructure.Logging
 {
     public static class DependencyInjection
     {

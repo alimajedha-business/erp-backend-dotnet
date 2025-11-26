@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 
-namespace Base.Infrastructure.DataAccess
+namespace NGErp.Base.Infrastructure.DataAccess
 {
     public class MainDbContext : DbContext
     {
