@@ -1,39 +1,18 @@
-﻿using Accounting.Application;
-using Accounting.Application.Interfaces.Repositories;
-using Accounting.Application.Interfaces.Services;
-using Accounting.Application.Mappings;
-using Accounting.Application.Services;
-using Accounting.Infrastructure.DataAccess;
-using Accounting.Infrastructure.DataAccess.Repositories;
-using Accounting.Resources;
-using Common.Application;
-using Common.Application.Interfaces;
-using Common.Application.Mappings;
-using Common.Application.Services;
-using Common.Infrastructure.Logging;
-using Common.Presentation.ActionFilters;
-using Common.Resources;
-using General.Application;
-using General.Infrastructure.DataAccess;
-using General.Resources;
-using HCM.Application;
-using HCM.Infrastructure.DataAccess;
-using HCM.Resources;
+﻿using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Interfaces;
+using NGErp.Base.Service.Resources;
+using NGErp.General.Service;
+using NGErp.General.API;
+using NGErp.General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Morcatko.AspNetCore.JsonMergePatch;
+using NGErp.Base.Infrastructure.DataAccess;
 using System.Globalization;
-using System.Reflection;
+using NGErp.Base.Service;
+using NGErp.Base.API.ActionFilters;
+using Morcatko.AspNetCore.JsonMergePatch;
 
-
-namespace API.Extensions
+namespace NGErp.API.Extensions
 {
     public static class ServiceExtensions
     {
@@ -52,21 +31,17 @@ namespace API.Extensions
             {
             });
 
-        public static void AddModuleApplications(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IExceptionLocalizer<CommonResource>, ExceptionLocalizer<CommonResource>>();
-            services.AddAccountingApplication();
-            services.AddGeneralApplication();
-            services.AddHCMApplication();
+            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
+            services.AddGeneralServices();
         }
 
-        public static IServiceCollection AddInfrastructures(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            // Module infrastructure
-            services.AddAccountingInfrastructure(configuration);
-            services.AddGeneralInfrastructure(configuration);
-            //services.AddWarehouseInfrastructure(configuration);            
-            services.AddHCMlInfrastructure(configuration);
+            services.AddBaseInfrastructureServices(configuration);
+            services.AddGeneralInfrastructureServices(configuration);
+
             return services;
         }
 
@@ -95,14 +70,11 @@ namespace API.Extensions
                         }
 
                         // Fallback to shared/common resource
-                        return factory.Create(typeof(CommonResource));
+                        return factory.Create(typeof(BaseResource));
                     };
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(Accounting.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(General.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(Warehouse.Presentation.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(HCM.Presentation.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(NGErp.General.API.AssemblyReference).Assembly);
             return services;
         }
 

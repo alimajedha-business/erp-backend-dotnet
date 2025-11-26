@@ -1,23 +1,12 @@
-using Accounting.Application.Mappings;
-using Accounting.Infrastructure.DataAccess;
-using API.Extensions;
+using NGErp.API.Extensions;
 using Asp.Versioning.Routing;
-using Common.Application;
-using Common.Application.Mappings;
-using Common.Application.Services;
-using Common.Infrastructure.Logging;
-using Common.Presentation.ActionFilters;
-using General.Infrastructure.DataAccess;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Localization;
+using NGErp.Base.Service;
+using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Morcatko.AspNetCore.JsonMergePatch;
 using Serilog;
+
 using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Globalization;
-using Warehouse.Infrastructure.DataAccess;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -38,8 +27,8 @@ try
     builder.Services.ConfigureCors();
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureLocalization();    
-    builder.Services.AddModuleApplications();    
-    builder.Services.AddInfrastructures(builder.Configuration);   
+    builder.Services.AddServices();    
+    builder.Services.AddInfrastructureServices(builder.Configuration);   
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;

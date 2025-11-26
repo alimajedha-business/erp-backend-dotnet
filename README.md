@@ -75,10 +75,8 @@ this command should be exexute at root of project
 
 ## Creating project flow
 1. In Module > Infrastructure > DataAccess
-	1. Create ModuleDBContext.cs
-	2. Create DependencyInjection.cs
-	3. Create ModuleDBContextFactory.cs
-2. In Module > Presntation > 
+	1. Create DependencyInjection.cs
+2. In Module > Presentation > 
 	- Create AssemblyReference.cs
 3. API > Extensions > ServiceExtensions.cs
     - Add AddModuleInfrastructure from DependencyInjection to AddInfrastructures method    
@@ -102,7 +100,7 @@ this command should be exexute at root of project
 	- Add AssemblyReference.cs
 13. In Module > Domain > Entities
 	- Create Entities.cs
-14. In Module > Infrastructure > DataAccess > ModuleDBContext.cs
+14. In Infrastructure > Persistence > DataAccess > MainDBContext.cs
 	- Add Entities DbSets
 15. In Module > Application > Interfaces > Repositories
 	1. Create IEntityRepository.cs

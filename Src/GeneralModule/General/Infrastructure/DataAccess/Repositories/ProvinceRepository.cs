@@ -1,4 +1,5 @@
-﻿using Common.Infrastructure.DataAccess;
+﻿using Common.Application.Interfaces;
+using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Domain.Entities;
 using System;
@@ -11,7 +12,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class ProvinceRepository : RepositoryBase<Province>, IProvinceRepository
     {
-        public ProvinceRepository(GeneralDbContext context) : base(context)
+        public ProvinceRepository(IMainDbContext context) : base(context)
         {
         }
 

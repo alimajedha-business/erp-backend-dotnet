@@ -1,16 +1,15 @@
 ﻿// Ignore Spelling: Middleware
 
-using Common.Application.Interfaces;
-using Common.Domain.Exceptions;
-using Common.ErrorModel;
-using Common.Infrastructure.Logging;
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Domain.ErrorModel;
+using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Reflection;
+using NGErp.API.Services;
 
-namespace API.Extensions
+namespace NGErp.API.Extensions
 {
     public static class ExceptionMiddlewareExtensions
     {

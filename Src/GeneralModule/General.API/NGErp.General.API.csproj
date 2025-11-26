@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
+    <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
+    <ProjectReference Include="..\General.Service\NGErp.General.Service.csproj" />
+  </ItemGroup>
+
+</Project>

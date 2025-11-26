@@ -1,4 +1,5 @@
-﻿using Common.Application.RequestParameters;
+﻿using Common.Application.Interfaces;
+using Common.Application.RequestParameters;
 using Common.Infrastructure.DataAccess;
 using General.Application.Interfaces.Repositories;
 using General.Domain.Entities;
@@ -10,7 +11,7 @@ namespace General.Infrastructure.DataAccess.Repositories
 {
     public class CountryRepository : RepositoryBase<Country>, ICountryRepository
     {
-        public CountryRepository(GeneralDbContext repositoryContext) : base(repositoryContext)
+        public CountryRepository(IMainDbContext repositoryContext) : base(repositoryContext)
         {
         }
 
