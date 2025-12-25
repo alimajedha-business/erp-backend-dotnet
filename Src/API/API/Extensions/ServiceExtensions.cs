@@ -35,6 +35,7 @@ namespace NGErp.API.Extensions
         {
             services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
             services.AddGeneralServices();
+            services.AddGeneralApiServices();
         }
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
@@ -92,19 +93,67 @@ namespace NGErp.API.Extensions
                     });
                 }
 
-                // Add security definition if using authentication
-                //s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                //{
-                //    Description = "JWT Authorization header using the Bearer scheme.",
-                //    Name = "Authorization",
-                //    In = ParameterLocation.Header,
-                //    Type = SecuritySchemeType.ApiKey,
-                //    Scheme = "Bearer"
-                //});
+                // Add JWT Bearer token authentication
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT"
+                });
 
-                //s.OperationFilter<AuthorizeCheckOperationFilter>(); // Custom filter if needed
+                // Add Cookie authentication
+                s.AddSecurityDefinition("Cookie", new OpenApiSecurityScheme
+                {
+                    Description = "Cookie-based authentication. The authentication cookie will be sent automatically.",
+                    Name = "Cookie",
+                    In = ParameterLocation.Cookie,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Cookie"
+                });
+
+                // Add security requirement - supports both Bearer and Cookie
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    },
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Cookie"
+                            },
+                            Name = "Cookie",
+                            In = ParameterLocation.Cookie,
+                        },
+                        new List<string>()
+                    }
+                });
+
+                // Enable XML comments if available
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    s.IncludeXmlComments(xmlPath);
+                }
             });
-
         }
 
         public static void ConfigureLocalization(this IServiceCollection services)

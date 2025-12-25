@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # .NET API Application
+  ngerp-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ngerp-api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - DjangoApi__BaseUrl=http://django-api:8000
+      - Serilog__WriteTo__1__Args__serverUrl=http://seq:80
+      - ConnectionStrings__NGERPDatabase=Server=sqlserver;Database=ngerp;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+    depends_on:
+      - django-api
+      - sqlserver
+    networks:
+      - ngerp-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/metrics"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+  # Django/Python API (Using existing project)
+  django-api:
+    build:
+      context: ../erp-backend
+      dockerfile: Dockerfile
+    container_name: django-api
+    working_dir: /app
+    volumes:
+      - ../erp-backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=ngerp.settings
+      - MSSQL_NAME=ngerp
+      - MSSQL_HOST=sqlserver
+      - MSSQL_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_FILE_NAME=file
+      - DEBUG=True
+      - SECRET_KEY=django-dev-secret-key-change-in-production
+    depends_on:
+      - sqlserver
+    networks:
+      - ngerp-network
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+
+  # SQL Server for .NET and Django
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ngerp-sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Developer
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - ngerp-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+networks:
+  ngerp-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
+    driver: local

@@ -1,0 +1,15 @@
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/logs
+**/TestResults
+**/.dockerignore
+**/Dockerfile
+**/docker-compose*.yml
+**/README.md
+**/*.md

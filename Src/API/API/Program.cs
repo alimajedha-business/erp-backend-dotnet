@@ -5,8 +5,8 @@ using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Serilog;
-
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Prometheus;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -28,7 +28,8 @@ try
     builder.Services.ConfigureIISIntegration();
     builder.Services.ConfigureLocalization();    
     builder.Services.AddServices();    
-    builder.Services.AddInfrastructureServices(builder.Configuration);   
+    builder.Services.AddInfrastructureServices(builder.Configuration);
+    builder.Services.AddApiGateway(builder.Configuration);
     builder.Services.Configure<ApiBehaviorOptions>(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
@@ -38,6 +39,9 @@ try
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
+    
+    // Add Prometheus metrics
+    builder.Services.AddSingleton<Prometheus.IMetricFactory>(Prometheus.Metrics.DefaultFactory);
 
     var app = builder.Build();
 
@@ -60,9 +64,18 @@ try
 
     app.UseCors("CorsPolicy");
     app.UseRouting();
+    
+    // Add Prometheus metrics endpoint
+    app.UseHttpMetrics();
+    
+    app.UseApiGateway();
     //app.UseAuthentication();
     app.UseAuthorization();  
     app.MapControllers();
+    app.MapReverseProxy();
+    
+    // Map Prometheus metrics endpoint
+    app.MapMetrics();
 
     app.UseSwagger();
     app.UseSwaggerUI(s =>
