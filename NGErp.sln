@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.General.Service", "Src\GeneralModule\General.Service\NGErp.General.Service.csproj", "{9E0BEB72-C727-4189-B1D5-5C95AECBB785}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.PythonIntegration.Tests", "Src\IntegrationTests\PythonIntegration.Tests\NGErp.PythonIntegration.Tests.csproj", "{76429A57-FAB3-ABA1-D507-C1BAEFF98813}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{9E0BEB72-C727-4189-B1D5-5C95AECBB785}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E0BEB72-C727-4189-B1D5-5C95AECBB785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E0BEB72-C727-4189-B1D5-5C95AECBB785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76429A57-FAB3-ABA1-D507-C1BAEFF98813}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76429A57-FAB3-ABA1-D507-C1BAEFF98813}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76429A57-FAB3-ABA1-D507-C1BAEFF98813}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76429A57-FAB3-ABA1-D507-C1BAEFF98813}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{3B991EA3-9F82-47BB-BD68-F09194147969} = {C9D6E282-5A34-4CC4-B8E3-7E59CCEB696C}
 		{F353BF1F-3F1B-47F2-9781-7CEBDF11B925} = {C9D6E282-5A34-4CC4-B8E3-7E59CCEB696C}
 		{9E0BEB72-C727-4189-B1D5-5C95AECBB785} = {C9D6E282-5A34-4CC4-B8E3-7E59CCEB696C}
+		{76429A57-FAB3-ABA1-D507-C1BAEFF98813} = {100580B9-E265-47CB-B3DA-4A0DB3A7C136}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD08F26D-DEEA-4DF8-89F2-7D46444A79BC}

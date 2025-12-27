@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'ngerp-monitor'
+
+scrape_configs:
+  # .NET API Metrics
+  - job_name: 'ngerp-api'
+    static_configs:
+      - targets: ['ngerp-api:8080']
+        labels:
+          service: 'ngerp-api'
+          environment: 'development'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Django API Metrics (if you add prometheus-client to Django)
+  - job_name: 'django-api'
+    static_configs:
+      - targets: ['django-api:8000']
+        labels:
+          service: 'django-api'
+          environment: 'development'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'

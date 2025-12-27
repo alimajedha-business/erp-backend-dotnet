@@ -1,6 +1,154 @@
-@API_HostAddress = http://localhost:5119
+@API_HostAddress = http://localhost:5000
+@JWT_Token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2NzMzMDgwLCJpYXQiOjE3NjY0OTcyOTcsImp0aSI6IjdjNTY5YWM3M2I4NTQxNTA5YjVmYzQwODBlNjg4OTNlIiwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJzdXBlcnVzZXIiLCJlbWFpbCI6Im1hamlkLnphbmRpMUBnbWFpbC5jb20ifQ.k6K578bWX6k8OE3W2nXmkfGYQrs-4-rLcapIgfSZ2yg
 
+### Get Weather Forecast (Original)
 GET {{API_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+### ========================================
+### Authentication Tests
+### ========================================
+
+### Test .NET API - Get Current User (Authenticated)
+GET {{API_HostAddress}}/api/auth/me
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Test .NET API - Validate Token
+GET {{API_HostAddress}}/api/auth/validate-token
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### ========================================
+### Django API Direct Gateway Tests
+### ========================================
+
+### Test Django API via Gateway - Get Companies (General Module)
+GET {{API_HostAddress}}/django-api/api/general/companies/
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Test Django API via Gateway - Get Company by ID
+GET {{API_HostAddress}}/django-api/api/general/companies/1/
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Test Django API via Gateway - Create Company
+POST {{API_HostAddress}}/django-api/api/general/companies/
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+{
+  "name": "Direct Django Test Company",
+  "address": "789 Django Street"
+}
+
+###
+
+### Test Django Swagger Docs via Gateway
+GET {{API_HostAddress}}/django-api/docs/general/
+Accept: text/html
+
+###
+
+### Test Django API Direct (without gateway) - for debugging
+GET http://localhost:8000/api/general/companies/
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### ========================================
+### Python Integration Service Tests (.NET calling Django)
+### ========================================
+
+### Get All Companies from Django (via .NET service)
+GET {{API_HostAddress}}/api/pythoncompanies
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Get Company by ID from Django (via .NET service)
+GET {{API_HostAddress}}/api/pythoncompanies/1
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Create Company in Django (via .NET service)
+POST {{API_HostAddress}}/api/pythoncompanies
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+{
+  "name": "Test Company from .NET",
+  "address": "123 Test Street",
+  "phone": "+1-234-567-8900",
+  "email": "test@company.com"
+}
+
+###
+
+### Update Company in Django (via .NET service)
+PUT {{API_HostAddress}}/api/pythoncompanies/1
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+{
+  "name": "Updated Company Name",
+  "address": "456 Updated Avenue"
+}
+
+###
+
+### Partial Update Company in Django (via .NET service)
+PATCH {{API_HostAddress}}/api/pythoncompanies/1
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+{
+  "name": "Partially Updated Name"
+}
+
+###
+
+### Delete Company from Django (via .NET service)
+DELETE {{API_HostAddress}}/api/pythoncompanies/1
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### ========================================
+### Hybrid Controller Tests (SQL + Django)
+### ========================================
+
+### Get Companies from Both Sources (.NET SQL + Django API)
+GET {{API_HostAddress}}/api/hybridcompanies/all-sources
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Sync Company from .NET Database to Django
+POST {{API_HostAddress}}/api/hybridcompanies/sync-to-django/1
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+### Compare Company Between .NET and Django
+GET {{API_HostAddress}}/api/hybridcompanies/compare/1
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
 
 ###
