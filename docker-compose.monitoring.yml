@@ -10,6 +10,9 @@ services:
       - "5342:5341"
     environment:
       - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=admin123  # Set admin password
+      # Or to disable authentication (for development only):
+      # - SEQ_FIRSTRUN_NOAUTHENTICATION=true
     volumes:
       - seq-data:/data
     networks:
@@ -53,12 +56,12 @@ services:
     image: grafana/grafana:latest
     container_name: ngerp-grafana
     ports:
-      - "3000:3000"
+      - "5004:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
-      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_SERVER_ROOT_URL=http://localhost:5004
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
@@ -70,7 +73,7 @@ services:
       - ngerp-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5004/api/health"]
       interval: 30s
       timeout: 3s
       retries: 3

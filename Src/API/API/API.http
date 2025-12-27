@@ -1,5 +1,5 @@
 @API_HostAddress = http://localhost:5000
-@JWT_Token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2NzMzMDgwLCJpYXQiOjE3NjY0OTcyOTcsImp0aSI6IjdjNTY5YWM3M2I4NTQxNTA5YjVmYzQwODBlNjg4OTNlIiwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJzdXBlcnVzZXIiLCJlbWFpbCI6Im1hamlkLnphbmRpMUBnbWFpbC5jb20ifQ.k6K578bWX6k8OE3W2nXmkfGYQrs-4-rLcapIgfSZ2yg
+@JWT_Token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2OTI5MTA1LCJpYXQiOjE3NjY4NDI3MDUsImp0aSI6IjhjYzhlZjJkMGIzNzRkYmY4MzY2YzE3NzJkNGUwYTc3IiwidXNlcl9pZCI6MSwidXNlcm5hbWUiOiJzdXBlcnVzZXIiLCJlbWFpbCI6Im1hamlkLnphbmRpMUBnbWFpbC5jb20ifQ.FL5Z60OP0I_7rYi0v45m3V-3TtXWeoc7QlqSMlk8D5M
 
 ### Get Weather Forecast (Original)
 GET {{API_HostAddress}}/weatherforecast/
@@ -152,3 +152,36 @@ Accept: application/json
 Authorization: Bearer {{JWT_Token}}
 
 ###
+
+### ========================================
+### Performance and Load Tests
+### ========================================
+
+### High Load Test - Simulate 1000 Concurrent Users
+POST {{API_HostAddress}}/api/load-test
+Content-Type: application/json
+
+{
+  "numUsers": 1000,
+  "duration": 300
+}
+
+###
+
+### Stress Test - Upload 100MB File
+POST {{API_HostAddress}}/api/stress-test/upload
+Content-Type: application/octet-stream
+
+< 100MB binary file data >
+
+###
+
+### Delay Test - 2 Seconds Delay
+GET {{API_HostAddress}}/api/delay-test
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+
+# Monitoring and Metrics
+# Run: .\test-metrics.ps1

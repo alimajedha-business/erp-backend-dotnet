@@ -3,11 +3,13 @@ using NGErp.General.Infrastructure.Services;
 using NGErp.General.Service.DTOs.PythonApi;
 using ERP.API.Services;
 using Microsoft.Extensions.Logging;
+using NGErp.Base.API.ActionFilters;
 
 namespace NGErp.General.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [JwtAuthorize] // Require authentication for all endpoints
     public class HybridCompaniesController : ControllerBase
     {
         private readonly IPythonIntegrationService _pythonIntegrationService;
