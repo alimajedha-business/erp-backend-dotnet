@@ -5,13 +5,23 @@ global:
     monitor: 'ngerp-monitor'
 
 scrape_configs:
-  # .NET API Metrics
-  - job_name: 'ngerp-api'
+  # .NET API Metrics - Docker
+  - job_name: 'ngerp-api-docker'
     static_configs:
       - targets: ['ngerp-api:8080']
         labels:
           service: 'ngerp-api'
-          environment: 'development'
+          environment: 'docker'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # .NET API Metrics - Local (when running outside Docker)
+  - job_name: 'ngerp-api-local'
+    static_configs:
+      - targets: ['host.docker.internal:5000']
+        labels:
+          service: 'ngerp-api'
+          environment: 'local'
     metrics_path: '/metrics'
     scrape_interval: 10s
 
@@ -31,3 +41,4 @@ scrape_configs:
       - targets: ['localhost:9090']
         labels:
           service: 'prometheus'
+

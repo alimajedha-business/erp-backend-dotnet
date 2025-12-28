@@ -100,9 +100,20 @@ namespace NGErp.API.Middleware
 
                 var handler = new JwtSecurityTokenHandler();
                 
+                // Always validate token expiration
                 if (string.IsNullOrEmpty(secretKey))
                 {
+                    // Even without secret key, we should validate expiration like Django does
                     var jwtToken = handler.ReadJwtToken(token);
+                    
+                    // Check if token is expired
+                    if (validateLifetime && jwtToken.ValidTo < DateTime.UtcNow)
+                    {
+                        _logger.LogWarning("Token has expired. Valid until: {ValidTo}, Current time: {Now}", 
+                            jwtToken.ValidTo, DateTime.UtcNow);
+                        return null;
+                    }
+                    
                     var claims = jwtToken.Claims.ToList();
 
                     var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
@@ -163,6 +174,11 @@ namespace NGErp.API.Middleware
                     var identity = new ClaimsIdentity(claims, "Bearer");
                     return new ClaimsPrincipal(identity);
                 }
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                _logger.LogWarning("Token has expired: {Message}", ex.Message);
+                return null;
             }
             catch (Exception ex)
             {
