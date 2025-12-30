@@ -37,13 +37,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.PythonIntegration.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HCMModule", "HCMModule", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCM.API", "Src\HCMModule\HCM.API\HCM.API\HCM.API.csproj", "{659F857D-963E-4157-9146-52C8670F40A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.API", "Src\HCMModule\HCM.API\HCM.API\NGErp.HCM.API.csproj", "{659F857D-963E-4157-9146-52C8670F40A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCM.Domain", "Src\HCMModule\HCM.Domain\HCM.Domain\HCM.Domain.csproj", "{A2F84CF0-1BB0-4B3B-AB93-2CFDB336B48A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Domain", "Src\HCMModule\HCM.Domain\HCM.Domain\NGErp.HCM.Domain.csproj", "{A2F84CF0-1BB0-4B3B-AB93-2CFDB336B48A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCM.Infrastructure", "Src\HCMModule\HCM.Infrastructure\HCM.Infrastructure\HCM.Infrastructure.csproj", "{16874B42-E847-467B-8D8E-5D586FD34435}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Infrastructure", "Src\HCMModule\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj", "{16874B42-E847-467B-8D8E-5D586FD34435}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HCM.Service", "Src\HCMModule\HCM.Service\HCM.Service\HCM.Service.csproj", "{CB49952B-A068-4198-A0D2-347574D17504}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Service", "Src\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj", "{CB49952B-A068-4198-A0D2-347574D17504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
