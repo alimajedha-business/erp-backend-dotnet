@@ -9,7 +9,7 @@ namespace NGErp.General.Service.Interfaces.Repositories
 {
     public interface ICompanyRepository
     {
-        Task<Company?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges);
-        Task<Company?> GetCompanyAsync(int companyId, bool trackChanges);
+        Task<Company?> GetCompanyForDomainAsync(Guid domainId, Guid companyId);
+        Task<Company?> GetCompanyAsync(Guid companyId);
     }
 }

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -14,26 +14,26 @@ namespace NGErp.General.Service.Services
 {
     public class DomainService : IDomainService
     {
-        private readonly IGeneralRepositoryManager _repository;
+        private readonly IDomainRepository _domainRepository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
-        public DomainService(IGeneralRepositoryManager repository, ILoggerService logger, IMapper mapper)
+        public DomainService(IDomainRepository repository, ILoggerService logger, IMapper mapper)
         {
-            _repository = repository;
+            _domainRepository = repository;
             _logger = logger;
             _mapper = mapper;
         }
 
-        public async Task<DomainDto?> GetDomainAsync(int domainId, bool trackChanges)
+        public async Task<DomainDto?> GetDomainAsync(Guid domainId)
         {
-            var domain = await GetDomainAndCheckIfItExistsAsync(domainId, trackChanges);
+            var domain = await GetDomainAndCheckIfItExistsAsync(domainId);
             var domainDto = _mapper.Map<DomainDto>(domain);
             return domainDto;
         }
 
-        private async Task<Domain.Entities.Domain> GetDomainAndCheckIfItExistsAsync(int domainId, bool trackChanges)
+        private async Task<Domain.Entities.Domain> GetDomainAndCheckIfItExistsAsync(Guid domainId)
         {
-            var domain = await _repository.Domain.GetDomainAsync(domainId, trackChanges);
+            var domain = await _domainRepository.GetByIdAsync(domainId);
             if (domain is null)
                 throw new DomainNotFoundException(domainId);
             return domain;

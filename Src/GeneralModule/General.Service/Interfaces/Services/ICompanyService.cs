@@ -9,7 +9,8 @@ namespace NGErp.General.Service.Interfaces.Services
 {
     public interface ICompanyService
     {
-        Task<CompanyDto?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges);
-        Task<CompanyDto?> GetCompanyAsync(int companyId, bool trackChanges);
+        Task<CompanyDto?> GetCompanyForDomainAsync(Guid domainId, Guid companyId);
+
+        Task<CompanyDto?> GetCompanyAsync(Guid companyId);
     }
 }

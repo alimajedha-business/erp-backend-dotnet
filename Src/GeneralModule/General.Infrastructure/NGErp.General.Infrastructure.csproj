@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
     <ProjectReference Include="..\General.Service\NGErp.General.Service.csproj" />
   </ItemGroup>
 

@@ -9,6 +9,6 @@ namespace NGErp.General.Service.Interfaces.Services
 {
     public interface IDomainService
     {
-        Task<DomainDto?> GetDomainAsync(int domainId, bool trackChanges);
+        Task<DomainDto?> GetDomainAsync(Guid domainId);
     }
 }

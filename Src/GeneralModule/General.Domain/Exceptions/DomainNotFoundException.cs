@@ -9,7 +9,7 @@ namespace NGErp.General.Domain.Exceptions
 {
     public class DomainNotFoundException : NotFoundException
     {
-        public DomainNotFoundException(int domainId) :
+        public DomainNotFoundException(Guid domainId) :
             base("DomainNotFound", domainId)
         {
         }

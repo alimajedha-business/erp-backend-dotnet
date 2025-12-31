@@ -9,7 +9,7 @@ namespace NGErp.General.Domain.Entities;
 [Table("companies", Schema = "general")]
 public partial class Company
 {    
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Name { get; set; }
 
@@ -19,7 +19,7 @@ public partial class Company
     public DateTime CreatedAt { get; set; }
     
     [Column("domain_id")]
-    public int DomainId { get; set; }
+    public Guid DomainId { get; set; }
 
     public virtual ICollection<CompanyAdmin> CompanyAdmins { get; set; } = new List<CompanyAdmin>();
 

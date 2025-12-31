@@ -1,4 +1,5 @@
-﻿using NGErp.Base.Infrastructure.DataAccess;
+﻿using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.General.Service.Interfaces.Repositories;
 using NGErp.General.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace NGErp.General.Infrastructure.DataAccess.Repositories
 {
-    public class CompanyRepository : RepositoryBase<Company>, ICompanyRepository
+    public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
         public CompanyRepository(MainDbContext dbContext) : base(dbContext) { }
 
-        public async Task<Company?> GetCompanyAsync(int companyId, bool trackChanges) =>
-             await FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
+        public async Task<Company?> GetCompanyAsync(Guid companyId) =>
+             await GetByIdAsync(companyId);
 
-        public async Task<Company?> GetCompanyForDomainAsync(int domainId, int companyId, bool trackChanges) =>
-            await FindByCondition(c => c.DomainId.Equals(domainId) && c.Id.Equals(companyId), trackChanges).SingleOrDefaultAsync();
+        public async Task<Company?> GetCompanyForDomainAsync(Guid domainId, Guid companyId) =>
+            await FirstOrDefaultAsync(c => c.DomainId.Equals(domainId) && c.Id.Equals(companyId));
     }
 }

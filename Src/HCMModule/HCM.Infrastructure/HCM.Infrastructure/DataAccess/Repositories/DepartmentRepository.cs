@@ -12,7 +12,7 @@ namespace NGErp.HCM.Infrastructure.DataAccess.Repositories
     public class DepartmentRepository : Repository<Department>, IDepartmentRepository
     {
 
-        public DepartmentRepository(MainDBContext context) : base(context)
+        public DepartmentRepository(MainDbContext context) : base(context)
         {
         }
     }

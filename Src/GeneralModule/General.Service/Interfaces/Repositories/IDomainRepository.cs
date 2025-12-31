@@ -1,4 +1,5 @@
-﻿using NGErp.General.Domain.Entities;
+﻿using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.General.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace NGErp.General.Service.Interfaces.Repositories
 {
-    public interface IDomainRepository
+    public interface IDomainRepository : IRepository<Domain.Entities.Domain>
     {
-        Task<Domain.Entities.Domain?> GetDomainAsync(int domainId, bool trackChanges);
+
     }
 }
