@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace NGErp.Base.Service.Mappings
 {
-    public class CommonMappingProfile:Profile
+    public class MappingProfile:Profile
     {
-        public CommonMappingProfile()
+        public MappingProfile()
         {
            
         }

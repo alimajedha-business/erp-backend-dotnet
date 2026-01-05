@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace NGErp.General.Service.Services
+namespace NGErp.Base.Service.Services
 {
     public interface ICurrentUserService
     {

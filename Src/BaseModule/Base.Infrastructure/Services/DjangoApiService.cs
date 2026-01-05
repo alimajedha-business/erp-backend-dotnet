@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 
-namespace NGErp.General.Infrastructure.Services
+namespace NGErp.Base.Infrastructure.Services
 {
     public class  DjangoApiService
     {

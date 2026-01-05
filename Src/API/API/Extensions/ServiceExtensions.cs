@@ -6,11 +6,11 @@ using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
-using NGErp.Base.Infrastructure.DataAccess;
 using System.Globalization;
 using NGErp.Base.Service;
 using NGErp.Base.API.ActionFilters;
 using Morcatko.AspNetCore.JsonMergePatch;
+using NGErp.Base.Infrastructure;
 
 namespace NGErp.API.Extensions
 {
@@ -33,7 +33,7 @@ namespace NGErp.API.Extensions
 
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
+            services.AddBaseServices();            
             services.AddGeneralServices();
             services.AddGeneralApiServices();
         }

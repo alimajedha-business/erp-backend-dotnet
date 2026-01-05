@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NGErp.General.Infrastructure.Services;
+using NGErp.Base.Infrastructure.Services;
 using NGErp.PythonIntegration.Tests.Fixtures;
 using Xunit;
 using System.Net;

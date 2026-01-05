@@ -3,6 +3,7 @@ using NGErp.General.Service.Services;
 using NGErp.General.Service.DTOs.PythonApi;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Services;
 
 
 namespace NGErp.General.API.Controllers

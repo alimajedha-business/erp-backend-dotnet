@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NGErp.General.Service.Services;
+using NGErp.Base.Service.Services;
 
-namespace NGErp.General.API.Controllers
+
+namespace NGErp.Base.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
