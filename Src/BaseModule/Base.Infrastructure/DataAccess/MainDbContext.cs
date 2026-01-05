@@ -1,7 +1,6 @@
 ﻿using NGErp.HCM.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 
 

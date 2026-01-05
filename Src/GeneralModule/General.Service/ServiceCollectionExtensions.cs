@@ -1,11 +1,10 @@
-﻿using NGErp.Base.Service.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.Interfaces;
-using NGErp.General.Service.Interfaces.Services;
+using NGErp.General.Infrastructure.Services;
 using NGErp.General.Service.Mappings;
 using NGErp.General.Service.Resources;
 using NGErp.General.Service.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +21,9 @@ namespace NGErp.General.Service
             
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
+            services.AddScoped<IPythonIntegrationService, PythonIntegrationService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             return services;
         }
     }

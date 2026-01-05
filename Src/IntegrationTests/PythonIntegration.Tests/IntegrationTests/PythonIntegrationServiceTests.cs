@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NGErp.General.Infrastructure.Services;
+using NGErp.General.Service.Services;
 using NGErp.General.Service.DTOs.PythonApi;
 using NGErp.PythonIntegration.Tests.Fixtures;
 using Xunit;

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ERP.API.Services;
 using Microsoft.Extensions.Logging;
+using NGErp.General.Service.Services;
 
 namespace NGErp.General.API.Controllers
 {

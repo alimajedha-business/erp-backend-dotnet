@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using NGErp.General.Infrastructure.Services;
+using NGErp.General.Service.Services;
 using NGErp.General.Service.DTOs.PythonApi;
-using ERP.API.Services;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.API.ActionFilters;
+
 
 namespace NGErp.General.API.Controllers
 {

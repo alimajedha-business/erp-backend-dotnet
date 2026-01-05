@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NGErp.General.Service.Services;
 using NGErp.General.Infrastructure.Services;
 
 namespace NGErp.PythonIntegration.Tests.Fixtures

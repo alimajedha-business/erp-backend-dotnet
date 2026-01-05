@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NGErp.General.Infrastructure.Services
 {
-    public class DjangoApiService
+    public class  DjangoApiService
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<DjangoApiService> _logger;

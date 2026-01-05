@@ -2,7 +2,7 @@ using NGErp.General.Infrastructure.Services;
 using NGErp.General.Service.DTOs.PythonApi;
 using Microsoft.Extensions.Logging;
 
-namespace NGErp.General.Infrastructure.Services
+namespace NGErp.General.Service.Services
 {
     public interface IPythonIntegrationService
     {

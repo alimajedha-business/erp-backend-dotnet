@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace ERP.API.Services
+namespace NGErp.General.Service.Services
 {
     public interface ICurrentUserService
     {
