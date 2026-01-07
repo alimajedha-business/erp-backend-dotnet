@@ -1,12 +1,15 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.Service.Services;
 
 
 namespace NGErp.Base.API.Controllers
-{
+{    
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-base")]
+    [Route("api/v{version:apiVersion}/base/Auth")]
     [ApiController]
-    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly ICurrentUserService _currentUserService;

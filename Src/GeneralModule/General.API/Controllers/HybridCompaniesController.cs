@@ -1,13 +1,16 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.API.ActionFilters;
-using NGErp.General.Service.Services;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
 
 namespace NGErp.General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-general")]
+    [Route("api/v{version:apiVersion}/general/HybridCompanies")]
     [JwtAuthorize] // Require authentication for all endpoints
     public class HybridCompaniesController : ControllerBase
     {

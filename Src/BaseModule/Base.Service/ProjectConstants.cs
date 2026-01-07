@@ -8,7 +8,7 @@ namespace NGErp.Base.Service
 {
     public static class ProjectConstants
     {
-        public static string[] Modules = { "General", "Accounting", "Warehouse","HCM" };
+        public static string[] Modules = { "Base","General", "Accounting", "Warehouse", "HCM" };
         public static string[] SupportedCultures = { "fa", "en", "ar" };
     }
 }
