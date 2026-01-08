@@ -10,4 +10,9 @@
     <ProjectReference Include="..\..\BaseModule\Base.Domain\NGErp.Base.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>

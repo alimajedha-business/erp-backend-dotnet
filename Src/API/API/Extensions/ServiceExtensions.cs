@@ -6,11 +6,11 @@ using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
-using NGErp.Base.Infrastructure.DataAccess;
 using System.Globalization;
 using NGErp.Base.Service;
 using NGErp.Base.API.ActionFilters;
 using Morcatko.AspNetCore.JsonMergePatch;
+using NGErp.Base.Infrastructure;
 
 namespace NGErp.API.Extensions
 {
@@ -33,7 +33,7 @@ namespace NGErp.API.Extensions
 
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
+            services.AddBaseServices();
             services.AddGeneralServices();
             services.AddGeneralApiServices();
         }
@@ -75,7 +75,8 @@ namespace NGErp.API.Extensions
                     };
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(NGErp.General.API.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(NGErp.General.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(NGErp.Base.API.AssemblyReference).Assembly);
             return services;
         }
 
@@ -116,44 +117,45 @@ namespace NGErp.API.Extensions
 
                 // Add security requirement - supports both Bearer and Cookie
                 s.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
                 {
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-                        },
-                        new List<string>()
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
                     },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                },
+                new List<string>()
+            },
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Cookie"
-                            },
-                            Name = "Cookie",
-                            In = ParameterLocation.Cookie,
-                        },
-                        new List<string>()
-                    }
-                });
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Cookie"
+                    },
+                    Name = "Cookie",
+                    In = ParameterLocation.Cookie,
+                },
+                new List<string>()
+            }
+         });
 
-                // Enable XML comments if available
+                //Enable XML comments if available
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))
                 {
                     s.IncludeXmlComments(xmlPath);
                 }
-            });
+            }
+        );
         }
 
         public static void ConfigureLocalization(this IServiceCollection services)

@@ -1,14 +1,18 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using NGErp.General.Infrastructure.Services;
-using NGErp.General.Service.DTOs.PythonApi;
-using ERP.API.Services;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Services;
+using NGErp.General.Service.DTOs.PythonApi;
+using NGErp.General.Service.Services;
+
 
 namespace NGErp.General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion(1.0)]
+    [ApiExplorerSettings(GroupName = "v1-general")]
+    [Route("api/v{version:apiVersion}/general/Companies")]
     [JwtAuthorize] // Require authentication for all endpoints
     public class PythonCompaniesController : ControllerBase
     {

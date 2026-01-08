@@ -28,7 +28,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
+    <ProjectReference Include="..\..\HCMModule\HCM.Domain\HCM.Domain\NGErp.HCM.Domain.csproj" />
     <ProjectReference Include="..\Base.Service\NGErp.Base.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
