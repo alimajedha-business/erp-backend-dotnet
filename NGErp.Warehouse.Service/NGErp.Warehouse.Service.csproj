@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NGErp.Warehouse.Domain\NGErp.Warehouse.Domain.csproj" />
+    <ProjectReference Include="..\NGErp.Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
+    <ProjectReference Include="..\Src\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
+    <ProjectReference Include="..\Src\GeneralModule\General.Service\NGErp.General.Service.csproj" />
+  </ItemGroup>
+
+</Project>
