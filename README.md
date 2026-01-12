@@ -74,52 +74,43 @@ this command should be exexute at root of project
 `Update-Database`
 
 ## Creating project flow
-1. In Module > Infrastructure > DataAccess
-	1. Create DependencyInjection.cs
-2. In Module > Presentation > 
+1. Create four class library projects as follows:
+	- NGErp.Module.API
+	- NGErp.Module.Domain
+	- NGErp.Module.Infrastructure
+	- NGErp.Module.Service
+2. In Module.Infrastructure > DataAccess
+	- Create ServiceCollectionExtensions.cs
+3. In Module.API > 
 	- Create AssemblyReference.cs
-3. API > Extensions > ServiceExtensions.cs
-    - Add AddModuleInfrastructure from DependencyInjection to AddInfrastructures method    
-4. In Module > Application > Interfaces > Repositories
-	- Create IModuleRepositoryManager.cs
-5. In Module > Infrastructure > DataAccess > Repositories 
-    - Implement ModuleRepositoryManager.cs
-6. In Module > Infrastructure > DataAccess  
-    - Add ModuleRepositoryManager DI to DependencyInjection.cs
-7. In Module > Application > Interfaces
-	- Create IServiceManager.cs	
-8. In Module > Application > Mappings
+4. NGErp.API > Extensions > ServiceExtensions.cs
+    - Add AddModuleInfrastructure from ServiceCollectionExtensions to AddInfrastructures method  
+5. In Module.Service >
+	- Create ServiceCollectionExtensions.cs
+6. In Module.Service > Mappings
 	- Create MappingProfile.cs
-9. API > Extensions > ServiceExtensions.cs
-    - Add AddModuleApplication from DependencyInjection to AddModuleApplications method    
-10. In Module > Application > Services
-	- Implement ServiceManager.cs
-11. In Module > Application
-	- Add ServiceManager DI to DependencyInjection.cs
-12. In Module >	Presentation
+7. NGErp.API > Extensions > ServiceExtensions.cs
+    - Add AddModuleServices from ServiceCollectionExtensions to AddServices method    
+8. In Module.API
 	- Add AssemblyReference.cs
-13. In Module > Domain > Entities
+9. In Module.Domain > Entities
 	- Create Entities.cs
-14. In Infrastructure > Persistence > DataAccess > MainDBContext.cs
+10. In Base.Infrastructure > DataAccess > MainDBContext.cs
 	- Add Entities DbSets
-15. In Module > Application > Interfaces > Repositories
+11. In Module.Infrastructure > DataAccess > Repositories
 	1. Create IEntityRepository.cs
-	2. Add IEntityRepository to IModuleRepositoryManager.cs
-16. In Module > Infrastructure > DataAccess > Repositories
-    1. Implement EntityRepository.cs
-    2. Add EntityRepository to ModuleRepositoryManager.cs
-17. In Module > Application > DTOs
-	- Create EntityDto.cs, EntityForCreationDto.cs, EntityForManipulationDto.cs, EntityForUpdateDto.cs
-18. In Module > Application > Mappings
+    2. Implement EntityRepository.cs
+	3. Add DI to AddModuleInfrastructureServices
+12. In Module.Service > DTOs
+	- Create EntityDto.cs, CreateEntityDto.cs, UpdateEntityDto.cs
+13. In Module.Service > Mappings
 	-  Add mapping to MappingProfile.cs
-19. In Module > Application > Interfaces > Services
+14. In Module.Service > Services
 	1. Create IEntityService.cs
-	2. Add IEntityService to IServiceManager.cs
-20. In Module > Application > Services
-	1. Implement EntityService.cs
-	2. Add EntityService to ServiceManager.cs
-21. In Module > Presentation > Controllers
+	2. Implement EntityService.cs
+	3. Add DI To AddEntityServices
+15. In Module.API > Controllers
 	- Create EntitiesController
-22. In API > Program.cs
-	- Add EntitiesController
+16. In NGErp.API > ServiceExtensions
+	- Add EntitiesController to ConfigureControllers
 	
