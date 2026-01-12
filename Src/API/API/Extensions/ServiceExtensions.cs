@@ -1,16 +1,16 @@
-﻿using NGErp.Base.Service.Services;
-using NGErp.Base.Service.Interfaces;
+﻿using Microsoft.AspNetCore.Localization;
+using Microsoft.OpenApi.Models;
+using Morcatko.AspNetCore.JsonMergePatch;
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Infrastructure;
+using NGErp.Base.Service;
 using NGErp.Base.Service.Resources;
-using NGErp.General.Service;
 using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.OpenApi.Models;
+using NGErp.General.Service;
+using NGErp.HCM.Infrastructure.DataAccess;
+using NGErp.HCM.Service;
 using System.Globalization;
-using NGErp.Base.Service;
-using NGErp.Base.API.ActionFilters;
-using Morcatko.AspNetCore.JsonMergePatch;
-using NGErp.Base.Infrastructure;
 
 namespace NGErp.API.Extensions
 {
@@ -36,12 +36,14 @@ namespace NGErp.API.Extensions
             services.AddBaseServices();
             services.AddGeneralServices();
             services.AddGeneralApiServices();
+            services.AddHCMServices();
         }
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddBaseInfrastructureServices(configuration);
             services.AddGeneralInfrastructureServices(configuration);
+            services.AddHCMInfrastructureServices(configuration);
 
             return services;
         }
