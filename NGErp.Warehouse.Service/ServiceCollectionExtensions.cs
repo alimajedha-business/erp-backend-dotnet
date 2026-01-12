@@ -2,9 +2,9 @@
 
 using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.Mappings;
 using NGErp.Warehouse.Service.Resources;
-using NGErp.Warehouse.Service.Services;
 
 
 namespace NGErp.Warehouse.Service;
