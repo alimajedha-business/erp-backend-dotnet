@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NGErp.Warehouse.Domain\NGErp.Warehouse.Domain.csproj" />
+    <ProjectReference Include="..\NGErp.Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
+    <ProjectReference Include="..\Src\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
+    <ProjectReference Include="..\Src\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
+  </ItemGroup>
+
 </Project>

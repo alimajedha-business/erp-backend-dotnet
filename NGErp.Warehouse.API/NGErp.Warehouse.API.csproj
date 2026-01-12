@@ -6,4 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NGErp.Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
+    <ProjectReference Include="..\NGErp.Warehouse.Service\NGErp.Warehouse.Service.csproj" />
+    <ProjectReference Include="..\Src\BaseModule\Base.API\NGErp.Base.API.csproj" />
+    <ProjectReference Include="..\Src\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
+  </ItemGroup>
+
 </Project>

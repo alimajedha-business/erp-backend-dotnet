@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Src\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
