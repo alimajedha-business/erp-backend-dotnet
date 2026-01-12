@@ -1,18 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.Base.Domain.Entities;
+using NGErp.General.Domain.Entities;
 
 namespace NGErp.General.Domain;
 
-internal class EntityTypeConfiguration
+public interface IBaseEntityTypeConfiguration<T> where T : BaseEntity
 {
-    public interface IBaseEntityTypeConfiguration<T> where T : BaseEntity
-    {
-        public void Map(EntityTypeBuilder<T> builder);
-    }
+    public void Map(EntityTypeBuilder<T> builder);
+}
 
-    public interface IViewModelTypeConfiguration<T> where T : class
-    {
-        public void Map(EntityTypeBuilder<T> builder);
-    }
+public interface IViewModelTypeConfiguration<T> where T : class
+{
+    public void Map(EntityTypeBuilder<T> builder);
 }
