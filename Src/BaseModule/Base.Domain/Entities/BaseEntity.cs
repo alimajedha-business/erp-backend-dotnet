@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace NGErp.Base.Domain.Entities
 {
@@ -28,17 +26,44 @@ namespace NGErp.Base.Domain.Entities
 
         public Guid? ModifierId { get; set; }
 
-        public void MapBase(EntityTypeBuilder builder)
+        public static void MapBase(EntityTypeBuilder builder)
         {
-            builder.HasKey("Id");
-            builder.Property("Id").HasDefaultValueSql("NEWID()");
-            builder.Property<bool>("IsDeleted").HasColumnType("bit").HasDefaultValueSql("0");
-            builder.Property<DateTime>("CreateAt").HasColumnType("datetime2").HasDefaultValueSql("GETUTCDATE()");
-            builder.Property<DateTime>("UpdatedAt").HasColumnType("datetime2").HasDefaultValueSql("GETUTCDATE()");
-            builder.Property<string?>("TimeZone").HasColumnType("nvarchar(50)");
-            builder.Property<Guid?>("CreatorId").HasColumnType("uniqueidentifier");
-            builder.Property<Guid?>("ModifierId").HasColumnType("uniqueidentifier");
-            builder.HasIndex("IsDeleted");
+            builder
+                .HasKey("Id");
+
+            builder
+                .Property(nameof(Id))
+                .HasDefaultValueSql("NEWID()");
+
+            builder
+                .Property<bool>(nameof(IsDeleted))
+                .HasColumnType("bit")
+                .HasDefaultValueSql("0");
+
+            builder
+                .Property<DateTime>(nameof(CreateAt))
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            builder
+                .Property<DateTime>(nameof(UpdatedAt))
+                .HasColumnType("datetime2")
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            builder
+                .Property<string?>(nameof(TimeZone))
+                .HasColumnType("nvarchar(50)");
+
+            builder
+                .Property<Guid?>(nameof(CreatorId))
+                .HasColumnType("uniqueidentifier");
+
+            builder
+                .Property<Guid?>(nameof(ModifierId))
+                .HasColumnType("uniqueidentifier");
+
+            builder
+                .HasIndex("IsDeleted");
         }
 
     }
