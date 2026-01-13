@@ -26,9 +26,6 @@ public abstract class BaseEntity
 
     public Guid? ModifierId { get; set; }
 
-    [ForeignKey(nameof(Company))]
-    public Guid CompanyId { get; private set; }
-
     public static void MapBase(EntityTypeBuilder builder)
     {
         builder
