@@ -22,6 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\NGErp.Warehouse.API\NGErp.Warehouse.API.csproj" />
+        <ProjectReference Include="..\..\..\NGErp.Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\..\NGErp.Warehouse.Service\NGErp.Warehouse.Service.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />

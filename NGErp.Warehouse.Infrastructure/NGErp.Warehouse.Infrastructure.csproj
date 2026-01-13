@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseModule\Base.Domain\NGErp.Base.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <ProjectReference Include="..\Src\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
