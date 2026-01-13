@@ -8,19 +8,24 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class Good : BaseEntity, IBaseEntityTypeConfiguration<Good>
+internal class Item : BaseEntity, IBaseEntityTypeConfiguration<Item>
 {
     public string Sku { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; }
 
     [ForeignKey(nameof(Category))]
+    public required Category Category { get; set; }
     public Guid CategoryId { get; private set; }
 
-    public void Map(EntityTypeBuilder<Good> builder)
+    public void Map(EntityTypeBuilder<Item> builder)
     {
         builder.
-            ToTable(nameof(Good), "Warehouse");
+            ToTable(nameof(Item), "Warehouse")
+            .HasOne(o => o.Category);
+
+        builder
+            .HasOne(o => o.Category);
 
         builder
             .HasIndex(x => x.Sku);

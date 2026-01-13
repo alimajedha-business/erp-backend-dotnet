@@ -34,6 +34,10 @@ internal class Category : BaseEntity, IBaseEntityTypeConfiguration<Category>
             .ToTable(t => t.HasCheckConstraint(
                 "CK_Category_LevelNo",
                 "LevelNo BETWEEN 1 AND 7"
+            ))
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_Category_LevelNo_LastLevel",
+                "(LevelNo = 1 AND IsLastLevel = 0) OR LevelNo <> 1"
             ));
 
         builder

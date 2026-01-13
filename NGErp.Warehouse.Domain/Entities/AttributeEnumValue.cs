@@ -20,5 +20,13 @@ internal class AttributeEnumValue : BaseEntity, IBaseEntityTypeConfiguration<Att
     {
         builder
             .ToTable(nameof(AttributeEnumValue), "Warehouse");
+
+        builder
+            .Property(e => e.Code)
+            .HasMaxLength(80);
+
+        builder
+            .Property(e => e.Label)
+            .HasMaxLength(200);
     }
 }
