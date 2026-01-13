@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class ItemUomConversion : BaseEntity, IBaseEntityTypeConfiguration<ItemUomConversion>
+internal class ItemUomConversion :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<ItemUomConversion>
 {
     public decimal Factor { get; private set; }
 

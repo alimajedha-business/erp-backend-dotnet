@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class InventoryLot : BaseEntity, IBaseEntityTypeConfiguration<InventoryLot>
+public class InventoryLot :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<InventoryLot>
 {
     public byte[] DimHash { get; private set; } = default!;
     public string Serial { get; private set; } = default!;

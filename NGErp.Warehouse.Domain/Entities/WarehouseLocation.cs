@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class WarehouseLocation : BaseEntity, IBaseEntityTypeConfiguration<WarehouseLocation>
+public class WarehouseLocation :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<WarehouseLocation>
 {
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;

@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class InventoryLotValue : BaseEntity, IBaseEntityTypeConfiguration<InventoryLotValue>
+public class InventoryLotValue :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<InventoryLotValue>
 {
     public string ValueText { get; private set; } = default!;
     public int ValueInt { get; private set; }

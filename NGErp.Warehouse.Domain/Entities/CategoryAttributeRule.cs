@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class CategoryAttributeRule : BaseEntity, IBaseEntityTypeConfiguration<CategoryAttributeRule>
+internal class CategoryAttributeRule :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
     public bool AppliedToDecentents { get; private set; }
     public bool IsRequiredOnMaster { get; private set; }

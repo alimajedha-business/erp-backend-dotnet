@@ -3,12 +3,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
-
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class ItemAttributeValue : BaseEntity, IBaseEntityTypeConfiguration<ItemAttributeValue>
+public class ItemAttributeValue :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<ItemAttributeValue>
 {
     public string ValueText { get; private set; } = default!;
     public int ValueInt { get; private set; }

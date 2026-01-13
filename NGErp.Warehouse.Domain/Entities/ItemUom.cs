@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class ItemUom : BaseEntity, IBaseEntityTypeConfiguration<ItemUom>
+internal class ItemUom :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<ItemUom>
 {
     public bool IsBase { get; private set; }
     public bool IsDefaultPurchase { get; private set; }

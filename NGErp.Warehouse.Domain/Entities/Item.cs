@@ -3,12 +3,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class Item : BaseEntity, IBaseEntityTypeConfiguration<Item>
+internal class Item :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<Item>
 {
     public string Sku { get; private set; } = default!;
     public string Title { get; private set; } = default!;

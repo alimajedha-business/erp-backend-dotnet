@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using NGErp.General.Domain;
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class Warehouse : BaseEntity, IBaseEntityTypeConfiguration<Warehouse>
+public class Warehouse :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<Warehouse>
 {
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
