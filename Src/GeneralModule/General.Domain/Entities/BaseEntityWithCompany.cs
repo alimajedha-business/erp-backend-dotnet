@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
+using NGErp.Base.Domain.Entities;
+
 namespace NGErp.General.Domain.Entities;
 
 public class BaseEntityWithCompany : BaseEntity

@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+
 using NGErp.Base.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
@@ -59,9 +57,9 @@ namespace NGErp.Base.Infrastructure.DataAccess
                 if (entity == null)
                     continue;
 
-                methodinfo.Invoke(mapobj, new object[] { entity });
+                methodinfo.Invoke(mapobj, [entity]);
                 if (maptype.IsSubclassOf(typeof(BaseEntity)) && mapobj is BaseEntity baseEntity)
-                    baseEntity.MapBase(modelBuilder.Entity(maptype.FullName!));
+                    BaseEntity.MapBase(modelBuilder.Entity(maptype.FullName!));
             }
         }
 
