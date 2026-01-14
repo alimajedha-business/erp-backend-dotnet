@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BaseModule\Base.Domain\NGErp.Base.Domain.csproj" />
+    <ProjectReference Include="..\..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
   </ItemGroup>
 
 </Project>
