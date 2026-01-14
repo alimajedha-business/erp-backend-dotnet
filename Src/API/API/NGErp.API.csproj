@@ -31,6 +31,9 @@
         <ProjectReference Include="..\..\GeneralModule\General.API\NGErp.General.API.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General.Infrastructure\NGErp.General.Infrastructure.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General.Service\NGErp.General.Service.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.API\HCM.API\NGErp.HCM.API.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
     </ItemGroup>
 
 </Project>

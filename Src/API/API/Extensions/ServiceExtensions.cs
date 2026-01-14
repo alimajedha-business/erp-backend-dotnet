@@ -14,6 +14,8 @@ using NGErp.General.Infrastructure.DataAccess;
 using NGErp.General.Service;
 using NGErp.Warehouse.Infrastructure.DataAccess;
 using NGErp.Warehouse.Service;
+using NGErp.HCM.Infrastructure.DataAccess;
+using NGErp.HCM.Service;
 
 namespace NGErp.API.Extensions
 {
@@ -40,6 +42,7 @@ namespace NGErp.API.Extensions
             services.AddGeneralServices();
             services.AddGeneralApiServices();
             services.AddWarehouseServices();
+            services.AddHCMServices();
         }
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
@@ -47,6 +50,7 @@ namespace NGErp.API.Extensions
             services.AddBaseInfrastructureServices(configuration);
             services.AddGeneralInfrastructureServices(configuration);
             services.AddWarehouseInfrastructureServices(configuration);
+            services.AddHCMInfrastructureServices(configuration);
 
             return services;
         }

@@ -87,30 +87,28 @@ this command should be exexute at root of project
     - Add AddModuleInfrastructure from ServiceCollectionExtensions to AddInfrastructures method  
 5. In Module.Service >
 	- Create ServiceCollectionExtensions.cs
-6. In Module.Service > Mappings
-	- Create MappingProfile.cs
-7. NGErp.API > Extensions > ServiceExtensions.cs
+6. NGErp.API > Extensions > ServiceExtensions.cs
     - Add AddModuleServices from ServiceCollectionExtensions to AddServices method    
-8. In Module.API
-	- Add AssemblyReference.cs
-9. In Module.Domain > Entities
+7. In Module.Service > Mappings
+	- Create MappingProfile.cs
+8. In Module.Domain > Entities
 	- Create Entities.cs
-10. In Base.Infrastructure > DataAccess > MainDBContext.cs
+9. In Base.Infrastructure > DataAccess > MainDBContext.cs
 	- Add Entities DbSets
-11. In Module.Infrastructure > DataAccess > Repositories
+10. In Module.Infrastructure > DataAccess > Repositories
 	1. Create IEntityRepository.cs
     2. Implement EntityRepository.cs
 	3. Add DI to AddModuleInfrastructureServices
-12. In Module.Service > DTOs
+11. In Module.Service > DTOs
 	- Create EntityDto.cs, CreateEntityDto.cs, UpdateEntityDto.cs
-13. In Module.Service > Mappings
+12. In Module.Service > Mappings
 	-  Add mapping to MappingProfile.cs
-14. In Module.Service > Services
+13. In Module.Service > Services
 	1. Create IEntityService.cs
 	2. Implement EntityService.cs
 	3. Add DI To AddEntityServices
-15. In Module.API > Controllers
+14. In Module.API > Controllers
 	- Create EntitiesController
-16. In NGErp.API > ServiceExtensions
+15. In NGErp.API > ServiceExtensions
 	- Add EntitiesController to ConfigureControllers
 	

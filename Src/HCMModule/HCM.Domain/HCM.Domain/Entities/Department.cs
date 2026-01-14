@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NGErp.General.Domain.Entities;
 
 namespace NGErp.HCM.Domain.Entities
 {
-    public class Department : BaseEntity, IBaseEntityTypeConfiguration<Department>
+    public class Department : BaseEntityWithCompany, IBaseEntityTypeConfiguration<Department>
     {
         public string? Code { get; set; }
 
