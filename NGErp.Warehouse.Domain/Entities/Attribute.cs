@@ -17,11 +17,12 @@ internal class Attribute :
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
         builder
-            .ToTable(nameof(Attribute), "Warehouse")
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ATTRIBUTE_DATATYPE",
-                "DataType IN N'Text', N'Int', N'Decimal', N'Date', N'Bool', N'Enum'"
-            ));
+            .ToTable(nameof(Attribute), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.CompanyId, i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_Attribute_Company_Code");
 
         builder
             .Property(e => e.Code)

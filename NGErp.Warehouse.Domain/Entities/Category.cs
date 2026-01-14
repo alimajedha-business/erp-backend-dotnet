@@ -19,15 +19,11 @@ internal class Category :
     public string CategoryPath { get; private set; } = default!;
 
     [ForeignKey(nameof(Category))]
-    public Guid ParentCategoryId { get; private set; }
+    public Category? ParentCategory { get; private set; }
+    public Guid? ParentCategoryId { get; private set; }
 
-    public static void Configure(EntityTypeBuilder<Category> builder)
-    {
-        builder
-            .HasIndex(i => new { i.Code, i.CompanyId })
-            .IsUnique()
-            .HasDatabaseName("UX_Attribute_Company_Code");
-    }
+    public virtual List<Category> SubCategories { get; set; } = [];
+    public virtual List<Item> Items { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Category> builder)
     {
@@ -43,6 +39,11 @@ internal class Category :
             ));
 
         builder
+            .HasIndex(i => new { i.Code, i.CompanyId })
+            .IsUnique()
+            .HasDatabaseName("UX_Attribute_Company_Code");
+
+        builder
             .Property(e => e.Code)
             .HasMaxLength(64);
 
@@ -53,5 +54,10 @@ internal class Category :
         builder
             .Property(e => e.CategoryPath)
             .HasMaxLength(1024);
+
+        builder
+            .HasOne(e => e.ParentCategory)
+            .WithMany(e => e.SubCategories)
+            .HasForeignKey(e => e.ParentCategoryId);
     }
 }

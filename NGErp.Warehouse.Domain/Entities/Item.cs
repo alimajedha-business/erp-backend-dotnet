@@ -23,14 +23,16 @@ internal class Item :
     public void Map(EntityTypeBuilder<Item> builder)
     {
         builder.
-            ToTable(nameof(Item), "Warehouse")
-            .HasOne(o => o.Category);
+            ToTable(nameof(Item), "Warehouse");
 
         builder
-            .HasOne(o => o.Category);
+            .HasIndex(i => i.CategoryId)
+            .HasDatabaseName("IX_Item_Category");
 
         builder
-            .HasIndex(x => x.Sku);
+            .HasIndex(i => new { i.CompanyId, i.Sku })
+            .IsUnique()
+            .HasDatabaseName("UX_Item_Company_Sku");
 
         builder
             .Property(e => e.Sku)
@@ -39,5 +41,14 @@ internal class Item :
         builder
             .Property(e => e.Title)
             .HasMaxLength(255);
+
+        builder
+            .Property(e => e.IsActive)
+            .HasDefaultValue(true);
+
+        builder
+            .HasOne(e => e.Category)
+            .WithMany(e => e.Items)
+            .HasForeignKey(e => e.CategoryId);
     }
 }

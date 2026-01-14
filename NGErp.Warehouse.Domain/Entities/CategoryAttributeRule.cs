@@ -4,33 +4,49 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 internal class CategoryAttributeRule :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
     public bool AppliedToDecentents { get; private set; }
     public bool IsRequiredOnMaster { get; private set; }
     public bool IsStockDimension { get; private set; }
     public bool IsRequiredOnMovements { get; private set; }
+    public int SortOrder { get; private set; }
+
+    [ForeignKey(nameof(Category))]
+    public Guid CategoryId { get; private set; }
 
     [ForeignKey(nameof(Attribute))]
     public Guid AttributeId { get; private set; }
-
-    public static void Configure(EntityTypeBuilder<CategoryAttributeRule> builder)
-    {
-        builder
-            .HasIndex(i => new { i.AttributeId, i.CompanyId })
-            .IsUnique()
-            .HasDatabaseName("UX_Attribute_Company_Code");
-    }
 
     public void Map(EntityTypeBuilder<CategoryAttributeRule> builder)
     {
         builder
             .ToTable(nameof(CategoryAttributeRule), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.CategoryId, i.AttributeId })
+            .IsUnique()
+            .HasDatabaseName("UX_CategoryAttribute_Category_Attribute");
+
+        builder
+            .Property(e => e.AppliedToDecentents)
+            .HasDefaultValue(true);
+
+        builder
+            .Property(e => e.IsRequiredOnMaster)
+            .HasDefaultValue(false);
+
+        builder
+            .Property (e => e.IsStockDimension)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.IsRequiredOnMovements)
+            .HasDefaultValue(false);
     }
 }

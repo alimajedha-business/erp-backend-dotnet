@@ -24,6 +24,11 @@ internal class AttributeEnumValue :
             .ToTable(nameof(AttributeEnumValue), "Warehouse");
 
         builder
+            .HasIndex(i => new { i.AttributeId, i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_AttributeEnum_Attribute_Code");
+
+        builder
             .Property(e => e.Code)
             .HasMaxLength(80);
 
