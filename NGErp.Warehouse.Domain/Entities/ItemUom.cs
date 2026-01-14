@@ -6,7 +6,7 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class ItemUom :
+public class ItemUom :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ItemUom>
 {
@@ -14,9 +14,26 @@ internal class ItemUom :
     public bool IsDefaultPurchase { get; private set; }
     public bool IsDefalulIssue { get; private set; }
 
+    public Guid ItemId { get; private set; }
+    public required Item Item { get; set; }
+
+    public Guid UomId { get; private set; }
+    public required UnitOfMeasurement Uom { get; set; }
+
     public void Map(EntityTypeBuilder<ItemUom> builder)
     {
         builder
-            .ToTable(nameof(ItemUom), "Warehouse");
+            .ToTable(nameof(ItemUom), "Warehouse")
+            .HasKey(k => new { k.ItemId, k.UomId });
+
+        builder
+            .HasOne(e => e.Item)
+            .WithMany()
+            .HasForeignKey(e => e.ItemId);
+
+        builder
+            .HasOne(e => e.Uom)
+            .WithMany()
+            .HasForeignKey(e => e.UomId);
     }
 }

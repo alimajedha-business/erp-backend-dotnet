@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -8,7 +6,7 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class Category :
+public class Category :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Category>
 {
@@ -18,9 +16,8 @@ internal class Category :
     public bool IsLastLevel { get; private set; }
     public string CategoryPath { get; private set; } = default!;
 
-    [ForeignKey(nameof(Category))]
-    public Category? ParentCategory { get; private set; }
     public Guid? ParentCategoryId { get; private set; }
+    public Category? ParentCategory { get; private set; }
 
     public virtual List<Category> SubCategories { get; set; } = [];
     public virtual List<Item> Items { get; set; } = [];

@@ -6,27 +6,24 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class Uom :
+public class UnitOfMeasurement :
     BaseEntityWithCompany,
-    IBaseEntityTypeConfiguration<Uom>
+    IBaseEntityTypeConfiguration<UnitOfMeasurement>
 {
     public string Dimension { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public string Symbol { get; private set; } = default!;
     public bool IsDiscrete { get; private set; }
 
-    public static void Configure(EntityTypeBuilder<Uom> builder)
+    public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
+        builder
+            .ToTable(nameof(UnitOfMeasurement), "Warehouse");
+
         builder
             .HasIndex(i => new { i.Dimension, i.Title })
             .IsUnique()
             .HasDatabaseName("UX_Uom_Dimension_Title");
-    }
-
-    public void Map(EntityTypeBuilder<Uom> builder)
-    {
-        builder
-            .ToTable(nameof(Uom), "Warehouse");
 
         builder
             .Property(e => e.Dimension)
@@ -39,5 +36,9 @@ internal class Uom :
         builder
             .Property(e => e.Symbol)
             .HasMaxLength(20);
+
+        builder
+            .Property(e => e.IsDiscrete)
+            .HasDefaultValue(false);
     }
 }

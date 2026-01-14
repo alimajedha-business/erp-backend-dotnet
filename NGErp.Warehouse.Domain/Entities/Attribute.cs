@@ -6,7 +6,7 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class Attribute :
+public class Attribute :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Attribute>
 {

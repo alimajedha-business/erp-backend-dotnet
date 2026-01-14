@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -16,24 +14,17 @@ public class InventoryMovement :
     public Guid ReferenceDocId { get; private set; }
     public decimal QuantityBase { get; private set; }
 
-    [ForeignKey(nameof(InventoryMovementType))]
     public Guid MovementTypeId { get; private set; }
+    public required InventoryMovementType MovementType { get; set; }
 
-    [ForeignKey(nameof(InventoryLot))]
     public Guid LotId { get; private set; }
+    public required InventoryLot InventoryLot { get; set; }
 
-    [ForeignKey(nameof(WarehouseLocation))]
     public Guid FromLocationId { get; private set; }
+    public required WarehouseLocation FromLocation { get; set; }
 
-    [ForeignKey(nameof(WarehouseLocation))]
     public Guid ToLocationId { get; private set; }
-
-    public static void Configure(EntityTypeBuilder<InventoryMovement> builder)
-    {
-        builder
-            .HasIndex(i => new { i.CompanyId, i.MovementDate })
-            .HasDatabaseName("IX_InventoryMovement_Company_Time");
-    }
+    public required WarehouseLocation ToLocation { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryMovement> builder)
     {
@@ -45,11 +36,49 @@ public class InventoryMovement :
             ));
 
         builder
+            .HasIndex(i => new { i.CompanyId, i.MovementDate })
+            .HasDatabaseName("IX_InventoryMovement_Company_Date");
+
+        builder
+            .HasIndex(i => new { i.LotId })
+            .HasDatabaseName("IX_InventoryMovement_Lot");
+
+        builder
+            .HasIndex(i => new { i.FromLocation })
+            .IncludeProperties(e => e.QuantityBase)
+            .HasDatabaseName("IX_InventoryMovement_FromLocation");
+
+        builder
+            .HasIndex(i => new { i.ToLocation })
+            .IncludeProperties(e => e.QuantityBase)
+            .HasDatabaseName("IX_InventoryMovement_ToLocation");
+
+        builder
             .Property(e => e.MovementDate)
-            .HasColumnType("DATETIME2(3)");
+            .HasColumnType("datetime2(3)");
 
         builder
             .Property(e => e.QuantityBase)
-            .HasColumnType("DECIMAL(38, 12");
+            .HasColumnType("decimal(23, 8");
+
+        builder
+            .HasOne(e => e.MovementType)
+            .WithMany()
+            .HasForeignKey(e => e.MovementTypeId);
+
+        builder
+            .HasOne(e => e.InventoryLot)
+            .WithMany()
+            .HasForeignKey(e => e.InventoryLot);
+
+        builder
+            .HasOne(e => e.FromLocation)
+            .WithMany()
+            .HasForeignKey(e => e.FromLocationId);
+
+        builder
+            .HasOne(e => e.ToLocation)
+            .WithMany()
+            .HasForeignKey(e => e.ToLocationId);
     }
 }

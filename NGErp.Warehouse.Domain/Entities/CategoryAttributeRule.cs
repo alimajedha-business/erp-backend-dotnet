@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class CategoryAttributeRule :
+public class CategoryAttributeRule :
     BaseEntity,
     IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
@@ -17,11 +15,11 @@ internal class CategoryAttributeRule :
     public bool IsRequiredOnMovements { get; private set; }
     public int SortOrder { get; private set; }
 
-    [ForeignKey(nameof(Category))]
     public Guid CategoryId { get; private set; }
+    public required Category Category { get; set; }
 
-    [ForeignKey(nameof(Attribute))]
     public Guid AttributeId { get; private set; }
+    public required Attribute Attribute { get; set; }
 
     public void Map(EntityTypeBuilder<CategoryAttributeRule> builder)
     {
@@ -48,5 +46,15 @@ internal class CategoryAttributeRule :
         builder
             .Property(e => e.IsRequiredOnMovements)
             .HasDefaultValue(false);
+
+        builder
+            .HasOne(e => e.Category)
+            .WithMany()
+            .HasForeignKey(e => e.CategoryId);
+
+        builder
+            .HasOne(e => e.Attribute)
+            .WithMany()
+            .HasForeignKey(e => e.AttributeId);
     }
 }

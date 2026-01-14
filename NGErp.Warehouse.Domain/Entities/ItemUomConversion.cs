@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -14,22 +12,14 @@ internal class ItemUomConversion :
 {
     public decimal Factor { get; private set; }
 
-    [ForeignKey(nameof(Item))]
     public Guid ItemId { get; private set; }
+    public required Item Item { get; set; }
 
-    [ForeignKey(nameof(Uom))]
     public Guid FromUomId { get; private set; }
+    public required UnitOfMeasurement FromUom { get; set; }
 
-    [ForeignKey(nameof(Uom))]
     public Guid ToUomId { get; private set; }
-
-    public static void Configure(EntityTypeBuilder<ItemUomConversion> builder)
-    {
-        builder
-            .HasIndex(i => new { i.ItemId, i.FromUomId, i.ToUomId })
-            .IsUnique()
-            .HasDatabaseName("UX_ItemUomConv_Unique");
-    }
+    public required UnitOfMeasurement ToUom { get; set; }
 
     public void Map(EntityTypeBuilder<ItemUomConversion> builder)
     {
@@ -39,5 +29,25 @@ internal class ItemUomConversion :
                 "CK_ItemUomConv_Factor",
                 "Factor > 0"
             ));
+
+        builder
+            .HasIndex(i => new { i.ItemId, i.FromUomId, i.ToUomId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemUomConv_Unique");
+
+        builder
+            .HasOne(e => e.Item)
+            .WithMany()
+            .HasForeignKey(e => e.ItemId);
+
+        builder
+            .HasOne(e => e.FromUom)
+            .WithMany()
+            .HasForeignKey(e => e.FromUomId);
+
+        builder
+            .HasOne(e => e.ToUom)
+            .WithMany()
+            .HasForeignKey(e => e.ToUomId);
     }
 }

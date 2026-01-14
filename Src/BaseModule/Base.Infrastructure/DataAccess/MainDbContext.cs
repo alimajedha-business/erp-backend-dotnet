@@ -1,6 +1,7 @@
 ﻿using NGErp.HCM.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using NGErp.Base.Domain.Entities;
+using NGErp.Warehouse.Domain.Entities;
 
 
 
@@ -20,6 +21,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
   
         #region HCM
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
         #endregion
     }
 
