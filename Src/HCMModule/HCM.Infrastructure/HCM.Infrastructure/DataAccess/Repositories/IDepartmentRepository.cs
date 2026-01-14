@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NGErp.HCM.Infrastructure.DataAccess.Repositories
 {
-    public interface IDepartmentRepository:IRepository<Department>
+    public interface IDepartmentRepository : IRepository<Department>
     {
     }
 }
