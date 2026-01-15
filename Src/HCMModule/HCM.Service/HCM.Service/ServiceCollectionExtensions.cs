@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NGErp.HCM.Service.Mappings;
+using NGErp.HCM.Service.Services;
 
 
 
@@ -9,9 +11,9 @@ namespace NGErp.HCM.Service
         public static IServiceCollection AddHCMServices(this IServiceCollection services)
         {
             
-            //services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(MappingProfile));
             //services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
-            //services.AddScoped<IPythonIntegrationService, PythonIntegrationService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
             return services;
         }
     }

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+    <ProjectReference Include="..\..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
+    <ProjectReference Include="..\..\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
   </ItemGroup>
 
 </Project>
