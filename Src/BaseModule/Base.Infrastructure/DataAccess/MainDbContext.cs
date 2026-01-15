@@ -1,22 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 using NGErp.HCM.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.General.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
     public class MainDbContext : ApplicationContext
-    {    
-        public MainDbContext(DbContextOptions<MainDbContext> options) : base(options,typeof(Department))
+    {
+        public MainDbContext(DbContextOptions<MainDbContext> options) : base(options, typeof(Company),
+            [typeof(Department), typeof(Category)])
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("Persian_100_CI_AI");           
-            base.OnModelCreating(modelBuilder);                 
+            modelBuilder.UseCollation("Persian_100_CI_AI");
+            base.OnModelCreating(modelBuilder);
         }
-  
+
         #region HCM
         public virtual DbSet<Department> Departments { get; set; }
         #endregion

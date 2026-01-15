@@ -1,20 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-internal class Company : IEntityTypeConfiguration<Company>
+namespace NGErp.General.Domain.Entities
 {
-    public Guid Id { get; private set; }
-    public string Name { get; private set; } = default!;
-
-    public void Configure(EntityTypeBuilder<Company> builder) { }
-
-    public void Map(EntityTypeBuilder<Company> builder)
+    public class Company : IEntityTypeConfiguration<Company>
     {
-        builder
-            .ToTable(nameof(Company), "General");
+        public Guid Id { get; private set; }
+        public string Name { get; private set; } = default!;
 
-        builder
-            .Property(e => e.Name)
-            .HasMaxLength(255);
+        public void Configure(EntityTypeBuilder<Company> builder) { }
+
+        public void Map(EntityTypeBuilder<Company> builder)
+        {
+            builder
+                .ToTable(nameof(Company), "General");
+
+            builder
+                .Property(e => e.Name)
+                .HasMaxLength(255);
+        }
     }
 }
