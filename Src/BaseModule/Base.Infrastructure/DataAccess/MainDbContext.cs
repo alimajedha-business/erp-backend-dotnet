@@ -22,21 +22,21 @@ namespace NGErp.Base.Infrastructure.DataAccess
         #endregion
 
         #region Warehouse
-        public virtual DbSet<Warehouse.Domain.Entities.Attribute> Attribute { get; set; }
-        public virtual DbSet<AttributeEnumValue> AttributeEnumValue { get; set; }
-        public virtual DbSet<Category> Category { get; set; }
-        public virtual DbSet<CategoryAttributeRule> CategoryAttributeRule { get; set; }
-        public virtual DbSet<InventoryLot> InventoryLot { get; set; }
-        public virtual DbSet<InventoryLotValue> InventoryLotValue { get; set; }
-        public virtual DbSet<InventoryMovement> InventoryMovement { get; set; }
-        public virtual DbSet<InventoryMovementType> InventoryMovementType { get; set; }
-        public virtual DbSet<Item> Item { get; set; }
-        public virtual DbSet<ItemAttributeValue> ItemAttributeValue { get; set; }
-        public virtual DbSet<ItemUom> ItemUom { get; set; }
-        public virtual DbSet<ItemUomConversion> ItemUomConversion { get; set; }
-        public virtual DbSet<UnitOfMeasurement> UnitOfMeasurement { get; set; }
-        public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouse { get; set; }
-        public virtual DbSet<WarehouseLocation> WarehouseLocation { get; set; }
+        public virtual DbSet<Warehouse.Domain.Entities.Attribute> Attributes { get; set; }
+        public virtual DbSet<AttributeEnumValue> AttributeEnumValues { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<CategoryAttributeRule> CategoryAttributeRules { get; set; }
+        public virtual DbSet<InventoryLot> InventoryLots { get; set; }
+        public virtual DbSet<InventoryLotValue> InventoryLotValues { get; set; }
+        public virtual DbSet<InventoryMovement> InventoryMovements { get; set; }
+        public virtual DbSet<InventoryMovementType> InventoryMovementTypes { get; set; }
+        public virtual DbSet<Item> Items { get; set; }
+        public virtual DbSet<ItemAttributeValue> ItemAttributeValues { get; set; }
+        public virtual DbSet<ItemUom> ItemUoms { get; set; }
+        public virtual DbSet<ItemUomConversion> ItemUomConversions { get; set; }
+        public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
+        public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
+        public virtual DbSet<WarehouseLocation> WarehouseLocations { get; set; }
         #endregion
     }
 
