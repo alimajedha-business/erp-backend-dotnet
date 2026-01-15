@@ -6,7 +6,7 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-internal class ItemUomConversion :
+public class ItemUomConversion :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ItemUomConversion>
 {
