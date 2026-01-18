@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using NGErp.General.Domain.Entities;
+using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NGErp.HCM.Service.Mappings
 {
@@ -12,7 +14,7 @@ namespace NGErp.HCM.Service.Mappings
     {
         public MappingProfile()
         {
-           
+            CreateMap<Department, DepartmentDto>();
         }
     }
 }

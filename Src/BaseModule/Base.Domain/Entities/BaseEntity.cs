@@ -9,7 +9,7 @@ namespace NGErp.Base.Domain.Entities
     public abstract class BaseEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }       
+        public Guid Id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual DateTime CreateAt { get; set; } = DateTime.UtcNow;

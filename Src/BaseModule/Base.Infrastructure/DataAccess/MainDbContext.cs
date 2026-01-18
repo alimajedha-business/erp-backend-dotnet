@@ -18,6 +18,10 @@ namespace NGErp.Base.Infrastructure.DataAccess
             base.OnModelCreating(modelBuilder);
         }
 
+        #region General
+        public virtual DbSet<Company> Companies { get; set; }
+        #endregion
+
         #region HCM
         public virtual DbSet<Department> Departments { get; set; }
         #endregion

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
+    <ProjectReference Include="..\..\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
+  </ItemGroup>
+
 </Project>
