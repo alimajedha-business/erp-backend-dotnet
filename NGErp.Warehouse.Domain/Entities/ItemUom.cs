@@ -13,11 +13,10 @@ public class ItemUom :
     public bool IsBase { get; private set; }
     public bool IsDefaultPurchase { get; private set; }
     public bool IsDefalulIssue { get; private set; }
-
     public Guid ItemId { get; private set; }
-    public required Item Item { get; set; }
-
     public Guid UomId { get; private set; }
+
+    public required Item Item { get; set; }
     public required UnitOfMeasurement Uom { get; set; }
 
     public void Map(EntityTypeBuilder<ItemUom> builder)

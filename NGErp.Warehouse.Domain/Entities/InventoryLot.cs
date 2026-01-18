@@ -12,8 +12,8 @@ public class InventoryLot :
 {
     public byte[] DimHash { get; private set; } = default!;
     public string Serial { get; private set; } = default!;
-
     public Guid ItemId { get; private set; }
+
     public required Item Item { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryLot> builder)

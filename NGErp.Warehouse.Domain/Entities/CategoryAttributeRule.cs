@@ -14,11 +14,10 @@ public class CategoryAttributeRule :
     public bool IsStockDimension { get; private set; }
     public bool IsRequiredOnMovements { get; private set; }
     public int SortOrder { get; private set; }
-
     public Guid CategoryId { get; private set; }
-    public required Category Category { get; set; }
-
     public Guid AttributeId { get; private set; }
+
+    public required Category Category { get; set; }
     public required Attribute Attribute { get; set; }
 
     public void Map(EntityTypeBuilder<CategoryAttributeRule> builder)

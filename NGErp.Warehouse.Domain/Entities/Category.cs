@@ -15,10 +15,9 @@ public class Category :
     public int LevelNo { get; private set; }
     public bool IsLastLevel { get; private set; }
     public string CategoryPath { get; private set; } = default!;
-
     public Guid? ParentCategoryId { get; private set; }
-    public Category? ParentCategory { get; private set; }
 
+    public Category? ParentCategory { get; private set; }
     public virtual List<Category> SubCategories { get; set; } = [];
     public virtual List<Item> Items { get; set; } = [];
 
