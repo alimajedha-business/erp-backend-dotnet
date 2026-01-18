@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using NGErp.Base.Domain.Entities;
+using NGErp.General.Domain.Entities;
+
+namespace NGErp.HCM.Domain.Entities
+{
+    public class Position : BaseEntityWithCompany, IBaseEntityTypeConfiguration<Position>
+    {
+        public string? Code { get; set; }
+
+        public required string Name { get; set; }
+
+        public string? Description { get; set; }
+
+        public bool Status { get; set; } = true;
+
+        public DateTime StatusChangeDate { get; set; }
+
+        public void Map(EntityTypeBuilder<Position> builder)
+        {
+            builder.ToTable("Position", "HCM");
+            builder.Property(e => e.Name).HasMaxLength(100);
+            builder.Property(e => e.Description).HasMaxLength(500);
+        }
+    }
+}
