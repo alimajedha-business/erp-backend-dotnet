@@ -14,7 +14,7 @@ namespace NGErp.HCM.Domain.Entities
 {
     public class OrganizationalStructure : BaseEntityWithCompany, IBaseEntityTypeConfiguration<OrganizationalStructure>
     {
-        public Guid ParentId { get; set; }
+        public Guid? ParentId { get; set; }
         public Guid DepartmentId { get; set; }
         public Guid PositionId { get; set; }
         public char NodeType { get; set; }
@@ -31,14 +31,19 @@ namespace NGErp.HCM.Domain.Entities
             builder
                 .ToTable(nameof(OrganizationalStructure), "HCM");
 
-            builder.HasOne(typeof(Department))
+            builder.HasOne(e => e.Department)
                 .WithMany()
-                .HasForeignKey("DepartmentId")
+                .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(typeof(Position))
+            builder.HasOne(e => e.Position)
                 .WithMany()
-                .HasForeignKey("PositionId")
+                .HasForeignKey(e => e.PositionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(e => e.Parent)
+                .WithMany()
+                .HasForeignKey(e=>e.ParentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
         }

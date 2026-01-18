@@ -27,8 +27,9 @@ namespace NGErp.HCM.Domain.Entities
         public void Map(EntityTypeBuilder<Position> builder)
         {
             builder.ToTable("Position", "HCM");
-            builder.Property(e => e.Name).HasMaxLength(100);
+            builder.Property(e => e.Name).HasMaxLength(200);
             builder.Property(e => e.Description).HasMaxLength(500);
+            builder.Property(e => e.Code).HasMaxLength(100);
         }
     }
 }
