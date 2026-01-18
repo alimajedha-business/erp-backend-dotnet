@@ -6,27 +6,27 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class InventoryLotValue :
+public class InventoryLotAttributeValue :
     BaseEntityWithCompany,
-    IBaseEntityTypeConfiguration<InventoryLotValue>
+    IBaseEntityTypeConfiguration<InventoryLotAttributeValue>
 {
+    public Guid LotId { get; private set; }
+    public Guid AttributeId { get; private set; }
     public string? ValueText { get; private set; } = default!;
     public int? ValueInt { get; private set; }
     public decimal? ValueDecimal { get; private set; }
     public DateTime? ValueDate { get; private set; }
     public bool? ValueBoolean { get; private set; }
     public Guid? EnumValueId { get; private set; }
-    public Guid LotId { get; private set; }
-    public Guid AttributeId { get; private set; }
 
     public required AttributeEnumValue? EnumValue { get; set; }
     public required InventoryLot Lot { get; set; }
     public required Attribute Attribute { get; set; }
 
-    public void Map(EntityTypeBuilder<InventoryLotValue> builder)
+    public void Map(EntityTypeBuilder<InventoryLotAttributeValue> builder)
     {
         builder
-            .ToTable(nameof(InventoryLotValue), "Warehouse")
+            .ToTable(nameof(InventoryLotAttributeValue), "Warehouse")
             .HasKey(k => new { k.LotId, k.AttributeId });
 
         builder

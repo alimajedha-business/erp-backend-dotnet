@@ -1,0 +1,45 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using NGErp.Base.Domain.Entities;
+using NGErp.General.Domain.Entities;
+
+
+namespace NGErp.Warehouse.Domain.Entities;
+
+public class UnitOfMeasurementConversion :
+    BaseEntityWithCompany,
+    IBaseEntityTypeConfiguration<UnitOfMeasurementConversion>
+{
+    public decimal Factor { get; private set; }
+    public Guid FromUnitOfMeasurementId { get; private set; }
+    public Guid ToUnitOfMeasurementId { get; private set; }
+
+    public required UnitOfMeasurement FromUnitOfMeasurement { get; set; }
+    public required UnitOfMeasurement ToUnitOfMeasurement { get; set; }
+
+    public void Map(EntityTypeBuilder<UnitOfMeasurementConversion> builder)
+    {
+        builder
+            .ToTable(nameof(UnitOfMeasurementConversion), "Warehouse")
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_UomConv_Factor",
+                "Factor > 0"
+            ));
+
+        builder
+            .HasIndex(i => new { i.FromUnitOfMeasurementId, i.ToUnitOfMeasurementId })
+            .IsUnique()
+            .HasDatabaseName("UX_UomConv_Unique");
+
+        builder
+            .HasOne(e => e.FromUnitOfMeasurement)
+            .WithMany()
+            .HasForeignKey(e => e.FromUnitOfMeasurementId);
+
+        builder
+            .HasOne(e => e.ToUnitOfMeasurement)
+            .WithMany()
+            .HasForeignKey(e => e.ToUnitOfMeasurementId);
+    }
+}

@@ -9,10 +9,9 @@ public class CategoryAttributeRule :
     BaseEntity,
     IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
-    public bool AppliedToDecentents { get; private set; }
-    public bool IsRequiredOnMaster { get; private set; }
+    public bool IsItemAttribute { get; private set; }
+    public bool IsRequired { get; private set; }
     public bool IsStockDimension { get; private set; }
-    public bool IsRequiredOnMovements { get; private set; }
     public int SortOrder { get; private set; }
     public Guid CategoryId { get; private set; }
     public Guid AttributeId { get; private set; }
@@ -31,19 +30,15 @@ public class CategoryAttributeRule :
             .HasDatabaseName("UX_CategoryAttribute_Category_Attribute");
 
         builder
-            .Property(e => e.AppliedToDecentents)
-            .HasDefaultValue(true);
-
-        builder
-            .Property(e => e.IsRequiredOnMaster)
+            .Property(e => e.IsItemAttribute)
             .HasDefaultValue(false);
 
         builder
-            .Property (e => e.IsStockDimension)
+            .Property (e => e.IsRequired)
             .HasDefaultValue(false);
 
         builder
-            .Property(e => e.IsRequiredOnMovements)
+            .Property(e => e.IsStockDimension)
             .HasDefaultValue(false);
 
         builder
