@@ -111,4 +111,3 @@ this command should be exexute at root of project
 	- Create EntitiesController
 15. In NGErp.API > ServiceExtensions
 	- Add EntitiesController to ConfigureControllers
-	

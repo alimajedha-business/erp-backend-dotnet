@@ -9,9 +9,11 @@ namespace NGErp.General.Domain.Entities
     {
         public string Name { get; private set; } = default!;
 
+
         public void Map(EntityTypeBuilder<Company> builder)
         {
-            builder.ToTable("Company", "General");
+            builder
+                .ToTable(nameof(Company), "General");
 
             builder
                 .Property(e => e.Name)

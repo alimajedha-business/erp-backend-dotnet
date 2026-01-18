@@ -10,10 +10,12 @@ namespace NGErp.Base.Infrastructure.DataAccess
     public class ApplicationContext : DbContext
     {
         private Type _domainType;
+        private Type[]? _domainTypes;
 
-        public ApplicationContext(DbContextOptions options, Type DomainType) : base(options)
+        public ApplicationContext(DbContextOptions options, Type domainType, Type[]? domainTypes = null) : base(options)
         {
-            _domainType = DomainType;
+            _domainType = domainType;
+            _domainTypes = domainTypes;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +27,15 @@ namespace NGErp.Base.Infrastructure.DataAccess
             var lstofmapClass = assembly.GetTypes().
                 Where(x => x.IsAssignableToGenericType(typeof(IBaseEntityTypeConfiguration<>)) ||
                 x.IsAssignableToGenericType(typeof(IViewModelTypeConfiguration<>))).ToList();
+
+            if (_domainTypes != null)
+                foreach (var t in _domainTypes)
+                {
+                    var lst = Assembly.GetAssembly(t)!.GetTypes()
+                        .Where(x => x.IsAssignableToGenericType(typeof(IBaseEntityTypeConfiguration<>)) ||
+                        x.IsAssignableToGenericType(typeof(IViewModelTypeConfiguration<>))).ToList();
+                    lstofmapClass.AddRange(lst);
+                }
 
             foreach (var maptype in lstofmapClass)
             {
