@@ -19,7 +19,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
             //    .Build();
 
             var builder = new DbContextOptionsBuilder<MainDbContext>()
-                .UseSqlServer("Server=.\\sql2022;Database=NGERP;User Id=sa;Password=123;Encrypt=False;");
+                .UseSqlServer("Server=ALIMAJEDHA\\MSSQLSERVER2022;Database=NGERP;User Id=AliMajedHA;Password=AliMajedHA19Dec1992;Encrypt=False;");
 
             return new MainDbContext(builder.Options);
         }
