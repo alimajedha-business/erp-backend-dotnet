@@ -9,14 +9,14 @@ public class ItemAttributeValue :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ItemAttributeValue>
 {
+    public Guid ItemId { get; private set; }
+    public Guid AttributeId { get; private set; }
     public string? ValueText { get; private set; } = default!;
     public int? ValueInt { get; private set; }
     public decimal? ValueDecimal { get; private set; }
     public DateTime? ValueDate { get; private set; }
     public bool? ValueBoolean { get; private set; }
     public Guid? EnumValueId { get; private set; }
-    public Guid ItemId { get; private set; }
-    public Guid AttributeId { get; private set; }
 
     public AttributeEnumValue? EnumValue { get; set; }
     public required Item Item { get; set; }

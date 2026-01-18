@@ -10,6 +10,7 @@ public class Item :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Item>
 {
+    public string Code { get; private set; } = default!;
     public string Sku { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; }
@@ -30,6 +31,10 @@ public class Item :
             .HasIndex(i => new { i.CompanyId, i.Sku })
             .IsUnique()
             .HasDatabaseName("UX_Item_Company_Sku");
+
+        builder
+            .Property(e => e.Code)
+            .HasMaxLength(80);
 
         builder
             .Property(e => e.Sku)

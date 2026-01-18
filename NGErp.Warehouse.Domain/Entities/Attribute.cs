@@ -13,6 +13,9 @@ public class Attribute :
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public AttributeDataType DataType { get; private set; }
+    public bool IsItemAttribute { get; private set; }
+    public bool IsRequired { get; private set; }
+    public bool IsStockDimension {  get; private set; }
 
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
@@ -31,6 +34,18 @@ public class Attribute :
         builder
             .Property(e => e.Title)
             .HasMaxLength(50);
+
+        builder
+            .Property(e => e.IsItemAttribute)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.IsRequired)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.IsStockDimension)
+            .HasDefaultValue(false);
     }
 }
 
