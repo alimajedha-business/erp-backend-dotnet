@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 using NGErp.Base.Domain.Entities;
+using NGErp.General.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
@@ -71,6 +72,8 @@ namespace NGErp.Base.Infrastructure.DataAccess
                 methodinfo.Invoke(mapobj, [entity]);
                 if (maptype.IsSubclassOf(typeof(BaseEntity)) && mapobj is BaseEntity baseEntity)
                     BaseEntity.MapBase(modelBuilder.Entity(maptype.FullName!));
+                if (maptype.IsSubclassOf(typeof(BaseEntityWithCompany)) && mapobj is BaseEntityWithCompany baseEntityWithCompany)
+                    BaseEntityWithCompany.MapBase(modelBuilder.Entity(maptype.FullName!));
             }
         }
 
