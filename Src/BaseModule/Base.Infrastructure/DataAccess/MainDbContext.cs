@@ -24,6 +24,8 @@ namespace NGErp.Base.Infrastructure.DataAccess
 
         #region HCM
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
+        public virtual DbSet<OrganizationalStructure> OrganizationalStructures { get; set; }
         #endregion
 
         #region Warehouse
