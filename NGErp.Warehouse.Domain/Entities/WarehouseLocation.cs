@@ -12,14 +12,14 @@ public class WarehouseLocation :
 {
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
-
     public Guid? ParentLocationId { get; private set; }
-    public WarehouseLocation? ParentLocation { get; set; }
-
     public Guid WarehouseId { get; private set; }
-    public required Warehouse Warehouse { get; set; }
 
+    public WarehouseLocation? ParentLocation { get; set; }
+    public required Warehouse Warehouse { get; set; }
     public virtual List<WarehouseLocation> SubLocations { get; set; } = [];
+    public virtual List<InventoryMovement> SrcLocations { get; set; } = [];
+    public virtual List<InventoryMovement> DstLocations { get; set; } = [];
 
     public void Map(EntityTypeBuilder<WarehouseLocation> builder)
     {
@@ -27,7 +27,7 @@ public class WarehouseLocation :
             .ToTable(nameof(WarehouseLocation), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.WarehouseId, ParentLocationId })
+            .HasIndex(i => new { i.WarehouseId, i.ParentLocationId })
             .HasDatabaseName("IX_Location_Warehouse_Parent");
 
         builder

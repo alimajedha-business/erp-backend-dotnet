@@ -13,8 +13,8 @@ public class Item :
     public string Sku { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; }
-
     public Guid CategoryId { get; private set; }
+
     public required Category Category { get; set; }
 
     public void Map(EntityTypeBuilder<Item> builder)

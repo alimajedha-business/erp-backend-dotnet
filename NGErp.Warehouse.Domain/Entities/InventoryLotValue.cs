@@ -15,14 +15,12 @@ public class InventoryLotValue :
     public decimal? ValueDecimal { get; private set; }
     public DateTime? ValueDate { get; private set; }
     public bool? ValueBoolean { get; private set; }
-
     public Guid? EnumValueId { get; private set; }
-    public required AttributeEnumValue? EnumValue { get; set; }
-
     public Guid LotId { get; private set; }
-    public required InventoryLot Lot { get; set; }
-
     public Guid AttributeId { get; private set; }
+
+    public required AttributeEnumValue? EnumValue { get; set; }
+    public required InventoryLot Lot { get; set; }
     public required Attribute Attribute { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryLotValue> builder)

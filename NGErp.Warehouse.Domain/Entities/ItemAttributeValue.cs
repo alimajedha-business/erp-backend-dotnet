@@ -14,14 +14,12 @@ public class ItemAttributeValue :
     public decimal? ValueDecimal { get; private set; }
     public DateTime? ValueDate { get; private set; }
     public bool? ValueBoolean { get; private set; }
-
     public Guid? EnumValueId { get; private set; }
-    public AttributeEnumValue? EnumValue { get; set; }
-
     public Guid ItemId { get; private set; }
-    public required Item Item { get; set; }
-
     public Guid AttributeId { get; private set; }
+
+    public AttributeEnumValue? EnumValue { get; set; }
+    public required Item Item { get; set; }
     public required Attribute Attribute { get; set; }
 
     public void Map(EntityTypeBuilder<ItemAttributeValue> builder)

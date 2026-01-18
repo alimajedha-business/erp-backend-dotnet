@@ -13,17 +13,14 @@ public class InventoryMovement :
     public DateTime MovementDate { get; private set; }
     public Guid ReferenceDocId { get; private set; }
     public decimal QuantityBase { get; private set; }
-
     public Guid MovementTypeId { get; private set; }
-    public required InventoryMovementType MovementType { get; set; }
-
     public Guid LotId { get; private set; }
-    public required InventoryLot InventoryLot { get; set; }
-
     public Guid FromLocationId { get; private set; }
-    public required WarehouseLocation FromLocation { get; set; }
-
     public Guid ToLocationId { get; private set; }
+
+    public required InventoryMovementType MovementType { get; set; }
+    public required InventoryLot Lot { get; set; }
+    public required WarehouseLocation FromLocation { get; set; }
     public required WarehouseLocation ToLocation { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryMovement> builder)
@@ -44,12 +41,12 @@ public class InventoryMovement :
             .HasDatabaseName("IX_InventoryMovement_Lot");
 
         builder
-            .HasIndex(i => new { i.FromLocation })
+            .HasIndex(i => new { i.FromLocationId })
             .IncludeProperties(e => e.QuantityBase)
             .HasDatabaseName("IX_InventoryMovement_FromLocation");
 
         builder
-            .HasIndex(i => new { i.ToLocation })
+            .HasIndex(i => new { i.ToLocationId })
             .IncludeProperties(e => e.QuantityBase)
             .HasDatabaseName("IX_InventoryMovement_ToLocation");
 
@@ -67,18 +64,18 @@ public class InventoryMovement :
             .HasForeignKey(e => e.MovementTypeId);
 
         builder
-            .HasOne(e => e.InventoryLot)
+            .HasOne(e => e.Lot)
             .WithMany()
-            .HasForeignKey(e => e.InventoryLot);
+            .HasForeignKey(e => e.LotId);
 
         builder
             .HasOne(e => e.FromLocation)
-            .WithMany()
+            .WithMany(e => e.SrcLocations)
             .HasForeignKey(e => e.FromLocationId);
 
         builder
             .HasOne(e => e.ToLocation)
-            .WithMany()
+            .WithMany(e => e.DstLocations)
             .HasForeignKey(e => e.ToLocationId);
     }
 }

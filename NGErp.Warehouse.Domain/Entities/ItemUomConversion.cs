@@ -11,14 +11,12 @@ public class ItemUomConversion :
     IBaseEntityTypeConfiguration<ItemUomConversion>
 {
     public decimal Factor { get; private set; }
-
     public Guid ItemId { get; private set; }
-    public required Item Item { get; set; }
-
     public Guid FromUomId { get; private set; }
-    public required UnitOfMeasurement FromUom { get; set; }
-
     public Guid ToUomId { get; private set; }
+
+    public required Item Item { get; set; }
+    public required UnitOfMeasurement FromUom { get; set; }
     public required UnitOfMeasurement ToUom { get; set; }
 
     public void Map(EntityTypeBuilder<ItemUomConversion> builder)
