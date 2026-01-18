@@ -6,24 +6,24 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class ItemUom :
+public class ItemUnitOfMeasurement :
     BaseEntityWithCompany,
-    IBaseEntityTypeConfiguration<ItemUom>
+    IBaseEntityTypeConfiguration<ItemUnitOfMeasurement>
 {
+    public Guid ItemId { get; private set; }
+    public Guid UnitOfMeasurementId { get; private set; }
     public bool IsBase { get; private set; }
     public bool IsDefaultPurchase { get; private set; }
     public bool IsDefalulIssue { get; private set; }
-    public Guid ItemId { get; private set; }
-    public Guid UomId { get; private set; }
 
     public required Item Item { get; set; }
-    public required UnitOfMeasurement Uom { get; set; }
+    public required UnitOfMeasurement UnitOfMeasurement { get; set; }
 
-    public void Map(EntityTypeBuilder<ItemUom> builder)
+    public void Map(EntityTypeBuilder<ItemUnitOfMeasurement> builder)
     {
         builder
-            .ToTable(nameof(ItemUom), "Warehouse")
-            .HasKey(k => new { k.ItemId, k.UomId });
+            .ToTable(nameof(ItemUnitOfMeasurement), "Warehouse")
+            .HasKey(k => new { k.ItemId, k.UnitOfMeasurementId });
 
         builder
             .HasOne(e => e.Item)
@@ -31,8 +31,8 @@ public class ItemUom :
             .HasForeignKey(e => e.ItemId);
 
         builder
-            .HasOne(e => e.Uom)
+            .HasOne(e => e.UnitOfMeasurement)
             .WithMany()
-            .HasForeignKey(e => e.UomId);
+            .HasForeignKey(e => e.UnitOfMeasurementId);
     }
 }
