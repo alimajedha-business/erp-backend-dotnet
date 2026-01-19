@@ -41,11 +41,13 @@ public class ItemUnitOfMeasurementConversion :
         builder
             .HasOne(e => e.FromUnitOfMeasurement)
             .WithMany()
-            .HasForeignKey(e => e.FromUnitOfMeasurementId);
+            .HasForeignKey(e => e.FromUnitOfMeasurementId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ToUnitOfMeasurement)
             .WithMany()
-            .HasForeignKey(e => e.ToUnitOfMeasurementId);
+            .HasForeignKey(e => e.ToUnitOfMeasurementId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
