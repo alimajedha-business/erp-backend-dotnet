@@ -12,10 +12,10 @@ using NGErp.Base.Service.Resources;
 using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using NGErp.General.Service;
-using NGErp.Warehouse.Infrastructure.DataAccess;
-using NGErp.Warehouse.Service;
 using NGErp.HCM.Infrastructure.DataAccess;
 using NGErp.HCM.Service;
+using NGErp.Warehouse.Infrastructure.DataAccess;
+using NGErp.Warehouse.Service;
 
 namespace NGErp.API.Extensions
 {

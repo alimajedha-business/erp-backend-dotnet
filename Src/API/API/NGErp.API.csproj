@@ -26,9 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\NGErp.Warehouse.API\NGErp.Warehouse.API.csproj" />
-        <ProjectReference Include="..\..\..\NGErp.Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\..\NGErp.Warehouse.Service\NGErp.Warehouse.Service.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.API\NGErp.Base.API.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
@@ -38,6 +35,8 @@
         <ProjectReference Include="..\..\HCMModule\HCM.API\HCM.API\NGErp.HCM.API.csproj" />
         <ProjectReference Include="..\..\HCMModule\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj" />
         <ProjectReference Include="..\..\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
+        <ProjectReference Include="..\..\WarehouseModule\Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\WarehouseModule\Warehouse.Service\NGErp.Warehouse.Service.csproj" />
     </ItemGroup>
 
 </Project>
