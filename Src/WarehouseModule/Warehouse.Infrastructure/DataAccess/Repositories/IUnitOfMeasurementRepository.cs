@@ -3,6 +3,6 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-internal interface ICategoryRepository : IRepository<Category>
+public interface IUnitOfMeasurementRepository : IRepository<UnitOfMeasurement>
 {
 }

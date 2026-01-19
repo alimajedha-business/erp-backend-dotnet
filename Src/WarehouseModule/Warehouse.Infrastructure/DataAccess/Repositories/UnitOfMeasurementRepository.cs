@@ -4,9 +4,9 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryRepository :
-    Repository<Category>,
-    ICategoryRepository
+public class UnitOfMeasurementRepository :
+    Repository<UnitOfMeasurement>,
+    IUnitOfMeasurementRepository
 {
-    public CategoryRepository(MainDbContext context) : base(context) { }
+    public UnitOfMeasurementRepository(MainDbContext context) : base(context) { }
 }

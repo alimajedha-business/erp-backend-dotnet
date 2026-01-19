@@ -4,9 +4,9 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryRepository :
-    Repository<Category>,
-    ICategoryRepository
+public class InventoryMovementRepository :
+    Repository<InventoryMovement>,
+    IInventoryMovementRepository
 {
-    public CategoryRepository(MainDbContext context) : base(context) { }
+    public InventoryMovementRepository(MainDbContext context) : base(context) { }
 }
