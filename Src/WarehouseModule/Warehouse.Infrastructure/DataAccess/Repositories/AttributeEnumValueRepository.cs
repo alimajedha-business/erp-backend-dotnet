@@ -4,9 +4,9 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryRepository :
-    Repository<Category>,
-    ICategoryRepository
+public class AttributeEnumValueRepository :
+    Repository<AttributeEnumValue>,
+    IAttributeEnumValueRepository
 {
-    public CategoryRepository(MainDbContext context) : base(context) { }
+    public AttributeEnumValueRepository(MainDbContext context) : base(context) { }
 }
