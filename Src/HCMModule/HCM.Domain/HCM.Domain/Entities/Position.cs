@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NGErp.Base.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.HCM.Domain.Entities
 {
-    public class Department : BaseEntityWithCompany, IBaseEntityTypeConfiguration<Department>
+    public class Position : BaseEntityWithCompany, IBaseEntityTypeConfiguration<Position>
     {
         public string? Code { get; set; }
 
@@ -22,9 +24,9 @@ namespace NGErp.HCM.Domain.Entities
 
         public DateTime StatusChangeDate { get; set; }
 
-        public void Map(EntityTypeBuilder<Department> builder)
+        public void Map(EntityTypeBuilder<Position> builder)
         {
-            builder.ToTable("Department", "HCM");
+            builder.ToTable("Position", "HCM");
             builder.Property(e => e.Name).HasMaxLength(200);
             builder.Property(e => e.Description).HasMaxLength(500);
             builder.Property(e => e.Code).HasMaxLength(100);
