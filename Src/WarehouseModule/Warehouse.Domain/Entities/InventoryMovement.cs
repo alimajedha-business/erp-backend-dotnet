@@ -56,7 +56,7 @@ public class InventoryMovement :
 
         builder
             .Property(e => e.QuantityBase)
-            .HasColumnType("decimal(23, 8");
+            .HasColumnType("decimal(23, 8)");
 
         builder
             .HasOne(e => e.MovementType)
@@ -71,11 +71,13 @@ public class InventoryMovement :
         builder
             .HasOne(e => e.FromLocation)
             .WithMany(e => e.SrcLocations)
-            .HasForeignKey(e => e.FromLocationId);
+            .HasForeignKey(e => e.FromLocationId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ToLocation)
             .WithMany(e => e.DstLocations)
-            .HasForeignKey(e => e.ToLocationId);
+            .HasForeignKey(e => e.ToLocationId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
