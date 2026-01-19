@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NGErp.HCM.Domain.Entities;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.General.Domain.Entities;
+using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
