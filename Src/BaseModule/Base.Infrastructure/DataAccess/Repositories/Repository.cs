@@ -19,14 +19,14 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual IQueryable<T> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return _context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            return _context.Set<T>().Where(predicate);
         }
 
         public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
