@@ -54,7 +54,7 @@ public enum AttributeDataType
     Text = 0,
     Int,
     Decimal,
-    DAte,
+    Date,
     Bool,
     Enum
 }
