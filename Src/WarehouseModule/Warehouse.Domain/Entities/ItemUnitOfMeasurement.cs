@@ -14,7 +14,7 @@ public class ItemUnitOfMeasurement :
     public Guid UnitOfMeasurementId { get; private set; }
     public bool IsBase { get; private set; }
     public bool IsDefaultPurchase { get; private set; }
-    public bool IsDefalulIssue { get; private set; }
+    public bool IsDefaultlIssue { get; private set; }
 
     public required Item Item { get; set; }
     public required UnitOfMeasurement UnitOfMeasurement { get; set; }
