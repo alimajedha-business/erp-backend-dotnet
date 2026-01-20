@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -11,10 +10,10 @@ using NGErp.Warehouse.Service.Services;
 namespace NGErp.Warehouse.API.Controllers;
 
 [ApiController]
-[ApiVersion("1.0")]
+[ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVesion}/warehouse/categories")]
-[JwtAuthorize]
+[Route("api/v{version:apiVersion}/warehouse/categories/")]
+//[JwtAuthorize]
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryService _categoryService;

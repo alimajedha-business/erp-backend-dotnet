@@ -84,9 +84,10 @@ namespace NGErp.API.Extensions
                     };
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(NGErp.General.API.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(NGErp.Base.API.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(NGErp.HCM.API.AssemblyReference).Assembly);
+                .AddApplicationPart(typeof(General.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(HCM.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(Warehouse.API.AssemblyReference).Assembly);
             return services;
         }
 
