@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Services;
+using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -32,7 +33,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCatogories()
+    public async Task<IActionResult> GetCatogories([FromQuery] CategoryParameters prms)
     {
         using (_logger.BeginScope(new Dictionary<string, object> 
         {
@@ -44,15 +45,14 @@ public class CategoryController : ControllerBase
             {
                 _logger.LogInformation("xxx {Username}", _currentUserService.Username);
 
-                var categories = await _categoryService.GetCategoriesAsync();
-
-                _logger.LogInformation("yyy {Count}", categories.Count);
+                var categories = await _categoryService.GetCategoriesAsync(prms);
+                _logger.LogInformation("yyy {Count}", categories.Count());
 
                 return Ok(new
                 {
                     success = true,
                     data = categories,
-                    count = categories.Count
+                    count = categories.Count()
                 });
             }
             catch (Exception ex) 

@@ -1,11 +1,12 @@
 ﻿using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public interface ICategoryService
 {
     Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto category);
-    Task<List<CategoryDto>> GetCategoriesAsync();
+    Task<IEnumerable<CategoryDto>> GetCategoriesAsync(CategoryParameters prms);
     Task<CategoryDto> GetCategoryByIdAsync(Guid id);
     Task<CategoryDto> UpdateCategoryAsync(Guid id, UpdateCategoryDto category);
     Task<bool> DeleteCategoryAsync(Guid id);

@@ -8,13 +8,11 @@ using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryRepository :
-    Repository<Category>,
+public class CategoryRepository(MainDbContext context) :
+    Repository<Category>(context),
     ICategoryRepository
 {
-    public CategoryRepository(MainDbContext context) : base(context) { }
-
-    public async Task<IEnumerable<Category>> GetAllCategoriesAsync(CategoryParameters prms)
+    public async Task<IEnumerable<Category>> GetCategoriesAsync(CategoryParameters prms)
     {
         return await GetAllAsync()
             .OrderBy(o => o.Code)

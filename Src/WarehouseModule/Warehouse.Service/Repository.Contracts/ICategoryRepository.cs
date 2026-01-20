@@ -6,5 +6,5 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface ICategoryRepository : IRepository<Category>
 {
-    Task<IEnumerable<Category>> GetAllCategoriesAsync(CategoryParameters parameters);
+    Task<IEnumerable<Category>> GetCategoriesAsync(CategoryParameters prms);
 }

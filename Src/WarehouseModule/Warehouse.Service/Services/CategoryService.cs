@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Services;
 
@@ -29,9 +30,10 @@ internal class CategoryService : ICategoryService
         throw new NotImplementedException();
     }
 
-    public async Task<List<CategoryDto>> GetCategoriesAsync()
+    public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync(CategoryParameters prms)
     { 
-        throw new NotImplementedException(); 
+        var categories = await _categoryRepository.GetCategoriesAsync(prms);
+        return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 
     public async Task<CategoryDto> GetCategoryByIdAsync(Guid id)
