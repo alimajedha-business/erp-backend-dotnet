@@ -2,8 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 
-using NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
 

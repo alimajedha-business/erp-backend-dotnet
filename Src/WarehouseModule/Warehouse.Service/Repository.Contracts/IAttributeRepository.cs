@@ -2,6 +2,6 @@
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-internal interface IAttributeRepository : IRepository<Domain.Entities.Attribute>
+public interface IAttributeRepository : IRepository<Domain.Entities.Attribute>
 {
 }
