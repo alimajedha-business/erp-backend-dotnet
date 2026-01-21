@@ -1,4 +1,9 @@
+using System.Linq.Dynamic.Core;
+
 using Microsoft.EntityFrameworkCore;
+
+using NGErp.Base.Service.RequestFeatures;
+
 using System.Linq.Expressions;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories
@@ -22,6 +27,26 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
         public virtual IQueryable<T> GetAllAsync()
         {
             return _context.Set<T>();
+        }
+
+        public virtual IQueryable<T> GetPaginatedAsync(RequestParameters prms)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (!string.IsNullOrEmpty(prms.OrderBy))
+            {
+                var orderByClause = prms.OrderBy;
+                if (orderByClause.StartsWith('-'))
+                {
+                    orderByClause = orderByClause.TrimStart('-') + " DESC";
+                }
+
+                query = query.OrderBy(orderByClause);
+            }
+
+            return query
+                .Skip(prms.PageSize * (prms.PageNumber - 1))
+                .Take(prms.PageSize);
         }
 
         public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)

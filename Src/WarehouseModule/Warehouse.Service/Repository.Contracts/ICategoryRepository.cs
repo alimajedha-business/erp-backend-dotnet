@@ -4,7 +4,7 @@ using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface ICategoryRepository : IRepository<Category>
+public interface ICategoryRepository : IRepository<Category> 
 {
-    Task<IEnumerable<Category>> GetCategoriesAsync(CategoryParameters prms);
+    Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(CategoryParameters prms);
 }

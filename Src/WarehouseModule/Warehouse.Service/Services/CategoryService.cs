@@ -31,8 +31,8 @@ internal class CategoryService : ICategoryService
     }
 
     public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync(CategoryParameters prms)
-    { 
-        var categories = await _categoryRepository.GetCategoriesAsync(prms);
+    {
+        var categories = await _categoryRepository.GetPaginatedCategoriesAsync(prms);
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 

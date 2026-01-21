@@ -12,12 +12,10 @@ public class CategoryRepository(MainDbContext context) :
     Repository<Category>(context),
     ICategoryRepository
 {
-    public async Task<IEnumerable<Category>> GetCategoriesAsync(CategoryParameters prms)
+    public async Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(CategoryParameters prms)
     {
-        return await GetAllAsync()
-            .OrderBy(o => o.Code)
-            .Skip(prms.PageSize * (prms.PageNumber - 1))
-            .Take(prms.PageSize)
+        return await GetPaginatedAsync(prms)
+            .Where(e => e.CompanyId == new Guid("6f7be93f-c740-43b1-96b1-c6e3ff3af4ef"))
             .ToListAsync();
     }
 }
