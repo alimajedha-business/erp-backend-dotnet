@@ -71,4 +71,43 @@ public class CategoryController : ControllerBase
             }
         }
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetCategoryById(Guid id)
+    {
+        using (_logger.BeginScope(new Dictionary<string, object>
+        {
+            ["Endpint"] = "GetCategoryById",
+            ["User"] = _currentUserService.Username ?? "Anonymous"
+        }))
+        {
+            try
+            {
+                _logger.LogInformation("xxx {Username}", _currentUserService.Username);
+
+                var category = await _categoryService.GetCategoryByIdAsync(id);
+
+                return Ok(new
+                {
+                    success = true,
+                    data = category,
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "zzz {Username}",
+                    _currentUserService.Username
+                );
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    error = "Failed to fetch Category",
+                    message = ex.Message
+                });
+            }
+        }
+    }
 }

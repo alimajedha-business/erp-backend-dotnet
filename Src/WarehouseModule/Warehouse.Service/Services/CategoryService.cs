@@ -36,9 +36,10 @@ internal class CategoryService : ICategoryService
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 
-    public async Task<CategoryDto> GetCategoryByIdAsync(Guid id)
+    public async Task<CategoryDto?> GetCategoryByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var category = await _categoryRepository.GetByIdAsync(id);
+        return category != null ? _mapper.Map<CategoryDto>(category) : null;
     }
 
     public async Task<CategoryDto> UpdateCategoryAsync(Guid id, UpdateCategoryDto category)
