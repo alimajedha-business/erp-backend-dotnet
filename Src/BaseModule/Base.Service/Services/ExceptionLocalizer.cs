@@ -1,14 +1,8 @@
-﻿// Ignore Spelling: Localizer
+﻿using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Resources;
-using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGErp.Base.Service.Services
 {
