@@ -27,81 +27,49 @@ public class ItemController(
     [HttpGet]
     public async Task<IActionResult> GetItems([FromQuery] ItemParameters prms)
     {
-        using (_logger.BeginScope(new Dictionary<string, object>
+        try
         {
-            ["Endpint"] = "GetItems",
-            ["User"] = _currentUserService.Username ?? "Anonymous"
-        }))
+            var items = await _itemService.GetItemsAsync(prms);
+
+            return Ok(new
+            {
+                success = true,
+                data = items,
+                count = items.Count()
+            });
+        }
+        catch (Exception ex)
         {
-            try
+            return StatusCode(500, new
             {
-                _logger.LogInformation("Fetching paginated list of Item for user {Username}.", _currentUserService.Username);
-
-                var items = await _itemService.GetItemsAsync(prms);
-
-                _logger.LogInformation("Retrieved {Count} items.", items.Count());
-
-                return Ok(new
-                {
-                    success = true,
-                    data = items,
-                    count = items.Count()
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Error fetching paginated list of Item for user {Username}.",
-                    _currentUserService.Username
-                );
-
-                return StatusCode(500, new
-                {
-                    success = false,
-                    error = "Failed to fetch Items",
-                    message = ex.Message
-                });
-            }
+                success = false,
+                error = "Failed to fetch Items",
+                message = ex.Message
+            });
         }
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetItemById(Guid id)
     {
-        using (_logger.BeginScope(new Dictionary<string, object>
+        try
         {
-            ["Endpint"] = "GetItemById",
-            ["User"] = _currentUserService.Username ?? "Anonymous"
-        }))
+            var item = await _itemService.GetItemByIdAsync(id);
+
+            return Ok(new
+            {
+                success = true,
+                data = item,
+            });
+        }
+        catch (Exception ex)
         {
-            try
+            return StatusCode(500, new
             {
-                _logger.LogInformation("Fetching Item with the given Id for user {Username}.", _currentUserService.Username);
-
-                var item = await _itemService.GetItemByIdAsync(id);
-
-                return Ok(new
-                {
-                    success = true,
-                    data = item,
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Error fetching Item with the given Id for user {Username}.",
-                    _currentUserService.Username
-                );
-
-                return StatusCode(500, new
-                {
-                    success = false,
-                    error = "Failed to fetch Item with the given Id.",
-                    message = ex.Message
-                });
-            }
+                success = false,
+                error = "Failed to fetch Item with the given Id.",
+                message = ex.Message
+            });
         }
     }
 }
