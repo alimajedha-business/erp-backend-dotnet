@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 
 namespace NGErp.Warehouse.Service.Mappings;
 
@@ -8,6 +9,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-
+        CreateMap<Category, CategoryDto>();
     }
 }

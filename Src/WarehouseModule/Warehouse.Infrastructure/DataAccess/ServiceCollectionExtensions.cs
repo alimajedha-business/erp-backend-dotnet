@@ -1,12 +1,19 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
+using NGErp.Warehouse.Service.Repository.Contracts;
+
 namespace NGErp.Warehouse.Infrastructure.DataAccess;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddWarehouseInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddWarehouseInfrastructureServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         return services;
     }
 }

@@ -961,7 +961,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<bool>("IsBase")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDefalulIssue")
+                    b.Property<bool>("IsDefaultIssue")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDefaultPurchase")

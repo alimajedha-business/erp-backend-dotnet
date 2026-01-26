@@ -1,16 +1,12 @@
-﻿using NGErp.Base.Service.Resources;
-using NGErp.Base.Domain.ErrorModel;
+﻿using System.Diagnostics;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
+
+using NGErp.Base.Domain.ErrorModels;
+using NGErp.Base.Service.Resources;
 
 namespace NGErp.Base.API.ActionFilters
 {

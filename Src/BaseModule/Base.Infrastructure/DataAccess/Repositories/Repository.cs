@@ -1,4 +1,9 @@
+using System.Linq.Dynamic.Core;
+
 using Microsoft.EntityFrameworkCore;
+
+using NGErp.Base.Service.RequestFeatures;
+
 using System.Linq.Expressions;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories
@@ -19,14 +24,49 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual IQueryable<T> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return _context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> GetPaginated(
+            RequestParameters prms,
+            string? search = null,
+            object[]? searhcPrms = null
+        )
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            IQueryable<T> query = _context.Set<T>();
+
+            // 1- apply filtering
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = (searhcPrms is { Length: > 0 })
+                    ? query.Where(search, searhcPrms)
+                    : query.Where(search);
+            }
+
+            // 2- apply sorting
+            if (!string.IsNullOrWhiteSpace(prms.OrderBy))
+            {
+                var orderByClause = prms.OrderBy.Trim();
+
+                // support "-Field" to mean DESC
+                if (orderByClause.StartsWith('-'))
+                    orderByClause = orderByClause.TrimStart('-') + " DESC";
+
+                query = query.OrderBy(orderByClause);
+            }
+
+            // 3- apply paging
+            return query
+                .Skip(prms.PageSize * (prms.PageNumber - 1))
+                .Take(prms.PageSize);
+        }
+
+
+        public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _context.Set<T>().Where(predicate);
         }
 
         public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)

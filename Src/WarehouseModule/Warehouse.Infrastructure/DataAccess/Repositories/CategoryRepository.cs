@@ -1,12 +1,25 @@
-﻿using NGErp.Base.Infrastructure.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+
+using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.Repository.Contracts;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryRepository :
-    Repository<Category>,
+public class CategoryRepository(MainDbContext context) :
+    Repository<Category>(context),
     ICategoryRepository
 {
-    public CategoryRepository(MainDbContext context) : base(context) { }
+    public async Task<IEnumerable<Category>> GetPaginatedAsync(
+        CategoryParameters prms,
+        string? search,
+        object[]? searchPrms
+    )
+    {
+        return await GetPaginated(prms, search, searchPrms)
+            .Where(e => e.CompanyId == new Guid("6f7be93f-c740-43b1-96b1-c6e3ff3af4ef"))
+            .ToListAsync();
+    }
 }

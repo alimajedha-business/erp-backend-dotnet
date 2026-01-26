@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.Infrastructure.Services;
 using NGErp.HCM.Infrastructure.DataAccess.Repositories;
@@ -45,7 +47,7 @@ namespace NGErp.HCM.Service.Services
             try
             {
                 _logger.LogInformation("Fetching departments");
-                var result = await _departmentRepository.GetAllAsync();
+                var result = await _departmentRepository.GetAllAsync().ToListAsync();
                 var departmentDto = _mapper.Map<List<DepartmentDto>>(result);
                 return departmentDto;
             }
