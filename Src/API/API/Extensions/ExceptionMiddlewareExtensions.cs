@@ -1,7 +1,7 @@
 ﻿// Ignore Spelling: Middleware
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Domain.ErrorModel;
+using NGErp.Base.Domain.ErrorModels;
 using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using System.ComponentModel.DataAnnotations;
