@@ -60,6 +60,7 @@ namespace NGErp.API.Extensions
             services.AddControllers(config =>
             {
                 config.ReturnHttpNotAcceptable = true;
+                config.Filters.Add<LogApiRequestFilter>();
                 config.Filters.Add<ValidationFilterAttribute>();
             })
                 .AddSystemTextJsonMergePatch()
