@@ -8,7 +8,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
     {
         Task<T?> GetByIdAsync(Guid id);
         IQueryable<T> GetAllAsync();
-        IQueryable<T> GetPaginatedAsync(RequestParameters prms);
+        IQueryable<T> GetPaginated(RequestParameters prms, string? search, object[]? searchPrms);
         IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);

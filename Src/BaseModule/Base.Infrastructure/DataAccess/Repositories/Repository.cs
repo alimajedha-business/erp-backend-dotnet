@@ -29,25 +29,40 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return _context.Set<T>();
         }
 
-        public virtual IQueryable<T> GetPaginatedAsync(RequestParameters prms)
+        public virtual IQueryable<T> GetPaginated(
+            RequestParameters prms,
+            string? search = null,
+            object[]? searhcPrms = null
+        )
         {
             IQueryable<T> query = _context.Set<T>();
 
-            if (!string.IsNullOrEmpty(prms.OrderBy))
+            // 1- apply filtering
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                var orderByClause = prms.OrderBy;
+                query = (searhcPrms is { Length: > 0 })
+                    ? query.Where(search, searhcPrms)
+                    : query.Where(search);
+            }
+
+            // 2- apply sorting
+            if (!string.IsNullOrWhiteSpace(prms.OrderBy))
+            {
+                var orderByClause = prms.OrderBy.Trim();
+
+                // support "-Field" to mean DESC
                 if (orderByClause.StartsWith('-'))
-                {
                     orderByClause = orderByClause.TrimStart('-') + " DESC";
-                }
 
                 query = query.OrderBy(orderByClause);
             }
 
+            // 3- apply paging
             return query
                 .Skip(prms.PageSize * (prms.PageNumber - 1))
                 .Take(prms.PageSize);
         }
+
 
         public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)
         {
