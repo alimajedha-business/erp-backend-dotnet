@@ -12,54 +12,54 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/warehouse/categories/")]
+[Route("api/v{version:apiVersion}/warehouse/items/")]
 //[JwtAuthorize]
-public class CategoryController(
-    ICategoryService categoryService,
-    ILogger<CategoryController> logger,
+public class ItemController(
+    IItemService itemService,
+    ILogger<ItemController> logger,
     ICurrentUserService currentUserService
 ) : ControllerBase
 {
-    private readonly ICategoryService _categoryService = categoryService;
-    private readonly ILogger<CategoryController> _logger = logger;
+    private readonly IItemService _itemService = itemService;
+    private readonly ILogger<ItemController> _logger = logger;
     private readonly ICurrentUserService _currentUserService = currentUserService;
 
     [HttpGet]
-    public async Task<IActionResult> GetCatogories([FromQuery] CategoryParameters prms)
+    public async Task<IActionResult> GetItems([FromQuery] ItemParameters prms)
     {
-        using (_logger.BeginScope(new Dictionary<string, object> 
+        using (_logger.BeginScope(new Dictionary<string, object>
         {
-            ["Endpint"] = "GetCategories",
+            ["Endpint"] = "GetItems",
             ["User"] = _currentUserService.Username ?? "Anonymous"
         }))
         {
             try
             {
-                _logger.LogInformation("Fetching paginated list of Category for user {Username}.", _currentUserService.Username);
+                _logger.LogInformation("Fetching paginated list of Item for user {Username}.", _currentUserService.Username);
 
-                var categories = await _categoryService.GetCategoriesAsync(prms);
+                var items = await _itemService.GetItemsAsync(prms);
 
-                _logger.LogInformation("Retrieved {Count} categories.", categories.Count());
+                _logger.LogInformation("Retrieved {Count} items.", items.Count());
 
                 return Ok(new
                 {
                     success = true,
-                    data = categories,
-                    count = categories.Count()
+                    data = items,
+                    count = items.Count()
                 });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error fetching paginated list of Category for user {Username}.",
+                    "Error fetching paginated list of Item for user {Username}.",
                     _currentUserService.Username
                 );
 
                 return StatusCode(500, new
                 {
                     success = false,
-                    error = "Failed to fetch Categories",
+                    error = "Failed to fetch Items",
                     message = ex.Message
                 });
             }
@@ -67,38 +67,38 @@ public class CategoryController(
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCategoryById(Guid id)
+    public async Task<IActionResult> GetItemById(Guid id)
     {
         using (_logger.BeginScope(new Dictionary<string, object>
         {
-            ["Endpint"] = "GetCategoryById",
+            ["Endpint"] = "GetItemById",
             ["User"] = _currentUserService.Username ?? "Anonymous"
         }))
         {
             try
             {
-                _logger.LogInformation("Fetching Category with the given Id for user {Username}.", _currentUserService.Username);
+                _logger.LogInformation("Fetching Item with the given Id for user {Username}.", _currentUserService.Username);
 
-                var category = await _categoryService.GetCategoryByIdAsync(id);
+                var item = await _itemService.GetItemByIdAsync(id);
 
                 return Ok(new
                 {
                     success = true,
-                    data = category,
+                    data = item,
                 });
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error fetching Category with the given Id for user {Username}.",
+                    "Error fetching Item with the given Id for user {Username}.",
                     _currentUserService.Username
                 );
 
                 return StatusCode(500, new
                 {
                     success = false,
-                    error = "Failed to fetch Category with the given Id.",
+                    error = "Failed to fetch Item with the given Id.",
                     message = ex.Message
                 });
             }
