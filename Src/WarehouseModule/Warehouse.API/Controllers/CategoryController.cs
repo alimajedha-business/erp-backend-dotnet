@@ -42,10 +42,11 @@ public class CategoryController : ControllerBase
         {
             try
             {
-                _logger.LogInformation("xxx {Username}", _currentUserService.Username);
+                _logger.LogInformation("Fetching paginated list of Category for user {Username}.", _currentUserService.Username);
 
                 var categories = await _categoryService.GetCategoriesAsync(prms);
-                _logger.LogInformation("yyy {Count}", categories.Count());
+
+                _logger.LogInformation("Retrieved {Count} categories.", categories.Count());
 
                 return Ok(new
                 {
@@ -58,7 +59,7 @@ public class CategoryController : ControllerBase
             {
                 _logger.LogError(
                     ex,
-                    "zzz {Username}",
+                    "Error fetching paginated list of Category for user {Username}.",
                     _currentUserService.Username
                 );
 
@@ -83,7 +84,7 @@ public class CategoryController : ControllerBase
         {
             try
             {
-                _logger.LogInformation("xxx {Username}", _currentUserService.Username);
+                _logger.LogInformation("Fetching Category with the given Id for user {Username}.", _currentUserService.Username);
 
                 var category = await _categoryService.GetCategoryByIdAsync(id);
 
@@ -97,14 +98,14 @@ public class CategoryController : ControllerBase
             {
                 _logger.LogError(
                     ex,
-                    "zzz {Username}",
+                    "Error fetching Category with the given Id for user {Username}.",
                     _currentUserService.Username
                 );
 
                 return StatusCode(500, new
                 {
                     success = false,
-                    error = "Failed to fetch Category",
+                    error = "Failed to fetch Category with the given Id.",
                     message = ex.Message
                 });
             }

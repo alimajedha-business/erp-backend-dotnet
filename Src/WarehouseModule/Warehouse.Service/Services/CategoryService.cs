@@ -30,9 +30,13 @@ internal class CategoryService : ICategoryService
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync(CategoryParameters prms)
+    public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync(
+        CategoryParameters prms,
+        string? search,
+        object[]? searchPrms
+    )
     {
-        var categories = await _categoryRepository.GetPaginatedCategoriesAsync(prms);
+        var categories = await _categoryRepository.GetPaginatedAsync(prms, search, searchPrms);
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 

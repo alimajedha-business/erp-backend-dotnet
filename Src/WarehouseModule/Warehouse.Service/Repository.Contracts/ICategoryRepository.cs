@@ -6,5 +6,9 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface ICategoryRepository : IRepository<Category> 
 {
-    Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(CategoryParameters prms);
+    Task<IEnumerable<Category>> GetPaginatedAsync(
+        CategoryParameters prms,
+        string? search = null,
+        object[]? searchPrms = null
+    );
 }

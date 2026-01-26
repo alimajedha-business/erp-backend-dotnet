@@ -12,9 +12,13 @@ public class CategoryRepository(MainDbContext context) :
     Repository<Category>(context),
     ICategoryRepository
 {
-    public async Task<IEnumerable<Category>> GetPaginatedCategoriesAsync(CategoryParameters prms)
+    public async Task<IEnumerable<Category>> GetPaginatedAsync(
+        CategoryParameters prms,
+        string? search,
+        object[]? searchPrms
+    )
     {
-        return await GetPaginatedAsync(prms)
+        return await GetPaginated(prms, search, searchPrms)
             .Where(e => e.CompanyId == new Guid("6f7be93f-c740-43b1-96b1-c6e3ff3af4ef"))
             .ToListAsync();
     }
