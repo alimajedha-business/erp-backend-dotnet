@@ -8,22 +8,15 @@ using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Services;
 
-internal class CategoryService : ICategoryService
+public class CategoryService(
+    ICategoryRepository categoryRepository,
+    ILogger<CategoryService> logger,
+    IMapper mapper
+) : ICategoryService
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly ILogger<CategoryService> _logger;
-    private readonly IMapper _mapper;
-
-    public CategoryService(
-        ICategoryRepository categoryRepository,
-        ILogger<CategoryService> logger,
-        IMapper mapper
-    )
-    {
-        _categoryRepository = categoryRepository;
-        _logger = logger;
-        _mapper = mapper;
-    }
+    private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    private readonly ILogger<CategoryService> _logger = logger;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto category)
     {

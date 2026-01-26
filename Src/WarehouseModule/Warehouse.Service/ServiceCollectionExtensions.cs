@@ -10,7 +10,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddWarehouseServices(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(MappingProfile));
+
         services.AddScoped<ICategoryService,  CategoryService>();
+        services.AddScoped<IItemService, ItemService>();
+
         return services;
     }
 }
