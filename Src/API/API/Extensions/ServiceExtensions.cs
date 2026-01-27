@@ -64,10 +64,6 @@ namespace NGErp.API.Extensions
                 config.ReturnHttpNotAcceptable = true;
                 config.Filters.Add<LogApiRequestFilter>();
                 config.Filters.Add<ValidationFilterAttribute>();
-
-                // to avoid 406 status code by setting Accept parameter to application/json
-                config.Filters.Add(new ProducesAttribute("application/json"));
-                config.Filters.Add(new ConsumesAttribute("application/json"));
             })
                 .AddSystemTextJsonMergePatch()
                 .AddDataAnnotationsLocalization(options =>
