@@ -79,9 +79,9 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.AnyAsync(predicate);
         }
 
-        public virtual async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity, CancellationToken ct)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, ct);
             return entity;
         }
 

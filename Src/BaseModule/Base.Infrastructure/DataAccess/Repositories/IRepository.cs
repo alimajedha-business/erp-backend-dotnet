@@ -16,7 +16,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
         IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
-        Task<T> AddAsync(T entity);
+        Task<T> AddAsync(T entity, CancellationToken ct);
         Task AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         void UpdateRange(IEnumerable<T> entities);
