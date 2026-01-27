@@ -7,9 +7,9 @@ public interface ICategoryService
 {
     Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto category);
     Task<IEnumerable<CategoryDto>> GetCategoriesAsync(
-        CategoryParameters prms,
+        CategoryParameters categoryParameters,
         string? search = null,
-        object[]? searchPrms = null
+        object[]? searchParameters = null
     );
     Task<CategoryDto?> GetCategoryByIdAsync(Guid id);
     Task<CategoryDto> UpdateCategoryAsync(Guid id, UpdateCategoryDto category);
