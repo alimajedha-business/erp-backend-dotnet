@@ -24,7 +24,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual IQueryable<T> GetAllAsync()
+        public virtual IQueryable<T> GetAll()
         {
             return _context.Set<T>();
         }

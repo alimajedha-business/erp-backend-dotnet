@@ -7,7 +7,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
     public interface IRepository<T> where T : class
     {
         Task<T?> GetByIdAsync(Guid id);
-        IQueryable<T> GetAllAsync();
+        IQueryable<T> GetAll();
         IQueryable<T> GetPaginated(
             RequestParameters requestParameters,
             string? search,
