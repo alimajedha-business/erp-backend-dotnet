@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
@@ -16,12 +17,22 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
 {
     private readonly ICategoryService _categoryService = categoryService;
 
+    [HttpPost]
+    public async Task<ActionResult<CategoryDto>> Create(
+        [FromBody] CreateCategoryDto createCategoryDto,
+        CancellationToken ct
+    )
+    {
+        var categoryDto = await _categoryService.CreateAsync(createCategoryDto, ct);
+        return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
+    }
+
     [HttpGet]
-    public async Task<IActionResult> GetCategories([FromQuery] CategoryParameters categoryParameters)
+    public async Task<IActionResult> GetPaginated([FromQuery] CategoryParameters categoryParameters)
     {
         try
         {
-            var categories = await _categoryService.GetCategoriesAsync(categoryParameters);
+            var categories = await _categoryService.GetPaginatedAsync(categoryParameters);
 
             return Ok(new
             {
@@ -42,11 +53,11 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCategoryById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
         try
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
+            var category = await _categoryService.GetByIdAsync(id);
 
             return Ok(new
             {

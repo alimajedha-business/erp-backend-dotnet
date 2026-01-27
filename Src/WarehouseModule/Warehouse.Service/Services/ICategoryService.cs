@@ -5,13 +5,13 @@ namespace NGErp.Warehouse.Service.Services;
 
 public interface ICategoryService
 {
-    Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto category);
-    Task<IEnumerable<CategoryDto>> GetCategoriesAsync(
+    Task<CategoryDto> CreateAsync(CreateCategoryDto createCategoryDto, CancellationToken ct);
+    Task<IEnumerable<CategoryDto>> GetPaginatedAsync(
         CategoryParameters categoryParameters,
         string? search = null,
         object[]? searchParameters = null
     );
-    Task<CategoryDto?> GetCategoryByIdAsync(Guid id);
-    Task<CategoryDto> UpdateCategoryAsync(Guid id, UpdateCategoryDto category);
-    Task<bool> DeleteCategoryAsync(Guid id);
+    Task<CategoryDto?> GetByIdAsync(Guid id);
+    Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto);
+    Task<bool> DeleteAsync(Guid id);
 }
