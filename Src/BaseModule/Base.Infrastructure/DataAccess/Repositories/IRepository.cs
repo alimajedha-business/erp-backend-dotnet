@@ -22,6 +22,6 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
         void UpdateRange(IEnumerable<T> entities);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken ct);
     }
 }

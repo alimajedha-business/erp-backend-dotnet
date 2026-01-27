@@ -110,9 +110,9 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             _dbSet.RemoveRange(entities);
         }
 
-        public virtual async Task<int> SaveChangesAsync()
+        public virtual async Task<int> SaveChangesAsync(CancellationToken ct)
         {
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(ct);
         }
     }
 }
