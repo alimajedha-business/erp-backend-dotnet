@@ -18,6 +18,8 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     private readonly ICategoryService _categoryService = categoryService;
 
     [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public async Task<ActionResult<CategoryDto>> Create(
         [FromBody] CreateCategoryDto createCategoryDto,
         CancellationToken ct
