@@ -1,9 +1,7 @@
 ﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
@@ -14,22 +12,16 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/items/")]
 //[JwtAuthorize]
-public class ItemController(
-    IItemService itemService,
-    ILogger<ItemController> logger,
-    ICurrentUserService currentUserService
-) : ControllerBase
+public class ItemController(IItemService itemService) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
-    private readonly ILogger<ItemController> _logger = logger;
-    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     [HttpGet]
-    public async Task<IActionResult> GetItems([FromQuery] ItemParameters prms)
+    public async Task<IActionResult> GetItems([FromQuery] ItemParameters itemParameters)
     {
         try
         {
-            var items = await _itemService.GetItemsAsync(prms);
+            var items = await _itemService.GetItemsAsync(itemParameters);
 
             return Ok(new
             {

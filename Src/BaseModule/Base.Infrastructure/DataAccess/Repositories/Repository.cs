@@ -30,9 +30,9 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
         }
 
         public virtual IQueryable<T> GetPaginated(
-            RequestParameters prms,
+            RequestParameters requestParameters,
             string? search = null,
-            object[]? searhcPrms = null
+            object[]? searchParameters = null
         )
         {
             IQueryable<T> query = _context.Set<T>();
@@ -40,15 +40,15 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             // 1- apply filtering
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = (searhcPrms is { Length: > 0 })
-                    ? query.Where(search, searhcPrms)
+                query = (searchParameters is { Length: > 0 })
+                    ? query.Where(search, searchParameters)
                     : query.Where(search);
             }
 
             // 2- apply sorting
-            if (!string.IsNullOrWhiteSpace(prms.OrderBy))
+            if (!string.IsNullOrWhiteSpace(requestParameters.OrderBy))
             {
-                var orderByClause = prms.OrderBy.Trim();
+                var orderByClause = requestParameters.OrderBy.Trim();
 
                 // support "-Field" to mean DESC
                 if (orderByClause.StartsWith('-'))
@@ -59,8 +59,8 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
 
             // 3- apply paging
             return query
-                .Skip(prms.PageSize * (prms.PageNumber - 1))
-                .Take(prms.PageSize);
+                .Skip(requestParameters.PageSize * (requestParameters.PageNumber - 1))
+                .Take(requestParameters.PageSize);
         }
 
 

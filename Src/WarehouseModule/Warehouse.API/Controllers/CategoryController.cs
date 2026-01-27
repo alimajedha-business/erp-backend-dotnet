@@ -1,9 +1,7 @@
 ﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
@@ -14,22 +12,16 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/categories/")]
 //[JwtAuthorize]
-public class CategoryController(
-    ICategoryService categoryService,
-    ILogger<CategoryController> logger,
-    ICurrentUserService currentUserService
-) : ControllerBase
+public class CategoryController(ICategoryService categoryService) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
-    private readonly ILogger<CategoryController> _logger = logger;
-    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     [HttpGet]
-    public async Task<IActionResult> GetCatogories([FromQuery] CategoryParameters prms)
+    public async Task<IActionResult> GetCategories([FromQuery] CategoryParameters categoryParameters)
     {
         try
         {
-            var categories = await _categoryService.GetCategoriesAsync(prms);
+            var categories = await _categoryService.GetCategoriesAsync(categoryParameters);
 
             return Ok(new
             {
