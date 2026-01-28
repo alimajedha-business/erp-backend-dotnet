@@ -70,14 +70,17 @@ namespace NGErp.API.Extensions
                 {
                     options.DataAnnotationLocalizerProvider = (type, factory) =>
                     {
-                        var module = ProjectConstants.Modules
-                        .FirstOrDefault(m => type.Namespace?.Contains(m) == true);
+                        var module = ProjectConstants
+                            .Modules
+                            .FirstOrDefault(m => type.Namespace?.Contains(m) == true);
+
                         if (module is not null)
                         {
                             var resourceTypeName = $"{module}.Resources.{module}Resource";
                             var resourceType = AppDomain.CurrentDomain.GetAssemblies()
-                                .SelectMany(a => a.GetTypes())
-                                .FirstOrDefault(t => t.FullName == resourceTypeName);
+                                .Select(a => a.GetType(resourceTypeName, throwOnError: false, ignoreCase: false))
+                                .FirstOrDefault(t => t != null);
+
                             if (resourceType is not null)
                                 return factory.Create(resourceType);
                         }
