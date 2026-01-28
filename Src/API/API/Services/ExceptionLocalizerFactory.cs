@@ -1,14 +1,7 @@
-﻿// Ignore Spelling: Localizer
-
-using NGErp.Base.Service.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Resources;
 using NGErp.General.Service.Resources;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.API.Services
 {
@@ -21,6 +14,7 @@ namespace NGErp.API.Services
             var mapping = new (string key, Type resource)[]
             {
                 ("General", typeof(GeneralResource)),
+                ("Warehouse", typeof(WarehouseResource)),
             };
 
             var match = mapping.FirstOrDefault(m => ns.Contains(m.key));

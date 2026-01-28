@@ -2,6 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -57,24 +59,16 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        try
+        var category = await _categoryService.GetByIdAsync(id);
+        if (category is not null)
         {
-            var category = await _categoryService.GetByIdAsync(id);
-
             return Ok(new
             {
                 success = true,
                 data = category,
             });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                success = false,
-                error = "Failed to fetch Category with the given Id.",
-                message = ex.Message
-            });
-        }
+
+        throw new CategoryNotFoundException(id);
     }
 }
