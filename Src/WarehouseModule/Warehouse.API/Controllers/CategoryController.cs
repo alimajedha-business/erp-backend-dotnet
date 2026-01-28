@@ -34,26 +34,14 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpGet]
     public async Task<IActionResult> GetPaginated([FromQuery] CategoryParameters categoryParameters)
     {
-        try
-        {
-            var categories = await _categoryService.GetPaginatedAsync(categoryParameters);
+        var categories = await _categoryService.GetPaginatedAsync(categoryParameters);
 
-            return Ok(new
-            {
-                success = true,
-                data = categories,
-                count = categories.Count()
-            });
-        }
-        catch (Exception ex)
+        return Ok(new
         {
-            return StatusCode(500, new
-            {
-                success = false,
-                error = "Failed to fetch Categories",
-                message = ex.Message
-            });
-        }
+            success = true,
+            data = categories,
+            count = categories.Count()
+        });
     }
 
     [HttpGet("{id:guid}")]

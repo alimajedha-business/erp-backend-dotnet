@@ -120,4 +120,7 @@
   <data name="CategoryNotFound" xml:space="preserve">
     <value>طبقه‌بندی با شناسه {0} یافت نشد.</value>
   </data>
+  <data name="ItemNotFound" xml:space="preserve">
+    <value>کالا با شناسه {0} یافت نشد.</value>
+  </data>
 </root>
