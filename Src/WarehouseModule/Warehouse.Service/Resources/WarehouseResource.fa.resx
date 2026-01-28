@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryNotFound" xml:space="preserve">
-    <value>طبقه‌بندی با شناسه {0} یافت نشد.</value>
+    <value>طبقه‌بندی مورد نظر یافت نشد.</value>
   </data>
   <data name="ItemNotFound" xml:space="preserve">
-    <value>کالا با شناسه {0} یافت نشد.</value>
+    <value>کالای مورد نظر یافت نشد.</value>
   </data>
 </root>
