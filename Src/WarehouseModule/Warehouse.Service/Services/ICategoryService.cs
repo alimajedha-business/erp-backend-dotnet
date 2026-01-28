@@ -12,6 +12,10 @@ public interface ICategoryService
         object[]? searchParameters = null
     );
     Task<CategoryDto?> GetByIdAsync(Guid id);
-    Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto);
+    Task<CategoryDto?> UpdateAsync(
+        Guid id,
+        UpdateCategoryDto updateCategoryDto,
+        CancellationToken ct
+    );
     Task<bool> DeleteAsync(Guid id);
 }

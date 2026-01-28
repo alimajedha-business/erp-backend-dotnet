@@ -1,11 +1,12 @@
 ﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -22,7 +23,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult<CategoryDto>> Create(
+    public async Task<IActionResult> Create(
         [FromBody] CreateCategoryDto createCategoryDto,
         CancellationToken ct
     )
@@ -54,6 +55,37 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
             {
                 success = true,
                 data = category,
+            });
+        }
+
+        throw new CategoryNotFoundException(id);
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateCategoryDto updateCategoryDto,
+        CancellationToken ct
+    )
+    {
+        var categoryDto = await _categoryService.UpdateAsync(id, updateCategoryDto, ct);
+        if (categoryDto is not null)
+        {
+            return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
+        }
+
+        throw new CategoryNotFoundException(id);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var succeed = await _categoryService.DeleteAsync(id);
+        if (succeed)
+        {
+            return Ok(new
+            {
+                success = true,
             });
         }
 

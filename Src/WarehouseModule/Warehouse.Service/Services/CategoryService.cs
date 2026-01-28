@@ -2,7 +2,6 @@
 
 using Microsoft.Extensions.Logging;
 
-using NGErp.General.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -46,16 +45,32 @@ public class CategoryService(
     public async Task<CategoryDto?> GetByIdAsync(Guid id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        return category != null ? _mapper.Map<CategoryDto>(category) : null;
+        return category is not null ? _mapper.Map<CategoryDto>(category) : null;
     }
 
-    public async Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto)
+    public async Task<CategoryDto?> UpdateAsync(
+        Guid id,
+        UpdateCategoryDto updateCategoryDto,
+        CancellationToken ct
+    )
     {
-        throw new NotImplementedException(); 
+        var category = await _categoryRepository.GetByIdAsync(id);
+        if (category == null)
+            return null;
+
+        _mapper.Map(updateCategoryDto, category);
+        await _categoryRepository.SaveChangesAsync(ct);
+
+        return _mapper.Map<CategoryDto>(category);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var category = await _categoryRepository.GetByIdAsync(id);
+        if (category == null)
+            return false;
+
+        _categoryRepository.Remove(category);
+        return true;
     }
 }
