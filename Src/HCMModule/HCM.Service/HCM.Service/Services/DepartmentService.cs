@@ -47,7 +47,7 @@ namespace NGErp.HCM.Service.Services
             try
             {
                 _logger.LogInformation("Fetching departments");
-                var result = await _departmentRepository.GetAllAsync().ToListAsync();
+                var result = await _departmentRepository.GetAll().ToListAsync();
                 var departmentDto = _mapper.Map<List<DepartmentDto>>(result);
                 return departmentDto;
             }

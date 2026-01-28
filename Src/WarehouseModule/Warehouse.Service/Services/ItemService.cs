@@ -30,12 +30,12 @@ public class ItemService(
     }
 
     public async Task<IEnumerable<ItemDto>> GetItemsAsync(
-        ItemParameters prms,
+        ItemParameters itemParameters,
         string? search,
-        object[]? searchPrms
+        object[]? searchParameters
     )
     {
-        var items = await _itemRepository.GetPaginatedAsync(prms, search, searchPrms);
+        var items = await _itemRepository.GetPaginatedAsync(itemParameters, search, searchParameters);
         return _mapper.Map<IEnumerable<ItemDto>>(items);
     }
 

@@ -1,13 +1,11 @@
-﻿// Ignore Spelling: Middleware
+﻿using System.ComponentModel.DataAnnotations;
 
-using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Domain.ErrorModels;
-using NGErp.Base.Infrastructure.Logging;
 using Microsoft.AspNetCore.Diagnostics;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Reflection;
+
 using NGErp.API.Services;
+using NGErp.Base.Domain.ErrorModels;
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Infrastructure.Logging;
 
 namespace NGErp.API.Extensions
 {
@@ -39,8 +37,11 @@ namespace NGErp.API.Extensions
                     context.Response.StatusCode = statusCode;
 
                     // Structured logging with more context
-                    logger.LogError(ex, "Exception occurred: {Message} | TraceId: {TraceId}",
-                        ex.Message, context.TraceIdentifier);
+                    logger.LogError(
+                        ex,
+                        "Exception occurred: {Message} | TraceId: {TraceId}",
+                        ex.Message, context.TraceIdentifier
+                    );
 
                     // Resolve localizer dynamically per module / exception
                     var isDevelopment = app.Environment.IsDevelopment();

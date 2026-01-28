@@ -1,5 +1,5 @@
 ﻿namespace NGErp.Warehouse.Service.Resources;
 
-public class WarehouseResources
+public class WarehouseResource
 {
 }

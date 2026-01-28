@@ -7,8 +7,8 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 public interface ICategoryRepository : IRepository<Category> 
 {
     Task<IEnumerable<Category>> GetPaginatedAsync(
-        CategoryParameters prms,
+        CategoryParameters categoryParameters,
         string? search = null,
-        object[]? searchPrms = null
+        object[]? searchParameters = null
     );
 }

@@ -7,9 +7,9 @@ public interface IItemService
 {
     Task<ItemDto> CreateItemAsync(CreateItemDto item);
     Task<IEnumerable<ItemDto>> GetItemsAsync(
-        ItemParameters prms,
+        ItemParameters itemParameters,
         string? search = null,
-        object[]? searchPrms = null
+        object[]? searchParameters = null
     );
     Task<ItemDto?> GetItemByIdAsync(Guid id);
     Task<ItemDto> UpdateItemAsync(Guid id, UpdateItemDto item);
