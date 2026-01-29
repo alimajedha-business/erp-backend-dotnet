@@ -1,25 +1,30 @@
 ﻿using AutoMapper;
 
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class CategoryService(
     ICategoryRepository categoryRepository,
-    ILogger<CategoryService> logger,
-    IMapper mapper
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
-    private readonly ILogger<CategoryService> _logger = logger;
     private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<CategoryDto> CreateAsync(CreateCategoryDto createCategoryDto, CancellationToken ct)
+    public async Task<CategoryDto> CreateAsync(
+        CreateCategoryDto createCategoryDto,
+        CancellationToken ct
+    )
     {
         var category = _mapper.Map<Category>(createCategoryDto);
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
@@ -42,21 +47,18 @@ public class CategoryService(
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 
-    public async Task<CategoryDto?> GetByIdAsync(Guid id)
+    public async Task<CategoryDto> GetByIdAsync(Guid id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        return category is not null ? _mapper.Map<CategoryDto>(category) : null;
+        return _mapper.Map<CategoryDto>(await GetCategoryByIdAsync(id));
     }
 
-    public async Task<CategoryDto?> UpdateAsync(
+    public async Task<CategoryDto> UpdateAsync(
         Guid id,
         UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     )
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null)
-            return null;
+        var category = await GetCategoryByIdAsync(id);
 
         _mapper.Map(updateCategoryDto, category);
         await _categoryRepository.SaveChangesAsync(ct);
@@ -66,11 +68,13 @@ public class CategoryService(
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null)
-            return false;
-
-        _categoryRepository.Remove(category);
+        _categoryRepository.Remove(await GetCategoryByIdAsync(id));
         return true;
+    }
+
+    private async Task<Category> GetCategoryByIdAsync(Guid id)
+    {
+        var category = await _categoryRepository.GetByIdAsync(id);
+        return category ?? throw new NotFoundException(_localizer["Category"].Value);
     }
 }

@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CategoryNotFound" xml:space="preserve">
-    <value>طبقه‌بندی مورد نظر یافت نشد.</value>
+  <data name="Category" xml:space="preserve">
+    <value>طبقه‌بندی</value>
   </data>
-  <data name="ItemNotFound" xml:space="preserve">
-    <value>کالای مورد نظر یافت نشد.</value>
+  <data name="Item" xml:space="preserve">
+    <value>کالا</value>
   </data>
 </root>

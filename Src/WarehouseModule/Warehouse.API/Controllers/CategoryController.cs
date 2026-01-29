@@ -1,12 +1,9 @@
 ﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
-using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -49,16 +46,12 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     public async Task<IActionResult> GetById(Guid id)
     {
         var category = await _categoryService.GetByIdAsync(id);
-        if (category is not null)
-        {
-            return Ok(new
-            {
-                success = true,
-                data = category,
-            });
-        }
 
-        throw new CategoryNotFoundException(id);
+        return Ok(new
+        {
+            success = true,
+            data = category,
+        });
     }
 
     [HttpPatch]
@@ -69,26 +62,17 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     )
     {
         var categoryDto = await _categoryService.UpdateAsync(id, updateCategoryDto, ct);
-        if (categoryDto is not null)
-        {
-            return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
-        }
-
-        throw new CategoryNotFoundException(id);
+        return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var succeed = await _categoryService.DeleteAsync(id);
-        if (succeed)
-        {
-            return Ok(new
-            {
-                success = true,
-            });
-        }
 
-        throw new CategoryNotFoundException(id);
+        return Ok(new
+        {
+            success = true,
+        });
     }
 }

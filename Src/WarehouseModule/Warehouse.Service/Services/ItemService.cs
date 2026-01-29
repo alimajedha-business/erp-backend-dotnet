@@ -1,57 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 
-using AutoMapper;
+using Microsoft.Extensions.Localization;
 
-using Microsoft.Extensions.Logging;
-
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class ItemService(
     IItemRepository itemRepository,
-    ILogger<ItemService> logger,
-    IMapper mapper
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : IItemService
 {
     private readonly IItemRepository _itemRepository = itemRepository;
-    private readonly ILogger<ItemService> _logger = logger;
     private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<ItemDto> CreateItemAsync(CreateItemDto item)
+    public async Task<ItemDto> CreateAsync(
+        CreateItemDto item,
+        CancellationToken ct
+    )
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ItemDto>> GetItemsAsync(
+    public async Task<IEnumerable<ItemDto>> GetPaginatedAsync(
         ItemParameters itemParameters,
         string? search,
         object[]? searchParameters
     )
     {
-        var items = await _itemRepository.GetPaginatedAsync(itemParameters, search, searchParameters);
+        var items = await _itemRepository.GetPaginatedAsync(
+            itemParameters,
+            search,
+            searchParameters
+        );
+
         return _mapper.Map<IEnumerable<ItemDto>>(items);
     }
 
-    public async Task<ItemDto?> GetItemByIdAsync(Guid Id)
+    public async Task<ItemDto?> GetByIdAsync(Guid id)
     {
-        var item = await _itemRepository.GetByIdAsync(Id);
-        return item != null ? _mapper.Map<ItemDto>(item) : null;
+        return _mapper.Map<ItemDto>(await GetItemByIdAsync(id));
     }
 
-    public async Task<ItemDto> UpdateItemAsync(Guid id, UpdateItemDto item)
+    public async Task<ItemDto> UpdateAsync(
+        Guid id,
+        UpdateItemDto updateItemDto,
+        CancellationToken ct
+    )
     {
-        throw new NotImplementedException();
+        var item = await GetItemByIdAsync(id);
+
+        _mapper.Map(updateItemDto, item);
+        await _itemRepository.SaveChangesAsync(ct);
+
+        return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<bool> DeleteItemAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        _itemRepository.Remove(await GetItemByIdAsync(id));
+        return true;
+    }
+
+    private async Task<Item> GetItemByIdAsync(Guid id)
+    {
+        var item = await _itemRepository.GetByIdAsync(id);
+        return item ?? throw new NotFoundException(_localizer["Item"].Value);
     }
 }
