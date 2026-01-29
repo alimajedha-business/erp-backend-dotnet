@@ -30,9 +30,9 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetPaginated([FromQuery] CategoryParameters categoryParameters)
+    public async Task<IActionResult> GetList([FromQuery] CategoryParameters categoryParameters)
     {
-        var categories = await _categoryService.GetPaginatedAsync(categoryParameters);
+        var categories = await _categoryService.GetListAsync(categoryParameters);
 
         return Ok(new
         {

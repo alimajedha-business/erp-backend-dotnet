@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -32,16 +33,14 @@ public class CategoryService(
         return  _mapper.Map<CategoryDto>(createdCategory);
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetPaginatedAsync(
+    public async Task<IEnumerable<CategoryDto>> GetListAsync(
         CategoryParameters categoryParameters,
-        string? search,
-        object[]? searchParameters
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var categories = await _categoryRepository.GetPaginatedAsync(
+        var categories = await _categoryRepository.GetListAsync(
             categoryParameters,
-            search,
-            searchParameters
+            requestAdvancedFilters
         );
 
         return _mapper.Map<IEnumerable<CategoryDto>>(categories);

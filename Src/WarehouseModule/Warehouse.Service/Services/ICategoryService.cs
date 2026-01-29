@@ -1,4 +1,5 @@
-﻿using NGErp.Warehouse.Service.DTOs;
+﻿using NGErp.Base.Service.RequestFeatures;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -9,10 +10,9 @@ public interface ICategoryService
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
     );
-    Task<IEnumerable<CategoryDto>> GetPaginatedAsync(
+    Task<IEnumerable<CategoryDto>> GetListAsync(
         CategoryParameters categoryParameters,
-        string? search = null,
-        object[]? searchParameters = null
+        RequestAdvancedFilters? requestAdvancedFilters = null
     );
     Task<CategoryDto> GetByIdAsync(Guid id);
     Task<CategoryDto> UpdateAsync(

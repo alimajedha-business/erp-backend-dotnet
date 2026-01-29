@@ -2,6 +2,7 @@
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -12,14 +13,19 @@ public class CategoryRepository(MainDbContext context) :
     Repository<Category>(context),
     ICategoryRepository
 {
-    public async Task<IEnumerable<Category>> GetPaginatedAsync(
+    public async Task<IEnumerable<Category>> GetListAsync(
         CategoryParameters categoryParameters,
-        string? search,
-        object[]? searchParameters
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        return await GetPaginated(categoryParameters, search, searchParameters)
-            .Where(e => e.CompanyId == new Guid("6f7be93f-c740-43b1-96b1-c6e3ff3af4ef"))
+        IQueryable<Category>? baseQuery = null;
+        if (categoryParameters.CompanyId is not null)
+        {
+            baseQuery = Find(w => w.CompanyId == categoryParameters.CompanyId);
+        }
+
+        return await base
+            .GetList(categoryParameters, requestAdvancedFilters, baseQuery)
             .ToListAsync();
     }
 }

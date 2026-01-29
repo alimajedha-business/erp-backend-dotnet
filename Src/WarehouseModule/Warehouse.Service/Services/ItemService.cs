@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -29,16 +30,14 @@ public class ItemService(
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ItemDto>> GetPaginatedAsync(
+    public async Task<IEnumerable<ItemDto>> GetListAsync(
         ItemParameters itemParameters,
-        string? search,
-        object[]? searchParameters
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var items = await _itemRepository.GetPaginatedAsync(
+        var items = await _itemRepository.GetListAsync(
             itemParameters,
-            search,
-            searchParameters
+            requestAdvancedFilters
         );
 
         return _mapper.Map<IEnumerable<ItemDto>>(items);

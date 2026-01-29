@@ -1,4 +1,5 @@
-﻿using NGErp.Warehouse.Service.DTOs;
+﻿using NGErp.Base.Service.RequestFeatures;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -9,10 +10,9 @@ public interface IItemService
         CreateItemDto item,
         CancellationToken ct
     );
-    Task<IEnumerable<ItemDto>> GetPaginatedAsync(
+    Task<IEnumerable<ItemDto>> GetListAsync(
         ItemParameters itemParameters,
-        string? search = null,
-        object[]? searchParameters = null
+        RequestAdvancedFilters? requestAdvancedFilters = null
     );
     Task<ItemDto?> GetByIdAsync(Guid id);
     Task<ItemDto> UpdateAsync(
