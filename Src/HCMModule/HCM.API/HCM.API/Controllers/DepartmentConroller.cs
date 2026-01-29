@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NGErp.HCM.Service.Services;
+using NGErp.Base.Service.RequestFeatures;
 
 namespace NGErp.HCM.API.Controllers
 {
@@ -31,7 +32,7 @@ namespace NGErp.HCM.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetDepartments()
+        public async Task<IActionResult> GetDepartments([FromQuery] RequestParameters requestParameters)
         {
             using (_logger.BeginScope(new Dictionary<string, object>
             {
@@ -43,7 +44,7 @@ namespace NGErp.HCM.API.Controllers
                 {
                     _logger.LogInformation("Fetching all Departments for user {Username}", _currentUserService.Username);
 
-                    var departments = await _departmentService.GetDepartmentsAsync();
+                    var departments = await _departmentService.GetDepartmentsAsync(requestParameters);
 
                     _logger.LogInformation("Retrieved {Count} Departments", departments.Count);
 
