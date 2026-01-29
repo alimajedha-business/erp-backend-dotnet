@@ -1,10 +1,9 @@
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.RequestFeatures;
-
-using System.Linq.Expressions;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories
 {
@@ -24,25 +23,25 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual IQueryable<T> GetAll()
-        {
-            return _context.Set<T>();
-        }
-
-        public virtual IQueryable<T> GetPaginated(
+        public virtual IQueryable<T> GetList(
             RequestParameters requestParameters,
-            string? search = null,
-            object[]? searchParameters = null
+            RequestAdvancedFilters? requestAdvancedFilters = null,
+            IQueryable<T>? baseQuery = null
         )
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = baseQuery ?? _context.Set<T>();
 
             // 1- apply filtering
-            if (!string.IsNullOrWhiteSpace(search))
+            if (requestAdvancedFilters != null)
             {
-                query = (searchParameters is { Length: > 0 })
-                    ? query.Where(search, searchParameters)
-                    : query.Where(search);
+                var (search, args) = requestAdvancedFilters;
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query = (args is { Length: > 0 })
+                        ? query.Where(search, args)
+                        : query.Where(search);
+                }
             }
 
             // 2- apply sorting
@@ -50,7 +49,6 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             {
                 var orderByClause = requestParameters.OrderBy.Trim();
 
-                // support "-Field" to mean DESC
                 if (orderByClause.StartsWith('-'))
                     orderByClause = orderByClause.TrimStart('-') + " DESC";
 
@@ -58,15 +56,22 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             }
 
             // 3- apply paging
+            if (!requestParameters.Paginated)
+            {
+                return query;
+            }
+
             return query
                 .Skip(requestParameters.PageSize * (requestParameters.PageNumber - 1))
                 .Take(requestParameters.PageSize);
         }
 
-
-        public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> Find(
+            Expression<Func<T, bool>> predicate,
+            IQueryable<T>? baseQuery = null
+        )
         {
-            return _context.Set<T>().Where(predicate);
+            return (baseQuery ?? _dbSet).Where(predicate);
         }
 
         public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
