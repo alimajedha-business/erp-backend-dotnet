@@ -32,7 +32,7 @@
             }
         }
 
-        public bool Paginated { get; set; }
+        public bool Paginated { get; set; } = true;
         public string? OrderBy { get; set; }
     }
 }
