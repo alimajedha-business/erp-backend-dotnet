@@ -32,6 +32,7 @@
             }
         }
 
+        public bool Paginated { get; set; }
         public string? OrderBy { get; set; }
     }
 }
