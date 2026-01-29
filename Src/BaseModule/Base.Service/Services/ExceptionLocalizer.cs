@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Resources;
 
 namespace NGErp.Base.Service.Services

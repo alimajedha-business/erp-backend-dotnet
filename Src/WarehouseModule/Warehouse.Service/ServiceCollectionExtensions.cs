@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using NGErp.Base.Service.Interfaces;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.Mappings;
 using NGErp.Warehouse.Service.Resources;
