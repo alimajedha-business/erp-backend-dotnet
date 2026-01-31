@@ -1,12 +1,19 @@
-using NGErp.API.Extensions;
 using Asp.Versioning.Routing;
-using NGErp.Base.Service;
-using NGErp.Base.Infrastructure.Logging;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Serilog;
-using Swashbuckle.AspNetCore.SwaggerUI;
+
+using NGErp.API.Extensions;
+using NGErp.Base.Domain.EntitySchemas;
+using NGErp.Base.Infrastructure.Logging;
+using NGErp.Base.Service;
+using NGErp.Base.Service.RequestFeatures;
+
 using Prometheus;
+
+using Serilog;
+
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -39,7 +46,10 @@ try
     builder.Host.UseSerilog();
     builder.Services.ConfigureSwagger();
     builder.Services.AddApiVersioning();
-    
+
+    builder.Services.AddSingleton<IFilterSchemaProvider, FilterSchemaProvider>();
+    builder.Services.AddScoped<IAdvancedFilterBuilder, AdvancedFilterBuilder>();
+
     // Add Prometheus metrics
     builder.Services.AddSingleton<Prometheus.IMetricFactory>(Prometheus.Metrics.DefaultFactory);
 
