@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -33,17 +34,21 @@ public class CategoryService(
         return  _mapper.Map<CategoryDto>(createdCategory);
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetListAsync(
+    public async Task<ListResponseModel<CategoryDto>> GetListAsync(
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var categories = await _categoryRepository.GetListAsync(
+        var listQueryResult = await _categoryRepository.GetListAsync(
             categoryParameters,
             requestAdvancedFilters
         );
 
-        return _mapper.Map<IEnumerable<CategoryDto>>(categories);
+        return new ListResponseModel<CategoryDto>(
+            items: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            categoryParameters
+        );
     }
 
     public async Task<CategoryDto> GetByIdAsync(Guid id)

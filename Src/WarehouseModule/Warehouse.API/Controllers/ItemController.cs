@@ -19,14 +19,8 @@ public class ItemController(IItemService itemService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetPaginated([FromQuery] ItemParameters itemParameters)
     {
-        var items = await _itemService.GetListAsync(itemParameters);
-
-        return Ok(new
-        {
-            success = true,
-            data = items,
-            count = items.Count()
-        });
+        var result = await _itemService.GetListAsync(itemParameters);
+        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]

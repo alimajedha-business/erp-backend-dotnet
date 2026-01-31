@@ -32,14 +32,8 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpGet]
     public async Task<IActionResult> GetList([FromQuery] CategoryParameters categoryParameters)
     {
-        var categories = await _categoryService.GetListAsync(categoryParameters);
-
-        return Ok(new
-        {
-            success = true,
-            data = categories,
-            count = categories.Count()
-        });
+        var result = await _categoryService.GetListAsync(categoryParameters);
+        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -30,17 +31,21 @@ public class ItemService(
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ItemDto>> GetListAsync(
+    public async Task<ListResponseModel<ItemDto>> GetListAsync(
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var items = await _itemRepository.GetListAsync(
+        var listQueryResult = await _itemRepository.GetListAsync(
             itemParameters,
             requestAdvancedFilters
         );
 
-        return _mapper.Map<IEnumerable<ItemDto>>(items);
+        return new ListResponseModel<ItemDto>(
+            items: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            itemParameters
+        );
     }
 
     public async Task<ItemDto?> GetByIdAsync(Guid id)

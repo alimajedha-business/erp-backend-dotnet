@@ -1,4 +1,5 @@
 ﻿using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -10,7 +11,7 @@ public interface ICategoryService
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
     );
-    Task<IEnumerable<CategoryDto>> GetListAsync(
+    Task<ListResponseModel<CategoryDto>> GetListAsync(
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );

@@ -1,4 +1,5 @@
 ﻿using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -10,7 +11,7 @@ public interface IItemService
         CreateItemDto item,
         CancellationToken ct
     );
-    Task<IEnumerable<ItemDto>> GetListAsync(
+    Task<ListResponseModel<ItemDto>> GetListAsync(
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );

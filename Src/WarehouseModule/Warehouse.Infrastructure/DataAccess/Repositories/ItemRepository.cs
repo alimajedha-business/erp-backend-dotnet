@@ -3,6 +3,7 @@
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -13,7 +14,7 @@ public class ItemRepository(MainDbContext context) :
     Repository<Item>(context),
     IItemRepository
 {
-    public async Task<IEnumerable<Item>> GetListAsync(
+    public async Task<ListQueryResult<Item>> GetListAsync(
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
@@ -29,8 +30,13 @@ public class ItemRepository(MainDbContext context) :
             baseQuery = Find(w => w.CategoryId == itemParameters.CategoryId, baseQuery);
         }
 
-        return await base
-            .GetList(itemParameters, requestAdvancedFilters, baseQuery)
-            .ToListAsync();
+        IQueryable<Item> sorted = base
+            .GetList(requestAdvancedFilters, baseQuery)
+            .Sort(itemParameters);
+
+        var totalCount = await sorted.CountAsync();
+        var items = await sorted.Paginate(itemParameters).ToListAsync();
+
+        return new ListQueryResult<Item>(items, totalCount);
     }
 }
