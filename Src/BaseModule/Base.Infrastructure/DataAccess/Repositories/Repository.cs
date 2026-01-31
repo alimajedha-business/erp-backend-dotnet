@@ -24,14 +24,12 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
         }
 
         public virtual IQueryable<T> GetList(
-            RequestParameters requestParameters,
             RequestAdvancedFilters? requestAdvancedFilters = null,
             IQueryable<T>? baseQuery = null
         )
         {
             IQueryable<T> query = baseQuery ?? _context.Set<T>();
 
-            // 1- apply filtering
             if (requestAdvancedFilters != null)
             {
                 var (search, args) = requestAdvancedFilters;
@@ -44,26 +42,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
                 }
             }
 
-            // 2- apply sorting
-            if (!string.IsNullOrWhiteSpace(requestParameters.OrderBy))
-            {
-                var orderByClause = requestParameters.OrderBy.Trim();
-
-                if (orderByClause.StartsWith('-'))
-                    orderByClause = orderByClause.TrimStart('-') + " DESC";
-
-                query = query.OrderBy(orderByClause);
-            }
-
-            // 3- apply paging
-            if (!requestParameters.Paginated)
-            {
-                return query;
-            }
-
-            return query
-                .Skip(requestParameters.PageSize * (requestParameters.PageNumber - 1))
-                .Take(requestParameters.PageSize);
+            return query;
         }
 
         public virtual IQueryable<T> Find(

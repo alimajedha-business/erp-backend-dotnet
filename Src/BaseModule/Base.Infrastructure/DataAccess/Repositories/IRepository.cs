@@ -8,7 +8,6 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
     {
         Task<T?> GetByIdAsync(Guid id);
         IQueryable<T> GetList(
-            RequestParameters requestParameters,
             RequestAdvancedFilters? requestAdvancedFilters = null,
             IQueryable<T>? baseQuery = null
         );
