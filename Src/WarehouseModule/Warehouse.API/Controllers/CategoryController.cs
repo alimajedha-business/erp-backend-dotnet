@@ -2,6 +2,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.RequestFeatures;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -13,9 +17,13 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/categories/")]
 //[JwtAuthorize]
-public class CategoryController(ICategoryService categoryService) : ControllerBase
+public class CategoryController(
+    ICategoryService categoryService,
+    IAdvancedFilterBuilder filterBuilder
+) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
     [Produces("application/json")]
@@ -35,6 +43,27 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
         var result = await _categoryService.GetListAsync(categoryParameters);
         return Ok(result);
     }
+
+    [HttpPost("search/")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetListWithSearch(
+        [FromQuery] CategoryParameters categoryParameters,
+        [FromBody] FilterNodeDto? filterNodeDto
+    )
+    {
+        var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
+
+        var categories = await _categoryService.GetListAsync(
+            categoryParameters,
+            requestAdvancedFilters
+        );
+
+        return Ok(new
+        {
+            Data = categories
+        });
+    }
+
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
