@@ -188,7 +188,7 @@ namespace NGErp.API.Extensions
                 // Derive culture from Accept-Language header
                 options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
                 {
-                    var lang = context.Request.Headers["Accept-Language"].FirstOrDefault();
+                    var lang = context.Request.Headers.AcceptLanguage.FirstOrDefault();
                     var culture = !string.IsNullOrEmpty(lang) ? lang : "fa";
                     return await Task.FromResult(new ProviderCultureResult(culture));
                 }));

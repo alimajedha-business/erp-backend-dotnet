@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NGErp.Base.Infrastructure.Services;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.HCM.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Service.DTOs;
 using System;
@@ -42,12 +43,12 @@ namespace NGErp.HCM.Service.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<DepartmentDto>> GetDepartmentsAsync()
+        public async Task<List<DepartmentDto>> GetDepartmentsAsync(RequestParameters requestParameters)
         {
             try
             {
                 _logger.LogInformation("Fetching departments");
-                var result = await _departmentRepository.GetAll().ToListAsync();
+                var result = await _departmentRepository.GetList().ToListAsync();
                 var departmentDto = _mapper.Map<List<DepartmentDto>>(result);
                 return departmentDto;
             }

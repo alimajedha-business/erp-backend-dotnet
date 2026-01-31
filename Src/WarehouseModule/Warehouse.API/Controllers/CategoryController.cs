@@ -2,8 +2,6 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.Domain.Exceptions;
-using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -22,7 +20,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<ActionResult<CategoryDto>> Create(
+    public async Task<IActionResult> Create(
         [FromBody] CreateCategoryDto createCategoryDto,
         CancellationToken ct
     )
@@ -32,31 +30,43 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetPaginated([FromQuery] CategoryParameters categoryParameters)
+    public async Task<IActionResult> GetList([FromQuery] CategoryParameters categoryParameters)
     {
-        var categories = await _categoryService.GetPaginatedAsync(categoryParameters);
-
-        return Ok(new
-        {
-            success = true,
-            data = categories,
-            count = categories.Count()
-        });
+        var result = await _categoryService.GetListAsync(categoryParameters);
+        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var category = await _categoryService.GetByIdAsync(id);
-        if (category is not null)
-        {
-            return Ok(new
-            {
-                success = true,
-                data = category,
-            });
-        }
 
-        throw new CategoryNotFoundException(id);
+        return Ok(new
+        {
+            success = true,
+            data = category,
+        });
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateCategoryDto updateCategoryDto,
+        CancellationToken ct
+    )
+    {
+        var categoryDto = await _categoryService.UpdateAsync(id, updateCategoryDto, ct);
+        return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var succeed = await _categoryService.DeleteAsync(id);
+
+        return Ok(new
+        {
+            success = true,
+        });
     }
 }

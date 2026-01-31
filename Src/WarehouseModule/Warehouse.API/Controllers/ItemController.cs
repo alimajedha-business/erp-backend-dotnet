@@ -2,7 +2,6 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
@@ -18,31 +17,21 @@ public class ItemController(IItemService itemService) : ControllerBase
     private readonly IItemService _itemService = itemService;
 
     [HttpGet]
-    public async Task<IActionResult> GetItems([FromQuery] ItemParameters itemParameters)
+    public async Task<IActionResult> GetPaginated([FromQuery] ItemParameters itemParameters)
     {
-        var items = await _itemService.GetItemsAsync(itemParameters);
+        var result = await _itemService.GetListAsync(itemParameters);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var item = await _itemService.GetByIdAsync(id);
 
         return Ok(new
         {
             success = true,
-            data = items,
-            count = items.Count()
+            data = item,
         });
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetItemById(Guid id)
-    {
-        var item = await _itemService.GetItemByIdAsync(id);
-        if (item is not null)
-        {
-            return Ok(new
-            {
-                success = true,
-                data = item,
-            });
-        }
-
-        throw new ItemNotFoundException(id);
     }
 }

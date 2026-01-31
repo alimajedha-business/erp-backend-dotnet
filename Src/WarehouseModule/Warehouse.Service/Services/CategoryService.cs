@@ -1,26 +1,32 @@
 ﻿using AutoMapper;
 
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 
-using NGErp.General.Domain.Entities;
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class CategoryService(
     ICategoryRepository categoryRepository,
-    ILogger<CategoryService> logger,
-    IMapper mapper
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
-    private readonly ILogger<CategoryService> _logger = logger;
     private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<CategoryDto> CreateAsync(CreateCategoryDto createCategoryDto, CancellationToken ct)
+    public async Task<CategoryDto> CreateAsync(
+        CreateCategoryDto createCategoryDto,
+        CancellationToken ct
+    )
     {
         var category = _mapper.Map<Category>(createCategoryDto);
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
@@ -28,34 +34,51 @@ public class CategoryService(
         return  _mapper.Map<CategoryDto>(createdCategory);
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetPaginatedAsync(
+    public async Task<ListResponseModel<CategoryDto>> GetListAsync(
         CategoryParameters categoryParameters,
-        string? search,
-        object[]? searchParameters
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var categories = await _categoryRepository.GetPaginatedAsync(
+        var listQueryResult = await _categoryRepository.GetListAsync(
             categoryParameters,
-            search,
-            searchParameters
+            requestAdvancedFilters
         );
 
-        return _mapper.Map<IEnumerable<CategoryDto>>(categories);
+        return new ListResponseModel<CategoryDto>(
+            items: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            categoryParameters
+        );
     }
 
-    public async Task<CategoryDto?> GetByIdAsync(Guid id)
+    public async Task<CategoryDto> GetByIdAsync(Guid id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        return category != null ? _mapper.Map<CategoryDto>(category) : null;
+        return _mapper.Map<CategoryDto>(await GetCategoryByIdAsync(id));
     }
 
-    public async Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto)
+    public async Task<CategoryDto> UpdateAsync(
+        Guid id,
+        UpdateCategoryDto updateCategoryDto,
+        CancellationToken ct
+    )
     {
-        throw new NotImplementedException(); 
+        var category = await GetCategoryByIdAsync(id);
+
+        _mapper.Map(updateCategoryDto, category);
+        await _categoryRepository.SaveChangesAsync(ct);
+
+        return _mapper.Map<CategoryDto>(category);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        _categoryRepository.Remove(await GetCategoryByIdAsync(id));
+        return true;
+    }
+
+    private async Task<Category> GetCategoryByIdAsync(Guid id)
+    {
+        var category = await _categoryRepository.GetByIdAsync(id);
+        return category ?? throw new NotFoundException(_localizer["Category"].Value);
     }
 }

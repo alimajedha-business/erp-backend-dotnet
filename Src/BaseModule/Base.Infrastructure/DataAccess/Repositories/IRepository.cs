@@ -7,13 +7,14 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
     public interface IRepository<T> where T : class
     {
         Task<T?> GetByIdAsync(Guid id);
-        IQueryable<T> GetAll();
-        IQueryable<T> GetPaginated(
-            RequestParameters requestParameters,
-            string? search,
-            object[]? searchParameters
+        IQueryable<T> GetList(
+            RequestAdvancedFilters? requestAdvancedFilters = null,
+            IQueryable<T>? baseQuery = null
         );
-        IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate);
+        IQueryable<T> Find(
+            Expression<Func<T, bool>> predicate,
+            IQueryable<T>? baseQuery = null
+        );
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         Task<T> AddAsync(T entity, CancellationToken ct);

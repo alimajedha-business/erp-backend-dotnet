@@ -2,6 +2,8 @@
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -12,14 +14,29 @@ public class ItemRepository(MainDbContext context) :
     Repository<Item>(context),
     IItemRepository
 {
-    public async Task<IEnumerable<Item>> GetPaginatedAsync(
+    public async Task<ListQueryResult<Item>> GetListAsync(
         ItemParameters itemParameters,
-        string? search,
-        object[]? searchParameters
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        return await GetPaginated(itemParameters, search, searchParameters)
-            .Where(e => e.CompanyId == new Guid("6f7be93f-c740-43b1-96b1-c6e3ff3af4ef"))
-            .ToListAsync();
+        IQueryable<Item>? baseQuery = null;
+        if (itemParameters.CompanyId is not null)
+        {
+            baseQuery = Find(w => w.CompanyId == itemParameters.CompanyId);
+        }
+
+        if (itemParameters.CategoryId is not null)
+        {
+            baseQuery = Find(w => w.CategoryId == itemParameters.CategoryId, baseQuery);
+        }
+
+        IQueryable<Item> sorted = base
+            .GetList(requestAdvancedFilters, baseQuery)
+            .Sort(itemParameters);
+
+        var totalCount = await sorted.CountAsync();
+        var items = await sorted.Paginate(itemParameters).ToListAsync();
+
+        return new ListQueryResult<Item>(items, totalCount);
     }
 }

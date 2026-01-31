@@ -1,11 +1,5 @@
-﻿using NGErp.Base.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
+﻿using System.Dynamic;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGErp.Base.Service.Services
 {

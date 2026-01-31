@@ -121,7 +121,7 @@
     <value>یک خطای غیرمنتطره رخ داد</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>یافت نشد</value>
+    <value>{0} مورد نظر یافت نشد.</value>
   </data>
   <data name="ObjectIsNull" xml:space="preserve">
     <value>بدنه درخواست نباید خالی باشد</value>

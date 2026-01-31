@@ -1,10 +1,9 @@
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.RequestFeatures;
-
-using System.Linq.Expressions;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories
 {
@@ -24,49 +23,34 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual IQueryable<T> GetAll()
-        {
-            return _context.Set<T>();
-        }
-
-        public virtual IQueryable<T> GetPaginated(
-            RequestParameters requestParameters,
-            string? search = null,
-            object[]? searchParameters = null
+        public virtual IQueryable<T> GetList(
+            RequestAdvancedFilters? requestAdvancedFilters = null,
+            IQueryable<T>? baseQuery = null
         )
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = baseQuery ?? _context.Set<T>();
 
-            // 1- apply filtering
-            if (!string.IsNullOrWhiteSpace(search))
+            if (requestAdvancedFilters != null)
             {
-                query = (searchParameters is { Length: > 0 })
-                    ? query.Where(search, searchParameters)
-                    : query.Where(search);
+                var (search, args) = requestAdvancedFilters;
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query = (args is { Length: > 0 })
+                        ? query.Where(search, args)
+                        : query.Where(search);
+                }
             }
 
-            // 2- apply sorting
-            if (!string.IsNullOrWhiteSpace(requestParameters.OrderBy))
-            {
-                var orderByClause = requestParameters.OrderBy.Trim();
-
-                // support "-Field" to mean DESC
-                if (orderByClause.StartsWith('-'))
-                    orderByClause = orderByClause.TrimStart('-') + " DESC";
-
-                query = query.OrderBy(orderByClause);
-            }
-
-            // 3- apply paging
-            return query
-                .Skip(requestParameters.PageSize * (requestParameters.PageNumber - 1))
-                .Take(requestParameters.PageSize);
+            return query;
         }
 
-
-        public virtual IQueryable<T> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual IQueryable<T> Find(
+            Expression<Func<T, bool>> predicate,
+            IQueryable<T>? baseQuery = null
+        )
         {
-            return _context.Set<T>().Where(predicate);
+            return (baseQuery ?? _dbSet).Where(predicate);
         }
 
         public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)

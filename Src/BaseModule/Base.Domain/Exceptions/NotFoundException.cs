@@ -1,14 +1,7 @@
 ﻿namespace NGErp.Base.Domain.Exceptions;
 
-public abstract class NotFoundException : Exception
+public class NotFoundException(params object[] args) : Exception()
 {
-    public string LocalizationKey { get; }
-    public object[] Arguments { get; }
-
-    protected NotFoundException(string localizationKey, params object[] args)
-        : base(localizationKey) // base message = key, for backward compatibility
-    {
-        LocalizationKey = localizationKey;
-        Arguments = args;
-    }
+    public string LocalizationKey { get; } = "NotFound";
+    public object[] Arguments { get; } = args;
 }
