@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
-using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -11,30 +11,23 @@ using NGErp.Warehouse.Service.RequestFeatures;
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
 public class ItemRepository(MainDbContext context) :
-    Repository<Item>(context),
+    RepositoryWithCompany<Item>(context),
     IItemRepository
 {
-    public async Task<Item?> GetByIdAsync(Guid companyId, Guid id)
-    {
-        return await Find(w => w.CompanyId == companyId && w.Id == id)
-            .SingleAsync();
-    }
-
     public async Task<ListQueryResult<Item>> GetAllAsync(
         Guid companyId,
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        IQueryable<Item>? baseQuery = Find(w => w.CompanyId == companyId);
-
+        IQueryable<Item>? baseQuery = null;
         if (itemParameters.CategoryId is not null)
         {
-            baseQuery = Find(w => w.CategoryId == itemParameters.CategoryId, baseQuery);
+            baseQuery = Find(w => w.CategoryId == itemParameters.CategoryId);
         }
 
         IQueryable<Item> sorted = base
-            .GetAll(requestAdvancedFilters, baseQuery)
+            .GetAll(companyId, requestAdvancedFilters, baseQuery)
             .Sort(itemParameters);
 
         var totalCount = await sorted.CountAsync();
