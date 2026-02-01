@@ -9,7 +9,7 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 public interface ICategoryRepository : IRepository<Category> 
 {
     Task<Category?> GetByIdAsync(Guid companyId, Guid id);
-    Task<ListQueryResult<Category>> GetListAsync(
+    Task<ListQueryResult<Category>> GetAllAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null

@@ -23,7 +23,7 @@ public class ItemService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<ItemDto> CreateAsync(
+    public async Task<ItemDto> CreateItemAsync(
         Guid companyId,
         CreateItemDto item,
         CancellationToken ct
@@ -32,13 +32,13 @@ public class ItemService(
         throw new NotImplementedException();
     }
 
-    public async Task<ListResponseModel<ItemDto>> GetListAsync(
+    public async Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        var listQueryResult = await _itemRepository.GetListAsync(
+        var listQueryResult = await _itemRepository.GetAllAsync(
             companyId,
             itemParameters,
             requestAdvancedFilters
@@ -51,19 +51,19 @@ public class ItemService(
         );
     }
 
-    public async Task<ItemDto?> GetByIdAsync(Guid companyId, Guid id)
+    public async Task<ItemDto?> GetItemByIdAsync(Guid companyId, Guid id)
     {
-        return _mapper.Map<ItemDto>(await GetItemByIdAsync(companyId, id));
+        return _mapper.Map<ItemDto>(await GetByIdAsync(companyId, id));
     }
 
-    public async Task<ItemDto> UpdateAsync(
+    public async Task<ItemDto> UpdateItemAsync(
         Guid companyId,
         Guid id,
         UpdateItemDto updateItemDto,
         CancellationToken ct
     )
     {
-        var item = await GetItemByIdAsync(companyId, id);
+        var item = await GetByIdAsync(companyId, id);
 
         _mapper.Map(updateItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
@@ -71,13 +71,13 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<bool> DeleteAsync(Guid companyId, Guid id)
+    public async Task<bool> DeleteItemAsync(Guid companyId, Guid id)
     {
-        _itemRepository.Remove(await GetItemByIdAsync(companyId, id));
+        _itemRepository.Remove(await GetByIdAsync(companyId, id));
         return true;
     }
 
-    private async Task<Item> GetItemByIdAsync(Guid companyId, Guid id)
+    private async Task<Item> GetByIdAsync(Guid companyId, Guid id)
     {
         var item = await _itemRepository.GetByIdAsync(companyId, id);
         return item ?? throw new NotFoundException(_localizer["Item"].Value);

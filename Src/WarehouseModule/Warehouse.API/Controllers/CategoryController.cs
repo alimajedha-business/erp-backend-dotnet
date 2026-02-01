@@ -34,23 +34,36 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.CreateAsync(companyId, createCategoryDto, ct);
-        return CreatedAtAction(nameof(GetById), new { companyId, id = categoryDto.Id }, categoryDto);
+        var categoryDto = await _categoryService.CreateCategoryAsync(
+            companyId,
+            createCategoryDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = categoryDto.Id },
+            categoryDto
+        );
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList(
+    public async Task<IActionResult> Get(
         Guid companyId,
         [FromQuery] CategoryParameters categoryParameters
     )
     {
-        var result = await _categoryService.GetListAsync(companyId, categoryParameters);
+        var result = await _categoryService.GetAllCategoriesAsync(
+            companyId,
+            categoryParameters
+        );
+
         return Ok(result);
     }
 
     [HttpPost("search/")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetListWithSearch(
+    public async Task<IActionResult> GetWithSearch(
         Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
         [FromBody] FilterNodeDto? filterNodeDto
@@ -58,7 +71,7 @@ public class CategoryController(
     {
         var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
 
-        var result = await _categoryService.GetListAsync(
+        var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
             categoryParameters,
             requestAdvancedFilters
@@ -71,7 +84,7 @@ public class CategoryController(
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid companyId, Guid id)
     {
-        var category = await _categoryService.GetByIdAsync(companyId, id);
+        var category = await _categoryService.GetCategoryByIdAsync(companyId, id);
         return Ok(category);
     }
 
@@ -83,14 +96,24 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.UpdateAsync(companyId, id, updateCategoryDto, ct);
-        return CreatedAtAction(nameof(GetById), new { companyId, id = categoryDto.Id }, categoryDto);
+        var categoryDto = await _categoryService.UpdateCategoryAsync(
+            companyId,
+            id,
+            updateCategoryDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = categoryDto.Id },
+            categoryDto
+        );
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(Guid companyId, Guid id)
     {
-        await _categoryService.DeleteAsync(companyId, id);
+        await _categoryService.DeleteCategoryAsync(companyId, id);
         return Ok();
     }
 }

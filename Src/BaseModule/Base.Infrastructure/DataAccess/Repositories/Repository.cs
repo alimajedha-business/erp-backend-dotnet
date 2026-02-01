@@ -17,7 +17,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return await _dbSet.FindAsync(id);
     }
 
-    public virtual IQueryable<T> GetList(
+    public virtual IQueryable<T> GetAll(
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null
     )

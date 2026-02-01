@@ -7,7 +7,7 @@ namespace NGErp.Base.Infrastructure.DataAccess.Repositories;
 public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(Guid id);
-    IQueryable<T> GetList(
+    IQueryable<T> GetAll(
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null
     );

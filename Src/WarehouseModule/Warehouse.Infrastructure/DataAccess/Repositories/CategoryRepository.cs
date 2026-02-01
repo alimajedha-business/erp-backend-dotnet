@@ -20,7 +20,7 @@ public class CategoryRepository(MainDbContext context) :
             .SingleAsync();
     }
 
-    public async Task<ListQueryResult<Category>> GetListAsync(
+    public async Task<ListQueryResult<Category>> GetAllAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
@@ -29,7 +29,7 @@ public class CategoryRepository(MainDbContext context) :
         IQueryable<Category>? baseQuery = Find(w => w.CompanyId == companyId);
 
         IQueryable<Category> sorted = base
-            .GetList(requestAdvancedFilters, baseQuery)
+            .GetAll(requestAdvancedFilters, baseQuery)
             .Sort(categoryParameters);
 
         var totalCount = await sorted.CountAsync();

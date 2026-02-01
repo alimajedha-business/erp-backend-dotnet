@@ -17,19 +17,19 @@ public class ItemController(IItemService itemService) : ControllerBase
     private readonly IItemService _itemService = itemService;
 
     [HttpGet]
-    public async Task<IActionResult> GetPaginated(
+    public async Task<IActionResult> Get(
         Guid companyId,
         [FromQuery] ItemParameters itemParameters
     )
     {
-        var result = await _itemService.GetListAsync(companyId, itemParameters);
+        var result = await _itemService.GetAllItemsAsync(companyId, itemParameters);
         return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid companyId, Guid id)
     {
-        var item = await _itemService.GetByIdAsync(companyId, id);
+        var item = await _itemService.GetItemByIdAsync(companyId, id);
         return Ok(item);
     }
 }
