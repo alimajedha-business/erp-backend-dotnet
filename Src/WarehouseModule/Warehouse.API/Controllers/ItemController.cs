@@ -10,7 +10,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/{companyId}/warehouse/items/")]
+[Route("api/v{version:apiVersion}/{companyId}/warehouse/items")]
 //[JwtAuthorize]
 public class ItemController(IItemService itemService) : ControllerBase
 {
@@ -18,7 +18,7 @@ public class ItemController(IItemService itemService) : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> Get(
-        Guid companyId,
+        [FromRoute] Guid companyId,
         [FromQuery] ItemParameters itemParameters
     )
     {
@@ -27,7 +27,7 @@ public class ItemController(IItemService itemService) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid companyId, Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid companyId, [FromRoute] Guid id)
     {
         var item = await _itemService.GetItemByIdAsync(companyId, id);
         return Ok(item);

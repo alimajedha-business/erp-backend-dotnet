@@ -15,7 +15,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/{companyId}/warehouse/categories/")]
+[Route("api/v{version:apiVersion}/{companyId}/warehouse/categories")]
 //[JwtAuthorize]
 public class CategoryController(
     ICategoryService categoryService,
@@ -29,7 +29,7 @@ public class CategoryController(
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
-        Guid companyId,
+        [FromRoute] Guid companyId,
         [FromBody] CreateCategoryDto createCategoryDto,
         CancellationToken ct
     )
@@ -49,7 +49,7 @@ public class CategoryController(
 
     [HttpGet]
     public async Task<IActionResult> Get(
-        Guid companyId,
+        [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters
     )
     {
@@ -61,10 +61,10 @@ public class CategoryController(
         return Ok(result);
     }
 
-    [HttpPost("search/")]
+    [HttpPost("search")]
     [SkipModelValidation]
     public async Task<IActionResult> GetWithSearch(
-        Guid companyId,
+        [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
         [FromBody] FilterNodeDto? filterNodeDto
     )
@@ -82,16 +82,16 @@ public class CategoryController(
 
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid companyId, Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid companyId, [FromRoute] Guid id)
     {
         var category = await _categoryService.GetCategoryByIdAsync(companyId, id);
         return Ok(category);
     }
 
-    [HttpPatch]
+    [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Update(
-        Guid companyId,
-        Guid id,
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
         [FromBody] UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     )
@@ -103,17 +103,13 @@ public class CategoryController(
             ct
         );
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { companyId, id = categoryDto.Id },
-            categoryDto
-        );
+        return Ok(categoryDto);
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid companyId, Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete([FromRoute] Guid companyId, [FromRoute] Guid id)
     {
         await _categoryService.DeleteCategoryAsync(companyId, id);
-        return Ok();
+        return NoContent();
     }
 }
