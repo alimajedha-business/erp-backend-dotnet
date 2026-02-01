@@ -6,14 +6,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NGErp.HCM.Service.Repository.Contracts;
+using NGErp.Base.Service.ResponseModels;
+using NGErp.HCM.Service.RequestFeatures;
+using NGErp.Base.Service.RequestFeatures;
 
-namespace NGErp.HCM.Infrastructure.DataAccess.Repositories
+namespace NGErp.HCM.Infrastructure.DataAccess.Repositories;
+
+public class DepartmentRepository(MainDbContext context) : Repository<Department>(context), IDepartmentRepository
 {
-    public class DepartmentRepository : Repository<Department>, IDepartmentRepository
+    public Task<ListQueryResult<Department>> GetAllAsync(Guid companyId, DepartmentParameters departmentParameters, RequestAdvancedFilters? requestAdvancedFilters = null)
     {
+        throw new NotImplementedException();
+    }
 
-        public DepartmentRepository(MainDbContext context) : base(context)
-        {
-        }
+    public Task<Department?> GetByIdAsync(Guid companyId, Guid id)
+    {
+        throw new NotImplementedException();
     }
 }

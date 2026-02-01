@@ -1,4 +1,5 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.Repository.Contract;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;

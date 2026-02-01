@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
+    <Folder Include="DataAccess\Repositories\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\Repositories\Extensions\" />
+    <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
+    <ProjectReference Include="..\General.Domain\NGErp.General.Domain.csproj" />
   </ItemGroup>
 
 </Project>

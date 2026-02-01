@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
+using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories;

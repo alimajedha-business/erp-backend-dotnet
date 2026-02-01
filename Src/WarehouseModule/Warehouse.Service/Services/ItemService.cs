@@ -23,8 +23,7 @@ public class ItemService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<ItemDto> CreateItemAsync(
-        Guid companyId,
+    public Task<ItemDto> CreateAsync(
         CreateItemDto item,
         CancellationToken ct
     )
@@ -81,5 +80,10 @@ public class ItemService(
     {
         var item = await _itemRepository.GetByIdAsync(companyId, id);
         return item ?? throw new NotFoundException(_localizer["Item"].Value);
+    }
+
+    public Task<ItemDto> CreateItemAsync(Guid companyId, CreateItemDto item, CancellationToken ct)
+    {
+        throw new NotImplementedException();
     }
 }

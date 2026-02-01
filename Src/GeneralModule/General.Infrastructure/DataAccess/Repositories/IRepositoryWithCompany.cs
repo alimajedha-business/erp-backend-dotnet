@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Domain.Entities;
 
