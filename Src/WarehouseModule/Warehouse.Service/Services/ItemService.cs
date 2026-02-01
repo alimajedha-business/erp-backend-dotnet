@@ -24,6 +24,7 @@ public class ItemService(
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
     public async Task<ItemDto> CreateAsync(
+        Guid companyId,
         CreateItemDto item,
         CancellationToken ct
     )
@@ -32,11 +33,13 @@ public class ItemService(
     }
 
     public async Task<ListResponseModel<ItemDto>> GetListAsync(
+        Guid companyId,
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
         var listQueryResult = await _itemRepository.GetListAsync(
+            companyId,
             itemParameters,
             requestAdvancedFilters
         );
@@ -48,18 +51,19 @@ public class ItemService(
         );
     }
 
-    public async Task<ItemDto?> GetByIdAsync(Guid id)
+    public async Task<ItemDto?> GetByIdAsync(Guid companyId, Guid id)
     {
-        return _mapper.Map<ItemDto>(await GetItemByIdAsync(id));
+        return _mapper.Map<ItemDto>(await GetItemByIdAsync(companyId, id));
     }
 
     public async Task<ItemDto> UpdateAsync(
+        Guid companyId,
         Guid id,
         UpdateItemDto updateItemDto,
         CancellationToken ct
     )
     {
-        var item = await GetItemByIdAsync(id);
+        var item = await GetItemByIdAsync(companyId, id);
 
         _mapper.Map(updateItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
@@ -67,15 +71,15 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid companyId, Guid id)
     {
-        _itemRepository.Remove(await GetItemByIdAsync(id));
+        _itemRepository.Remove(await GetItemByIdAsync(companyId, id));
         return true;
     }
 
-    private async Task<Item> GetItemByIdAsync(Guid id)
+    private async Task<Item> GetItemByIdAsync(Guid companyId, Guid id)
     {
-        var item = await _itemRepository.GetByIdAsync(id);
+        var item = await _itemRepository.GetByIdAsync(companyId, id);
         return item ?? throw new NotFoundException(_localizer["Item"].Value);
     }
 }

@@ -24,22 +24,28 @@ public class CategoryService(
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
     public async Task<CategoryDto> CreateAsync(
+        Guid companyId,
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
     )
     {
         var category = _mapper.Map<Category>(createCategoryDto);
+        category.CompanyId = companyId;
+
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
         await _categoryRepository.SaveChangesAsync(ct);
+
         return  _mapper.Map<CategoryDto>(createdCategory);
     }
 
     public async Task<ListResponseModel<CategoryDto>> GetListAsync(
+        Guid companyId,
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
         var listQueryResult = await _categoryRepository.GetListAsync(
+            companyId,
             categoryParameters,
             requestAdvancedFilters
         );
@@ -51,18 +57,19 @@ public class CategoryService(
         );
     }
 
-    public async Task<CategoryDto> GetByIdAsync(Guid id)
+    public async Task<CategoryDto> GetByIdAsync(Guid companyId, Guid id)
     {
-        return _mapper.Map<CategoryDto>(await GetCategoryByIdAsync(id));
+        return _mapper.Map<CategoryDto>(await GetCategoryByIdAsync(companyId, id));
     }
 
     public async Task<CategoryDto> UpdateAsync(
+        Guid companyId,
         Guid id,
         UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     )
     {
-        var category = await GetCategoryByIdAsync(id);
+        var category = await GetCategoryByIdAsync(companyId, id);
 
         _mapper.Map(updateCategoryDto, category);
         await _categoryRepository.SaveChangesAsync(ct);
@@ -70,15 +77,15 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid companyId, Guid id)
     {
-        _categoryRepository.Remove(await GetCategoryByIdAsync(id));
+        _categoryRepository.Remove(await GetCategoryByIdAsync(companyId, id));
         return true;
     }
 
-    private async Task<Category> GetCategoryByIdAsync(Guid id)
+    private async Task<Category> GetCategoryByIdAsync(Guid companyId, Guid id)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
+        var category = await _categoryRepository.GetByIdAsync(companyId, id);
         return category ?? throw new NotFoundException(_localizer["Category"].Value);
     }
 }

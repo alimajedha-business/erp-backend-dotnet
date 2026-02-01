@@ -15,7 +15,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/warehouse/categories/")]
+[Route("api/v{version:apiVersion}/{companyId}/warehouse/categories/")]
 //[JwtAuthorize]
 public class CategoryController(
     ICategoryService categoryService,
@@ -29,73 +29,68 @@ public class CategoryController(
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
+        Guid companyId,
         [FromBody] CreateCategoryDto createCategoryDto,
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.CreateAsync(createCategoryDto, ct);
-        return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
+        var categoryDto = await _categoryService.CreateAsync(companyId, createCategoryDto, ct);
+        return CreatedAtAction(nameof(GetById), new { companyId, id = categoryDto.Id }, categoryDto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] CategoryParameters categoryParameters)
+    public async Task<IActionResult> GetList(
+        Guid companyId,
+        [FromQuery] CategoryParameters categoryParameters
+    )
     {
-        var result = await _categoryService.GetListAsync(categoryParameters);
+        var result = await _categoryService.GetListAsync(companyId, categoryParameters);
         return Ok(result);
     }
 
     [HttpPost("search/")]
     [SkipModelValidation]
     public async Task<IActionResult> GetListWithSearch(
+        Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
         [FromBody] FilterNodeDto? filterNodeDto
     )
     {
         var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
 
-        var categories = await _categoryService.GetListAsync(
+        var result = await _categoryService.GetListAsync(
+            companyId,
             categoryParameters,
             requestAdvancedFilters
         );
 
-        return Ok(new
-        {
-            Data = categories
-        });
+        return Ok(result);
     }
 
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid companyId, Guid id)
     {
-        var category = await _categoryService.GetByIdAsync(id);
-
-        return Ok(new
-        {
-            success = true,
-            data = category,
-        });
+        var category = await _categoryService.GetByIdAsync(companyId, id);
+        return Ok(category);
     }
 
     [HttpPatch]
     public async Task<IActionResult> Update(
+        Guid companyId,
         Guid id,
         [FromBody] UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.UpdateAsync(id, updateCategoryDto, ct);
-        return CreatedAtAction(nameof(GetById), new { id = categoryDto.Id }, categoryDto);
+        var categoryDto = await _categoryService.UpdateAsync(companyId, id, updateCategoryDto, ct);
+        return CreatedAtAction(nameof(GetById), new { companyId, id = categoryDto.Id }, categoryDto);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid companyId, Guid id)
     {
-        var succeed = await _categoryService.DeleteAsync(id);
-
-        return Ok(new
-        {
-            success = true,
-        });
+        await _categoryService.DeleteAsync(companyId, id);
+        return Ok();
     }
 }

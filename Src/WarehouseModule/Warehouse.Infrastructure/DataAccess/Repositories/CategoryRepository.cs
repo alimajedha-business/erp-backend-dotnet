@@ -14,16 +14,19 @@ public class CategoryRepository(MainDbContext context) :
     Repository<Category>(context),
     ICategoryRepository
 {
+    public async Task<Category?> GetByIdAsync(Guid companyId, Guid id)
+    {
+        return await Find(w => w.CompanyId == companyId && w.Id == id)
+            .SingleAsync();
+    }
+
     public async Task<ListQueryResult<Category>> GetListAsync(
+        Guid companyId,
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        IQueryable<Category>? baseQuery = null;
-        if (categoryParameters.CompanyId is not null)
-        {
-            baseQuery = Find(w => w.CompanyId == categoryParameters.CompanyId);
-        }
+        IQueryable<Category>? baseQuery = Find(w => w.CompanyId == companyId);
 
         IQueryable<Category> sorted = base
             .GetList(requestAdvancedFilters, baseQuery)
