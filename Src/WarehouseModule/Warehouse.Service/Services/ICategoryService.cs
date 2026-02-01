@@ -7,19 +7,22 @@ namespace NGErp.Warehouse.Service.Services;
 
 public interface ICategoryService
 {
-    Task<CategoryDto> CreateAsync(
+    Task<CategoryDto> CreateCategoryAsync(
+        Guid companyId,
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
     );
-    Task<ListResponseModel<CategoryDto>> GetListAsync(
+    Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
+        Guid companyId,
         CategoryParameters categoryParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
-    Task<CategoryDto> GetByIdAsync(Guid id);
-    Task<CategoryDto> UpdateAsync(
+    Task<CategoryDto> GetCategoryByIdAsync(Guid companyId, Guid id);
+    Task<CategoryDto> UpdateCategoryAsync(
+        Guid companyId,
         Guid id,
         UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     );
-    Task<bool> DeleteAsync(Guid id);
+    Task<bool> DeleteCategoryAsync(Guid companyId, Guid id);
 }

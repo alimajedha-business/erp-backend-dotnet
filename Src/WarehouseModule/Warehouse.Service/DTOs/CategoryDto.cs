@@ -13,9 +13,6 @@ public class CommandCategoryDto
 }
 
 
-public class CreateCategoryDto : CommandCategoryDto
-{
-    public Guid CompanyId { get; set; }
-}
+public class CreateCategoryDto : CommandCategoryDto { }
 
 public class UpdateCategoryDto : CommandCategoryDto { }

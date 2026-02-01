@@ -14,16 +14,19 @@ public class ItemRepository(MainDbContext context) :
     Repository<Item>(context),
     IItemRepository
 {
-    public async Task<ListQueryResult<Item>> GetListAsync(
+    public async Task<Item?> GetByIdAsync(Guid companyId, Guid id)
+    {
+        return await Find(w => w.CompanyId == companyId && w.Id == id)
+            .SingleAsync();
+    }
+
+    public async Task<ListQueryResult<Item>> GetAllAsync(
+        Guid companyId,
         ItemParameters itemParameters,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        IQueryable<Item>? baseQuery = null;
-        if (itemParameters.CompanyId is not null)
-        {
-            baseQuery = Find(w => w.CompanyId == itemParameters.CompanyId);
-        }
+        IQueryable<Item>? baseQuery = Find(w => w.CompanyId == companyId);
 
         if (itemParameters.CategoryId is not null)
         {
@@ -31,7 +34,7 @@ public class ItemRepository(MainDbContext context) :
         }
 
         IQueryable<Item> sorted = base
-            .GetList(requestAdvancedFilters, baseQuery)
+            .GetAll(requestAdvancedFilters, baseQuery)
             .Sort(itemParameters);
 
         var totalCount = await sorted.CountAsync();

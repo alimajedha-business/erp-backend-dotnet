@@ -10,28 +10,26 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/warehouse/items/")]
+[Route("api/v{version:apiVersion}/{companyId}/warehouse/items/")]
 //[JwtAuthorize]
 public class ItemController(IItemService itemService) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
 
     [HttpGet]
-    public async Task<IActionResult> GetPaginated([FromQuery] ItemParameters itemParameters)
+    public async Task<IActionResult> Get(
+        Guid companyId,
+        [FromQuery] ItemParameters itemParameters
+    )
     {
-        var result = await _itemService.GetListAsync(itemParameters);
+        var result = await _itemService.GetAllItemsAsync(companyId, itemParameters);
         return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid companyId, Guid id)
     {
-        var item = await _itemService.GetByIdAsync(id);
-
-        return Ok(new
-        {
-            success = true,
-            data = item,
-        });
+        var item = await _itemService.GetItemByIdAsync(companyId, id);
+        return Ok(item);
     }
 }
