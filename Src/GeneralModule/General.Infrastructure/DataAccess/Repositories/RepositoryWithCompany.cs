@@ -21,7 +21,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .SingleOrDefaultAsync();
     }
 
-    public virtual IQueryable<T> GetList(
+    public virtual IQueryable<T> GetAll(
         Guid companyId,
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null

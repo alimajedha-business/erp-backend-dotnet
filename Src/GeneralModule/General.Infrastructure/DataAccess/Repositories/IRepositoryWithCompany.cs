@@ -10,7 +10,7 @@ public interface IRepositoryWithCompany<T>
     : IRepository<T> where T : BaseEntityWithCompany
 {
     Task<T?> GetByIdAsync(Guid companyId, Guid id);
-    IQueryable<T> GetList(
+    IQueryable<T> GetAll(
         Guid companyId,
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null
