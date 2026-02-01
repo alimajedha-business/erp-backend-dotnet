@@ -33,6 +33,7 @@ public class ItemUnitOfMeasurement :
         builder
             .HasOne(e => e.UnitOfMeasurement)
             .WithMany()
-            .HasForeignKey(e => e.UnitOfMeasurementId);
+            .HasForeignKey(e => e.UnitOfMeasurementId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

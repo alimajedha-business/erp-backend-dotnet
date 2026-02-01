@@ -41,11 +41,13 @@ public class WarehouseLocation :
         builder
             .HasOne(e => e.ParentLocation)
             .WithMany(e => e.SubLocations)
-            .HasForeignKey(e => e.ParentLocationId);
+            .HasForeignKey(e => e.ParentLocationId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.Warehouse)
             .WithMany(e => e.Locations)
-            .HasForeignKey(e => e.WarehouseId);
+            .HasForeignKey(e => e.WarehouseId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

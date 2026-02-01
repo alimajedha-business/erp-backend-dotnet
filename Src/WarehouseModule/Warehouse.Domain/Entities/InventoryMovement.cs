@@ -66,7 +66,8 @@ public class InventoryMovement :
         builder
             .HasOne(e => e.Lot)
             .WithMany()
-            .HasForeignKey(e => e.LotId);
+            .HasForeignKey(e => e.LotId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.FromLocation)

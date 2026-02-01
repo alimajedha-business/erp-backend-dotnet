@@ -38,6 +38,7 @@ public class InventoryLot :
         builder
             .HasOne(e => e.Item)
             .WithMany()
-            .HasForeignKey(e => e.ItemId);
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

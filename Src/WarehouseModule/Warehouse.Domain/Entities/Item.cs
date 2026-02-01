@@ -51,6 +51,7 @@ public class Item :
         builder
             .HasOne(e => e.Category)
             .WithMany(e => e.Items)
-            .HasForeignKey(e => e.CategoryId);
+            .HasForeignKey(e => e.CategoryId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
