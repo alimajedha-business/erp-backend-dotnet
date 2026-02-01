@@ -92,6 +92,8 @@ public class ItemService(
     )
     {
         _itemRepository.Remove(await GetByIdAsync(companyId, id, ct));
+        await _itemRepository.SaveChangesAsync(ct);
+
         return true;
     }
 

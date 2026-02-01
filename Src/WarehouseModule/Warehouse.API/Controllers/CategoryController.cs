@@ -126,7 +126,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.DeleteCategoryAsync(companyId, id, ct);
-        return NoContent();
+        var succeed = await _categoryService.DeleteCategoryAsync(companyId, id, ct);
+        return succeed ? Ok(succeed) : BadRequest();
     }
 }

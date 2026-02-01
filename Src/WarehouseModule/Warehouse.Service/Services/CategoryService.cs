@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -90,6 +92,17 @@ public class CategoryService(
     )
     {
         _categoryRepository.Remove(await GetByIdAsync(companyId, id, ct));
+
+        try
+        {
+            await _categoryRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) 
+        when (ex.InnerException is SqlException { Number: 547 } sqlEx)
+        {
+            throw new ForeignKeyViolationException(_localizer["Category"].Value);
+        }
+
         return true;
     }
 
