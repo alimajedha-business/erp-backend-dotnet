@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 using NGErp.Base.Service.RequestFeatures;
 
-namespace NGErp.Base.Infrastructure.DataAccess.Repositories;
+namespace NGErp.Base.Service.Repository.Contract;
 
 public interface IRepository<T> where T : class
 {

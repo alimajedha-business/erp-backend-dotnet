@@ -1,6 +1,8 @@
 ﻿using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Service.Repository.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +11,8 @@ using System.Threading.Tasks;
 
 namespace NGErp.HCM.Infrastructure.DataAccess.Repositories
 {
-    public class OrganizationalStructureRepository : Repository<OrganizationalStructure>, IOrganizationalStructure
+    public class OrganizationalStructureRepository(MainDbContext context) : Repository<OrganizationalStructure>(context), IOrganizationalStructure
     {
 
-        public OrganizationalStructureRepository(MainDbContext context) : base(context)
-        {
-        }
     }
 }

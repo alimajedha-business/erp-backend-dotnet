@@ -1,67 +1,60 @@
 ﻿using AutoMapper;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using NGErp.Base.Infrastructure.Services;
+using Microsoft.Extensions.Localization;
+
 using NGErp.Base.Service.RequestFeatures;
-using NGErp.HCM.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.HCM.Service.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core.Tokenizer;
-using System.Text;
-using System.Threading.Tasks;
+using NGErp.HCM.Service.Repository.Contracts;
+using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.Resources;
 
-namespace NGErp.HCM.Service.Services
+
+namespace NGErp.HCM.Service.Services;
+
+public class DepartmentService(
+    IDepartmentRepository departmentRepository,
+    IMapper mapper,
+    IStringLocalizer<HCMResource> localizer) : IDepartmentService
 {
-    public class DepartmentService : IDepartmentService
+
+    private readonly IDepartmentRepository _departmentRepository = departmentRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<HCMResource> _localizer = localizer;
+    public Task<DepartmentDto> CreateDepartmentAsync(Guid companyId, CreateDepartmentDto dto)
     {
-        private readonly IDepartmentRepository _departmentRepository;
-        private readonly ILogger<DepartmentService> _logger;
-        private readonly IMapper _mapper;
+        throw new NotImplementedException();
+    }
 
-        public DepartmentService(IDepartmentRepository departmentRepository, ILogger<DepartmentService> logger, IMapper mapper)
-        {
-            _departmentRepository = departmentRepository;
-            _logger = logger;
-            _mapper = mapper;
-        }
+    public Task<bool> DeleteDepartmentAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentDto dto)
-        {
-            throw new NotImplementedException();
-        }
+    public  Task<List<DepartmentDto>> GetAllDepartmentsAsync(
+        Guid companyId, DepartmentParameters departmentParameters,
+        RequestAdvancedFilters? requestAdvancedFilters = null)
+    {
+        //var listQueryResult = await _departmentRepository.GetAllAsync(
+        //     companyId,
+        //     departmentParameters,
+        //     requestAdvancedFilters
+        // );
 
-        public Task<bool> DeleteDepartmentAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //return new ListResponseModel<DepartmentDto>(
+        //    items: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
+        //    totalCount: listQueryResult.count, departmentParameters
+        //);
+        throw new NotImplementedException();
+    }
 
-        public Task<DepartmentDto?> GetDepartmentByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<DepartmentDto?> GetDepartmentByIdAsync(Guid companyId, Guid id)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<List<DepartmentDto>> GetDepartmentsAsync(RequestParameters requestParameters)
-        {
-            try
-            {
-                _logger.LogInformation("Fetching departments");
-                var result = await _departmentRepository.GetAll().ToListAsync();
-                var departmentDto = _mapper.Map<List<DepartmentDto>>(result);
-                return departmentDto;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching departments");
-                throw;
-            }
-        }
-
-        public Task<DepartmentDto> UpdateDepartmentAsync(int id, UpdateDepartmentDto dto)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<DepartmentDto> UpdateDepartmentAsync(Guid companyId, Guid id, UpdateDepartmentDto dto)
+    {
+        throw new NotImplementedException();
     }
 }

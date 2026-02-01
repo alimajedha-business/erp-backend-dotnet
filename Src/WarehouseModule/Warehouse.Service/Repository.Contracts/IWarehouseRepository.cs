@@ -1,4 +1,4 @@
-﻿using NGErp.Base.Infrastructure.DataAccess.Repositories;
+﻿using NGErp.Base.Service.Repository.Contract;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 

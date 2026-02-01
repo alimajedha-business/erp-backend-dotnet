@@ -1,5 +1,7 @@
 ﻿using NGErp.Base.Service.RequestFeatures;
 using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.RequestFeatures;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +12,12 @@ namespace NGErp.HCM.Service.Services
 {
     public interface IDepartmentService
     {
-        Task<List<DepartmentDto>> GetDepartmentsAsync(RequestParameters requestParameters);
-        Task<DepartmentDto?> GetDepartmentByIdAsync(int id);
-        Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentDto dto);
-        Task<DepartmentDto> UpdateDepartmentAsync(int id, UpdateDepartmentDto dto);
+        Task<List<DepartmentDto>> GetAllDepartmentsAsync(
+            Guid companyId, DepartmentParameters departmentParameters, 
+            RequestAdvancedFilters? requestAdvancedFilters = null);
+        Task<DepartmentDto?> GetDepartmentByIdAsync(Guid companyId, Guid id);
+        Task<DepartmentDto> CreateDepartmentAsync(Guid companyId, CreateDepartmentDto dto);
+        Task<DepartmentDto> UpdateDepartmentAsync(Guid companyId, Guid id, UpdateDepartmentDto dto);
         Task<bool> DeleteDepartmentAsync(int id);
     }
 }
