@@ -41,12 +41,14 @@ public class CategoryService(
     public async Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
         var listQueryResult = await _categoryRepository.GetAllAsync(
             companyId,
             categoryParameters,
+            ct,
             requestAdvancedFilters
         );
 
@@ -57,9 +59,13 @@ public class CategoryService(
         );
     }
 
-    public async Task<CategoryDto> GetCategoryByIdAsync(Guid companyId, Guid id)
+    public async Task<CategoryDto> GetCategoryByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        return _mapper.Map<CategoryDto>(await GetByIdAsync(companyId, id));
+        return _mapper.Map<CategoryDto>(await GetByIdAsync(companyId, id, ct));
     }
 
     public async Task<CategoryDto> UpdateCategoryAsync(
@@ -69,7 +75,7 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        var category = await GetByIdAsync(companyId, id);
+        var category = await GetByIdAsync(companyId, id, ct);
 
         _mapper.Map(updateCategoryDto, category);
         await _categoryRepository.SaveChangesAsync(ct);
@@ -77,15 +83,23 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<bool> DeleteCategoryAsync(Guid companyId, Guid id)
+    public async Task<bool> DeleteCategoryAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        _categoryRepository.Remove(await GetByIdAsync(companyId, id));
+        _categoryRepository.Remove(await GetByIdAsync(companyId, id, ct));
         return true;
     }
 
-    private async Task<Category> GetByIdAsync(Guid companyId, Guid id)
+    private async Task<Category> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        var category = await _categoryRepository.GetByIdAsync(companyId, id);
+        var category = await _categoryRepository.GetByIdAsync(companyId, id, ct);
         return category ?? throw new NotFoundException(_localizer["Category"].Value);
     }
 }

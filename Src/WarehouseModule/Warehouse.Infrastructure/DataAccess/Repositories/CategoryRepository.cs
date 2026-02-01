@@ -17,6 +17,7 @@ public class CategoryRepository(MainDbContext context) :
     public async Task<ListQueryResult<Category>> GetAllAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
@@ -25,7 +26,7 @@ public class CategoryRepository(MainDbContext context) :
             .Sort(categoryParameters);
 
         var totalCount = await sorted.CountAsync();
-        var items = await sorted.Paginate(categoryParameters).ToListAsync();
+        var items = await sorted.Paginate(categoryParameters).ToListAsync(ct);
 
         return new ListQueryResult<Category>(items, totalCount);
     }

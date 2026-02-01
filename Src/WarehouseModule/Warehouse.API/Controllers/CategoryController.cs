@@ -50,12 +50,14 @@ public class CategoryController(
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters categoryParameters
+        [FromQuery] CategoryParameters categoryParameters,
+        CancellationToken ct
     )
     {
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
-            categoryParameters
+            categoryParameters,
+            ct
         );
 
         return Ok(result);
@@ -66,7 +68,8 @@ public class CategoryController(
     public async Task<IActionResult> GetWithSearch(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
-        [FromBody] FilterNodeDto? filterNodeDto
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
     )
     {
         var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
@@ -74,6 +77,7 @@ public class CategoryController(
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
             categoryParameters,
+            ct,
             requestAdvancedFilters
         );
 
@@ -82,9 +86,18 @@ public class CategoryController(
 
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid companyId, [FromRoute] Guid id)
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
     {
-        var category = await _categoryService.GetCategoryByIdAsync(companyId, id);
+        var category = await _categoryService.GetCategoryByIdAsync(
+            companyId,
+            id,
+            ct
+        );
+
         return Ok(category);
     }
 
@@ -107,9 +120,13 @@ public class CategoryController(
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete([FromRoute] Guid companyId, [FromRoute] Guid id)
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
     {
-        await _categoryService.DeleteCategoryAsync(companyId, id);
+        await _categoryService.DeleteCategoryAsync(companyId, id, ct);
         return NoContent();
     }
 }

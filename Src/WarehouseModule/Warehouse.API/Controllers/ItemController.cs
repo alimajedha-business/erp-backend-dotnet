@@ -19,17 +19,27 @@ public class ItemController(IItemService itemService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] ItemParameters itemParameters
+        [FromQuery] ItemParameters itemParameters,
+        CancellationToken ct
     )
     {
-        var result = await _itemService.GetAllItemsAsync(companyId, itemParameters);
+        var result = await _itemService.GetAllItemsAsync(
+            companyId,
+            itemParameters,
+            ct
+        );
+
         return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid companyId, [FromRoute] Guid id)
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
     {
-        var item = await _itemService.GetItemByIdAsync(companyId, id);
+        var item = await _itemService.GetItemByIdAsync(companyId, id, ct);
         return Ok(item);
     }
 }

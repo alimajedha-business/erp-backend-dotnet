@@ -17,6 +17,7 @@ public class ItemRepository(MainDbContext context) :
     public async Task<ListQueryResult<Item>> GetAllAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
@@ -31,7 +32,7 @@ public class ItemRepository(MainDbContext context) :
             .Sort(itemParameters);
 
         var totalCount = await sorted.CountAsync();
-        var items = await sorted.Paginate(itemParameters).ToListAsync();
+        var items = await sorted.Paginate(itemParameters).ToListAsync(ct);
 
         return new ListQueryResult<Item>(items, totalCount);
     }

@@ -11,6 +11,7 @@ public interface ICategoryRepository : IRepositoryWithCompany<Category>
     Task<ListQueryResult<Category>> GetAllAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
 }

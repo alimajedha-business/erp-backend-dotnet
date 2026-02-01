@@ -11,6 +11,7 @@ public interface IItemRepository : IRepositoryWithCompany<Item>
     Task<ListQueryResult<Item>> GetAllAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
 }

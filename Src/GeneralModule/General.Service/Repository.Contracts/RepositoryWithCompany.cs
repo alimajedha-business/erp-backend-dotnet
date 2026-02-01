@@ -15,11 +15,15 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     Repository<T>(context),
     IRepositoryWithCompany<T> where T : BaseEntityWithCompany
 {
-    public virtual async Task<T?> GetByIdAsync(Guid companyId, Guid id)
+    public virtual async Task<T?> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
         return await _dbSet
             .Where(e => e.CompanyId == companyId && e.Id == id)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(ct);
     }
 
     public virtual IQueryable<T> GetAll(

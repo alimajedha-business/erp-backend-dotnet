@@ -31,15 +31,26 @@ public class ItemService(
         throw new NotImplementedException();
     }
 
+    public Task<ItemDto> CreateItemAsync(
+        Guid companyId,
+        CreateItemDto item,
+        CancellationToken ct
+    )
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
         var listQueryResult = await _itemRepository.GetAllAsync(
             companyId,
             itemParameters,
+            ct,
             requestAdvancedFilters
         );
 
@@ -50,9 +61,13 @@ public class ItemService(
         );
     }
 
-    public async Task<ItemDto?> GetItemByIdAsync(Guid companyId, Guid id)
+    public async Task<ItemDto?> GetItemByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        return _mapper.Map<ItemDto>(await GetByIdAsync(companyId, id));
+        return _mapper.Map<ItemDto>(await GetByIdAsync(companyId, id, ct));
     }
 
     public async Task<ItemDto> UpdateItemAsync(
@@ -62,7 +77,7 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdAsync(companyId, id);
+        var item = await GetByIdAsync(companyId, id, ct);
 
         _mapper.Map(updateItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
@@ -70,20 +85,23 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<bool> DeleteItemAsync(Guid companyId, Guid id)
+    public async Task<bool> DeleteItemAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        _itemRepository.Remove(await GetByIdAsync(companyId, id));
+        _itemRepository.Remove(await GetByIdAsync(companyId, id, ct));
         return true;
     }
 
-    private async Task<Item> GetByIdAsync(Guid companyId, Guid id)
+    private async Task<Item> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        var item = await _itemRepository.GetByIdAsync(companyId, id);
+        var item = await _itemRepository.GetByIdAsync(companyId, id, ct);
         return item ?? throw new NotFoundException(_localizer["Item"].Value);
-    }
-
-    public Task<ItemDto> CreateItemAsync(Guid companyId, CreateItemDto item, CancellationToken ct)
-    {
-        throw new NotImplementedException();
     }
 }
