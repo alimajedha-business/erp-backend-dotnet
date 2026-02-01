@@ -14,7 +14,7 @@ namespace NGErp.HCM.Service.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Department, DepartmentDto>();
+            CreateMap<Department, DepartmentDto>();            
         }
     }
 }
