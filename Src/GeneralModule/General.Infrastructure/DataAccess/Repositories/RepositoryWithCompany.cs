@@ -18,12 +18,15 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     public virtual async Task<T?> GetByIdAsync(
         Guid companyId,
         Guid id,
-        CancellationToken ct
+        CancellationToken ct,
+        bool trackChanges = false
     )
     {
-        return await _dbSet
-            .Where(e => e.CompanyId == companyId && e.Id == id)
-            .SingleOrDefaultAsync(ct);
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            e => e.CompanyId == companyId && e.Id == id,
+            ct);
     }
 
     public virtual IQueryable<T> GetAll(
@@ -48,7 +51,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             }
         }
 
-        return query;
+        return query.AsNoTracking();
     }
 
     public virtual IQueryable<T> Find(

@@ -67,7 +67,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        return _mapper.Map<CategoryDto>(await GetByIdAsync(companyId, id, ct));
+        var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        return _mapper.Map<CategoryDto>(category);
     }
 
     public async Task<CategoryDto> UpdateCategoryAsync(
@@ -77,7 +78,12 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        var category = await GetByIdAsync(companyId, id, ct);
+        var category = await GetByIdOrThrowExceptionAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
 
         _mapper.Map(updateCategoryDto, category);
         await _categoryRepository.SaveChangesAsync(ct);
@@ -91,7 +97,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        _categoryRepository.Remove(await GetByIdAsync(companyId, id, ct));
+        var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        _categoryRepository.Remove(category);
 
         try
         {
@@ -106,13 +113,20 @@ public class CategoryService(
         return true;
     }
 
-    private async Task<Category> GetByIdAsync(
+    private async Task<Category> GetByIdOrThrowExceptionAsync(
         Guid companyId,
         Guid id,
-        CancellationToken ct
+        CancellationToken ct,
+        bool trackChanges = false
     )
     {
-        var category = await _categoryRepository.GetByIdAsync(companyId, id, ct);
+        var category = await _categoryRepository.GetByIdAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges
+        );
+
         return category ?? throw new NotFoundException(_localizer["Category"].Value);
     }
 }

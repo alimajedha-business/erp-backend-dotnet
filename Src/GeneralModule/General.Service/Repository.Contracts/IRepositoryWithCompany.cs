@@ -9,7 +9,12 @@ namespace NGErp.General.Service.Repository.Contracts;
 public interface IRepositoryWithCompany<T> 
     : IRepository<T> where T : BaseEntityWithCompany
 {
-    Task<T?> GetByIdAsync(Guid companyId, Guid id, CancellationToken ct);
+    Task<T?> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    );
     IQueryable<T> GetAll(
         Guid companyId,
         RequestAdvancedFilters? requestAdvancedFilters = null,

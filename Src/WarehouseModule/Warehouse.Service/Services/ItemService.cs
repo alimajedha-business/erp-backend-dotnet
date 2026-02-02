@@ -69,7 +69,8 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        return _mapper.Map<ItemDto>(await GetByIdAsync(companyId, id, ct));
+        var item = await GetByIdOrThrowExceptionAsync(companyId,id,ct);
+        return _mapper.Map<ItemDto>(item);
     }
 
     public async Task<ItemDto> UpdateItemAsync(
@@ -79,7 +80,12 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdAsync(companyId, id, ct);
+        var item = await GetByIdOrThrowExceptionAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
 
         _mapper.Map(updateItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
@@ -93,7 +99,8 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        _itemRepository.Remove(await GetByIdAsync(companyId, id, ct));
+        var item = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        _itemRepository.Remove(item);
 
         try
         {
@@ -108,13 +115,20 @@ public class ItemService(
         return true;
     }
 
-    private async Task<Item> GetByIdAsync(
+    private async Task<Item> GetByIdOrThrowExceptionAsync(
         Guid companyId,
         Guid id,
-        CancellationToken ct
+        CancellationToken ct,
+        bool trackChanges = false
     )
     {
-        var item = await _itemRepository.GetByIdAsync(companyId, id, ct);
+        var item = await _itemRepository.GetByIdAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges
+        );
+
         return item ?? throw new NotFoundException(_localizer["Item"].Value);
     }
 }
