@@ -7,7 +7,7 @@ namespace NGErp.General.Service.Services
     public interface IPythonIntegrationService
     {
         Task<List<CompanyDto>> GetCompaniesAsync(string? token = null);
-        Task<CompanyDto?> GetCompanyByIdAsync(int id, string? token = null);
+        Task<CompanyDto?> GetCompanyByIdAsync(Guid id, string? token = null);
         Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto, string? token = null);
         Task<CompanyDto> UpdateCompanyAsync(int id, UpdateCompanyDto dto, string? token = null);
         Task<bool> DeleteCompanyAsync(int id, string? token = null);
@@ -41,7 +41,7 @@ namespace NGErp.General.Service.Services
             }
         }
 
-        public async Task<CompanyDto?> GetCompanyByIdAsync(int id, string? token = null)
+        public async Task<CompanyDto?> GetCompanyByIdAsync(Guid id, string? token = null)
         {
             try
             {

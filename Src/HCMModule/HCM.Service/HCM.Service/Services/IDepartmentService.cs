@@ -16,7 +16,7 @@ namespace NGErp.HCM.Service.Services
             Guid companyId, DepartmentParameters departmentParameters, 
             RequestAdvancedFilters? requestAdvancedFilters = null);
         Task<DepartmentDto?> GetDepartmentByIdAsync(Guid companyId, Guid id);
-        Task<DepartmentDto> CreateDepartmentAsync(Guid companyId, CreateDepartmentDto dto);
+        Task<DepartmentDto> CreateDepartmentAsync(Guid companyId, CreateDepartmentDto createDepartmentDto, CancellationToken ct);
         Task<DepartmentDto> UpdateDepartmentAsync(Guid companyId, Guid id, UpdateDepartmentDto dto);
         Task<bool> DeleteDepartmentAsync(int id);
     }
