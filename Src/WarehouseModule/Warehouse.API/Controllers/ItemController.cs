@@ -11,7 +11,6 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/{companyId}/warehouse/items")]
-//[JwtAuthorize]
 public class ItemController(IItemService itemService) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
