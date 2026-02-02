@@ -83,7 +83,6 @@ public class CategoryController(
         return Ok(result);
     }
 
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -98,6 +97,24 @@ public class CategoryController(
         );
 
         return Ok(category);
+    }
+
+    [HttpGet("{id:guid}/children")]
+    public async Task<IActionResult> GetChildren(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromQuery] CategoryParameters categoryParameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _categoryService.GetDirectCategoryChildrenByIdAsync(
+            companyId,
+            id,
+            categoryParameters,
+            ct
+        );
+
+        return Ok(result);
     }
 
     [HttpPatch("{id:guid}")]

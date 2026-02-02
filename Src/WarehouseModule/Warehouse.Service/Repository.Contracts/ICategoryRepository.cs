@@ -14,4 +14,11 @@ public interface ICategoryRepository : IRepositoryWithCompany<Category>
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
+    Task<ListQueryResult<Category>> GetDirectChildrenAsync(
+        Guid companyId,
+        Guid id,
+        CategoryParameters categoryParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
 }

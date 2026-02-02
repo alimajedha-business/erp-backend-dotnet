@@ -30,4 +30,24 @@ public class CategoryRepository(MainDbContext context) :
 
         return new ListQueryResult<Category>(items, totalCount);
     }
+
+    public async Task<ListQueryResult<Category>> GetDirectChildrenAsync(
+        Guid companyId,
+        Guid id,
+        CategoryParameters categoryParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<Category> query = Find(e => e.ParentCategoryId == id);
+
+        IQueryable<Category> sorted = base
+            .GetAll(companyId, requestAdvancedFilters, query)
+            .Sort(categoryParameters);
+
+        var totalCount = await sorted.CountAsync(ct);
+        var items = await sorted.Paginate(categoryParameters).ToListAsync(ct);
+
+        return new ListQueryResult<Category>(items, totalCount);
+    }
 }

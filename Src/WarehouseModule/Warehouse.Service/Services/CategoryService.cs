@@ -71,6 +71,29 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(category);
     }
 
+    public async Task<ListResponseModel<CategoryDto>> GetDirectCategoryChildrenByIdAsync(
+        Guid companyId,
+        Guid id,
+        CategoryParameters categoryParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        var listQueryResult = await _categoryRepository.GetDirectChildrenAsync(
+            companyId,
+            id,
+            categoryParameters,
+            ct,
+            requestAdvancedFilters
+        );
+
+        return new ListResponseModel<CategoryDto>(
+            items: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            categoryParameters
+        );
+    }
+
     public async Task<CategoryDto> UpdateCategoryAsync(
         Guid companyId,
         Guid id,

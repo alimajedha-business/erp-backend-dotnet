@@ -24,7 +24,7 @@ public class ItemRepository(MainDbContext context) :
         IQueryable<Item>? baseQuery = null;
         if (itemParameters.CategoryId is not null)
         {
-            baseQuery = Find(w => w.CategoryId == itemParameters.CategoryId);
+            baseQuery = Find(e => e.CategoryId == itemParameters.CategoryId);
         }
 
         IQueryable<Item> sorted = base
