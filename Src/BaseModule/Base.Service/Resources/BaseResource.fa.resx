@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GeneralError" xml:space="preserve">
-    <value>یک خطای غیرمنتطره رخ داد</value>
+    <value>یک خطای غیر منتطره رخ داد</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>{0} مورد نظر یافت نشد.</value>
@@ -137,5 +137,8 @@
   </data>
   <data name="MissingRequiredProperties" xml:space="preserve">
     <value>فیلدهای ضروری ارسال نشده است</value>
+  </data>
+  <data name="ForeignKeyViolation" xml:space="preserve">
+    <value>امکان حذف {0} به دلیل وجود وابستگی وجود ندارد.</value>
   </data>
 </root>

@@ -7,6 +7,7 @@ using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Domain.Entities;
+using NGErp.General.Service.Repository.Contracts;
 
 namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 
@@ -14,14 +15,21 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     Repository<T>(context),
     IRepositoryWithCompany<T> where T : BaseEntityWithCompany
 {
-    public virtual async Task<T?> GetByIdAsync(Guid companyId, Guid id)
+    public virtual async Task<T?> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
     {
-        return await _dbSet
-            .Where(e => e.CompanyId == companyId && e.Id == id)
-            .SingleOrDefaultAsync();
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            e => e.CompanyId == companyId && e.Id == id,
+            ct);
     }
 
-    public virtual IQueryable<T> GetList(
+    public virtual IQueryable<T> GetAll(
         Guid companyId,
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null
@@ -43,7 +51,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             }
         }
 
-        return query;
+        return query.AsNoTracking();
     }
 
     public virtual IQueryable<T> Find(

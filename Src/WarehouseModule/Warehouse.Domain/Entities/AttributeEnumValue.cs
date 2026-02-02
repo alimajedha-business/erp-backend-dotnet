@@ -37,6 +37,7 @@ public class AttributeEnumValue :
         builder
             .HasOne(e => e.Attribute)
             .WithMany()
-            .HasForeignKey(e => e.AttributeId);
+            .HasForeignKey(e => e.AttributeId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

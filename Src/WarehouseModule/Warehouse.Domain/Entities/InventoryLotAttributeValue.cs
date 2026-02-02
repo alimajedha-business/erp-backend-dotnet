@@ -61,11 +61,13 @@ public class InventoryLotAttributeValue :
         builder
             .HasOne(e => e.Lot)
             .WithMany()
-            .HasForeignKey(e => e.LotId);
+            .HasForeignKey(e => e.LotId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.Attribute)
             .WithMany()
-            .HasForeignKey(e => e.AttributeId);
+            .HasForeignKey(e => e.AttributeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

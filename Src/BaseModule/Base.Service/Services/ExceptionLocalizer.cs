@@ -3,39 +3,44 @@
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.Resources;
 
-namespace NGErp.Base.Service.Services
+namespace NGErp.Base.Service.Services;
+
+public class ExceptionLocalizer<TEntityResource>(
+    IStringLocalizer<BaseResource> commonLocalizer,
+    IStringLocalizer<TEntityResource> moduleLocalizer
+) : 
+    IExceptionLocalizer<TEntityResource> where TEntityResource : class
 {
-    public class ExceptionLocalizer<TEntityResource> : IExceptionLocalizer<TEntityResource> where TEntityResource : class
+    private readonly IStringLocalizer<BaseResource> _commonLocalizer = commonLocalizer;
+    private readonly IStringLocalizer<TEntityResource> _moduleLocalizer = moduleLocalizer;
+
+    public string Localize(Exception ex)
     {
-        private readonly IStringLocalizer<BaseResource> _commonLocalizer;
-        private readonly IStringLocalizer<TEntityResource> _moduleLocalizer;
+        if (ex is NotFoundException notFound)
+            return LocalizeOrFallback(notFound.LocalizationKey, notFound.Arguments);
 
-        public ExceptionLocalizer(IStringLocalizer<BaseResource> commonLocalizer, IStringLocalizer<TEntityResource> moduleLocalizer)
-        {
-            _commonLocalizer = commonLocalizer;
-            _moduleLocalizer = moduleLocalizer;
-        }
+        if (ex is ForeignKeyViolationException fkViolation)
+            return LocalizeOrFallback(fkViolation.LocalizationKey, fkViolation.Arguments);
 
-        public string Localize(Exception ex)
-        {
-            if (ex is NotFoundException notFound)
-            {
-                // Module resource first
-                var localized = _moduleLocalizer[notFound.LocalizationKey, notFound.Arguments];
-                if (!localized.ResourceNotFound)
-                    return localized.Value;
+        // Generic fallback
+        return _commonLocalizer["GeneralError"];
+    }
 
-                // Fallback to shared
-                var shared = _commonLocalizer[notFound.LocalizationKey, notFound.Arguments];
-                if (!shared.ResourceNotFound)
-                    return shared.Value;
+    private string LocalizeOrFallback(string key, params object[] args)
+    {
+        // Module resource first
+        var module = _moduleLocalizer[key, args];
+        if (!module.ResourceNotFound)
+            return module.Value;
 
-                // Fallback to raw key
-                return string.Format(notFound.LocalizationKey, notFound.Arguments);
-            }
+        // Shared fallback
+        var shared = _commonLocalizer[key, args];
+        if (!shared.ResourceNotFound)
+            return shared.Value;
 
-            // Generic fallback
-            return _commonLocalizer["GeneralError"];
-        }
+        // Raw fallback
+        return (args is { Length: > 0 })
+            ? string.Format(key, args)
+            : key;
     }
 }

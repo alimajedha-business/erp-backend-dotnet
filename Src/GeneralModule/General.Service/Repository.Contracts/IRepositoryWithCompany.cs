@@ -4,13 +4,18 @@ using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Domain.Entities;
 
-namespace NGErp.General.Infrastructure.DataAccess.Repositories;
+namespace NGErp.General.Service.Repository.Contracts;
 
 public interface IRepositoryWithCompany<T> 
     : IRepository<T> where T : BaseEntityWithCompany
 {
-    Task<T?> GetByIdAsync(Guid companyId, Guid id);
-    IQueryable<T> GetList(
+    Task<T?> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    );
+    IQueryable<T> GetAll(
         Guid companyId,
         RequestAdvancedFilters? requestAdvancedFilters = null,
         IQueryable<T>? baseQuery = null

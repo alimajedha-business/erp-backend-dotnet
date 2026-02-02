@@ -48,11 +48,13 @@ public class ItemAttributeValue :
         builder
             .HasOne(e => e.Item)
             .WithMany()
-            .HasForeignKey(e => e.ItemId);
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.Attribute)
             .WithMany()
-            .HasForeignKey(e => e.AttributeId);
+            .HasForeignKey(e => e.AttributeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

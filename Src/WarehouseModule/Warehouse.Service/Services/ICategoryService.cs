@@ -15,14 +15,30 @@ public interface ICategoryService
     Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
-    Task<CategoryDto> GetCategoryByIdAsync(Guid companyId, Guid id);
+    Task<CategoryDto> GetCategoryByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
+    Task<ListResponseModel<CategoryDto>> GetDirectCategoryChildrenByIdAsync(
+        Guid companyId,
+        Guid id,
+        CategoryParameters categoryParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
     Task<CategoryDto> UpdateCategoryAsync(
         Guid companyId,
         Guid id,
         UpdateCategoryDto updateCategoryDto,
         CancellationToken ct
     );
-    Task<bool> DeleteCategoryAsync(Guid companyId, Guid id);
+    Task<bool> DeleteCategoryAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
 }

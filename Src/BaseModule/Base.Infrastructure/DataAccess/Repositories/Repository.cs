@@ -37,7 +37,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
             }
         }
 
-        return query;
+        return query.AsNoTracking();
     }
 
     public virtual IQueryable<T> Find(

@@ -54,6 +54,7 @@ public class Category :
         builder
             .HasOne(e => e.ParentCategory)
             .WithMany(e => e.SubCategories)
-            .HasForeignKey(e => e.ParentCategoryId);
+            .HasForeignKey(e => e.ParentCategoryId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

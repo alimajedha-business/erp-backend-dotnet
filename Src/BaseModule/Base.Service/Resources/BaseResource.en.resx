@@ -138,4 +138,7 @@
   <data name="MissingRequiredProperties" xml:space="preserve">
     <value>Missing required properties</value>
   </data>
+  <data name="ForeignKeyViolation" xml:space="preserve">
+    <value>Removing {0} is not permitted due to relations.</value>
+  </data>
 </root>

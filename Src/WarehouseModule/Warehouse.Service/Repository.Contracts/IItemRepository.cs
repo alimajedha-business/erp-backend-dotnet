@@ -1,17 +1,17 @@
-﻿using NGErp.Base.Service.Repository.Contract;
-using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IItemRepository : IRepository<Item>
+public interface IItemRepository : IRepositoryWithCompany<Item>
 {
-    Task<Item?> GetByIdAsync(Guid companyId, Guid id);
     Task<ListQueryResult<Item>> GetAllAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -31,15 +33,26 @@ public class ItemService(
         throw new NotImplementedException();
     }
 
+    public Task<ItemDto> CreateItemAsync(
+        Guid companyId,
+        CreateItemDto item,
+        CancellationToken ct
+    )
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
         var listQueryResult = await _itemRepository.GetAllAsync(
             companyId,
             itemParameters,
+            ct,
             requestAdvancedFilters
         );
 
@@ -50,9 +63,14 @@ public class ItemService(
         );
     }
 
-    public async Task<ItemDto?> GetItemByIdAsync(Guid companyId, Guid id)
+    public async Task<ItemDto?> GetItemByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        return _mapper.Map<ItemDto>(await GetByIdAsync(companyId, id));
+        var item = await GetByIdOrThrowExceptionAsync(companyId,id,ct);
+        return _mapper.Map<ItemDto>(item);
     }
 
     public async Task<ItemDto> UpdateItemAsync(
@@ -62,7 +80,12 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdAsync(companyId, id);
+        var item = await GetByIdOrThrowExceptionAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
 
         _mapper.Map(updateItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
@@ -70,20 +93,42 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<bool> DeleteItemAsync(Guid companyId, Guid id)
+    public async Task<bool> DeleteItemAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
-        _itemRepository.Remove(await GetByIdAsync(companyId, id));
+        var item = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        _itemRepository.Remove(item);
+
+        try
+        {
+            await _itemRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        when (ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new ForeignKeyViolationException(_localizer["Item"].Value);
+        }
+
         return true;
     }
 
-    private async Task<Item> GetByIdAsync(Guid companyId, Guid id)
+    private async Task<Item> GetByIdOrThrowExceptionAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
     {
-        var item = await _itemRepository.GetByIdAsync(companyId, id);
-        return item ?? throw new NotFoundException(_localizer["Item"].Value);
-    }
+        var item = await _itemRepository.GetByIdAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges
+        );
 
-    public Task<ItemDto> CreateItemAsync(Guid companyId, CreateItemDto item, CancellationToken ct)
-    {
-        throw new NotImplementedException();
+        return item ?? throw new NotFoundException(_localizer["Item"].Value);
     }
 }

@@ -15,14 +15,23 @@ public interface IItemService
     Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
         ItemParameters itemParameters,
+        CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
-    Task<ItemDto?> GetItemByIdAsync(Guid companyId, Guid id);
+    Task<ItemDto?> GetItemByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
     Task<ItemDto> UpdateItemAsync(
         Guid companyId,
         Guid id,
         UpdateItemDto updateItemDto,
         CancellationToken ct
     );
-    Task<bool> DeleteItemAsync(Guid companyId, Guid id);
+    Task<bool> DeleteItemAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
 }
