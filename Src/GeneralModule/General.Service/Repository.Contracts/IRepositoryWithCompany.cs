@@ -4,7 +4,7 @@ using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Domain.Entities;
 
-namespace NGErp.General.Infrastructure.DataAccess.Repositories;
+namespace NGErp.General.Service.Repository.Contracts;
 
 public interface IRepositoryWithCompany<T> 
     : IRepository<T> where T : BaseEntityWithCompany
