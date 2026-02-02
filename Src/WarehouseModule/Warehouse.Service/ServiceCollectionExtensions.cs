@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
 
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
+        services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
 
         services.AddScoped<ICategoryService,  CategoryService>();
         services.AddScoped<IItemService, ItemService>();

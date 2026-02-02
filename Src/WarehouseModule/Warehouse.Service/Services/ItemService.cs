@@ -25,21 +25,19 @@ public class ItemService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public Task<ItemDto> CreateAsync(
-        CreateItemDto item,
-        CancellationToken ct
-    )
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ItemDto> CreateItemAsync(
+    public async Task<ItemDto> CreateItemAsync(
         Guid companyId,
-        CreateItemDto item,
+        CreateItemDto createItemDto,
         CancellationToken ct
     )
     {
-        throw new NotImplementedException();
+        var item = _mapper.Map<Item>(createItemDto);
+        item.CompanyId = companyId;
+
+        var createdItem = await _itemRepository.AddAsync(item, ct);
+        await _itemRepository.SaveChangesAsync(ct);
+
+        return _mapper.Map<ItemDto>(createdItem);
     }
 
     public async Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
