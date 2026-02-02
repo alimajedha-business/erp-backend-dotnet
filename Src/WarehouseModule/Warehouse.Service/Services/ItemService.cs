@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -92,7 +94,16 @@ public class ItemService(
     )
     {
         _itemRepository.Remove(await GetByIdAsync(companyId, id, ct));
-        await _itemRepository.SaveChangesAsync(ct);
+
+        try
+        {
+            await _itemRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        when (ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new ForeignKeyViolationException(_localizer["Item"].Value);
+        }
 
         return true;
     }

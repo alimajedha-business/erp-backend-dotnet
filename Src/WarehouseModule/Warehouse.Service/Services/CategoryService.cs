@@ -98,7 +98,7 @@ public class CategoryService(
             await _categoryRepository.SaveChangesAsync(ct);
         }
         catch (DbUpdateException ex) 
-        when (ex.InnerException is SqlException { Number: 547 } sqlEx)
+        when (ex.InnerException is SqlException { Number: 547 })
         {
             throw new ForeignKeyViolationException(_localizer["Category"].Value);
         }
