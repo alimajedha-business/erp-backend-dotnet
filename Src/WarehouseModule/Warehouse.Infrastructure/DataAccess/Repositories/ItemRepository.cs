@@ -31,7 +31,7 @@ public class ItemRepository(MainDbContext context) :
             .GetAll(companyId, requestAdvancedFilters, baseQuery)
             .Sort(itemParameters);
 
-        var totalCount = await sorted.CountAsync();
+        var totalCount = await sorted.CountAsync(ct);
         var items = await sorted.Paginate(itemParameters).ToListAsync(ct);
 
         return new ListQueryResult<Item>(items, totalCount);

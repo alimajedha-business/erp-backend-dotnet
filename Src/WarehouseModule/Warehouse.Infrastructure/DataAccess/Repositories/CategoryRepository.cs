@@ -25,7 +25,7 @@ public class CategoryRepository(MainDbContext context) :
             .GetAll(companyId, requestAdvancedFilters)
             .Sort(categoryParameters);
 
-        var totalCount = await sorted.CountAsync();
+        var totalCount = await sorted.CountAsync(ct);
         var items = await sorted.Paginate(categoryParameters).ToListAsync(ct);
 
         return new ListQueryResult<Category>(items, totalCount);
