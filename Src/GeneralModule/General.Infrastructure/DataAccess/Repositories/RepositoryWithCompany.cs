@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Domain.Entities;
 using NGErp.General.Service.Repository.Contracts;
 
@@ -29,14 +30,16 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             ct);
     }
 
-    public virtual IQueryable<T> GetAll(
+    public virtual async Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        IQueryable<T>? baseQuery = null
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        IQueryable<T> query = baseQuery ?? _context
+        IQueryable<T> query = _context
             .Set<T>()
+            .AsNoTracking()
             .Where(e => e.CompanyId == companyId);
 
         if (requestAdvancedFilters != null)
@@ -51,7 +54,13 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             }
         }
 
-        return query.AsNoTracking();
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
     }
 
     public virtual IQueryable<T> Find(
