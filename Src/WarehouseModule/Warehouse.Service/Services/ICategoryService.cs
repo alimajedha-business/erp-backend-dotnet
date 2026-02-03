@@ -27,8 +27,7 @@ public interface ICategoryService
         Guid companyId,
         Guid id,
         CategoryParameters categoryParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        CancellationToken ct
     );
     Task<CategoryDto> UpdateCategoryAsync(
         Guid companyId,

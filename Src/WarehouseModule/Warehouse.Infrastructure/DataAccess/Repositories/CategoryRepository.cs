@@ -14,39 +14,20 @@ public class CategoryRepository(MainDbContext context) :
     RepositoryWithCompany<Category>(context),
     ICategoryRepository
 {
-    public async Task<ListQueryResult<Category>> GetAllAsync(
-        Guid companyId,
-        CategoryParameters categoryParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        IQueryable<Category> sorted = base
-            .GetAll(companyId, requestAdvancedFilters)
-            .Sort(categoryParameters);
-
-        var totalCount = await sorted.CountAsync(ct);
-        var items = await sorted.Paginate(categoryParameters).ToListAsync(ct);
-
-        return new ListQueryResult<Category>(items, totalCount);
-    }
-
     public async Task<ListQueryResult<Category>> GetDirectChildrenAsync(
         Guid companyId,
         Guid id,
         CategoryParameters categoryParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        CancellationToken ct
     )
     {
         IQueryable<Category> query = Find(e => e.ParentCategoryId == id);
 
-        IQueryable<Category> sorted = base
-            .GetAll(companyId, requestAdvancedFilters, query)
-            .Sort(categoryParameters);
-
-        var totalCount = await sorted.CountAsync(ct);
-        var items = await sorted.Paginate(categoryParameters).ToListAsync(ct);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Paginate(categoryParameters)
+            .Sort(categoryParameters)
+            .ToListAsync(ct);
 
         return new ListQueryResult<Category>(items, totalCount);
     }

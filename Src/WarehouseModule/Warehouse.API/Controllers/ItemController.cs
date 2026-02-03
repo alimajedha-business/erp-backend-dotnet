@@ -46,38 +46,24 @@ public class ItemController(
         );
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] ItemParameters itemParameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _itemService.GetAllItemsAsync(
-            companyId,
-            itemParameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
-    [HttpPost("search")]
+    [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetWithSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ItemParameters itemParameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var requestAdvancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
+        var queryParams = Request.Query.GetEntitySpecificQueryParams<ItemParameters>();
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto)
+            .MergeQueryFilters<Item>(queryParams);
 
         var result = await _itemService.GetAllItemsAsync(
             companyId,
             itemParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return Ok(result);
