@@ -2,12 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.API.ActionFilters;
-using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
-using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
 
 
@@ -16,11 +12,12 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/{companyId:guid}/hcm/departments")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/departments")]
 //[JwtAuthorize]
 public class DepartmentController(
     IDepartmentService departmentService,
-    IAdvancedFilterBuilder filterBuilder) : ControllerBase
+    IAdvancedFilterBuilder filterBuilder
+    ) : ControllerBase
 {
     private readonly IDepartmentService _departmentService = departmentService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
@@ -84,21 +81,21 @@ public class DepartmentController(
     //    return Ok(result);
     //}
 
-    //[HttpGet("{id:guid}")]
-    //public async Task<IActionResult> GetById(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var category = await _categoryService.GetCategoryByIdAsync(
-    //        companyId,
-    //        id,
-    //        ct
-    //    );
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var category = await _departmentService.GetDepartmentByIdAsync(
+            companyId,
+            id,
+            ct
+        );
 
-    //    return Ok(category);
-    //}
+        return Ok(category);
+    }
 
     //[HttpGet("{id:guid}/children")]
     //public async Task<IActionResult> GetChildren(
@@ -146,6 +143,4 @@ public class DepartmentController(
     //    await _categoryService.DeleteCategoryAsync(companyId, id, ct);
     //    return Ok();
     //}
-
-
 }
