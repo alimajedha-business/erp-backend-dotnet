@@ -78,7 +78,7 @@ namespace NGErp.General.API.Controllers
         /// Get a specific company by ID from Django/Python API
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompany(int id)
+        public async Task<IActionResult> GetCompany(Guid id)
         {
             try
             {

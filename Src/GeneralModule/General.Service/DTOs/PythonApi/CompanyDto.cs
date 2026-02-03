@@ -2,7 +2,7 @@ namespace NGErp.General.Service.DTOs.PythonApi
 {
     public class CompanyDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Address { get; set; }
         public string? Phone { get; set; }
