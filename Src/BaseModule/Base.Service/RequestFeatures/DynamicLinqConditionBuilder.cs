@@ -182,6 +182,17 @@ public static class DynamicLinqConditionBuilder
 
         var nn = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
+        if (nn == typeof(Guid))
+        {
+            if (raw is Guid g)
+                return g;
+
+            if (raw is string s && Guid.TryParse(s, out var parsed))
+                return parsed;
+
+            throw new ArgumentException($"Invalid GUID value: '{raw}'");
+        }
+
         if (nn.IsEnum)
         {
             if (raw is string s)
