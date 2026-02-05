@@ -55,10 +55,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var queryParams = Request.Query.GetEntitySpecificQueryParams<CategoryParameters>();
-        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto)
-            .MergeQueryFilters<Category>(queryParams);
-
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
             categoryParameters,
