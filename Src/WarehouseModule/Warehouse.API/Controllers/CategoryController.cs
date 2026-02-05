@@ -57,7 +57,7 @@ public class CategoryController(
     {
         var queryParams = Request.Query.GetEntitySpecificQueryParams<CategoryParameters>();
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto)
-            .MergeQueryFilters<Item>(queryParams);
+            .MergeQueryFilters<Category>(queryParams);
 
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
@@ -83,24 +83,6 @@ public class CategoryController(
         );
 
         return Ok(category);
-    }
-
-    [HttpGet("{id:guid}/children")]
-    public async Task<IActionResult> GetChildren(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromQuery] CategoryParameters categoryParameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _categoryService.GetDirectCategoryChildrenByIdAsync(
-            companyId,
-            id,
-            categoryParameters,
-            ct
-        );
-
-        return Ok(result);
     }
 
     [HttpPatch("{id:guid}")]
