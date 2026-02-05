@@ -27,7 +27,7 @@ public sealed class CategorySchema : IFilterSchema<Category>
             PropertyName: nameof(Category.LevelNo),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "ge", "lt", "le" }
+            { "eq", "ne", "gt", "ge", "lt", "le", "in", "notin" }
         );
 
         return filterSchema;
