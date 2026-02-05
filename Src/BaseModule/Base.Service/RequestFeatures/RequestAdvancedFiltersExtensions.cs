@@ -42,18 +42,11 @@ public static class RequestAdvancedFiltersExtensions
     private static (string predicate, object[] args) BuildPredicateArgs<TEntity>(
         IReadOnlyDictionary<string, string> queryFilters)
     {
-        if (queryFilters == null || queryFilters.Count == 0)
-            return (string.Empty, Array.Empty<object>());
-
         var parts = new List<string>();
         var args = new List<object>();
 
         foreach (var (key, raw) in queryFilters)
         {
-            if (string.IsNullOrWhiteSpace(key) || raw is null)
-                continue;
-
-            // Case-insensitive property lookup
             var prop = typeof(TEntity).GetProperty(
                 key,
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
@@ -61,10 +54,16 @@ public static class RequestAdvancedFiltersExtensions
             if (prop == null || !prop.CanRead)
                 continue;
 
+            // CASE: client wants "IS NULL"
+            if (raw.Equals("null", StringComparison.OrdinalIgnoreCase))
+            {
+                parts.Add($"{prop.Name} == null");
+                continue;
+            }
+
+            // normal equality
             var typed = ConvertString(raw, prop.PropertyType);
             args.Add(typed!);
-
-            // Dynamic LINQ equality
             parts.Add($"{prop.Name} == @{args.Count - 1}");
         }
 
