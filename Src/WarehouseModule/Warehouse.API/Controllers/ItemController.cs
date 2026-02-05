@@ -55,10 +55,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var queryParams = Request.Query.GetEntitySpecificQueryParams<ItemParameters>();
-        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto)
-            .MergeQueryFilters<Item>(queryParams);
-
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetAllItemsAsync(
             companyId,
             itemParameters,
