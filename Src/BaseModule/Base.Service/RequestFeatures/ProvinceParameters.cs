@@ -1,7 +1,7 @@
 ﻿namespace NGErp.Base.Service.RequestFeatures
 {
-    public class ProvinceParameters:RequestParameters
+    public class ProvinceParameters : RequestParameters
     {
-        public int CountryId {  get; set; }
+        public int CountryId { get; set; }
     }
 }
