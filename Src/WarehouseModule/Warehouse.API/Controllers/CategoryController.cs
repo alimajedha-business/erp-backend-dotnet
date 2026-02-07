@@ -18,10 +18,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/{companyId}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
+    IItemService itemService,
     IAdvancedFilterBuilder filterBuilder
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
+    private readonly IItemService _itemService = itemService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
@@ -80,6 +82,34 @@ public class CategoryController(
         );
 
         return Ok(category);
+    }
+
+    [HttpPost("{id:guid}/items/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetItems(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromQuery] ItemParameters itemParameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await _categoryService.GetCategoryByIdAsync(
+            companyId,
+            id,
+            ct
+        );
+
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
+        var result = await _itemService.GetCategoryAllItemsAsync(
+            companyId,
+            id,
+            itemParameters,
+            ct,
+            advancedFilters
+        );
+
+        return Ok(result);
     }
 
     [HttpPatch("{id:guid}")]

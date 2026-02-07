@@ -61,6 +61,29 @@ public class ItemService(
         );
     }
 
+    public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
+        Guid companyId,
+        Guid categoryId,
+        ItemParameters itemParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        var listQueryResult = await _itemRepository.GetCategoryAllAsync(
+            companyId,
+            categoryId,
+            itemParameters,
+            ct,
+            requestAdvancedFilters
+        );
+
+        return new ListResponseModel<ItemDto>(
+            items: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            itemParameters
+        );
+    }
+
     public async Task<ItemDto?> GetItemByIdAsync(
         Guid companyId,
         Guid id,
