@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Service.Resources;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -34,10 +37,6 @@ public class DepartmentService(
         CancellationToken ct
         )
     {
-        //var company = _integrationService.GetCompanyByIdAsync(companyId);
-        //if (company == null)
-        //    throw new NotFoundException(_generalLocalizer["Company"].Value);
-
         var department = _mapper.Map<Department>(createDepartmentDto);
         department.CompanyId = companyId;
 
@@ -47,18 +46,46 @@ public class DepartmentService(
         return _mapper.Map<DepartmentDto>(createdDepartment);
     }
 
-    public Task<bool> DeleteDepartmentAsync(int id)
+    public async Task<bool> DeleteDepartmentAsync(
+        Guid companyId, 
+        Guid id, 
+        CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        _departmentRepository.Remove(department);
+
+        try
+        {
+            await _departmentRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        when (ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new ForeignKeyViolationException(_localizer["Category"].Value);
+        }
+
+        return true;
     }
 
-    public Task<List<DepartmentDto>> GetAllDepartmentsAsync(
-        Guid companyId, 
-        DepartmentParameters departmentParameters, 
-        RequestAdvancedFilters? requestAdvancedFilters = null
-        )
+     public async Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
+         Guid companyId, 
+         DepartmentParameters departmentParameters, 
+         CancellationToken ct, 
+         RequestAdvancedFilters? requestAdvancedFilters = null
+         )
     {
-        throw new NotImplementedException();
+        var listQueryResult = await _departmentRepository.GetAllAsync(
+          companyId,
+          departmentParameters,
+          ct,
+          requestAdvancedFilters
+          );
+
+        return new ListResponseModel<DepartmentDto>(
+            items: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            departmentParameters
+        );
     }
 
     public async Task<DepartmentDto?> GetDepartmentByIdAsync(

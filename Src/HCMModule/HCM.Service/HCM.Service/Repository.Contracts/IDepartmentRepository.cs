@@ -14,13 +14,4 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Repository.Contracts;
 
-public interface IDepartmentRepository : IRepositoryWithCompany<Department>
-{    
-    Task<ListQueryResult<Department>> GetAllAsync(
-        Guid companyId,
-        DepartmentParameters departmentParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-}
+public interface IDepartmentRepository : IRepositoryWithCompany<Department>{}

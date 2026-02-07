@@ -2,8 +2,12 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
 
 
@@ -44,49 +48,12 @@ public class DepartmentController(
         );
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> Get(
-    //    [FromRoute] Guid companyId,
-    //    [FromQuery] CategoryParameters categoryParameters,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var result = await _categoryService.GetAllCategoriesAsync(
-    //        companyId,
-    //        categoryParameters,
-    //        ct
-    //    );
-
-    //    return Ok(result);
-    //}
-
-    //[HttpPost("search")]
-    //[SkipModelValidation]
-    //public async Task<IActionResult> GetWithSearch(
-    //    [FromRoute] Guid companyId,
-    //    [FromQuery] CategoryParameters categoryParameters,
-    //    [FromBody] FilterNodeDto? filterNodeDto,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
-
-    //    var result = await _categoryService.GetAllCategoriesAsync(
-    //        companyId,
-    //        categoryParameters,
-    //        ct,
-    //        requestAdvancedFilters
-    //    );
-
-    //    return Ok(result);
-    //}
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-    )
+ )
     {
         var category = await _departmentService.GetDepartmentByIdAsync(
             companyId,
@@ -97,50 +64,34 @@ public class DepartmentController(
         return Ok(category);
     }
 
-    //[HttpGet("{id:guid}/children")]
-    //public async Task<IActionResult> GetChildren(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    [FromQuery] CategoryParameters categoryParameters,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var result = await _categoryService.GetDirectCategoryChildrenByIdAsync(
-    //        companyId,
-    //        id,
-    //        categoryParameters,
-    //        ct
-    //    );
+    [HttpPost("list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] DepartmentParameters departmentParameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+        )
+    {
+        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
+        var result = await _departmentService.GetAllDepartmentsAsync(
+            companyId,
+            departmentParameters,
+            ct,
+            advancedFilters
+        );
 
-    //    return Ok(result);
-    //}
+        return Ok(result);
+    }
 
-    //[HttpPatch("{id:guid}")]
-    //public async Task<IActionResult> Update(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    [FromBody] UpdateCategoryDto updateCategoryDto,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var categoryDto = await _categoryService.UpdateCategoryAsync(
-    //        companyId,
-    //        id,
-    //        updateCategoryDto,
-    //        ct
-    //    );
-
-    //    return Ok(categoryDto);
-    //}
-
-    //[HttpDelete("{id:guid}")]
-    //public async Task<IActionResult> Delete(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    CancellationToken ct
-    //)
-    //{
-    //    await _categoryService.DeleteCategoryAsync(companyId, id, ct);
-    //    return Ok();
-    //}
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+    [FromRoute] Guid companyId,
+    [FromRoute] Guid id,
+    CancellationToken ct
+)
+    {
+        await _departmentService.DeleteDepartmentAsync(companyId, id, ct);
+        return Ok();
+    }
 }
