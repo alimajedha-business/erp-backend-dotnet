@@ -15,6 +15,8 @@ using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 namespace NGErp.HCM.Service.Services;
 
 public class DepartmentService(
@@ -30,6 +32,20 @@ public class DepartmentService(
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly IStringLocalizer<GeneralResource> _generalLocalizer = generalLocalizer;
     private readonly IPythonIntegrationService _integrationService = integrationService;
+
+    public async Task ChangeStatusAsync(
+        Guid companyId,
+        Guid id,
+        bool newStatus,
+        CancellationToken ct)
+    {
+        var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+
+        department.ChangeStatus(newStatus, DateTime.UtcNow);
+
+        _departmentRepository.Update(department);
+        await _departmentRepository.SaveChangesAsync(ct);
+    }
 
     public async Task<DepartmentDto> CreateDepartmentAsync(
         Guid companyId,
@@ -47,8 +63,8 @@ public class DepartmentService(
     }
 
     public async Task<bool> DeleteDepartmentAsync(
-        Guid companyId, 
-        Guid id, 
+        Guid companyId,
+        Guid id,
         CancellationToken ct)
     {
         var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
@@ -67,12 +83,12 @@ public class DepartmentService(
         return true;
     }
 
-     public async Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
-         Guid companyId, 
-         DepartmentParameters departmentParameters, 
-         CancellationToken ct, 
-         RequestAdvancedFilters? requestAdvancedFilters = null
-         )
+    public async Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
+        Guid companyId,
+        DepartmentParameters departmentParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+        )
     {
         var listQueryResult = await _departmentRepository.GetAllAsync(
           companyId,
@@ -89,8 +105,8 @@ public class DepartmentService(
     }
 
     public async Task<DepartmentDto?> GetDepartmentByIdAsync(
-        Guid companyId, 
-        Guid id, 
+        Guid companyId,
+        Guid id,
         CancellationToken ct
         )
     {
@@ -99,8 +115,8 @@ public class DepartmentService(
     }
 
     public Task<DepartmentDto> UpdateDepartmentAsync(
-        Guid companyId, 
-        Guid id, 
+        Guid companyId,
+        Guid id,
         UpdateDepartmentDto dto
         )
     {

@@ -33,5 +33,13 @@ namespace NGErp.HCM.Service.Services
             Guid id,
             CancellationToken ct
             );
+        Task ChangeStatusAsync(
+            Guid companyId,
+            Guid id,
+            bool NewStatus,
+            CancellationToken ct
+            );
+
+
     }
 }

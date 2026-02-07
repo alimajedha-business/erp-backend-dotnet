@@ -86,12 +86,29 @@ public class DepartmentController(
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-    [FromRoute] Guid companyId,
-    [FromRoute] Guid id,
-    CancellationToken ct
-)
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+        )
     {
         await _departmentService.DeleteDepartmentAsync(companyId, id, ct);
         return Ok();
+    }
+
+    [HttpPatch("{id:guid}/status")]
+    public async Task<IActionResult> ChangeStatus(
+        Guid companyId,
+        Guid id,
+        [FromBody] ChangeStatusDto changeStatusDto,
+        CancellationToken ct
+        )
+    {
+        await _departmentService.ChangeStatusAsync(
+            companyId,
+            id,
+            changeStatusDto.Status,
+            ct
+            );
+        return NoContent();
     }
 }

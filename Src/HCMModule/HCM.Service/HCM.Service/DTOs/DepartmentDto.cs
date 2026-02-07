@@ -27,4 +27,9 @@ namespace NGErp.HCM.Service.DTOs
         public required string Name { get; set; }
         public string? Description { get; set; }
     }
+
+    public class ChangeStatusDto
+    {
+        public bool Status { get; set; }
+    }
 }

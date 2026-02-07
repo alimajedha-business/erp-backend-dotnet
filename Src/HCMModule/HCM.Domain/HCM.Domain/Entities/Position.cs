@@ -22,7 +22,7 @@ namespace NGErp.HCM.Domain.Entities
 
         public bool Status { get; set; } = true;
 
-        public DateTime StatusChangeDate { get; set; }
+        public DateTime? StatusChangeDate { get; set; }
 
         public void Map(EntityTypeBuilder<Position> builder)
         {
