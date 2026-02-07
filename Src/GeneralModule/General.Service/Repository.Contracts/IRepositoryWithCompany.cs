@@ -2,6 +2,7 @@
 
 using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.General.Service.Repository.Contracts;
@@ -15,10 +16,11 @@ public interface IRepositoryWithCompany<T>
         CancellationToken ct,
         bool trackChanges = false
     );
-    IQueryable<T> GetAll(
+    Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        IQueryable<T>? baseQuery = null
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
     );
     IQueryable<T> Find(
         Guid companyId,

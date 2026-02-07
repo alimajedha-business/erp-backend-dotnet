@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 
+using NGErp.Base.Service.Services;
+
 namespace NGErp.Base.Infrastructure.Services
 {
     public class TokenValidationService

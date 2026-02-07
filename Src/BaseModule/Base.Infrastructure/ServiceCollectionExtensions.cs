@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NGErp.Base.Service.Services;
 
 namespace NGErp.Base.Infrastructure
 {

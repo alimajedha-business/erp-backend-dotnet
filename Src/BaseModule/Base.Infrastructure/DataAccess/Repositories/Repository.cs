@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.Repository.Contract;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 
 namespace NGErp.Base.Infrastructure.DataAccess.Repositories;
 
@@ -18,12 +19,15 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return await _dbSet.FindAsync(id);
     }
 
-    public virtual IQueryable<T> GetAll(
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        IQueryable<T>? baseQuery = null
+    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        IQueryable<T> query = baseQuery ?? _context.Set<T>();
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking();
 
         if (requestAdvancedFilters != null)
         {
@@ -37,7 +41,13 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
             }
         }
 
-        return query.AsNoTracking();
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
     }
 
     public virtual IQueryable<T> Find(

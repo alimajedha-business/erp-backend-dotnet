@@ -46,38 +46,24 @@ public class CategoryController(
         );
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters categoryParameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _categoryService.GetAllCategoriesAsync(
-            companyId,
-            categoryParameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
-    [HttpPost("search")]
+    [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetWithSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var requestAdvancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
+        var queryParams = Request.Query.GetEntitySpecificQueryParams<CategoryParameters>();
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto)
+            .MergeQueryFilters<Item>(queryParams);
 
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
             categoryParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return Ok(result);
