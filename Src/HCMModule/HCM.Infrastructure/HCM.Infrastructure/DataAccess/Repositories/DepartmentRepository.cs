@@ -1,27 +1,34 @@
-﻿using NGErp.Base.Infrastructure.DataAccess;
-using NGErp.Base.Infrastructure.DataAccess.Repositories;
-using NGErp.HCM.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NGErp.HCM.Service.Repository.Contracts;
-using NGErp.Base.Service.ResponseModels;
-using NGErp.HCM.Service.RequestFeatures;
+﻿
+using Microsoft.EntityFrameworkCore;
+
+using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Infrastructure.DataAccess.Repositories;
+using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Service.Repository.Contracts;
+using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Infrastructure.DataAccess.Repositories;
 
-public class DepartmentRepository(MainDbContext context) : Repository<Department>(context), IDepartmentRepository
+public class DepartmentRepository(MainDbContext context) :
+    RepositoryWithCompany<Department>(context),
+    IDepartmentRepository
 {
-    public Task<ListQueryResult<Department>> GetAllAsync(Guid companyId, DepartmentParameters departmentParameters, RequestAdvancedFilters? requestAdvancedFilters = null)
+    public async Task<ListQueryResult<Department>> GetAllAsync(
+        Guid companyId,
+        DepartmentParameters departmentParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+        )
     {
-        throw new NotImplementedException();
-    }
+        IQueryable<Department> sorted = base
+            .GetAll(companyId, requestAdvancedFilters)
+            .Sort(departmentParameters);
 
-    public Task<Department?> GetByIdAsync(Guid companyId, Guid id)
-    {
-        throw new NotImplementedException();
+        var totalCount = await sorted.CountAsync(ct);
+        var items = await sorted.Paginate(departmentParameters).ToListAsync(ct);
+
+        return new ListQueryResult<Department>(items, totalCount);
     }
 }

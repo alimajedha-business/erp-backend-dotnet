@@ -44,9 +44,9 @@ namespace NGErp.PythonIntegration.Tests.IntegrationTests
             if (result.Any())
             {
                 var firstCompany = result.First();
-                
+
                 // Verify all required fields exist
-                firstCompany.Id.Should().BeGreaterThan(0, "Id should be a positive integer");
+                firstCompany.Id.Should().NotBeEmpty("Created entity should have a valid ID");
                 firstCompany.Name.Should().NotBeNullOrEmpty("Name should not be null or empty");
                 firstCompany.CreatedAt.Should().NotBe(default(DateTime), "CreatedAt should be set");
                 
@@ -62,7 +62,7 @@ namespace NGErp.PythonIntegration.Tests.IntegrationTests
         public async Task GetCompanyByIdAsync_Should_Return_Company_When_Exists()
         {
             // Arrange
-            int testCompanyId = 1; // Adjust based on your test data
+            Guid testCompanyId = new Guid("9AD4F9DF-A4FA-4047-A1CD-6D46ED9E16E8"); // Adjust based on your test data
 
             // Act
             var result = await _pythonService.GetCompanyByIdAsync(testCompanyId);
@@ -77,7 +77,7 @@ namespace NGErp.PythonIntegration.Tests.IntegrationTests
         public async Task GetCompanyByIdAsync_Should_Return_Null_When_NotExists()
         {
             // Arrange
-            int nonExistentId = 999999;
+            Guid nonExistentId = new Guid("75C9937A-A54B-41B3-88CA-5154731D2E06");
 
             // Act
             var result = await _pythonService.GetCompanyByIdAsync(nonExistentId);
@@ -103,7 +103,7 @@ namespace NGErp.PythonIntegration.Tests.IntegrationTests
 
             // Assert
             result.Should().NotBeNull("Created company should be returned");
-            result.Id.Should().BeGreaterThan(0, "Created company should have a valid ID");
+            result.Id.Should().NotBeEmpty("Created entity should have a valid ID");
             result.Name.Should().Be(createDto.Name, "Name should match");
             result.Address.Should().Be(createDto.Address, "Address should match");
             result.Phone.Should().Be(createDto.Phone, "Phone should match");
