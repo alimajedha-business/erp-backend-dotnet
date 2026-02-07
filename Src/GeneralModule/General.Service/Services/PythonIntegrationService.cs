@@ -9,8 +9,8 @@ namespace NGErp.General.Service.Services
         Task<List<CompanyDto>> GetCompaniesAsync(string? token = null);
         Task<CompanyDto?> GetCompanyByIdAsync(Guid id, string? token = null);
         Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto, string? token = null);
-        Task<CompanyDto> UpdateCompanyAsync(int id, UpdateCompanyDto dto, string? token = null);
-        Task<bool> DeleteCompanyAsync(int id, string? token = null);
+        Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto, string? token = null);
+        Task<bool> DeleteCompanyAsync(Guid id, string? token = null);
     }
 
     public class PythonIntegrationService : IPythonIntegrationService
@@ -70,7 +70,7 @@ namespace NGErp.General.Service.Services
             }
         }
 
-        public async Task<CompanyDto> UpdateCompanyAsync(int id, UpdateCompanyDto dto, string? token = null)
+        public async Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto, string? token = null)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace NGErp.General.Service.Services
             }
         }
 
-        public async Task<bool> DeleteCompanyAsync(int id, string? token = null)
+        public async Task<bool> DeleteCompanyAsync(Guid id, string? token = null)
         {
             try
             {
