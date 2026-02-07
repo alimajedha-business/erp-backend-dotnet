@@ -120,4 +120,7 @@
   <data name="Company" xml:space="preserve">
     <value>Company</value>
   </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
 </root>

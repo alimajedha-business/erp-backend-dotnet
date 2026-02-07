@@ -2,6 +2,11 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.RequestFeatures;
+using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
@@ -11,21 +16,54 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/{companyId}/warehouse/items")]
-public class ItemController(IItemService itemService) : ControllerBase
+public class ItemController(
+    IItemService itemService,
+    IAdvancedFilterBuilder filterBuilder
+) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
-    [HttpGet]
-    public async Task<IActionResult> Get(
+    [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromQuery] ItemParameters itemParameters,
+        [FromBody] CreateItemDto createItemDto,
         CancellationToken ct
     )
     {
+        var itemDto = await _itemService.CreateItemAsync(
+            companyId,
+            createItemDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = itemDto.Id },
+            itemDto
+        );
+    }
+
+    [HttpPost("list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] ItemParameters itemParameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var queryParams = Request.Query.GetEntitySpecificQueryParams<ItemParameters>();
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto)
+            .MergeQueryFilters<Item>(queryParams);
+
         var result = await _itemService.GetAllItemsAsync(
             companyId,
             itemParameters,
-            ct
+            ct,
+            advancedFilters
         );
 
         return Ok(result);
@@ -40,5 +78,34 @@ public class ItemController(IItemService itemService) : ControllerBase
     {
         var item = await _itemService.GetItemByIdAsync(companyId, id, ct);
         return Ok(item);
+    }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<IActionResult> Update(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] UpdateItemDto updateItemDto,
+        CancellationToken ct
+    )
+    {
+        var itemDto = await _itemService.UpdateItemAsync(
+            companyId,
+            id,
+            updateItemDto,
+            ct
+        );
+
+        return Ok(itemDto);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _itemService.DeleteItemAsync(companyId, id, ct);
+        return Ok();
     }
 }

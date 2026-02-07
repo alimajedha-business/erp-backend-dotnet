@@ -1,6 +1,6 @@
 using NGErp.General.Service.DTOs.PythonApi;
 using Microsoft.Extensions.Logging;
-using NGErp.Base.Infrastructure.Services;
+using NGErp.Base.Service.Services;
 
 namespace NGErp.General.Service.Services
 {

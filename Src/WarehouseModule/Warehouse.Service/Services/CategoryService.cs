@@ -75,16 +75,14 @@ public class CategoryService(
         Guid companyId,
         Guid id,
         CategoryParameters categoryParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        CancellationToken ct
     )
     {
         var listQueryResult = await _categoryRepository.GetDirectChildrenAsync(
             companyId,
             id,
             categoryParameters,
-            ct,
-            requestAdvancedFilters
+            ct
         );
 
         return new ListResponseModel<CategoryDto>(

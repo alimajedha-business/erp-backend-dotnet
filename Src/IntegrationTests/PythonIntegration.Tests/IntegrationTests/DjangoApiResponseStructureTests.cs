@@ -1,11 +1,13 @@
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NGErp.Base.Infrastructure.Services;
-using NGErp.PythonIntegration.Tests.Fixtures;
-using Xunit;
-using System.Net;
 using System.Text.Json;
+
+using FluentAssertions;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using NGErp.Base.Service.Services;
+using NGErp.PythonIntegration.Tests.Fixtures;
+
+using Xunit;
 
 namespace NGErp.PythonIntegration.Tests.IntegrationTests
 {

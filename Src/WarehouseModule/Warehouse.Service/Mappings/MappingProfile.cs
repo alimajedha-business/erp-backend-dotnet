@@ -15,5 +15,8 @@ public class MappingProfile : Profile
             .ForMember(d => d.CompanyId, opt => opt.Ignore());
 
         CreateMap<Item, ItemDto>();
+        CreateMap<CreateItemDto, Item>();
+        CreateMap<UpdateItemDto, Item>()
+            .ForMember(d => d.CompanyId, opt => opt.Ignore());
     }
 }
