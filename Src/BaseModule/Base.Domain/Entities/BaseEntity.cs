@@ -12,17 +12,15 @@ namespace NGErp.Base.Domain.Entities
         public Guid Id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public virtual DateTime CreatedAt { get; set; }
 
         public string? TimeZone { get; set; }
 
         public Guid? CreatorId { get; set; }
 
-        [DefaultValue(false)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-        public virtual DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public virtual DateTime UpdatedAt { get; set; }
 
         public Guid? ModifierId { get; set; }
 
@@ -37,11 +35,10 @@ namespace NGErp.Base.Domain.Entities
 
             builder
                 .Property<bool>(nameof(IsDeleted))
-                .HasColumnType("bit")
-                .HasDefaultValueSql("0");
+                .HasColumnType("bit");
 
             builder
-                .Property<DateTime>(nameof(CreateAt))
+                .Property<DateTime>(nameof(CreatedAt))
                 .HasColumnType("datetime2")
                 .HasDefaultValueSql("GETUTCDATE()");
 
