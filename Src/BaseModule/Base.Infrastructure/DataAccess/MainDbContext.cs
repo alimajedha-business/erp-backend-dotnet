@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.Services;
 using NGErp.General.Domain.Entities;
 using NGErp.HCM.Domain.Entities;
@@ -27,7 +26,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public override Task<int> SaveChangesAsync(CancellationToken ct = default)
         {
             var now = DateTime.UtcNow;
-            var userId = _currentUserService.UserId ?? throw new InvalidUserBadRequestException();
+            var userId = _currentUserService.UserId ?? "2677C030-022F-4BF3-9492-A2B633DF9EEC";
 
             foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             {
