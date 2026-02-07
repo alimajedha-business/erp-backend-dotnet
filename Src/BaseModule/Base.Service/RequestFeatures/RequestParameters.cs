@@ -1,4 +1,6 @@
-﻿namespace NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.DTOs;
+
+namespace NGErp.Base.Service.RequestFeatures;
 
 public abstract class RequestParameters
 {
@@ -35,3 +37,5 @@ public abstract class RequestParameters
     public bool Paginated { get; set; } = true;
     public string? OrderBy { get; set; }
 }
+
+public sealed record FilterRequest(FilterNodeDto? Filter);
