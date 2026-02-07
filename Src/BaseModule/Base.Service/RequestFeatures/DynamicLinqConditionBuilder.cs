@@ -87,7 +87,41 @@ public static class DynamicLinqConditionBuilder
         if (!fieldInfo.AllowedOps.Contains(op))
             throw new ArgumentException($"Operator '{op}' is not allowed for field '{c.Field}'.");
 
-        var normalizedOp = op.ToLowerInvariant();
+        var paramIndex = prms.Count;
+
+        // Normalize operator for switching:
+        // - lowercase
+        // - remove spaces and underscores (so "not in", "not_in", "notin" all work)
+        var normalizedOp = op.Trim().ToLowerInvariant().Replace(" ", "").Replace("_", "");
+
+        // Special handling for set operators:
+        // Dynamic LINQ works well with: @0.Contains(Field) / !@0.Contains(Field)
+        if (normalizedOp is "in" or "notin")
+        {
+            var elementType = Nullable.GetUnderlyingType(fieldInfo.PropertyType) ?? fieldInfo.PropertyType;
+            var typedList = ConvertList(c.Value, elementType);
+            prms.Add(typedList);
+
+            var propName = fieldInfo.PropertyName;
+            var isNullable = Nullable.GetUnderlyingType(fieldInfo.PropertyType) is not null;
+
+            if (normalizedOp == "in")
+            {
+                if (isNullable)
+                    sb.Append($"{propName} != null && @{paramIndex}.Contains({propName}.Value)");
+                else
+                    sb.Append($"@{paramIndex}.Contains({propName})");
+            }
+            else // notin
+            {
+                if (isNullable)
+                    sb.Append($"{propName} == null || !@{paramIndex}.Contains({propName}.Value)");
+                else
+                    sb.Append($"!@{paramIndex}.Contains({propName})");
+            }
+
+            return;
+        }
 
         var typedValue = ConvertValue(c.Value, fieldInfo.PropertyType);
 
@@ -106,7 +140,6 @@ public static class DynamicLinqConditionBuilder
             throw new ArgumentException("Only 'eq' and 'ne' are allowed with null values.");
         }
 
-        var paramIndex = prms.Count;
         prms.Add(typedValue);
 
         switch (normalizedOp)
@@ -182,6 +215,17 @@ public static class DynamicLinqConditionBuilder
 
         var nn = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
+        if (nn == typeof(Guid))
+        {
+            if (raw is Guid g)
+                return g;
+
+            if (raw is string s && Guid.TryParse(s, out var parsed))
+                return parsed;
+
+            throw new ArgumentException($"Invalid GUID value: '{raw}'");
+        }
+
         if (nn.IsEnum)
         {
             if (raw is string s)
@@ -194,5 +238,52 @@ public static class DynamicLinqConditionBuilder
             return raw;
 
         return Convert.ChangeType(raw, nn, CultureInfo.InvariantCulture);
+    }
+
+    private static Array ConvertList(object? raw, Type elementType)
+    {
+        if (raw is JsonElement je)
+        {
+            if (je.ValueKind == JsonValueKind.Null)
+                return Array.CreateInstance(elementType, 0);
+
+            if (je.ValueKind != JsonValueKind.Array)
+                throw new ArgumentException("For 'in'/'notin', value must be a JSON array.");
+
+            var items = je.EnumerateArray().ToList();
+            var arr = Array.CreateInstance(elementType, items.Count);
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var converted = ConvertValue(items[i], elementType);
+                if (converted is null)
+                    throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
+
+                arr.SetValue(converted, i);
+            }
+
+            return arr;
+        }
+
+        // If someone passes a .NET list already
+        if (raw is System.Collections.IEnumerable enumerable && raw is not string)
+        {
+            var list = new List<object?>();
+            foreach (var item in enumerable)
+                list.Add(item);
+
+            var arr = Array.CreateInstance(elementType, list.Count);
+            for (int i = 0; i < list.Count; i++)
+            {
+                var converted = ConvertValue(list[i], elementType) ?? 
+                    throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
+
+                arr.SetValue(converted, i);
+            }
+
+            return arr;
+        }
+
+        throw new ArgumentException("For 'in'/'notin', value must be a JSON array.");
     }
 }

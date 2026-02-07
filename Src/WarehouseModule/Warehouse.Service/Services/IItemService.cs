@@ -18,6 +18,13 @@ public interface IItemService
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
+    Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
+        Guid companyId,
+        Guid categoryId,
+        ItemParameters itemParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
     Task<ItemDto?> GetItemByIdAsync(
         Guid companyId,
         Guid id,
