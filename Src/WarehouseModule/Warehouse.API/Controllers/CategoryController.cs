@@ -15,7 +15,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/{companyId}/warehouse/categories")]
+[Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
     IItemService itemService,
