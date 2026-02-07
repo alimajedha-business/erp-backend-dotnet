@@ -100,7 +100,7 @@ public class CategoryController(
             ct
         );
 
-        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
             id,
