@@ -75,7 +75,7 @@ namespace NGErp.General.API.Controllers
         /// Example endpoint showing how to work with Python API data
         /// </summary>
         [HttpGet("compare/{id}")]
-        public async Task<IActionResult> CompareCompany(int id)
+        public async Task<IActionResult> CompareCompany(Guid id)
         {
             try
             {

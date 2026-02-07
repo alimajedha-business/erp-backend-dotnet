@@ -151,7 +151,7 @@ namespace NGErp.PythonIntegration.Tests.ContractTests
             // Arrange
             var dto = new CompanyDto
             {
-                Id = 1,
+                Id = new Guid("9AD4F9DF-A4FA-4047-A1CD-6D46ED9E16E8"),
                 Name = "Test Company",
                 Address = "123 Test St",
                 Phone = "+1234567890",

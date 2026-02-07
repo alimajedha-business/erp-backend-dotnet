@@ -78,7 +78,7 @@ namespace NGErp.General.API.Controllers
         /// Get a specific company by ID from Django/Python API
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompany(int id)
+        public async Task<IActionResult> GetCompany(Guid id)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace NGErp.General.API.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateCompany(int id, [FromBody] UpdateCompanyDto dto)
+        public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] UpdateCompanyDto dto)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace NGErp.General.API.Controllers
         /// Delete a company from Django/Python API
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompany(int id)
+        public async Task<IActionResult> DeleteCompany(Guid id)
         {
             try
             {
