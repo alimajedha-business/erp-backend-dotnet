@@ -39,7 +39,7 @@ public class InventoryLotAttributeValue :
 
         builder
             .HasIndex(i => new { i.AttributeId, i.ValueDecimal })
-            .IncludeProperties(e => e.LotId);
+                   .IncludeProperties(e => e.LotId);
 
         builder
             .HasIndex(i => new { i.AttributeId, i.ValueDate })
@@ -52,6 +52,10 @@ public class InventoryLotAttributeValue :
         builder
             .HasIndex(i => new { i.AttributeId, i.EnumValueId })
             .IncludeProperties(e => e.LotId);
+
+        builder
+            .Property(e => e.ValueDecimal)
+            .HasPrecision(18, 6);
 
         builder
             .HasOne(e => e.EnumValue)
