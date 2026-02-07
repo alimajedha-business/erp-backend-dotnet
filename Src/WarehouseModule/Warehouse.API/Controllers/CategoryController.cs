@@ -18,10 +18,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/{companyId}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
+    IItemService itemService,
     IAdvancedFilterBuilder filterBuilder
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
+    private readonly IItemService _itemService = itemService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
@@ -55,10 +57,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var queryParams = Request.Query.GetEntitySpecificQueryParams<CategoryParameters>();
-        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto)
-            .MergeQueryFilters<Item>(queryParams);
-
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
             categoryParameters,
@@ -85,19 +84,29 @@ public class CategoryController(
         return Ok(category);
     }
 
-    [HttpGet("{id:guid}/children")]
-    public async Task<IActionResult> GetChildren(
+    [HttpPost("{id:guid}/items/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetItems(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromQuery] CategoryParameters categoryParameters,
+        [FromQuery] ItemParameters itemParameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _categoryService.GetDirectCategoryChildrenByIdAsync(
+        await _categoryService.GetCategoryByIdAsync(
             companyId,
             id,
-            categoryParameters,
             ct
+        );
+
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
+        var result = await _itemService.GetCategoryAllItemsAsync(
+            companyId,
+            id,
+            itemParameters,
+            ct,
+            advancedFilters
         );
 
         return Ok(result);

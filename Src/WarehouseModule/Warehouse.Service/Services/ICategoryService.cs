@@ -23,12 +23,6 @@ public interface ICategoryService
         Guid id,
         CancellationToken ct
     );
-    Task<ListResponseModel<CategoryDto>> GetDirectCategoryChildrenByIdAsync(
-        Guid companyId,
-        Guid id,
-        CategoryParameters categoryParameters,
-        CancellationToken ct
-    );
     Task<CategoryDto> UpdateCategoryAsync(
         Guid companyId,
         Guid id,

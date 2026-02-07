@@ -9,6 +9,13 @@ public sealed class CategorySchema : IFilterSchema<Category>
     {
         var filterSchema = new FilterSchema();
 
+        filterSchema.Fields["parentCategoryId"] = new FilterFieldInfo(
+            PropertyName: nameof(Category.ParentCategoryId),
+            PropertyType: typeof(Guid?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         filterSchema.Fields["code"] = new FilterFieldInfo(
             PropertyName: nameof(Category.Code),
             PropertyType: typeof(string),
@@ -20,7 +27,7 @@ public sealed class CategorySchema : IFilterSchema<Category>
             PropertyName: nameof(Category.LevelNo),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "ge", "lt", "le" }
+            { "eq", "ne", "gt", "ge", "lt", "le", "in", "notin" }
         );
 
         return filterSchema;
