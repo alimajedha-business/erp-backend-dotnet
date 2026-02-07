@@ -26,19 +26,20 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public override Task<int> SaveChangesAsync(CancellationToken ct = default)
         {
             var now = DateTime.UtcNow;
-            var userId = _currentUserService.UserId ?? "2677C030-022F-4BF3-9492-A2B633DF9EEC";
+            var defaultUserId = "2677C030-022F-4BF3-9492-A2B633DF9EEC";
+            _ = Guid.TryParse(_currentUserService.UserId ?? defaultUserId, out Guid userId);
 
             foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             {
                 if (entry.State is EntityState.Added or EntityState.Modified)
                 {
                     entry.Entity.UpdatedAt = now;
-                    entry.Entity.ModifierId = Guid.Parse(userId);
+                    entry.Entity.ModifierId = userId;
 
                     if (entry.State == EntityState.Added)
                     {
                         entry.Entity.CreatedAt = now;
-                        entry.Entity.CreatorId = Guid.Parse(userId);
+                        entry.Entity.CreatorId = userId;
                     }
                 }
             }
