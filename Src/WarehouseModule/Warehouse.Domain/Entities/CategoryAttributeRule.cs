@@ -9,9 +9,9 @@ public class CategoryAttributeRule :
     BaseEntity,
     IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
-    public bool IsItemAttribute { get; private set; }
-    public bool IsRequired { get; private set; }
-    public bool IsStockDimension { get; private set; }
+    public bool IsItemAttribute { get; private set; } = false;
+    public bool IsRequired { get; private set; } = false;
+    public bool IsStockDimension { get; private set; } = false;
     public int SortOrder { get; private set; }
     public Guid CategoryId { get; private set; }
     public Guid AttributeId { get; private set; }

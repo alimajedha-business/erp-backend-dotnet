@@ -13,7 +13,7 @@ public class UnitOfMeasurement :
     public string Dimension { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public string Symbol { get; private set; } = default!;
-    public bool IsDiscrete { get; private set; }
+    public bool IsDiscrete { get; private set; } = false;
 
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
