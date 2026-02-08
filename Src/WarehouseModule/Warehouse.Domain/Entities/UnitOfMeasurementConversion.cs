@@ -33,6 +33,10 @@ public class UnitOfMeasurementConversion :
             .HasDatabaseName("UX_UomConv_Unique");
 
         builder
+            .Property(e => e.Factor)
+            .HasPrecision(18, 6);
+
+        builder
             .HasOne(e => e.FromUnitOfMeasurement)
             .WithMany()
             .HasForeignKey(e => e.FromUnitOfMeasurementId)

@@ -34,6 +34,10 @@ public class ItemUnitOfMeasurementConversion :
             .HasDatabaseName("UX_ItemUomConv_Unique");
 
         builder
+            .Property(e => e.Factor)
+            .HasPrecision(18, 6);
+
+        builder
             .HasOne(e => e.Item)
             .WithMany()
             .HasForeignKey(e => e.ItemId);

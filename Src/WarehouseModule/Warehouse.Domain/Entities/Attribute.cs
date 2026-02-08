@@ -13,9 +13,9 @@ public class Attribute :
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public AttributeDataType DataType { get; private set; }
-    public bool IsItemAttribute { get; private set; }
-    public bool IsRequired { get; private set; }
-    public bool IsStockDimension {  get; private set; }
+    public bool IsItemAttribute { get; private set; } = false;
+    public bool IsRequired { get; private set; } = false;
+    public bool IsStockDimension {  get; private set; } = false;
 
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
@@ -51,10 +51,10 @@ public class Attribute :
 
 public enum AttributeDataType
 {
-    Text = 0,
-    Int,
-    Decimal,
-    Date,
-    Bool,
-    Enum
+    Text = 1,
+    Int = 2,
+    Decimal = 3,
+    Date = 4,
+    Bool = 5,
+    Enum = 6
 }

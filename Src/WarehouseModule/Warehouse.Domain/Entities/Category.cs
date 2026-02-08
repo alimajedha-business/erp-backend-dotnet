@@ -13,7 +13,7 @@ public class Category :
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public int LevelNo { get; private set; }
-    public bool IsLastLevel { get; private set; }
+    public bool IsLastLevel { get; private set; } = false;
     public string CategoryPath { get; private set; } = default!;
     public Guid? ParentCategoryId { get; private set; }
 

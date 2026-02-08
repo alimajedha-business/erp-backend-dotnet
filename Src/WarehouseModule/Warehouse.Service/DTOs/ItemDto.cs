@@ -10,15 +10,15 @@ public record ItemDto(
 
 public class CommandItemDto
 {
-    public string Code { get; set; } = default!;
-    public string Title { get; set; } = default!;
+    public required string Code { get; set; } = default!;
+    public required string Title { get; set; } = default!;
     public bool IsActive { get; set; }
-    public Guid CategoryId { get; set; }
+    public required Guid CategoryId { get; set; }
 }
 
 public class CreateItemDto : CommandItemDto
 {
-    public string Sku { get; set; } = default!;
+    public required string Sku { get; set; } = default!;
 }
 
 public class UpdateItemDto : CommandItemDto { }

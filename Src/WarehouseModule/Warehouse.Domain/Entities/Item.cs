@@ -13,7 +13,7 @@ public class Item :
     public string Code { get; private set; } = default!;
     public string Sku { get; private set; } = default!;
     public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; }
+    public bool IsActive { get; private set; } = true;
     public Guid CategoryId { get; private set; }
 
     public required Category Category { get; set; }

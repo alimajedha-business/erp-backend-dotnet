@@ -1,16 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using NGErp.Base.Service.Services;
 
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
-    public class MainDbContextFactory : IDesignTimeDbContextFactory<MainDbContext>
+    public class MainDbContextFactory : 
+        IDesignTimeDbContextFactory<MainDbContext>
     {
+
         public MainDbContext CreateDbContext(string[] args)
         {
             //var configuration = new ConfigurationBuilder()
@@ -21,7 +22,17 @@ namespace NGErp.Base.Infrastructure.DataAccess
             var builder = new DbContextOptionsBuilder<MainDbContext>()
                 .UseSqlServer("Server=ALIMAJEDHA\\MSSQLSERVER2022;Database=NGERP;User Id=AliMajedHA;Password=AliMajedHA19Dec1992;Encrypt=False;");
 
-            return new MainDbContext(builder.Options);
+            return new MainDbContext(builder.Options, new DesignTimeCurrentUserService());
+        }
+
+        private sealed class DesignTimeCurrentUserService : ICurrentUserService
+        {
+            public bool IsAuthenticated => false;
+            public string? Email => null;
+            public string? Token => null;
+            public string? UserId => null;
+            public string? Username => null;
+            public ClaimsPrincipal? User => null;
         }
     }
 }

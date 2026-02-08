@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
-using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -15,7 +14,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/{companyId}/warehouse/items")]
+[Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/items")]
 public class ItemController(
     IItemService itemService,
     IAdvancedFilterBuilder filterBuilder
@@ -51,10 +50,11 @@ public class ItemController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ItemParameters itemParameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
     )
     {
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetAllItemsAsync(
             companyId,

@@ -10,15 +10,15 @@ public record CategoryDto(
 
 public class CommandCategoryDto
 {
-    public string Code { get; set; } = default!;
-    public string Title { get; set; } = default!;
+    public required string Code { get; set; } = default!;
+    public required string Title { get; set; } = default!;
     public bool IsLastLevel { get; set; }
     public Guid ParentCategoryId { get; set; }
 }
 
 public class CreateCategoryDto : CommandCategoryDto
 {
-    public int LevelNo { get; set; }
+    public required int LevelNo { get; set; }
     public string CategoryPath { get; set; } = default!;
 }
 
