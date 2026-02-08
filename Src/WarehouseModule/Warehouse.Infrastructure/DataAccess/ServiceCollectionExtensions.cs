@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration
     )
     {
+        services.AddScoped<IAttributeRepository, AttributeRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
 

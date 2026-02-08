@@ -51,10 +51,10 @@ public class Attribute :
 
 public enum AttributeDataType
 {
-    Text = 0,
-    Int,
-    Decimal,
-    Date,
-    Bool,
-    Enum
+    Text = 1,
+    Int = 2,
+    Decimal = 3,
+    Date = 4,
+    Bool = 5,
+    Enum = 6
 }
