@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -50,11 +51,10 @@ public class ItemController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ItemParameters itemParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetAllItemsAsync(
             companyId,

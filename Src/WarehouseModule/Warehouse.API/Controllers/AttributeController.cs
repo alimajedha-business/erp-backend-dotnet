@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -52,11 +53,10 @@ public class AttributeController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] AttributeParameters attributeParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder
             .Build<Domain.Entities.Attribute>(filterNodeDto);
 
@@ -92,11 +92,10 @@ public class AttributeController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromQuery] AttributeEnumValueParameters attributeEnumParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder
             .Build<AttributeEnumValue>(filterNodeDto);
 

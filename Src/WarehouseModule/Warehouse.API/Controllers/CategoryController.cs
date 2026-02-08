@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -52,11 +53,10 @@ public class CategoryController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
@@ -90,7 +90,7 @@ public class CategoryController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromQuery] ItemParameters itemParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
@@ -100,7 +100,6 @@ public class CategoryController(
             ct
         );
 
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
