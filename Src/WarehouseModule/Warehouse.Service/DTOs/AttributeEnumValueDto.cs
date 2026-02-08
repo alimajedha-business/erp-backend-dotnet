@@ -3,7 +3,8 @@
 public record AttributeEnumValueDto(
     Guid Id,
     string Code,
-    string Label
+    string Label,
+    string AttributeTitle
 );
 
 public class CommandAttributeEnumValueDto
