@@ -120,4 +120,7 @@
   <data name="Department" xml:space="preserve">
     <value>واحد سازمانی</value>
   </data>
+  <data name="Position" xml:space="preserve">
+    <value>پست سازمانی</value>
+  </data>
 </root>

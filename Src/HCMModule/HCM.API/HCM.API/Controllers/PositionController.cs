@@ -1,6 +1,5 @@
 ﻿using Asp.Versioning;
 
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
@@ -17,14 +16,14 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/departments")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/positions")]
 //[JwtAuthorize]
-public class DepartmentController(
-    IDepartmentService departmentService,
+public class PositionController(
+    IPositionService positionService,
     IAdvancedFilterBuilder filterBuilder
     ) : ControllerBase
 {
-    private readonly IDepartmentService _departmentService = departmentService;
+    private readonly IPositionService _positionService = positionService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
@@ -32,20 +31,20 @@ public class DepartmentController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateDepartmentDto createDepartmentDto,
+        [FromBody] CreatePositionDto createPositionDto,
         CancellationToken ct
     )
     {
-        var departmentDto = await _departmentService.CreateDepartmentAsync(
+        var positionDto = await _positionService.CreatePositionAsync(
             companyId,
-            createDepartmentDto,
+            createPositionDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = departmentDto.Id },
-            departmentDto
+            new { companyId, id = positionDto.Id },
+            positionDto
         );
     }
 
@@ -56,7 +55,7 @@ public class DepartmentController(
         CancellationToken ct
  )
     {
-        var category = await _departmentService.GetDepartmentByIdAsync(
+        var category = await _positionService.GetPositionByIdAsync(
             companyId,
             id,
             ct
@@ -69,16 +68,16 @@ public class DepartmentController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] DepartmentParameters departmentParameters,
+        [FromQuery] PositionParameters positionParameters,
         [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
         )
-    {       
+    {
         var filterNodeDto = filterRequest?.Filter;
-        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
-        var result = await _departmentService.GetAllDepartmentsAsync(
+        var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
+        var result = await _positionService.GetAllPositionsAsync(
             companyId,
-            departmentParameters,
+            positionParameters,
             ct,
             advancedFilters
         );
@@ -93,7 +92,7 @@ public class DepartmentController(
         CancellationToken ct
         )
     {
-        await _departmentService.DeleteDepartmentAsync(companyId, id, ct);
+        await _positionService.DeletePositionAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -105,7 +104,7 @@ public class DepartmentController(
         CancellationToken ct
         )
     {
-        await _departmentService.ChangeStatusAsync(
+        await _positionService.ChangeStatusAsync(
             companyId,
             id,
             changeStatusDto.Status,
@@ -113,21 +112,4 @@ public class DepartmentController(
             );
         return NoContent();
     }
-
-    //[HttpPatch("{id:guid}")]
-    //public async Task<IActionResult> Update(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    [FromBody] JsonPatchDocument<UpdateDepartmentDto> updateDepartmentDto,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var updatedDepartment = await _departmentService.UpdateDepartmentAsync(
-    //        companyId,
-    //        id,
-    //        updateDepartmentDto,
-    //        ct
-    //    );
-    //    return Ok(updatedDepartment);
-    //}
 }

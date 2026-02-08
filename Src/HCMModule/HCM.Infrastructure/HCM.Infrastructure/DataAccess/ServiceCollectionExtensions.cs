@@ -17,7 +17,7 @@ namespace NGErp.HCM.Infrastructure.DataAccess
         public static IServiceCollection AddHCMInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            //services.AddScoped<IPositionRepository, PositionRepository>();
+            services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<IOrganizationalStructure, OrganizationalStructureRepository>();
             return services;
         }
