@@ -69,10 +69,11 @@ public class PositionController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] PositionParameters positionParameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
         )
     {
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
         var result = await _positionService.GetAllPositionsAsync(
             companyId,

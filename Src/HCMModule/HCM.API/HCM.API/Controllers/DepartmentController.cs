@@ -70,10 +70,11 @@ public class DepartmentController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] DepartmentParameters departmentParameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
         )
-    {
+    {       
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
         var result = await _departmentService.GetAllDepartmentsAsync(
             companyId,
