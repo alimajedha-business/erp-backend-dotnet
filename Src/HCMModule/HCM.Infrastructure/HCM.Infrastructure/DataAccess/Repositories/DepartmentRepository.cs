@@ -1,5 +1,4 @@
 ﻿using NGErp.Base.Infrastructure.DataAccess;
-
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.Repository.Contracts;

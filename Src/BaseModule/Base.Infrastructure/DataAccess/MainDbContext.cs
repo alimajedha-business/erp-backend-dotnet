@@ -1,22 +1,52 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NGErp.HCM.Domain.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+using NGErp.Base.Domain.Entities;
+using NGErp.Base.Service.Services;
 using NGErp.General.Domain.Entities;
+using NGErp.HCM.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
-    public class MainDbContext : ApplicationContext
+    public class MainDbContext(
+        DbContextOptions<MainDbContext> options,
+        ICurrentUserService currentUserService
+    ) : ApplicationContext(options, typeof(Company),
+        [typeof(Department), typeof(Category)])
     {
-        public MainDbContext(DbContextOptions<MainDbContext> options) : base(options, typeof(Company),
-            [typeof(Department), typeof(Category)])
-        {
-        }
+        private readonly ICurrentUserService _currentUserService = currentUserService;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("Persian_100_CI_AI");
             base.OnModelCreating(modelBuilder);
         }
+
+        public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+        {
+            var now = DateTime.UtcNow;
+            var defaultUserId = "2677C030-022F-4BF3-9492-A2B633DF9EEC";
+            _ = Guid.TryParse(_currentUserService.UserId ?? defaultUserId, out Guid userId);
+
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                if (entry.State is EntityState.Added or EntityState.Modified)
+                {
+                    entry.Entity.UpdatedAt = now;
+                    entry.Entity.ModifierId = userId;
+
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.CreatedAt = now;
+                        entry.Entity.CreatorId = userId;
+                    }
+                }
+            }
+
+            return base.SaveChangesAsync(ct);
+        }
+
 
         #region General
         public virtual DbSet<Company> Companies { get; set; }

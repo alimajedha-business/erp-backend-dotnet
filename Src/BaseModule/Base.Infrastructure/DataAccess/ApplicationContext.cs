@@ -8,16 +8,14 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext(
+        DbContextOptions options,
+        Type domainType,
+        Type[]? domainTypes = null
+    ) : DbContext(options)
     {
-        private Type _domainType;
-        private Type[]? _domainTypes;
-
-        public ApplicationContext(DbContextOptions options, Type domainType, Type[]? domainTypes = null) : base(options)
-        {
-            _domainType = domainType;
-            _domainTypes = domainTypes;
-        }
+        private readonly Type _domainType = domainType;
+        private readonly Type[]? _domainTypes = domainTypes;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -77,16 +75,17 @@ namespace NGErp.Base.Infrastructure.DataAccess
             }
         }
 
-        public virtual System.Threading.Tasks.Task CommitAsync(IDbContextTransaction tran)
+        public virtual Task CommitAsync(IDbContextTransaction tran)
         {
             return tran.CommitAsync();
         }
-        public virtual System.Threading.Tasks.Task RollbackAsync(IDbContextTransaction tran)
+
+        public virtual Task RollbackAsync(IDbContextTransaction tran)
         {
             return tran.RollbackAsync();
-
         }
-        public virtual System.Threading.Tasks.Task<IDbContextTransaction> BeginTransactionAsync()
+
+        public virtual Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return this.Database.BeginTransactionAsync();
         }

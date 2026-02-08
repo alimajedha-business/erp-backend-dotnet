@@ -1,6 +1,7 @@
-﻿using NGErp.Base.Service.Repository.Contract;
+﻿using NGErp.General.Service.Repository.Contracts;
+
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IAttributeRepository : IRepository<Domain.Entities.Attribute>
-{
-}
+public interface IAttributeRepository : 
+    IRepositoryWithCompany<Domain.Entities.Attribute>
+{ }

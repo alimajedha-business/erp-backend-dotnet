@@ -30,6 +30,13 @@ public sealed class ItemSchema : IFilterSchema<Item>
             { "eq", "ne", "startsWith", "contains", "endsWith" }
         );
 
+        filterSchema.Fields["isActive"] = new FilterFieldInfo(
+            PropertyName: nameof(Item.IsActive),
+            PropertyType: typeof(bool),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         return filterSchema;
     }
 }
