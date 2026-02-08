@@ -15,8 +15,6 @@ using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
 
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
 namespace NGErp.HCM.Service.Services;
 
 public class DepartmentService(
