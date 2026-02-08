@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -16,10 +17,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/attributes")]
 public class AttributeController(
     IAttributeService attributeService,
+    IAttributeEnumValueService attributeEnumValueService,
     IAdvancedFilterBuilder filterBuilder
 ) : ControllerBase
 {
     private readonly IAttributeService _attributeService = attributeService;
+    private readonly IAttributeEnumValueService _attributeEnumValueService = attributeEnumValueService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
@@ -36,6 +39,7 @@ public class AttributeController(
             createAttributeDto,
             ct
         );
+
         return CreatedAtAction(
             nameof(GetById),
             new { companyId, id = attributeDto.Id },
@@ -48,18 +52,21 @@ public class AttributeController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] AttributeParameters attributeParameters,
-        [FromBody] FilterRequest filterRequest,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest.Filter;
-        var advancedFilters = _filterBuilder.Build<Domain.Entities.Attribute>(filterNodeDto);
+        var filterNodeDto = filterRequest?.Filter;
+        var advancedFilters = _filterBuilder
+            .Build<Domain.Entities.Attribute>(filterNodeDto);
+
         var attributes = await _attributeService.GetAllAttributesAsync(
             companyId,
             attributeParameters,
             ct,
             advancedFilters
         );
+
         return Ok(attributes);
     }
 
@@ -75,7 +82,34 @@ public class AttributeController(
             id,
             ct
         );
+
         return Ok(attribute);
+    }
+
+    [HttpPost("{id:guid}/enums")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetAttributeEnums(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromQuery] AttributeEnumValueParameters attributeEnumParameters,
+        [FromBody] FilterRequest? filterRequest,
+        CancellationToken ct
+    )
+    {
+        var filterNodeDto = filterRequest?.Filter;
+        var advancedFilters = _filterBuilder
+            .Build<AttributeEnumValue>(filterNodeDto);
+
+        var attributeEnums = await _attributeEnumValueService
+            .GetAttributeAllEnumValuesAsync(
+                companyId,
+                id,
+                attributeEnumParameters,
+                ct,
+                advancedFilters
+            );
+
+        return Ok(attributeEnums);
     }
 
     [HttpDelete("{id:guid}")]

@@ -50,11 +50,11 @@ public class ItemController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ItemParameters itemParameters,
-        [FromBody] FilterRequest filterRequest,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest.Filter;
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetAllItemsAsync(
             companyId,

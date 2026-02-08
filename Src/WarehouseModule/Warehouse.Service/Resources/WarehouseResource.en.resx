@@ -120,6 +120,9 @@
   <data name="Attribute" xml:space="preserve">
     <value>Attribute</value>
   </data>
+  <data name="AttributeEnumValue" xml:space="preserve">
+    <value>AttributeEnumValue</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>

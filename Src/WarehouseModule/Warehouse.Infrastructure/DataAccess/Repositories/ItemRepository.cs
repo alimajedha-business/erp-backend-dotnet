@@ -15,7 +15,7 @@ public class ItemRepository(MainDbContext context) :
     RepositoryWithCompany<Item>(context),
     IItemRepository
 {
-    public virtual async Task<ListQueryResult<Item>> GetCategoryAllAsync(
+    public async Task<ListQueryResult<Item>> GetCategoryAllAsync(
         Guid companyId,
         Guid categoryId,
         RequestParameters requestParameters,

@@ -120,6 +120,9 @@
   <data name="Attribute" xml:space="preserve">
     <value>مشخصه</value>
   </data>
+  <data name="AttributeEnumValue" xml:space="preserve">
+    <value>مقدار انتخابی مشخصه</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>

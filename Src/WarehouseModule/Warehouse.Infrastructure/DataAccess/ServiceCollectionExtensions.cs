@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
     )
     {
         services.AddScoped<IAttributeRepository, AttributeRepository>();
+        services.AddScoped<IAttributeEnumValueRepository, AttributeEnumValueRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
 

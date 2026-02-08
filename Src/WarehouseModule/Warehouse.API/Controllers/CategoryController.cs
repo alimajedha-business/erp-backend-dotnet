@@ -52,11 +52,11 @@ public class CategoryController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters categoryParameters,
-        [FromBody] FilterRequest filterRequest,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
     )
     {
-        var filterNodeDto = filterRequest.Filter;
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
@@ -90,7 +90,7 @@ public class CategoryController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromQuery] ItemParameters itemParameters,
-        [FromBody] FilterRequest filterRequest,
+        [FromBody] FilterRequest? filterRequest,
         CancellationToken ct
     )
     {
@@ -100,7 +100,7 @@ public class CategoryController(
             ct
         );
 
-        var filterNodeDto = filterRequest.Filter;
+        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
