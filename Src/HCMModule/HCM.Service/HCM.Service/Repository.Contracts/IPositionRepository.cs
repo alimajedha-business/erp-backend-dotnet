@@ -4,4 +4,4 @@ using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.Repository.Contracts;
 
-public interface IDepartmentRepository : IRepositoryWithCompany<Department> { }
+public interface IPositionRepository : IRepositoryWithCompany<Position> { }

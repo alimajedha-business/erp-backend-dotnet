@@ -1,6 +1,12 @@
-﻿namespace NGErp.HCM.Service.DTOs;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class DepartmentDto
+namespace NGErp.HCM.Service.DTOs;
+
+public class PositionDto
 {
     public Guid Id { get; set; }
     public string? Code { get; set; }
@@ -9,20 +15,20 @@ public class DepartmentDto
     public bool Status { get; set; } = true;
     public DateTime? StatusChangeDate { get; set; }
 }
-public class CreateDepartmentDto
+public class CreatePositionDto
 {
     public string? Code { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
 }
-public class UpdateDepartmentDto
+public class UpdatePositionDto
 {
     public string? Code { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
 }
 
-public class ChangeStatusDto
+public class PositionChangeStatusDto
 {
     public bool Status { get; set; }
 }

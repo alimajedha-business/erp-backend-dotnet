@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -20,9 +14,18 @@ namespace NGErp.HCM.Domain.Entities
 
         public string? Description { get; set; }
 
-        public bool Status { get; set; } = true;
+        public bool Status { get; private set; } = true;
 
-        public DateTime? StatusChangeDate { get; set; }
+        public DateTime? StatusChangeDate { get; private set; }
+
+        public void ChangeStatus(bool newStatus, DateTime now)
+        {
+            if (Status == newStatus)
+                return;
+
+            Status = newStatus;
+            StatusChangeDate = newStatus ? null : now;
+        }
 
         public void Map(EntityTypeBuilder<Position> builder)
         {
