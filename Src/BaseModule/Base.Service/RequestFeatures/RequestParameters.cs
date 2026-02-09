@@ -37,5 +37,3 @@ public abstract class RequestParameters
     public bool Paginated { get; set; } = true;
     public string? OrderBy { get; set; }
 }
-
-public sealed record FilterRequest(FilterNodeDto? Filter);

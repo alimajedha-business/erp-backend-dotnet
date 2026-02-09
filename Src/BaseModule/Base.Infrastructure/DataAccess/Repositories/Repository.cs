@@ -27,19 +27,8 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     {
         IQueryable<T> query = _context
             .Set<T>()
-            .AsNoTracking();
-
-        if (requestAdvancedFilters != null)
-        {
-            var (search, args) = requestAdvancedFilters;
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = (args is { Length: > 0 })
-                    ? query.Where(search, args)
-                    : query.Where(search);
-            }
-        }
+            .AsNoTracking()
+            .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
         var items = await query

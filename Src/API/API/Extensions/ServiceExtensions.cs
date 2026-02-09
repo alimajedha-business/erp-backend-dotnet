@@ -11,6 +11,7 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Infrastructure;
 using NGErp.Base.Service;
 using NGErp.Base.Service.Resources;
+using NGErp.Base.Service.Services;
 using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using NGErp.General.Service;
@@ -88,6 +89,10 @@ namespace NGErp.API.Extensions
                         // Fallback to shared/common resource
                         return factory.Create(typeof(BaseResource));
                     };
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new FilterNodeDtoConverter());
                 })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
                 .AddApplicationPart(typeof(General.API.AssemblyReference).Assembly)

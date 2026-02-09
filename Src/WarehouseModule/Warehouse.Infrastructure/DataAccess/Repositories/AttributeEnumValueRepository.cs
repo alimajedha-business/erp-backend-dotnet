@@ -24,7 +24,10 @@ public class AttributeEnumValueRepository(MainDbContext context) :
         var query = _context
             .Set<AttributeEnumValue>()
             .AsNoTracking()
-            .Where(aev => aev.CompanyId == companyId && aev.AttributeId == attributeId);
+            .Where(e => e.CompanyId == companyId)
+            .Where(e => e.AttributeId == attributeId)
+            .Include(i => i.Attribute)
+            .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
         var items = await query
