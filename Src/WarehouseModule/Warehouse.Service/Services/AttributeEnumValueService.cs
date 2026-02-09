@@ -8,6 +8,8 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.DTOs;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -17,14 +19,16 @@ using NGErp.Warehouse.Service.Resources;
 namespace NGErp.Warehouse.Service.Services;
 
 public class AttributeEnumValueService(
+    IAdvancedFilterBuilder filterBuilder,
     IAttributeEnumValueRepository attributeEnumValueRepository,
+    ICompanyService companyService,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IStringLocalizer<WarehouseResource> localizer
 ) : IAttributeEnumValueService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IAttributeEnumValueRepository _attributeEnumValueRepository = attributeEnumValueRepository;
+    private readonly ICompanyService _companyService = companyService;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
@@ -34,6 +38,8 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var enumValue = _mapper.Map<AttributeEnumValue>(createAttributeEnumValueDto);
         enumValue.CompanyId = companyId;
 
@@ -51,6 +57,8 @@ public class AttributeEnumValueService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var advancedFilters = _filterBuilder
             .Build<AttributeEnumValue>(filterNodeDto);
 
@@ -75,6 +83,8 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
     }
@@ -95,6 +105,8 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeEnumValueRepository.Remove(attributeEnumValue);
 
@@ -118,6 +130,8 @@ public class AttributeEnumValueService(
         bool trackChanges = false
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var attributeEnumValue = await _attributeEnumValueRepository.GetByIdAsync(
             companyId,
             id,
@@ -127,5 +141,18 @@ public class AttributeEnumValueService(
 
         return attributeEnumValue ?? 
             throw new NotFoundException(_localizer["AttributeEnumValue"].Value);
+    }
+
+    private async Task<CompanyDto> GetCompanyByIdOrThrowExceptionAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var company = await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
+        return company ?? throw new NotFoundException(_localizer["Company"].Value);
     }
 }
