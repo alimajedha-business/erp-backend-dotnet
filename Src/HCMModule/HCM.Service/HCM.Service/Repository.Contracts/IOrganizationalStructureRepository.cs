@@ -1,4 +1,4 @@
-﻿using NGErp.Base.Service.Repository.Contract;
+﻿using NGErp.Base.Service.Repository.Contracts;
 using NGErp.HCM.Domain.Entities;
 using System;
 using System.Collections.Generic;

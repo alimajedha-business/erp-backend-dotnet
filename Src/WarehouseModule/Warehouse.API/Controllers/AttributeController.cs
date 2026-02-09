@@ -13,7 +13,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/attributes")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/attributes")]
 public class AttributeController(
     IAttributeService attributeService,
     IAttributeEnumValueService attributeEnumValueService

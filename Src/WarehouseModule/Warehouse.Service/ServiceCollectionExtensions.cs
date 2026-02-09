@@ -14,7 +14,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddWarehouseServices(this IServiceCollection services)
     {
-        services.AddScoped<IExceptionLocalizer<WarehouseResource>, ExceptionLocalizer<WarehouseResource>>();
+        services.AddScoped<
+            IExceptionLocalizer<WarehouseResource>, ExceptionLocalizer<WarehouseResource>
+        >();
+
         services.AddHttpContextAccessor();
 
         services.AddAutoMapper(typeof(MappingProfile));
@@ -26,7 +29,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
-        services.AddScoped<ICategoryService,  CategoryService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IItemService, ItemService>();
 
         return services;

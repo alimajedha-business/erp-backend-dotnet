@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
+
+using NGErp.General.Domain.Entities;
 using NGErp.General.Service.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NGErp.General.Service.Mappings
 {
@@ -13,7 +9,7 @@ namespace NGErp.General.Service.Mappings
     {
         public MappingProfile()
         {
-           
+           CreateMap<Company, CompanyDto>();
         }
     }
 }

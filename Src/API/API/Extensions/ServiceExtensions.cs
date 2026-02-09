@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 using Morcatko.AspNetCore.JsonMergePatch;
@@ -11,7 +9,6 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Infrastructure;
 using NGErp.Base.Service;
 using NGErp.Base.Service.Resources;
-using NGErp.Base.Service.Services;
 using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using NGErp.General.Service;
@@ -35,9 +32,7 @@ namespace NGErp.API.Extensions
             });
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
-            services.Configure<IISOptions>(options =>
-            {
-            });
+            services.Configure<IISOptions>(options => { });
 
         public static void AddServices(this IServiceCollection services)
         {
@@ -90,15 +85,12 @@ namespace NGErp.API.Extensions
                         return factory.Create(typeof(BaseResource));
                     };
                 })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new FilterNodeDtoConverter());
-                })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(General.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(HCM.API.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Warehouse.API.AssemblyReference).Assembly);
+
             return services;
         }
 

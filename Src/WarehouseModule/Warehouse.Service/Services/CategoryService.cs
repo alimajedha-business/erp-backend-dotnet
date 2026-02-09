@@ -8,6 +8,8 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.DTOs;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -17,14 +19,16 @@ using NGErp.Warehouse.Service.Resources;
 namespace NGErp.Warehouse.Service.Services;
 
 public class CategoryService(
+    IAdvancedFilterBuilder filterBuilder,
     ICategoryRepository categoryRepository,
+    ICompanyService companyService,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    private readonly ICompanyService _companyService = companyService;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
@@ -34,6 +38,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var category = _mapper.Map<Category>(createCategoryDto);
         category.CompanyId = companyId;
 
@@ -50,6 +56,8 @@ public class CategoryService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var listQueryResult = await _categoryRepository.GetAllAsync(
             companyId,
@@ -71,6 +79,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<CategoryDto>(category);
     }
@@ -82,6 +92,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var category = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -101,6 +113,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _categoryRepository.Remove(category);
 
@@ -124,6 +138,8 @@ public class CategoryService(
         bool trackChanges = false
     )
     {
+        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+
         var category = await _categoryRepository.GetByIdAsync(
             companyId,
             id,
@@ -132,5 +148,18 @@ public class CategoryService(
         );
 
         return category ?? throw new NotFoundException(_localizer["Category"].Value);
+    }
+
+    private async Task<CompanyDto> GetCompanyByIdOrThrowExceptionAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var company = await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
+        return company ?? throw new NotFoundException(_localizer["Company"].Value);
     }
 }

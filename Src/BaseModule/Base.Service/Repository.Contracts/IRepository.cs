@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 
-namespace NGErp.Base.Service.Repository.Contract;
+namespace NGErp.Base.Service.Repository.Contracts;
 
 public interface IRepository<T> where T : class
 {
