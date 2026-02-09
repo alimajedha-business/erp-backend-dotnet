@@ -10,10 +10,13 @@ namespace NGErp.Base.Service.Services;
 public static class DynamicLinqConditionBuilder
 {
     public static (string where, object[] parameters) Build<TEntity>(
-        FilterNodeDto root,
+        FilterNodeDto? root,
         IFilterSchemaProvider _schemaProvider
     )
     {
+        if (root is null)
+            return ("", Array.Empty<object>());
+
         var schema = _schemaProvider.GetSchema<TEntity>();
 
         var sb = new StringBuilder();
