@@ -5,31 +5,30 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services
 {
-    public interface IDepartmentService
+    public interface IPositionService
     {
-        Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
+        Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
             Guid companyId,
-            DepartmentParameters departmentParameters,
+            PositionParameters positionParameters,
             CancellationToken ct,
             RequestAdvancedFilters? requestAdvancedFilters = null
             );
-        Task<DepartmentDto?> GetDepartmentByIdAsync(
+        Task<PositionDto?> GetPositionByIdAsync(
             Guid companyId,
             Guid id,
             CancellationToken ct
             );
-        Task<DepartmentDto> CreateDepartmentAsync(
+        Task<PositionDto> CreatePositionAsync(
             Guid companyId,
-            CreateDepartmentDto createDepartmentDto,
+            CreatePositionDto createDepartmentDto,
             CancellationToken ct
             );
-        Task<DepartmentDto> UpdateDepartmentAsync(
+        Task<PositionDto> UpdatePositionAsync(
             Guid companyId,
             Guid id,
-            UpdateDepartmentDto updateDepartmentDto,
-             CancellationToken ct
+            UpdatePositionDto updatePositionDto
             );
-        Task<bool> DeleteDepartmentAsync(
+        Task<bool> DeletePositionAsync(
             Guid companyId,
             Guid id,
             CancellationToken ct

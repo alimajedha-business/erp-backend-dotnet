@@ -19,15 +19,15 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace NGErp.HCM.Service.Services;
 
-public class DepartmentService(
-    IDepartmentRepository departmentRepository,
+public class PositionService(
+    IPositionRepository positionRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IPythonIntegrationService integrationService,
     IStringLocalizer<GeneralResource> generalLocalizer
-    ) : IDepartmentService
+    ) : IPositionService
 {
-    private readonly IDepartmentRepository _departmentRepository = departmentRepository;
+    private readonly IPositionRepository _positionRepository = positionRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly IStringLocalizer<GeneralResource> _generalLocalizer = generalLocalizer;
@@ -39,99 +39,98 @@ public class DepartmentService(
         bool newStatus,
         CancellationToken ct)
     {
-        var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
 
-        department.ChangeStatus(newStatus, DateTime.UtcNow);
+        position.ChangeStatus(newStatus, DateTime.UtcNow);
 
-        _departmentRepository.Update(department);
-        await _departmentRepository.SaveChangesAsync(ct);
+        _positionRepository.Update(position);
+        await _positionRepository.SaveChangesAsync(ct);
     }
 
-    public async Task<DepartmentDto> CreateDepartmentAsync(
+    public async Task<PositionDto> CreatePositionAsync(
         Guid companyId,
-        CreateDepartmentDto createDepartmentDto,
+        CreatePositionDto createPositionDto,
         CancellationToken ct
         )
     {
-        var department = _mapper.Map<Department>(createDepartmentDto);
-        department.CompanyId = companyId;
+        var position = _mapper.Map<Position>(createPositionDto);
+        position.CompanyId = companyId;
 
-        var createdDepartment = await _departmentRepository.AddAsync(department, ct);
-        await _departmentRepository.SaveChangesAsync(ct);
+        var createdPosition = await _positionRepository.AddAsync(position, ct);
+        await _positionRepository.SaveChangesAsync(ct);
 
-        return _mapper.Map<DepartmentDto>(createdDepartment);
+        return _mapper.Map<PositionDto>(createdPosition);
     }
 
-    public async Task<bool> DeleteDepartmentAsync(
+    public async Task<bool> DeletePositionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct)
     {
-        var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        _departmentRepository.Remove(department);
+        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        _positionRepository.Remove(position);
 
         try
         {
-            await _departmentRepository.SaveChangesAsync(ct);
+            await _positionRepository.SaveChangesAsync(ct);
         }
         catch (DbUpdateException ex)
         when (ex.InnerException is SqlException { Number: 547 })
         {
-            throw new ForeignKeyViolationException(_localizer["Department"].Value);
+            throw new ForeignKeyViolationException(_localizer["Position"].Value);
         }
 
         return true;
     }
 
-    public async Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
+    public async Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
         Guid companyId,
-        DepartmentParameters departmentParameters,
+        PositionParameters positionParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
         )
     {
-        var listQueryResult = await _departmentRepository.GetAllAsync(
+        var listQueryResult = await _positionRepository.GetAllAsync(
           companyId,
-          departmentParameters,
+          positionParameters,
           ct,
           requestAdvancedFilters
           );
 
-        return new ListResponseModel<DepartmentDto>(
-            items: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
+        return new ListResponseModel<PositionDto>(
+            items: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
-            departmentParameters
+            positionParameters
         );
     }
 
-    public async Task<DepartmentDto?> GetDepartmentByIdAsync(
+    public async Task<PositionDto?> GetPositionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
         )
     {
-        var department = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        return _mapper.Map<DepartmentDto>(department);
+        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        return _mapper.Map<PositionDto>(position);
     }
 
-    public Task<DepartmentDto> UpdateDepartmentAsync(
+    public Task<PositionDto> UpdatePositionAsync(
         Guid companyId,
         Guid id,
-        UpdateDepartmentDto dto,
-        CancellationToken ct
+        UpdatePositionDto dto
         )
     {
         throw new NotImplementedException();
     }
 
-    private async Task<Department> GetByIdOrThrowExceptionAsync(
+    private async Task<Position> GetByIdOrThrowExceptionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct,
         bool trackChanges = false
         )
     {
-        var department = await _departmentRepository.GetByIdAsync(companyId, id, ct, trackChanges);
-        return department ?? throw new NotFoundException(_localizer["Department"].Value);
+        var position = await _positionRepository.GetByIdAsync(companyId, id, ct, trackChanges);
+        return position ?? throw new NotFoundException(_localizer["Position"].Value);
     }
 }

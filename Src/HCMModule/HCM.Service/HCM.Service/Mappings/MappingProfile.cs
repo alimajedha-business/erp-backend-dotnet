@@ -1,21 +1,17 @@
 ﻿using AutoMapper;
-using NGErp.General.Domain.Entities;
+
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NGErp.HCM.Service.Mappings
+namespace NGErp.HCM.Service.Mappings;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<Department, DepartmentDto>();
-            CreateMap<Department,CreateDepartmentDto>().ReverseMap();
-        }
+        CreateMap<Department, DepartmentDto>();
+        CreateMap<Department, CreateDepartmentDto>().ReverseMap();
+        CreateMap<Position, PositionDto>();
+        CreateMap<Position, CreatePositionDto>().ReverseMap();
     }
 }

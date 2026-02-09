@@ -45,11 +45,11 @@ Before you can use the tools on a specific project, you'll need to add the *Micr
 
 `dotnet ef dbcontext scaffold "Server=.\sql19;Database=NGERP;User Id=sa;Password=123;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -d -o Domain\Entities -c ModuleDbContext --context-dir Infrastructure\DataAccess --schema ModuleSchema`
 
-this command should be exexute at root of project
+this command should be exexute at root of project which has MainDBContext
 
 **Adds a new migration**
 
-`dotnet ef migrations add <Name> -o Infrastructure\Migrations -c ModuleDbContext`
+`dotnet ef migrations add <Name> -o Migrations -c MainDBContext`
 
 **Updates the database to the last migration or to a specified migration**
 
@@ -67,7 +67,7 @@ this command should be exexute at root of project
 
 **Adds a new migration**
 
-`Add-Migration <Name> -context ModuleDbContext`
+`Add-Migration <Name> -context MainDBContext`
 
 **Updates the database to the last migration or to a specified migration**
 
@@ -91,23 +91,28 @@ this command should be exexute at root of project
     - Add AddModuleServices from ServiceCollectionExtensions to AddServices method    
 7. In Module.Service > Mappings
 	- Create MappingProfile.cs
-8. In Module.Domain > Entities
+8. In Module.Service > Resources
+	- Create ModuleResource.en.resx, ModuleResource.fa.resx
+9. In Module.Domain > Entities
 	- Create Entities.cs
-9. In Base.Infrastructure > DataAccess > MainDBContext.cs
+10. In Base.Infrastructure > DataAccess > MainDBContext.cs
 	- Add Entities DbSets
-10. In Module.Infrastructure > DataAccess > Repositories
-	1. Create IEntityRepository.cs
-    2. Implement EntityRepository.cs
-	3. Add DI to AddModuleInfrastructureServices
-11. In Module.Service > DTOs
-	- Create EntityDto.cs, CreateEntityDto.cs, UpdateEntityDto.cs
-12. In Module.Service > Mappings
+11. In Module.Service > Repository.Contracts
+	- Create IEntityRepository.cs
+12. In Module.Infrastructure > DataAccess > Repositories
+    1. Implement EntityRepository.cs
+	2. Add DI to AddModuleInfrastructureServices
+13. In Module.Service > DTOs
+	- Create EntityDto.cs(EntityDto, CreateEntityDto, UpdateEntityDto)
+14. In Module.Service > Mappings
 	-  Add mapping to MappingProfile.cs
-13. In Module.Service > Services
+15. In Module.Service > Services
 	1. Create IEntityService.cs
 	2. Implement EntityService.cs
 	3. Add DI To AddEntityServices
-14. In Module.API > Controllers
+16. In Module.Service > Resources
+	- Add Entity to ModuleResource
+17. In Module.API > Controllers
 	- Create EntitiesController
-15. In NGErp.API > ServiceExtensions
+18. In NGErp.API > ServiceExtensions
 	- Add EntitiesController to ConfigureControllers

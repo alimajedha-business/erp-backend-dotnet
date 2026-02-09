@@ -11,9 +11,9 @@ namespace NGErp.HCM.Service
         public static IServiceCollection AddHCMServices(this IServiceCollection services)
         {
             
-            services.AddAutoMapper(typeof(MappingProfile));
-            //services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
+            services.AddAutoMapper(typeof(MappingProfile));            
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IPositionService, PositionService>();
             return services;
         }
     }

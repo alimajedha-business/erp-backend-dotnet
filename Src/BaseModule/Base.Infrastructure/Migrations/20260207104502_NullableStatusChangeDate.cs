@@ -6,10 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UndoNullMaking : Migration
+    public partial class NullableStatusChangeDate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "StatusChangeDate",
+                schema: "HCM",
+                table: "Department",
+                type: "datetime2",
+                nullable: true,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<DateTime>(
                 name: "StatusChangeDate",
@@ -21,19 +34,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "StatusChangeDate",
-                schema: "HCM",
-                table: "Department",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
         }
     }
 }
