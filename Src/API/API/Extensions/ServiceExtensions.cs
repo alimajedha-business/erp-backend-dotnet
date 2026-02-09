@@ -90,10 +90,6 @@ namespace NGErp.API.Extensions
                         return factory.Create(typeof(BaseResource));
                     };
                 })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new FilterNodeDtoConverter());
-                })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
                 .AddApplicationPart(typeof(General.API.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
