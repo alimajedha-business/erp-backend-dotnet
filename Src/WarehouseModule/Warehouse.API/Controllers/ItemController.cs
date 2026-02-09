@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -17,12 +15,10 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/items")]
 public class ItemController(
-    IItemService itemService,
-    IAdvancedFilterBuilder filterBuilder
+    IItemService itemService
 ) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
     [Produces("application/json")]
@@ -55,12 +51,11 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var result = await _itemService.GetAllItemsAsync(
             companyId,
             itemParameters,
             ct,
-            advancedFilters
+            filterNodeDto
         );
 
         return Ok(result);

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
@@ -18,9 +19,11 @@ namespace NGErp.Warehouse.Service.Services;
 public class CategoryService(
     ICategoryRepository categoryRepository,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IStringLocalizer<WarehouseResource> localizer,
+    IAdvancedFilterBuilder filterBuilder
 ) : ICategoryService
 {
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
@@ -44,14 +47,15 @@ public class CategoryService(
         Guid companyId,
         CategoryParameters categoryParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     )
     {
+        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var listQueryResult = await _categoryRepository.GetAllAsync(
             companyId,
             categoryParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return new ListResponseModel<CategoryDto>(

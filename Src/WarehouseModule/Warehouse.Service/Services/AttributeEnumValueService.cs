@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
@@ -18,9 +19,11 @@ namespace NGErp.Warehouse.Service.Services;
 public class AttributeEnumValueService(
     IAttributeEnumValueRepository attributeEnumValueRepository,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IStringLocalizer<WarehouseResource> localizer,
+    IAdvancedFilterBuilder filterBuilder
 ) : IAttributeEnumValueService
 {
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IAttributeEnumValueRepository _attributeEnumValueRepository = attributeEnumValueRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
@@ -45,15 +48,18 @@ public class AttributeEnumValueService(
         Guid attributeId,
         AttributeEnumValueParameters attributeEnumValueParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     )
     {
+        var advancedFilters = _filterBuilder
+            .Build<AttributeEnumValue>(filterNodeDto);
+
         var listQueryResult = await _attributeEnumValueRepository.GetAllAsync(
             companyId,
             attributeId,
             attributeEnumValueParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return new ListResponseModel<AttributeEnumValueDto>(

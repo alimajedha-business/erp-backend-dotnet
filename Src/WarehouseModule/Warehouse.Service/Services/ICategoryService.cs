@@ -1,4 +1,4 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -16,7 +16,7 @@ public interface ICategoryService
         Guid companyId,
         CategoryParameters categoryParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     );
     Task<CategoryDto> GetCategoryByIdAsync(
         Guid companyId,

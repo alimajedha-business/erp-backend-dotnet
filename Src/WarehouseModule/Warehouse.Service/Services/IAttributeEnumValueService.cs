@@ -1,4 +1,4 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -17,7 +17,7 @@ public interface IAttributeEnumValueService
         Guid attributeId,
         AttributeEnumValueParameters attributeEnumValueParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     );
     Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
         Guid companyId,

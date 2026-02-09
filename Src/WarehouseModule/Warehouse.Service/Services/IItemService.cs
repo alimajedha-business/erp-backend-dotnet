@@ -1,4 +1,4 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -16,14 +16,14 @@ public interface IItemService
         Guid companyId,
         ItemParameters itemParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     );
     Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
         ItemParameters itemParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     );
     Task<ItemDto?> GetItemByIdAsync(
         Guid companyId,

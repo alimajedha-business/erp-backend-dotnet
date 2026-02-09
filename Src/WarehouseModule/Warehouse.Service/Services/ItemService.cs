@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
@@ -18,9 +19,11 @@ namespace NGErp.Warehouse.Service.Services;
 public class ItemService(
     IItemRepository itemRepository,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IStringLocalizer<WarehouseResource> localizer,
+    IAdvancedFilterBuilder filterBuilder
 ) : IItemService
 {
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
@@ -44,14 +47,15 @@ public class ItemService(
         Guid companyId,
         ItemParameters itemParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     )
     {
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var listQueryResult = await _itemRepository.GetAllAsync(
             companyId,
             itemParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return new ListResponseModel<ItemDto>(
@@ -66,15 +70,16 @@ public class ItemService(
         Guid categoryId,
         ItemParameters itemParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     )
     {
+        var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var listQueryResult = await _itemRepository.GetCategoryAllAsync(
             companyId,
             categoryId,
             itemParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return new ListResponseModel<ItemDto>(
