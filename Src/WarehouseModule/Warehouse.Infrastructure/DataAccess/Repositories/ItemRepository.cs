@@ -59,19 +59,8 @@ public class ItemRepository(MainDbContext context) :
             .Set<Item>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .Where(i => leafIds.Contains(i.CategoryId));
-
-        if (requestAdvancedFilters != null)
-        {
-            var (search, args) = requestAdvancedFilters;
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = (args is { Length: > 0 })
-                    ? query.Where(search, args)
-                    : query.Where(search);
-            }
-        }
+            .Where(i => leafIds.Contains(i.CategoryId))
+            .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
         var items = await query

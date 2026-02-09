@@ -6,6 +6,26 @@ namespace NGErp.Base.Infrastructure.DataAccess;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<T> Filter<T>(
+        this IQueryable<T> query,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        if (requestAdvancedFilters is not null)
+        {
+            var (search, args) = requestAdvancedFilters;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = (args is { Length: > 0 })
+                    ? query.Where(search, args)
+                    : query.Where(search);
+            }
+        }
+
+        return query;
+    }
+
     public static IQueryable<T> Sort<T>(
         this IQueryable<T> query,
         RequestParameters requestParameters

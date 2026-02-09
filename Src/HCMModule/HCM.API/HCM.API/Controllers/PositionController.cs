@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.Services;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
@@ -69,11 +69,10 @@ public class PositionController(
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] PositionParameters positionParameters,
-        [FromBody] FilterRequest? filterRequest,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
         )
     {
-        var filterNodeDto = filterRequest?.Filter;
         var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
         var result = await _positionService.GetAllPositionsAsync(
             companyId,

@@ -7,7 +7,7 @@ using NGErp.API.Extensions;
 using NGErp.Base.Domain.EntitySchemas;
 using NGErp.Base.Infrastructure.Logging;
 using NGErp.Base.Service;
-using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.Services;
 
 using Prometheus;
 

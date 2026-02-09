@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -17,9 +18,11 @@ namespace NGErp.Warehouse.Service.Services;
 public class AttributeService(
     IAttributeRepository attributeRepository,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IStringLocalizer<WarehouseResource> localizer,
+    IAdvancedFilterBuilder filterBuilder
 ) : IAttributeService
 {
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IAttributeRepository _attributeRepository = attributeRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
@@ -43,14 +46,17 @@ public class AttributeService(
         Guid companyId,
         AttributeParameters attributeParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
     )
     {
+        var advancedFilters = _filterBuilder
+            .Build<Domain.Entities.Attribute>(filterNodeDto);
+
         var listQueryResult = await _attributeRepository.GetAllAsync(
             companyId,
             attributeParameters,
             ct,
-            requestAdvancedFilters
+            advancedFilters
         );
 
         return new ListResponseModel<AttributeDto>(

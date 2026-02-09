@@ -1,10 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace NGErp.Base.Service.DTOs;
 
-namespace NGErp.Base.Service.DTOs;
-
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(FilterGroupDto), "group")]
-[JsonDerivedType(typeof(FilterConditionDto), "condition")]
 public abstract record FilterNodeDto;
 
 public record FilterGroupDto(string Op, List<FilterNodeDto> Children) : FilterNodeDto;
