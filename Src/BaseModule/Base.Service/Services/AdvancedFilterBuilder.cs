@@ -1,7 +1,8 @@
 ﻿using NGErp.Base.Domain.EntitySchemas;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.RequestFeatures;
 
-namespace NGErp.Base.Service.RequestFeatures;
+namespace NGErp.Base.Service.Services;
 
 public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdvancedFilterBuilder
 {

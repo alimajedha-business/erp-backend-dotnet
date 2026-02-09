@@ -5,7 +5,7 @@ using System.Text.Json;
 using NGErp.Base.Domain.EntitySchemas;
 using NGErp.Base.Service.DTOs;
 
-namespace NGErp.Base.Service.RequestFeatures;
+namespace NGErp.Base.Service.Services;
 
 public static class DynamicLinqConditionBuilder
 {

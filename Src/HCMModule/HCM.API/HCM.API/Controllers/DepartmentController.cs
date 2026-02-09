@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.Services;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Services;
 
