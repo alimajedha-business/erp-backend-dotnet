@@ -6,12 +6,8 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.Resources;
-using NGErp.General.Service.Services;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
@@ -23,16 +19,12 @@ public class DepartmentService(
     IDepartmentRepository departmentRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
-    IPythonIntegrationService integrationService,
-    IStringLocalizer<GeneralResource> generalLocalizer,
     IAdvancedFilterBuilder filterBuilder
     ) : IDepartmentService
 {
     private readonly IDepartmentRepository _departmentRepository = departmentRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
-    private readonly IStringLocalizer<GeneralResource> _generalLocalizer = generalLocalizer;
-    private readonly IPythonIntegrationService _integrationService = integrationService;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     public async Task ChangeStatusAsync(

@@ -2,6 +2,6 @@
 
 namespace NGErp.HCM.API.Controllers;
 
-public class OrganizationalStructureController:ControllerBase
+public class OrganizationalStructureController : ControllerBase
 {
 }
