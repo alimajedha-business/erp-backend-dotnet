@@ -1,4 +1,5 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
@@ -11,7 +12,7 @@ public interface IPositionService
         Guid companyId,
         PositionParameters positionParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
         );
     Task<PositionDto?> GetPositionByIdAsync(
         Guid companyId,

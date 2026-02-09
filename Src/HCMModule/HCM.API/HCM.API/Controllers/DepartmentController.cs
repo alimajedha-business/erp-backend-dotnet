@@ -73,12 +73,12 @@ public class DepartmentController(
         CancellationToken ct
         )
     {       
-        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
+        
         var result = await _departmentService.GetAllDepartmentsAsync(
             companyId,
             departmentParameters,
             ct,
-            advancedFilters
+            filterNodeDto
         );
 
         return Ok(result);

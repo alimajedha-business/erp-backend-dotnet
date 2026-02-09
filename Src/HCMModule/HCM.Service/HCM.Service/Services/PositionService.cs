@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
 using NGErp.General.Service.Resources;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -22,7 +24,8 @@ public class PositionService(
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IPythonIntegrationService integrationService,
-    IStringLocalizer<GeneralResource> generalLocalizer
+    IStringLocalizer<GeneralResource> generalLocalizer,
+    IAdvancedFilterBuilder filterBuilder
     ) : IPositionService
 {
     private readonly IPositionRepository _positionRepository = positionRepository;
@@ -30,6 +33,7 @@ public class PositionService(
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly IStringLocalizer<GeneralResource> _generalLocalizer = generalLocalizer;
     private readonly IPythonIntegrationService _integrationService = integrationService;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -85,14 +89,15 @@ public class PositionService(
         Guid companyId,
         PositionParameters positionParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto =  null
         )
     {
+        var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
         var listQueryResult = await _positionRepository.GetAllAsync(
           companyId,
           positionParameters,
           ct,
-          requestAdvancedFilters
+          advancedFilters
           );
 
         return new ListResponseModel<PositionDto>(

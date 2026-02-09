@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
 using NGErp.General.Service.Resources;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -22,7 +24,8 @@ public class DepartmentService(
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IPythonIntegrationService integrationService,
-    IStringLocalizer<GeneralResource> generalLocalizer
+    IStringLocalizer<GeneralResource> generalLocalizer,
+    IAdvancedFilterBuilder filterBuilder
     ) : IDepartmentService
 {
     private readonly IDepartmentRepository _departmentRepository = departmentRepository;
@@ -30,6 +33,7 @@ public class DepartmentService(
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly IStringLocalizer<GeneralResource> _generalLocalizer = generalLocalizer;
     private readonly IPythonIntegrationService _integrationService = integrationService;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -85,14 +89,15 @@ public class DepartmentService(
         Guid companyId,
         DepartmentParameters departmentParameters,
         CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        FilterNodeDto? filterNodeDto = null
         )
     {
+        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
         var listQueryResult = await _departmentRepository.GetAllAsync(
           companyId,
           departmentParameters,
           ct,
-          requestAdvancedFilters
+          advancedFilters
           );
 
         return new ListResponseModel<DepartmentDto>(
