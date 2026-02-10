@@ -8,7 +8,6 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.DTOs;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -37,7 +36,10 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var category = _mapper.Map<Domain.Entities.Attribute>(createAttributeDto);
         category.CompanyId = companyId;
@@ -55,7 +57,10 @@ public class AttributeService(
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var advancedFilters = _filterBuilder
             .Build<Domain.Entities.Attribute>(filterNodeDto);
@@ -80,7 +85,10 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeDto>(attribute);
@@ -93,7 +101,10 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attribute = await GetByIdOrThrowExceptionAsync(
             companyId,
@@ -114,7 +125,10 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeRepository.Remove(attribute);
@@ -139,7 +153,10 @@ public class AttributeService(
         bool trackChanges = false
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attribute = await _attributeRepository.GetByIdAsync(
             companyId,
@@ -149,18 +166,5 @@ public class AttributeService(
         );
 
         return attribute ?? throw new NotFoundException(_localizer["Attribute"].Value);
-    }
-
-    private async Task<CompanyDto> GetCompanyByIdOrThrowExceptionAsync(
-        Guid companyId,
-        CancellationToken ct
-    )
-    {
-        var company = await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        return company ?? throw new NotFoundException(_localizer["Company"].Value);
     }
 }
