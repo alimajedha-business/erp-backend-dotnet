@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IPositionRepository, PositionRepository>();
-        services.AddScoped<IOrganizationalStructure, OrganizationalStructureRepository>();
+        services.AddScoped<IOrganizationalStructureRepository, OrganizationalStructureRepository>();
         return services;
     }
 }

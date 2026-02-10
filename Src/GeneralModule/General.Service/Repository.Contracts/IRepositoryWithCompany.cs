@@ -22,7 +22,7 @@ public interface IRepositoryWithCompany<T>
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
-    IQueryable<T> Find(
+   IQueryable<T> Find(
         Guid companyId,
         Expression<Func<T, bool>> predicate,
         IQueryable<T>? baseQuery = null

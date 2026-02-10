@@ -12,7 +12,7 @@ using NGErp.General.Service.Repository.Contracts;
 
 namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 
-public class RepositoryWithCompany<T>(MainDbContext context) : 
+public class RepositoryWithCompany<T>(MainDbContext context) :
     Repository<T>(context),
     IRepositoryWithCompany<T> where T : BaseEntityWithCompany
 {

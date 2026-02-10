@@ -12,6 +12,7 @@ using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
+using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.Services;
 

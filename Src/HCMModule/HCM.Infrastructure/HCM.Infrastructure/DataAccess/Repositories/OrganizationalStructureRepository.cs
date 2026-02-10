@@ -7,5 +7,5 @@ namespace NGErp.HCM.Infrastructure.DataAccess.Repositories;
 
 public class OrganizationalStructureRepository(MainDbContext context) :
     RepositoryWithCompany<OrganizationalStructure>(context),
-    IOrganizationalStructure
+    IOrganizationalStructureRepository
 { }
