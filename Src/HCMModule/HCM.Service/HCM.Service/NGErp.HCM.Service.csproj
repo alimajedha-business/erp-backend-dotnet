@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
     <ProjectReference Include="..\..\..\GeneralModule\General.Service\NGErp.General.Service.csproj" />
     <ProjectReference Include="..\..\HCM.Domain\HCM.Domain\NGErp.HCM.Domain.csproj" />

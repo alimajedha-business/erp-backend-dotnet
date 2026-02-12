@@ -21,8 +21,7 @@ public class MappingProfile : Profile
 
         CreateMap<Category, CategoryDto>();
         CreateMap<CreateCategoryDto, Category>();
-        CreateMap<UpdateCategoryDto, Category>()
-            .ForMember(d => d.CompanyId, opt => opt.Ignore());
+        CreateMap<PatchCategoryDto, Category>().ReverseMap();
 
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -48,7 +49,7 @@ public class CategoryService(
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
         await _categoryRepository.SaveChangesAsync(ct);
 
-        return  _mapper.Map<CategoryDto>(createdCategory);
+        return _mapper.Map<CategoryDto>(createdCategory);
     }
 
     public async Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
@@ -93,17 +94,14 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<CategoryDto> UpdateCategoryAsync(
-        Guid companyId,
-        Guid id,
-        UpdateCategoryDto updateCategoryDto,
-        CancellationToken ct
-    )
+    public async Task<CategoryDto> PatchCategoryAsync(
+    Guid companyId,
+    Guid id,
+    JsonPatchDocument<PatchCategoryDto> patchDoc,
+    CancellationToken ct
+)
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
+        await _companyService.GetCompanyByIdAsync(companyId, ct);
 
         var category = await GetByIdOrThrowExceptionAsync(
             companyId,
@@ -112,7 +110,21 @@ public class CategoryService(
             trackChanges: true
         );
 
-        _mapper.Map(updateCategoryDto, category);
+        var patchDto = _mapper.Map<PatchCategoryDto>(category);
+        var errors = new List<string>();
+
+        patchDoc.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, category);
+
         await _categoryRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<CategoryDto>(category);
@@ -136,7 +148,7 @@ public class CategoryService(
         {
             await _categoryRepository.SaveChangesAsync(ct);
         }
-        catch (DbUpdateException ex) 
+        catch (DbUpdateException ex)
         when (ex.InnerException is SqlException { Number: 547 })
         {
             throw new ForeignKeyViolationException(_localizer["Category"].Value);
