@@ -1,4 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -24,10 +26,10 @@ public interface IAttributeEnumValueService
         Guid id,
         CancellationToken ct
     );
-    Task<AttributeEnumValueDto> UpdateAttributeEnumValueAsync(
+    Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        PatchAttributeEnumValueDto patchAttributeEnumValueDto,
+        JsonPatchDocument<PatchAttributeEnumValueDto> patchAttributeEnumValueDto,
         CancellationToken ct
     );
     Task<bool> DeleteAttributeEnumValueAsync(

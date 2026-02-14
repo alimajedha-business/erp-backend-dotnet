@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
@@ -99,6 +100,25 @@ public class AttributeController(
             );
 
         return Ok(attributeEnums);
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchAttributeDto> patchDoc,
+        CancellationToken ct
+    )
+    {
+        var attributeDto = await _attributeService.PatchAttributeAsync(
+            companyId,
+            id,
+            patchDoc,
+            ct
+        );
+
+        return Ok(attributeDto);
     }
 
     [HttpDelete("{id:guid}")]

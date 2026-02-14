@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
@@ -76,11 +77,11 @@ public class ItemController(
     public async Task<IActionResult> Update(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] PatchItemDto patchItemDto,
+        [FromBody] JsonPatchDocument<PatchItemDto> patchItemDto,
         CancellationToken ct
     )
     {
-        var itemDto = await _itemService.UpdateItemAsync(
+        var itemDto = await _itemService.PatchItemAsync(
             companyId,
             id,
             patchItemDto,

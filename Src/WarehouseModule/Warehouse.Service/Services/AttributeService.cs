@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -94,10 +95,10 @@ public class AttributeService(
         return _mapper.Map<AttributeDto>(attribute);
     }
 
-    public async Task<AttributeDto> UpdateAttributeAsync(
+    public async Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
-        PatchAttributeDto patchAttributeDto,
+        JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
         CancellationToken ct
     )
     {
@@ -113,8 +114,29 @@ public class AttributeService(
             trackChanges: true
         );
 
-        _mapper.Map(patchAttributeDto, attribute);
-        await _attributeRepository.SaveChangesAsync(ct);
+        var patchDto = _mapper.Map<PatchAttributeDto>(attribute);
+        var errors = new List<string>();
+
+        patchAttributeDto.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, attribute);
+
+        try
+        {
+            await _attributeRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
 
         return _mapper.Map<AttributeDto>(attribute);
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -97,14 +98,47 @@ public class AttributeEnumValueService(
         return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
     }
 
-    public Task<AttributeEnumValueDto> UpdateAttributeEnumValueAsync(
+    public async Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        PatchAttributeEnumValueDto patchAttributeEnumValueDto,
+        JsonPatchDocument<PatchAttributeEnumValueDto> patchDoc,
         CancellationToken ct
     )
     {
-        throw new NotImplementedException();
+        await _companyService.GetCompanyByIdAsync(companyId, ct);
+
+        var attributeEnumValue = await GetByIdOrThrowExceptionAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
+
+        var patchDto = _mapper.Map<PatchAttributeEnumValueDto>(attributeEnumValue);
+        var errors = new List<string>();
+
+        patchDoc.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, attributeEnumValue);
+
+        try
+        {
+            await _attributeEnumValueRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
+
+        return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
     }
 
     public async Task<bool> DeleteAttributeEnumValueAsync(

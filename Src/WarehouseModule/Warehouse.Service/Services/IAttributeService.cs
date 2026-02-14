@@ -1,4 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -23,10 +25,10 @@ public interface IAttributeService
         Guid id,
         CancellationToken ct
     );
-    Task<AttributeDto> UpdateAttributeAsync(
+    Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
-        PatchAttributeDto patchAttributeDto,
+        JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
         CancellationToken ct
     );
     Task<bool> DeleteAttributeAsync(
