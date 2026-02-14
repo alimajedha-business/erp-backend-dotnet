@@ -8,6 +8,7 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -16,14 +17,16 @@ using NGErp.Warehouse.Service.Resources;
 namespace NGErp.Warehouse.Service.Services;
 
 public class AttributeService(
+    IAdvancedFilterBuilder filterBuilder,
     IAttributeRepository attributeRepository,
+    ICompanyService companyService,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IStringLocalizer<WarehouseResource> localizer
 ) : IAttributeService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IAttributeRepository _attributeRepository = attributeRepository;
+    private readonly ICompanyService _companyService = companyService;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
@@ -33,6 +36,11 @@ public class AttributeService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var category = _mapper.Map<Domain.Entities.Attribute>(createAttributeDto);
         category.CompanyId = companyId;
 
@@ -49,6 +57,11 @@ public class AttributeService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var advancedFilters = _filterBuilder
             .Build<Domain.Entities.Attribute>(filterNodeDto);
 
@@ -72,6 +85,11 @@ public class AttributeService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeDto>(attribute);
     }
@@ -79,10 +97,15 @@ public class AttributeService(
     public async Task<AttributeDto> UpdateAttributeAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeDto updateAttributeDto,
+        PatchAttributeDto patchAttributeDto,
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var attribute = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -90,7 +113,7 @@ public class AttributeService(
             trackChanges: true
         );
 
-        _mapper.Map(updateAttributeDto, attribute);
+        _mapper.Map(patchAttributeDto, attribute);
         await _attributeRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<AttributeDto>(attribute);
@@ -102,6 +125,11 @@ public class AttributeService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeRepository.Remove(attribute);
 
@@ -125,6 +153,11 @@ public class AttributeService(
         bool trackChanges = false
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var attribute = await _attributeRepository.GetByIdAsync(
             companyId,
             id,

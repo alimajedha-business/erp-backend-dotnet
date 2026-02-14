@@ -13,7 +13,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/items")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/items")]
 public class ItemController(
     IItemService itemService
 ) : ControllerBase
@@ -76,14 +76,14 @@ public class ItemController(
     public async Task<IActionResult> Update(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] UpdateItemDto updateItemDto,
+        [FromBody] PatchItemDto patchItemDto,
         CancellationToken ct
     )
     {
         var itemDto = await _itemService.UpdateItemAsync(
             companyId,
             id,
-            updateItemDto,
+            patchItemDto,
             ct
         );
 

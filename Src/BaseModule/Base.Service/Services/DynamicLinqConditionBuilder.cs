@@ -34,13 +34,13 @@ public static class DynamicLinqConditionBuilder
         List<object> prms
     )
     {
-        switch (node)
+        switch (node.Type)
         {
-            case FilterGroupDto g:
-                BuildGroup(g, schema, sb, prms);
+            case "group":
+                BuildGroup(node, schema, sb, prms);
                 break;
-            case FilterConditionDto c:
-                BuildCondition(c, schema, sb, prms);
+            case "condition":
+                BuildCondition(node, schema, sb, prms);
                 break;
             default:
                 throw new ArgumentException("Unknown filter node type.");
@@ -48,7 +48,7 @@ public static class DynamicLinqConditionBuilder
     }
 
     private static void BuildGroup(
-        FilterGroupDto g,
+        FilterNodeDto g,
         FilterSchema schema,
         StringBuilder sb,
         List<object> prms
@@ -72,7 +72,7 @@ public static class DynamicLinqConditionBuilder
     }
 
     private static void BuildCondition(
-        FilterConditionDto c,
+        FilterNodeDto c,
         FilterSchema schema,
         StringBuilder sb,
         List<object> prms

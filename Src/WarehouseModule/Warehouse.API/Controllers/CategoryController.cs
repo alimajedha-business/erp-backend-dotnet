@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
@@ -13,7 +14,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId}/warehouse/categories")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
     IItemService itemService
@@ -107,17 +108,18 @@ public class CategoryController(
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> Update(
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] UpdateCategoryDto updateCategoryDto,
+        [FromBody] JsonPatchDocument<PatchCategoryDto> patchDoc,
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.UpdateCategoryAsync(
+        var categoryDto = await _categoryService.PatchCategoryAsync(
             companyId,
             id,
-            updateCategoryDto,
+            patchDoc,
             ct
         );
 

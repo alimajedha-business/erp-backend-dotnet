@@ -8,18 +8,20 @@ public record CategoryDto(
     bool IsLastLevel
 );
 
-public class CommandCategoryDto
+public class CreateCategoryDto
 {
     public required string Code { get; set; } = default!;
     public required string Title { get; set; } = default!;
+    public required int LevelNo { get; set; }
     public bool IsLastLevel { get; set; }
+    public string CategoryPath { get; set; } = default!;
     public Guid ParentCategoryId { get; set; }
 }
 
-public class CreateCategoryDto : CommandCategoryDto
+public class PatchCategoryDto
 {
-    public required int LevelNo { get; set; }
-    public string CategoryPath { get; set; } = default!;
+    public string? Code { get; set; }
+    public string? Title { get; set; }
+    public bool? IsLastLevel { get; set; }
+    public string? CategoryPath { get; set; }
 }
-
-public class UpdateCategoryDto : CommandCategoryDto { }

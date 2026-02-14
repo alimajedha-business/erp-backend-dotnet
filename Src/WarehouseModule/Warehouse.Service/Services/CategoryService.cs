@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -8,6 +9,7 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -17,14 +19,16 @@ using NGErp.Warehouse.Service.Resources;
 namespace NGErp.Warehouse.Service.Services;
 
 public class CategoryService(
+    IAdvancedFilterBuilder filterBuilder,
     ICategoryRepository categoryRepository,
+    ICompanyService companyService,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    private readonly ICompanyService _companyService = companyService;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
@@ -34,13 +38,18 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var category = _mapper.Map<Category>(createCategoryDto);
         category.CompanyId = companyId;
 
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
         await _categoryRepository.SaveChangesAsync(ct);
 
-        return  _mapper.Map<CategoryDto>(createdCategory);
+        return _mapper.Map<CategoryDto>(createdCategory);
     }
 
     public async Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
@@ -50,6 +59,11 @@ public class CategoryService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var listQueryResult = await _categoryRepository.GetAllAsync(
             companyId,
@@ -71,17 +85,24 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<CategoryDto> UpdateCategoryAsync(
-        Guid companyId,
-        Guid id,
-        UpdateCategoryDto updateCategoryDto,
-        CancellationToken ct
-    )
+    public async Task<CategoryDto> PatchCategoryAsync(
+    Guid companyId,
+    Guid id,
+    JsonPatchDocument<PatchCategoryDto> patchDoc,
+    CancellationToken ct
+)
     {
+        await _companyService.GetCompanyByIdAsync(companyId, ct);
+
         var category = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -89,8 +110,29 @@ public class CategoryService(
             trackChanges: true
         );
 
-        _mapper.Map(updateCategoryDto, category);
-        await _categoryRepository.SaveChangesAsync(ct);
+        var patchDto = _mapper.Map<PatchCategoryDto>(category);
+        var errors = new List<string>();
+
+        patchDoc.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, category);
+
+        try
+        {
+            await _categoryRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
 
         return _mapper.Map<CategoryDto>(category);
     }
@@ -101,6 +143,11 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _categoryRepository.Remove(category);
 
@@ -108,7 +155,7 @@ public class CategoryService(
         {
             await _categoryRepository.SaveChangesAsync(ct);
         }
-        catch (DbUpdateException ex) 
+        catch (DbUpdateException ex)
         when (ex.InnerException is SqlException { Number: 547 })
         {
             throw new ForeignKeyViolationException(_localizer["Category"].Value);
@@ -124,6 +171,11 @@ public class CategoryService(
         bool trackChanges = false
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var category = await _categoryRepository.GetByIdAsync(
             companyId,
             id,

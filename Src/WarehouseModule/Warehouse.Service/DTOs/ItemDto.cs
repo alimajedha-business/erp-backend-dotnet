@@ -8,17 +8,18 @@ public record ItemDto(
     bool IsActive
 );
 
-public class CommandItemDto
+public class CreateItemDto
 {
     public required string Code { get; set; } = default!;
     public required string Title { get; set; } = default!;
+    public required string Sku { get; set; } = default!;
     public bool IsActive { get; set; }
     public required Guid CategoryId { get; set; }
 }
 
-public class CreateItemDto : CommandItemDto
+public class PatchItemDto
 {
-    public required string Sku { get; set; } = default!;
+    public string? Code { get; set; }
+    public string? Title { get; set; }
+    public bool? IsActive { get; set; }
 }
-
-public class UpdateItemDto : CommandItemDto { }

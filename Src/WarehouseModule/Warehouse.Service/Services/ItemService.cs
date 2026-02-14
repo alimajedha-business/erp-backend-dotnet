@@ -8,6 +8,7 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -17,13 +18,15 @@ using NGErp.Warehouse.Service.Resources;
 namespace NGErp.Warehouse.Service.Services;
 
 public class ItemService(
+    IAdvancedFilterBuilder filterBuilder,
+    ICompanyService companyService,
     IItemRepository itemRepository,
     IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IStringLocalizer<WarehouseResource> localizer
 ) : IItemService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly ICompanyService _companyService = companyService;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
@@ -34,6 +37,11 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var item = _mapper.Map<Item>(createItemDto);
         item.CompanyId = companyId;
 
@@ -50,6 +58,11 @@ public class ItemService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var listQueryResult = await _itemRepository.GetAllAsync(
             companyId,
@@ -73,6 +86,11 @@ public class ItemService(
         FilterNodeDto? filterNodeDto = null
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var listQueryResult = await _itemRepository.GetCategoryAllAsync(
             companyId,
@@ -95,6 +113,11 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var item = await GetByIdOrThrowExceptionAsync(companyId,id,ct);
         return _mapper.Map<ItemDto>(item);
     }
@@ -102,10 +125,15 @@ public class ItemService(
     public async Task<ItemDto> UpdateItemAsync(
         Guid companyId,
         Guid id,
-        UpdateItemDto updateItemDto,
+        PatchItemDto patchItemDto,
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var item = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -113,7 +141,7 @@ public class ItemService(
             trackChanges: true
         );
 
-        _mapper.Map(updateItemDto, item);
+        _mapper.Map(patchItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<ItemDto>(item);
@@ -125,6 +153,11 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var item = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _itemRepository.Remove(item);
 
@@ -148,6 +181,11 @@ public class ItemService(
         bool trackChanges = false
     )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
+
         var item = await _itemRepository.GetByIdAsync(
             companyId,
             id,

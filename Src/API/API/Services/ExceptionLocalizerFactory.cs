@@ -17,9 +17,9 @@ namespace NGErp.API.Services
                 ("Warehouse", typeof(WarehouseResource)),
             };
 
-            var match = mapping.FirstOrDefault(m => ns.Contains(m.key));
+            var (key, resource) = mapping.FirstOrDefault(m => ns.Contains(m.key));
 
-            var resourceType = match.resource ?? typeof(BaseResource);
+            var resourceType = resource ?? typeof(BaseResource);
             var serviceType = typeof(IExceptionLocalizer<>).MakeGenericType(resourceType);
 
             return (IExceptionLocalizer)sp.GetRequiredService(serviceType);

@@ -1,4 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -23,10 +25,10 @@ public interface ICategoryService
         Guid id,
         CancellationToken ct
     );
-    Task<CategoryDto> UpdateCategoryAsync(
+    Task<CategoryDto> PatchCategoryAsync(
         Guid companyId,
         Guid id,
-        UpdateCategoryDto updateCategoryDto,
+        JsonPatchDocument<PatchCategoryDto> patchDoc,
         CancellationToken ct
     );
     Task<bool> DeleteCategoryAsync(

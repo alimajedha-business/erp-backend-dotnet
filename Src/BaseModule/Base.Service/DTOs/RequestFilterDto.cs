@@ -1,9 +1,16 @@
 ﻿namespace NGErp.Base.Service.DTOs;
 
-public abstract record FilterNodeDto;
+public record FilterNodeDto
+{
+    // Discriminator: "group" | "condition"
+    public string Type { get; init; } = default!;
 
-public record FilterGroupDto(string Op, List<FilterNodeDto> Children) : FilterNodeDto;
-// Op: "and" | "or"
+    // Group
+    public string? Op { get; init; }
+    public List<FilterNodeDto>? Children { get; init; }
 
-public record FilterConditionDto(string Field, string Operator, object? Value) : FilterNodeDto;
-// Operator examples: "eq","ne","gt","ge","lt","le","startsWith","contains","endsWith"
+    // Condition
+    public string? Field { get; init; }
+    public string? Operator { get; init; }
+    public object? Value { get; init; }
+}

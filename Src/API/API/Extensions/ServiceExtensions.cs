@@ -2,16 +2,15 @@
 
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
-using Morcatko.AspNetCore.JsonMergePatch;
-
+using NGErp.API.Services;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Infrastructure;
 using NGErp.Base.Service;
 using NGErp.Base.Service.Resources;
-using NGErp.Base.Service.Services;
 using NGErp.General.API;
 using NGErp.General.Infrastructure.DataAccess;
 using NGErp.General.Service;
@@ -35,9 +34,7 @@ namespace NGErp.API.Extensions
             });
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
-            services.Configure<IISOptions>(options =>
-            {
-            });
+            services.Configure<IISOptions>(options => { });
 
         public static void AddServices(this IServiceCollection services)
         {
@@ -65,8 +62,9 @@ namespace NGErp.API.Extensions
                 config.ReturnHttpNotAcceptable = true;
                 config.Filters.Add<LogApiRequestFilter>();
                 config.Filters.Add<ValidationFilterAttribute>();
+                config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             })
-                .AddSystemTextJsonMergePatch()
+                .AddNewtonsoftJson()
                 .AddDataAnnotationsLocalization(options =>
                 {
                     options.DataAnnotationLocalizerProvider = (type, factory) =>
@@ -90,15 +88,12 @@ namespace NGErp.API.Extensions
                         return factory.Create(typeof(BaseResource));
                     };
                 })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new FilterNodeDtoConverter());
-                })
                 .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(General.API.AssemblyReference).Assembly)
+                .AddApplicationPart(typeof(AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(HCM.API.AssemblyReference).Assembly)
                 .AddApplicationPart(typeof(Warehouse.API.AssemblyReference).Assembly);
+
             return services;
         }
 
@@ -198,6 +193,27 @@ namespace NGErp.API.Extensions
                     return await Task.FromResult(new ProviderCultureResult(culture));
                 }));
             });
+        }
+
+        /* https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/10.0.0-preview.5.25277.114
+         * 
+         * AddNewtonsoftJson replaces the default System.Text.Json-based input and output formatters used for formatting all JSON content.
+         * To add support for JSON Patch using Newtonsoft.Json, while leaving the other input and output formatters unchanged:
+         */
+        static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
         }
     }
 }

@@ -7,12 +7,14 @@ public record AttributeEnumValueDto(
     string AttributeTitle
 );
 
-public class CommandAttributeEnumValueDto
+public class CreateAttributeEnumValueDto
 {
     public required string Code { get; set; } = default!;
     public required string Label { get; set; } = default!;
 }
 
-public class CreateAttributeEnumValueDto : CommandAttributeEnumValueDto { }
-
-public class UpdateAttributeEnumValueDto : CommandAttributeEnumValueDto { }
+public class PatchAttributeEnumValueDto
+{
+    public string? Code { get; set; }
+    public string? Label { get; set; }
+}

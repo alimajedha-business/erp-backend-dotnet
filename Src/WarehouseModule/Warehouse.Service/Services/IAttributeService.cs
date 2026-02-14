@@ -26,7 +26,7 @@ public interface IAttributeService
     Task<AttributeDto> UpdateAttributeAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeDto updateAttributeDto,
+        PatchAttributeDto patchAttributeDto,
         CancellationToken ct
     );
     Task<bool> DeleteAttributeAsync(
