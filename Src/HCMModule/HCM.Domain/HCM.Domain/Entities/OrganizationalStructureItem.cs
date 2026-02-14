@@ -34,7 +34,7 @@ public class OrganizationalStructureItem : BaseEntityWithCompany, IBaseEntityTyp
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(e => e.ParentItem)
-            .WithMany()
+            .WithMany(e => e.Children)
             .HasForeignKey(e => e.ParentItemId)
             .OnDelete(DeleteBehavior.NoAction);
     }

@@ -4,18 +4,14 @@ namespace NGErp.HCM.Service.Services;
 
 public interface IOrganizationalStructureService
 {
-    Task<List<OrganizationalStructureDto>> GetTreeAtDateAsync(
+    Task<List<OrganizationalStructureTreeNodeDto>> GetTreeAtDateAsync(
         Guid companyId,
         DateOnly date
         );
 
-    Task<List<OrganizationalStructureDto>> GetCurrentTreeAsync(
+    Task<List<OrganizationalStructureTreeNodeDto>> GetCurrentTreeAsync(
         Guid companyId
         );
 
-    //Task<Guid> AddNodeAsync(AddOrgNodeDto dto);
-    //Task MoveNodeAsync(Guid nodeId, Guid newParentId, DateOnly effectiveDate);
-    //Task DeactivateNodeAsync(Guid nodeId, DateOnly date);
-    //Task<List<OrgNodeHistoryDto>> GetHistoryAsync(Guid nodeBusinessId);
-    //Task<List<EmployeeDto>> GetEmployeesOfPositionAsync(Guid nodeId);
+    Task<Guid> SaveStructureVersionAsync(SaveOrganizationalStructureDto dto);
 }
