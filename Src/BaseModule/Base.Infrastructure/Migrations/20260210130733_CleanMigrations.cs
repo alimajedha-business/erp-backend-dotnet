@@ -21,18 +21,18 @@ namespace NGErp.Base.Infrastructure.Migrations
             migrationBuilder.EnsureSchema(
                 name: "HCM");
 
-            migrationBuilder.CreateTable(
-                name: "Companies",
-                schema: "General",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Companies",
+            //    schema: "General",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+            //        Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Companies", x => x.Id);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "InventoryMovementType",
