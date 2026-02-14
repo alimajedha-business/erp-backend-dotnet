@@ -1,15 +1,13 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.Services;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
-
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -17,14 +15,11 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/positions")]
-//[JwtAuthorize]
 public class PositionController(
-    IPositionService positionService,
-    IAdvancedFilterBuilder filterBuilder
+    IPositionService positionService
     ) : ControllerBase
 {
     private readonly IPositionService _positionService = positionService;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
     [Produces("application/json")]
@@ -73,7 +68,6 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        
         var result = await _positionService.GetAllPositionsAsync(
             companyId,
             positionParameters,
@@ -110,5 +104,24 @@ public class PositionController(
             ct
             );
         return NoContent();
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+    [FromRoute] Guid companyId,
+    [FromRoute] Guid id,
+    [FromBody] JsonPatchDocument<PatchPositionDto> patchDoc,
+    CancellationToken ct
+)
+    {
+        var categoryDto = await _positionService.PatchPositionAsync(
+            companyId,
+            id,
+            patchDoc,
+            ct
+        );
+
+        return Ok(categoryDto);
     }
 }

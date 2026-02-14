@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -8,11 +9,12 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.General.Service.Services;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
-using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -20,13 +22,15 @@ public class DepartmentService(
     IDepartmentRepository departmentRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
-    IAdvancedFilterBuilder filterBuilder
+    IAdvancedFilterBuilder filterBuilder,
+    ICompanyService companyService
     ) : IDepartmentService
 {
     private readonly IDepartmentRepository _departmentRepository = departmentRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly ICompanyService _companyService = companyService;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -48,6 +52,11 @@ public class DepartmentService(
         CancellationToken ct
         )
     {
+        await _companyService.GetCompanyByIdAsync(
+         companyId,
+         ct
+         );
+
         var department = _mapper.Map<Department>(createDepartmentDto);
         department.CompanyId = companyId;
 
@@ -85,6 +94,11 @@ public class DepartmentService(
         FilterNodeDto? filterNodeDto = null
         )
     {
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+            );
+
         var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
         var listQueryResult = await _departmentRepository.GetAllAsync(
           companyId,
@@ -110,14 +124,43 @@ public class DepartmentService(
         return _mapper.Map<DepartmentDto>(department);
     }
 
-    public Task<DepartmentDto> UpdateDepartmentAsync(
+    public async Task<DepartmentDto> PatchDepartmentAsync(
         Guid companyId,
         Guid id,
-        UpdateDepartmentDto dto,
-        CancellationToken ct
-        )
+        JsonPatchDocument<PatchDepartmentDto> jsonPatch, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var department = await GetByIdOrThrowExceptionAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
+
+        var patchDto = _mapper.Map<PatchDepartmentDto>(department);
+        var errors = new List<string>();
+
+        jsonPatch.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, department);
+
+        try
+        {
+            await _departmentRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
+
+        return _mapper.Map<DepartmentDto>(department);
     }
 
     private async Task<Department> GetByIdOrThrowExceptionAsync(
@@ -127,7 +170,18 @@ public class DepartmentService(
         bool trackChanges = false
         )
     {
-        var department = await _departmentRepository.GetByIdAsync(companyId, id, ct, trackChanges);
+        await _companyService.GetCompanyByIdAsync(
+         companyId,
+         ct
+     );
+
+        var department = await _departmentRepository.GetByIdAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges
+            );
+
         return department ?? throw new NotFoundException(_localizer["Department"].Value);
     }
 }

@@ -1,5 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
@@ -14,33 +15,36 @@ public interface IDepartmentService
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
         );
+
     Task<DepartmentDto?> GetDepartmentByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
         );
+
     Task<DepartmentDto> CreateDepartmentAsync(
         Guid companyId,
         CreateDepartmentDto createDepartmentDto,
         CancellationToken ct
         );
-    Task<DepartmentDto> UpdateDepartmentAsync(
+
+    Task<DepartmentDto> PatchDepartmentAsync(
         Guid companyId,
         Guid id,
-        UpdateDepartmentDto updateDepartmentDto,
+        JsonPatchDocument<PatchDepartmentDto> jsonPatch,
          CancellationToken ct
         );
+
     Task<bool> DeleteDepartmentAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
         );
+
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
         bool NewStatus,
         CancellationToken ct
         );
-
-
 }

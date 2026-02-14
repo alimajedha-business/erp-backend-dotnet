@@ -1,5 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
@@ -14,32 +15,36 @@ public interface IPositionService
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
         );
+
     Task<PositionDto?> GetPositionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
         );
+
     Task<PositionDto> CreatePositionAsync(
         Guid companyId,
         CreatePositionDto createDepartmentDto,
         CancellationToken ct
         );
-    Task<PositionDto> UpdatePositionAsync(
+
+    Task<PositionDto> PatchPositionAsync(
         Guid companyId,
         Guid id,
-        UpdatePositionDto updatePositionDto
+        JsonPatchDocument<PatchPositionDto> jsonPatch,
+        CancellationToken ct
         );
+
     Task<bool> DeletePositionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
         );
+
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
         bool NewStatus,
         CancellationToken ct
         );
-
-
 }
