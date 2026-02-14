@@ -12,7 +12,7 @@ public record AttributeDto(
     bool IsStockDimension
 );
 
-public class CommandAttributeDto
+public class CreateAttributeDto
 {
     public required string Code { get; set; } = default!;
     public required string Title { get; set; } = default!;
@@ -22,6 +22,8 @@ public class CommandAttributeDto
     public bool IsStockDimension { get; set; } = false;
 }
 
-public class CreateAttributeDto : CommandAttributeDto { }
-
-public class UpdateAttributeDto : CommandAttributeDto { }
+public class PatchAttributeDto
+{
+    public string? Code { get; set; }
+    public string? Title { get; set; }
+}

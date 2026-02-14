@@ -100,7 +100,7 @@ public class AttributeEnumValueService(
     public Task<AttributeEnumValueDto> UpdateAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeEnumValueDto updateAttributeEnumValueDto,
+        PatchAttributeEnumValueDto patchAttributeEnumValueDto,
         CancellationToken ct
     )
     {

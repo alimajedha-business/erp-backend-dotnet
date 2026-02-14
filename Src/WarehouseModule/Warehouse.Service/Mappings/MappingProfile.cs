@@ -11,13 +11,11 @@ public class MappingProfile : Profile
     {
         CreateMap<Domain.Entities.Attribute, AttributeDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();
-        CreateMap<UpdateAttributeDto, Domain.Entities.Attribute>()
-            .ForMember(d => d.CompanyId, opt => opt.Ignore());
+        CreateMap<PatchAttributeDto, Domain.Entities.Attribute>().ReverseMap();
 
         CreateMap<AttributeEnumValue, AttributeEnumValueDto>();
         CreateMap<CreateAttributeEnumValueDto, AttributeEnumValue>();
-        CreateMap<UpdateAttributeEnumValueDto, AttributeEnumValue>()
-            .ForMember(d => d.CompanyId, opt => opt.Ignore());
+        CreateMap<PatchAttributeEnumValueDto, AttributeEnumValue>().ReverseMap();
 
         CreateMap<Category, CategoryDto>();
         CreateMap<CreateCategoryDto, Category>();
@@ -25,7 +23,6 @@ public class MappingProfile : Profile
 
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
-        CreateMap<UpdateItemDto, Item>()
-            .ForMember(d => d.CompanyId, opt => opt.Ignore());
+        CreateMap<PatchItemDto, Item>().ReverseMap();
     }
 }

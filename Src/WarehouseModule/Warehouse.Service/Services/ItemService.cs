@@ -125,7 +125,7 @@ public class ItemService(
     public async Task<ItemDto> UpdateItemAsync(
         Guid companyId,
         Guid id,
-        UpdateItemDto updateItemDto,
+        PatchItemDto patchItemDto,
         CancellationToken ct
     )
     {
@@ -141,7 +141,7 @@ public class ItemService(
             trackChanges: true
         );
 
-        _mapper.Map(updateItemDto, item);
+        _mapper.Map(patchItemDto, item);
         await _itemRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<ItemDto>(item);

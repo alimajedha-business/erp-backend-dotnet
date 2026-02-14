@@ -27,7 +27,7 @@ public interface IAttributeEnumValueService
     Task<AttributeEnumValueDto> UpdateAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeEnumValueDto updateAttributeEnumValueDto,
+        PatchAttributeEnumValueDto patchAttributeEnumValueDto,
         CancellationToken ct
     );
     Task<bool> DeleteAttributeEnumValueAsync(

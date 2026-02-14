@@ -97,7 +97,7 @@ public class AttributeService(
     public async Task<AttributeDto> UpdateAttributeAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeDto updateAttributeDto,
+        PatchAttributeDto patchAttributeDto,
         CancellationToken ct
     )
     {
@@ -113,7 +113,7 @@ public class AttributeService(
             trackChanges: true
         );
 
-        _mapper.Map(updateAttributeDto, attribute);
+        _mapper.Map(patchAttributeDto, attribute);
         await _attributeRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<AttributeDto>(attribute);
