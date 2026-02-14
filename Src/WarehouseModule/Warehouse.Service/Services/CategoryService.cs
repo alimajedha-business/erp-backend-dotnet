@@ -125,7 +125,14 @@ public class CategoryService(
 
         _mapper.Map(patchDto, category);
 
-        await _categoryRepository.SaveChangesAsync(ct);
+        try
+        {
+            await _categoryRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
 
         return _mapper.Map<CategoryDto>(category);
     }
