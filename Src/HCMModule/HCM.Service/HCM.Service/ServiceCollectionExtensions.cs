@@ -14,6 +14,7 @@ namespace NGErp.HCM.Service
             services.AddAutoMapper(typeof(MappingProfile));            
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
             return services;
         }
     }

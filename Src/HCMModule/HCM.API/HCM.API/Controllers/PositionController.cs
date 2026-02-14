@@ -73,12 +73,12 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
+        
         var result = await _positionService.GetAllPositionsAsync(
             companyId,
             positionParameters,
             ct,
-            advancedFilters
+            filterNodeDto
         );
 
         return Ok(result);

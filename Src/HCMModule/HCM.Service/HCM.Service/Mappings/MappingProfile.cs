@@ -13,5 +13,6 @@ public class MappingProfile : Profile
         CreateMap<Department, CreateDepartmentDto>().ReverseMap();
         CreateMap<Position, PositionDto>();
         CreateMap<Position, CreatePositionDto>().ReverseMap();
+        CreateMap<OrganizationalStructure, OrganizationalStructureDto>();
     }
 }

@@ -47,18 +47,24 @@ namespace NGErp.Base.Infrastructure.DataAccess
             return base.SaveChangesAsync(ct);
         }
 
-
         #region General
+
         public virtual DbSet<Company> Companies { get; set; }
-        #endregion
+
+        #endregion General
 
         #region HCM
+
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<OrganizationalStructure> OrganizationalStructures { get; set; }
-        #endregion
+        public virtual DbSet<OrganizationalStructureItem> OrganizationalStructureItems { get; set; }
+        public virtual DbSet<OrganizationNode> OrganizationNodes { get; set; }
+
+        #endregion HCM
 
         #region Warehouse
+
         public virtual DbSet<Warehouse.Domain.Entities.Attribute> Attributes { get; set; }
         public virtual DbSet<AttributeEnumValue> AttributeEnumValues { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -75,7 +81,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
         public virtual DbSet<WarehouseLocation> WarehouseLocations { get; set; }
-        #endregion
-    }
 
+        #endregion Warehouse
+    }
 }
