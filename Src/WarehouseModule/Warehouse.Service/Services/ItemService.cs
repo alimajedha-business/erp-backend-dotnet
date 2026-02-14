@@ -16,8 +16,6 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace NGErp.Warehouse.Service.Services;
 
 public class ItemService(
@@ -116,11 +114,6 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var item = await GetByIdOrThrowExceptionAsync(companyId,id,ct);
         return _mapper.Map<ItemDto>(item);
     }
@@ -132,11 +125,6 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var item = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -172,11 +160,6 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var item = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _itemRepository.Remove(item);
 

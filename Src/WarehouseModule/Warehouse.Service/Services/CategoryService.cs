@@ -85,11 +85,6 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<CategoryDto>(category);
     }
@@ -101,8 +96,6 @@ public class CategoryService(
     CancellationToken ct
 )
     {
-        await _companyService.GetCompanyByIdAsync(companyId, ct);
-
         var category = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -143,11 +136,6 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _categoryRepository.Remove(category);
 

@@ -89,11 +89,6 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
     }
@@ -105,8 +100,6 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(companyId, ct);
-
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -147,11 +140,6 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeEnumValueRepository.Remove(attributeEnumValue);
 

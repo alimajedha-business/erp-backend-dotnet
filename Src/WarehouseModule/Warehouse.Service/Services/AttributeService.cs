@@ -86,11 +86,6 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeDto>(attribute);
     }
@@ -102,11 +97,6 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var attribute = await GetByIdOrThrowExceptionAsync(
             companyId,
             id,
@@ -147,11 +137,6 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
         var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeRepository.Remove(attribute);
 
