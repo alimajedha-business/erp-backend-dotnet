@@ -76,14 +76,14 @@ public class ItemController(
     public async Task<IActionResult> Update(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] UpdateItemDto updateItemDto,
+        [FromBody] PatchItemDto patchItemDto,
         CancellationToken ct
     )
     {
         var itemDto = await _itemService.UpdateItemAsync(
             companyId,
             id,
-            updateItemDto,
+            patchItemDto,
             ct
         );
 

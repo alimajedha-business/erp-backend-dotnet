@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -8,7 +9,6 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.DTOs;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -38,7 +38,10 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var category = _mapper.Map<Category>(createCategoryDto);
         category.CompanyId = companyId;
@@ -46,7 +49,7 @@ public class CategoryService(
         var createdCategory = await _categoryRepository.AddAsync(category, ct);
         await _categoryRepository.SaveChangesAsync(ct);
 
-        return  _mapper.Map<CategoryDto>(createdCategory);
+        return _mapper.Map<CategoryDto>(createdCategory);
     }
 
     public async Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
@@ -56,7 +59,10 @@ public class CategoryService(
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var listQueryResult = await _categoryRepository.GetAllAsync(
@@ -79,20 +85,23 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<CategoryDto> UpdateCategoryAsync(
-        Guid companyId,
-        Guid id,
-        UpdateCategoryDto updateCategoryDto,
-        CancellationToken ct
-    )
+    public async Task<CategoryDto> PatchCategoryAsync(
+    Guid companyId,
+    Guid id,
+    JsonPatchDocument<PatchCategoryDto> patchDoc,
+    CancellationToken ct
+)
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(companyId, ct);
 
         var category = await GetByIdOrThrowExceptionAsync(
             companyId,
@@ -101,8 +110,29 @@ public class CategoryService(
             trackChanges: true
         );
 
-        _mapper.Map(updateCategoryDto, category);
-        await _categoryRepository.SaveChangesAsync(ct);
+        var patchDto = _mapper.Map<PatchCategoryDto>(category);
+        var errors = new List<string>();
+
+        patchDoc.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, category);
+
+        try
+        {
+            await _categoryRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new DbUpdateBadRequestException(ex.Message);
+        }
 
         return _mapper.Map<CategoryDto>(category);
     }
@@ -113,7 +143,10 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _categoryRepository.Remove(category);
@@ -122,7 +155,7 @@ public class CategoryService(
         {
             await _categoryRepository.SaveChangesAsync(ct);
         }
-        catch (DbUpdateException ex) 
+        catch (DbUpdateException ex)
         when (ex.InnerException is SqlException { Number: 547 })
         {
             throw new ForeignKeyViolationException(_localizer["Category"].Value);
@@ -138,7 +171,10 @@ public class CategoryService(
         bool trackChanges = false
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var category = await _categoryRepository.GetByIdAsync(
             companyId,
@@ -148,18 +184,5 @@ public class CategoryService(
         );
 
         return category ?? throw new NotFoundException(_localizer["Category"].Value);
-    }
-
-    private async Task<CompanyDto> GetCompanyByIdOrThrowExceptionAsync(
-        Guid companyId,
-        CancellationToken ct
-    )
-    {
-        var company = await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        return company ?? throw new NotFoundException(_localizer["Company"].Value);
     }
 }

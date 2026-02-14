@@ -33,7 +33,7 @@ public interface IItemService
     Task<ItemDto> UpdateItemAsync(
         Guid companyId,
         Guid id,
-        UpdateItemDto updateItemDto,
+        PatchItemDto patchItemDto,
         CancellationToken ct
     );
     Task<bool> DeleteItemAsync(

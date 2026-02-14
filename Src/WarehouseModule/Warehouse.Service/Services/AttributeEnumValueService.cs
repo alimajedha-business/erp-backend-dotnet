@@ -8,7 +8,6 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.DTOs;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -38,7 +37,10 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var enumValue = _mapper.Map<AttributeEnumValue>(createAttributeEnumValueDto);
         enumValue.CompanyId = companyId;
@@ -57,7 +59,10 @@ public class AttributeEnumValueService(
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var advancedFilters = _filterBuilder
             .Build<AttributeEnumValue>(filterNodeDto);
@@ -83,7 +88,10 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
@@ -92,7 +100,7 @@ public class AttributeEnumValueService(
     public Task<AttributeEnumValueDto> UpdateAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        UpdateAttributeEnumValueDto updateAttributeEnumValueDto,
+        PatchAttributeEnumValueDto patchAttributeEnumValueDto,
         CancellationToken ct
     )
     {
@@ -105,7 +113,10 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
         _attributeEnumValueRepository.Remove(attributeEnumValue);
@@ -130,7 +141,10 @@ public class AttributeEnumValueService(
         bool trackChanges = false
     )
     {
-        await GetCompanyByIdOrThrowExceptionAsync(companyId, ct);
+        await _companyService.GetCompanyByIdAsync(
+            companyId,
+            ct
+        );
 
         var attributeEnumValue = await _attributeEnumValueRepository.GetByIdAsync(
             companyId,
@@ -141,18 +155,5 @@ public class AttributeEnumValueService(
 
         return attributeEnumValue ?? 
             throw new NotFoundException(_localizer["AttributeEnumValue"].Value);
-    }
-
-    private async Task<CompanyDto> GetCompanyByIdOrThrowExceptionAsync(
-        Guid companyId,
-        CancellationToken ct
-    )
-    {
-        var company = await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        return company ?? throw new NotFoundException(_localizer["Company"].Value);
     }
 }

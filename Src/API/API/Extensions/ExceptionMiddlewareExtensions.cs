@@ -55,7 +55,7 @@ namespace NGErp.API.Extensions
                         TraceId = context.TraceIdentifier,
                         Details = new Dictionary<string, string[]?>
                         {
-                            { "exception", isDevelopment ? new[] {ex.InnerException != null ? ex.InnerException.Message : "" } : null }
+                            { "exception", isDevelopment ? new[] {ex.InnerException != null ? ex.InnerException.Message : ex.Message.ToString() } : null }
                         }
                     };
 
