@@ -16,7 +16,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     Repository<T>(context),
     IRepositoryWithCompany<T> where T : BaseEntityWithCompany
 {
-    public virtual async Task<T?> GetByIdAsync(
+    public virtual Task<T?> GetByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct,
@@ -25,7 +25,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
 
-        return await query.FirstOrDefaultAsync(
+        return query.FirstOrDefaultAsync(
             e => e.CompanyId == companyId && e.Id == id,
             ct);
     }
