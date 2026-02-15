@@ -129,6 +129,6 @@ public class AttributeController(
     )
     {
         await _attributeService.DeleteAttributeAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 }

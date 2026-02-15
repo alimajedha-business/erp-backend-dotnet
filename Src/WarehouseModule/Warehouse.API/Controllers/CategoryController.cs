@@ -134,6 +134,6 @@ public class CategoryController(
     )
     {
         await _categoryService.DeleteCategoryAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 }

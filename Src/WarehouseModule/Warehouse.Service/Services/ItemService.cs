@@ -103,7 +103,7 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        return PatchItemAsync(companyId, id, patchItemDto, ct);
+        return PatchAsync(companyId, id, patchItemDto, ct);
     }
 
     public Task<bool> DeleteItemAsync(

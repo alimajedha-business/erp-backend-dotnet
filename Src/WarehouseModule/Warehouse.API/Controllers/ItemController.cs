@@ -99,6 +99,6 @@ public class ItemController(
     )
     {
         await _itemService.DeleteItemAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 }

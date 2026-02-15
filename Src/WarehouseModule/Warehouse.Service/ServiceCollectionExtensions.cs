@@ -26,11 +26,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
+        services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IItemService, ItemService>();
+        services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
 
         return services;
     }
