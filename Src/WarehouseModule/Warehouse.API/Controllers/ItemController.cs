@@ -26,20 +26,20 @@ public class ItemController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateItemDto createItemDto,
+        [FromBody] CreateItemDto createDto,
         CancellationToken ct
     )
     {
-        var itemDto = await _itemService.CreateItemAsync(
+        var dto = await _itemService.CreateItemAsync(
             companyId,
-            createItemDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = itemDto.Id },
-            itemDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -47,14 +47,14 @@ public class ItemController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] ItemParameters itemParameters,
+        [FromQuery] ItemParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
         var result = await _itemService.GetAllItemsAsync(
             companyId,
-            itemParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -69,8 +69,8 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var item = await _itemService.GetItemByIdAsync(companyId, id, ct);
-        return Ok(item);
+        var dto = await _itemService.GetItemByIdAsync(companyId, id, ct);
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
@@ -81,14 +81,14 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var itemDto = await _itemService.PatchItemAsync(
+        var dto = await _itemService.PatchItemAsync(
             companyId,
             id,
             patchItemDto,
             ct
         );
 
-        return Ok(itemDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]

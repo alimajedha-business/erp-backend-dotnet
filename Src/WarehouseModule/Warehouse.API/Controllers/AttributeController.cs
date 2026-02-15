@@ -28,20 +28,20 @@ public class AttributeController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateAttributeDto createAttributeDto,
+        [FromBody] CreateAttributeDto createDto,
         CancellationToken ct
     )
     {
-        var attributeDto = await _attributeService.CreateAttributeAsync(
+        var dto = await _attributeService.CreateAttributeAsync(
             companyId,
-            createAttributeDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = attributeDto.Id },
-            attributeDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -49,14 +49,14 @@ public class AttributeController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] AttributeParameters attributeParameters,
+        [FromQuery] AttributeParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
         var attributes = await _attributeService.GetAllAttributesAsync(
             companyId,
-            attributeParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -71,13 +71,13 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var attribute = await _attributeService.GetAttributeByIdAsync(
+        var dto = await _attributeService.GetAttributeByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(attribute);
+        return Ok(dto);
     }
 
     [HttpPost("{id:guid}/enums")]
@@ -85,21 +85,21 @@ public class AttributeController(
     public async Task<IActionResult> GetAttributeEnums(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromQuery] AttributeEnumValueParameters attributeEnumParameters,
+        [FromQuery] AttributeEnumValueParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var attributeEnums = await _attributeEnumValueService
+        var enumsDto = await _attributeEnumValueService
             .GetAttributeAllEnumValuesAsync(
                 companyId,
                 id,
-                attributeEnumParameters,
+                parameters,
                 ct,
                 filterNodeDto
             );
 
-        return Ok(attributeEnums);
+        return Ok(enumsDto);
     }
 
     [HttpPatch("{id:guid}")]
@@ -111,14 +111,14 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var attributeDto = await _attributeService.PatchAttributeAsync(
+        var dto = await _attributeService.PatchAttributeAsync(
             companyId,
             id,
             patchDoc,
             ct
         );
 
-        return Ok(attributeDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]

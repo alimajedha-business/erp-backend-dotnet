@@ -28,20 +28,20 @@ public class CategoryController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateCategoryDto createCategoryDto,
+        [FromBody] CreateCategoryDto createDto,
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.CreateCategoryAsync(
+        var dto = await _categoryService.CreateCategoryAsync(
             companyId,
-            createCategoryDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = categoryDto.Id },
-            categoryDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -49,14 +49,14 @@ public class CategoryController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters categoryParameters,
+        [FromQuery] CategoryParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
-            categoryParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -71,13 +71,13 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var category = await _categoryService.GetCategoryByIdAsync(
+        var dto = await _categoryService.GetCategoryByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("{id:guid}/items/list")]
@@ -85,7 +85,7 @@ public class CategoryController(
     public async Task<IActionResult> GetItems(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromQuery] ItemParameters itemParameters,
+        [FromQuery] ItemParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
@@ -99,7 +99,7 @@ public class CategoryController(
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
             id,
-            itemParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -116,14 +116,14 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.PatchCategoryAsync(
+        var dto = await _categoryService.PatchCategoryAsync(
             companyId,
             id,
             patchDoc,
             ct
         );
 
-        return Ok(categoryDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]

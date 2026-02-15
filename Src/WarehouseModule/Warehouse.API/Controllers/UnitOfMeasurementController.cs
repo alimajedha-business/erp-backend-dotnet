@@ -27,21 +27,21 @@ public class UnitOfMeasurementController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
+        [FromBody] CreateUnitOfMeasurementDto createDto,
         CancellationToken ct
     )
     {
-        var unitOfMeasurementDto = await _unitOfMeasurementService
+        var dto = await _unitOfMeasurementService
             .CreateUnitOfMeasurementAsync(
                 companyId,
-                createUnitOfMeasurementDto,
+                createDto,
                 ct
             );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = unitOfMeasurementDto.Id },
-            unitOfMeasurementDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -49,7 +49,7 @@ public class UnitOfMeasurementController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] UnitOfMeasurementParameters unitOfMeasurementParameters,
+        [FromQuery] UnitOfMeasurementParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
@@ -57,7 +57,7 @@ public class UnitOfMeasurementController(
         var result = await _unitOfMeasurementService
             .GetAllUnitOfMeasurementsAsync(
                 companyId,
-                unitOfMeasurementParameters,
+                parameters,
                 ct,
                 filterNodeDto
             );
@@ -72,14 +72,14 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var unitOfMeasurementDto = await _unitOfMeasurementService
+        var dto = await _unitOfMeasurementService
             .GetUnitOfMeasurementByIdAsync(
                 companyId,
                 id,
                 ct
             );
 
-        return Ok(unitOfMeasurementDto);
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
@@ -91,7 +91,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var updatedUnitOfMeasurementDto = await _unitOfMeasurementService
+        var dto = await _unitOfMeasurementService
             .PatchUnitOfMeasurementAsync(
                 companyId,
                 id,
@@ -99,7 +99,7 @@ public class UnitOfMeasurementController(
                 ct
             );
 
-        return Ok(updatedUnitOfMeasurementDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]
