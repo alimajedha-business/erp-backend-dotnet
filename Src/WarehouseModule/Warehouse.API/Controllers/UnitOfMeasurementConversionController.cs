@@ -14,34 +14,34 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/uoms")]
-public class UnitOfMeasurementController(
-    IUnitOfMeasurementService unitOfMeasurementService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/uom-conversions")]
+public class UnitOfMeasurementConversionController(
+        IUnitOfMeasurementConversionService unitOfMeasurementConversionService
 ) : ControllerBase
 {
-    private readonly IUnitOfMeasurementService _unitOfMeasurementService = 
-        unitOfMeasurementService;
+    private readonly IUnitOfMeasurementConversionService _unitOfMeasurementConversionService =
+        unitOfMeasurementConversionService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
+        [FromBody] CreateUnitOfMeasurementConversionDto createDto,
         CancellationToken ct
     )
     {
-        var unitOfMeasurementDto = await _unitOfMeasurementService
-            .CreateUnitOfMeasurementAsync(
+        var dto = await _unitOfMeasurementConversionService
+            .CreateUnitOfMeasurementConversionAsync(
                 companyId,
-                createUnitOfMeasurementDto,
+                createDto,
                 ct
             );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = unitOfMeasurementDto.Id },
-            unitOfMeasurementDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -49,15 +49,15 @@ public class UnitOfMeasurementController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] UnitOfMeasurementParameters unitOfMeasurementParameters,
+        [FromQuery] UnitOfMeasurementConversionParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _unitOfMeasurementService
-            .GetAllUnitOfMeasurementsAsync(
+        var result = await _unitOfMeasurementConversionService
+            .GetAllUnitOfMeasurementConversionsAsync(
                 companyId,
-                unitOfMeasurementParameters,
+                parameters,
                 ct,
                 filterNodeDto
             );
@@ -72,14 +72,14 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var unitOfMeasurementDto = await _unitOfMeasurementService
-            .GetUnitOfMeasurementByIdAsync(
+        var dto = await _unitOfMeasurementConversionService
+            .GetUnitOfMeasurementConversionByIdAsync(
                 companyId,
                 id,
                 ct
             );
 
-        return Ok(unitOfMeasurementDto);
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
@@ -87,19 +87,19 @@ public class UnitOfMeasurementController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
         CancellationToken ct
     )
     {
-        var updatedUnitOfMeasurementDto = await _unitOfMeasurementService
-            .PatchUnitOfMeasurementAsync(
+        var dto = await _unitOfMeasurementConversionService
+            .PatchUnitOfMeasurementConversionAsync(
                 companyId,
                 id,
                 patchDoc,
                 ct
             );
 
-        return Ok(updatedUnitOfMeasurementDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]
@@ -109,13 +109,13 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        await _unitOfMeasurementService
-            .DeleteUnitOfMeasurementAsync(
+        await _unitOfMeasurementConversionService
+            .DeleteUnitOfMeasurementConversionAsync(
                 companyId,
                 id,
                 ct
             );
-        
+
         return NoContent();
     }
 }

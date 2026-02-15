@@ -28,5 +28,9 @@ public class MappingProfile : Profile
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
         CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
         CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();
+
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionDto>();
+        CreateMap<CreateUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>();
+        CreateMap<PatchUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>().ReverseMap();
     }
 }
