@@ -18,6 +18,7 @@ namespace NGErp.General.Service.Services;
 public abstract class BaseServiceWithCompany<
         TEntity,
         TDto,
+        TListDto,
         TParameters,
         TRepo,
         TResource
@@ -60,7 +61,7 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(created);
     }
 
-    public virtual async Task<ListResponseModel<TDto>> GetAllAsync(
+    public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
         Guid companyId,
         TParameters parameters,
         CancellationToken ct,
@@ -78,8 +79,8 @@ public abstract class BaseServiceWithCompany<
             advancedFilters
         );
 
-        return new ListResponseModel<TDto>(
-            items: _mapper.Map<IReadOnlyList<TDto>>(listQueryResult.items),
+        return new ListResponseModel<TListDto>(
+            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -198,3 +199,23 @@ public abstract class BaseServiceWithCompany<
     }
 }
 
+public abstract class BaseServiceWithCompany<
+    TEntity,
+    TDto,
+    TParameters,
+    TRepo,
+    TResource
+>(
+    IAdvancedFilterBuilder filterBuilder,
+    TRepo repo,
+    ICompanyService companyService,
+    IMapper mapper,
+    IStringLocalizer<TResource> localizer
+)
+    : BaseServiceWithCompany<TEntity, TDto, TDto, TParameters, TRepo, TResource>(
+        filterBuilder, repo, companyService, mapper, localizer
+    )
+    where TEntity : BaseEntityWithCompany
+    where TRepo : IRepositoryWithCompany<TEntity>
+    where TParameters : RequestParameters
+{ }
