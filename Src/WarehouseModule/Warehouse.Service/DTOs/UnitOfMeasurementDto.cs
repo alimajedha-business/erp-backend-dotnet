@@ -8,6 +8,8 @@ public record UnitOfMeasurementDto(
     bool IsDiscrete
 );
 
+public record UnitOfMeasurementTitleDto(string Title);
+
 public class CreateUnitOfMeasurementDto
 {
     public required string Dimension { get; set; } = default!;

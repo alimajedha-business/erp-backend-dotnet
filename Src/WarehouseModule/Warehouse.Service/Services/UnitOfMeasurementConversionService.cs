@@ -24,6 +24,7 @@ public class UnitOfMeasurementConversionService(
 ) : BaseServiceWithCompany<
         UnitOfMeasurementConversion,
         UnitOfMeasurementConversionDto,
+        UnitOfMeasurementConversionListDto,
         UnitOfMeasurementConversionParameters,
         IUnitOfMeasurementConversionRepository,
         WarehouseResource
@@ -47,14 +48,14 @@ public class UnitOfMeasurementConversionService(
         return CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
     }
 
-    public Task<ListResponseModel<UnitOfMeasurementConversionDto>> GetAllUnitOfMeasurementConversionsAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
         Guid companyId,
         UnitOfMeasurementConversionParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
     {
-        return GetAllAsync(companyId, parameters, ct, filterNodeDto);
+        return await GetAllAsync(companyId, parameters, ct, filterNodeDto);
     }
 
     public Task<UnitOfMeasurementConversionDto> GetUnitOfMeasurementConversionByIdAsync(

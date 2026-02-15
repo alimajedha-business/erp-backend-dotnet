@@ -14,7 +14,7 @@ public interface IUnitOfMeasurementConversionService
         CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
         CancellationToken ct
     );
-    Task<ListResponseModel<UnitOfMeasurementConversionDto>> GetAllUnitOfMeasurementConversionsAsync(
+    Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
         Guid companyId,
         UnitOfMeasurementConversionParameters parameters,
         CancellationToken ct,
