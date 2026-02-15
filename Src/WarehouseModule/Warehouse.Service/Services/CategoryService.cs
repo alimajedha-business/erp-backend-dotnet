@@ -24,8 +24,6 @@ public class CategoryService(
 ) : BaseServiceWithCompany<
         Category,
         CategoryDto,
-        CreateCategoryDto,
-        PatchCategoryDto,
         CategoryParameters,
         ICategoryRepository,
         WarehouseResource

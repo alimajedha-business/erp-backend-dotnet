@@ -18,8 +18,6 @@ namespace NGErp.General.Service.Services;
 public abstract class BaseServiceWithCompany<
         TEntity,
         TDto,
-        TCreateDto,
-        TUpdateDto,
         TParameters,
         TRepo,
         TResource
@@ -45,7 +43,11 @@ public abstract class BaseServiceWithCompany<
     protected Task EnsureCompanyAsync(Guid companyId, CancellationToken ct) =>
         _companyService.GetCompanyByIdAsync(companyId, ct);
 
-    public virtual async Task<TDto> CreateAsync(Guid companyId, TCreateDto createDto, CancellationToken ct)
+    public virtual async Task<TDto> CreateAsync<TCreateDto>(
+        Guid companyId,
+        TCreateDto createDto,
+        CancellationToken ct
+    )
     {
         await EnsureCompanyAsync(companyId, ct);
 
@@ -69,7 +71,12 @@ public abstract class BaseServiceWithCompany<
 
         var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
 
-        var listQueryResult = await _repo.GetAllAsync(companyId, parameters, ct, advancedFilters);
+        var listQueryResult = await _repo.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            advancedFilters
+        );
 
         return new ListResponseModel<TDto>(
             items: _mapper.Map<IReadOnlyList<TDto>>(listQueryResult.items),
@@ -78,7 +85,11 @@ public abstract class BaseServiceWithCompany<
         );
     }
 
-    public virtual async Task<TDto> GetByIdAsync(Guid companyId, Guid id, CancellationToken ct)
+    public virtual async Task<TDto> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
         await EnsureCompanyAsync(companyId, ct);
 
@@ -96,7 +107,12 @@ public abstract class BaseServiceWithCompany<
     {
         await EnsureCompanyAsync(companyId, ct);
 
-        var entity = await GetByIdOrThrowAsync(companyId, id, ct, trackChanges: true);
+        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
 
         var patchDto = _mapper.Map<TPatchDto>(entity);
         var errors = new List<string>();
@@ -123,11 +139,22 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(entity);
     }
 
-    public virtual async Task<TDto> UpdateAsync(Guid companyId, Guid id, TUpdateDto updateDto, CancellationToken ct)
+    public virtual async Task<TDto> UpdateAsync<TUpdateDto>(
+        Guid companyId,
+        Guid id,
+        TUpdateDto updateDto,
+        CancellationToken ct
+    )
     {
         await EnsureCompanyAsync(companyId, ct);
 
-        var entity = await GetByIdOrThrowAsync(companyId, id, ct, trackChanges: true);
+        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            ct,
+            trackChanges: true
+        );
+
         _mapper.Map(updateDto, entity);
 
         await _repo.SaveChangesAsync(ct);
@@ -135,7 +162,11 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(entity);
     }
 
-    public virtual async Task<bool> DeleteAsync(Guid companyId, Guid id, CancellationToken ct)
+    public virtual async Task<bool> DeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
     {
         await EnsureCompanyAsync(companyId, ct);
 
