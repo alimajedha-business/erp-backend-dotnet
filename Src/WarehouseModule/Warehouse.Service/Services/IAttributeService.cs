@@ -31,7 +31,7 @@ public interface IAttributeService
         JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
         CancellationToken ct
     );
-    Task<bool> DeleteAttributeAsync(
+    Task DeleteAttributeAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

@@ -82,7 +82,7 @@ public class AttributeEnumValueService(
         return PatchAsync(companyId, id, patchDoc, ct);
     }
 
-    public Task<bool> DeleteAttributeEnumValueAsync(
+    public Task DeleteAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

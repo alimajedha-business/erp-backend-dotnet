@@ -31,7 +31,7 @@ public interface IUnitOfMeasurementConversionService
         JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
         CancellationToken ct
     );
-    Task<bool> DeleteUnitOfMeasurementConversionAsync(
+    Task DeleteUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

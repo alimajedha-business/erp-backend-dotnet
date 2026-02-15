@@ -31,7 +31,7 @@ public interface ICategoryService
         JsonPatchDocument<PatchCategoryDto> patchDoc,
         CancellationToken ct
     );
-    Task<bool> DeleteCategoryAsync(
+    Task DeleteCategoryAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

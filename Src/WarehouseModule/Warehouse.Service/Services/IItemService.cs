@@ -38,7 +38,7 @@ public interface IItemService
         JsonPatchDocument<PatchItemDto> patchItemDto,
         CancellationToken ct
     );
-    Task<bool> DeleteItemAsync(
+    Task DeleteItemAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

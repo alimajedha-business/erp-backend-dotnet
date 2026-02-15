@@ -163,7 +163,7 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(entity);
     }
 
-    public virtual async Task<bool> DeleteAsync(
+    public virtual async Task DeleteAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
@@ -184,7 +184,7 @@ public abstract class BaseServiceWithCompany<
             throw new ForeignKeyViolationException(_localizer[LocalizerKey].Value);
         }
 
-        return true;
+        return;
     }
 
     protected virtual async Task<TEntity> GetByIdOrThrowAsync(

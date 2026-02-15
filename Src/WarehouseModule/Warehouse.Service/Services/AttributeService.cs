@@ -75,7 +75,7 @@ public class AttributeService(
         return PatchAsync(companyId, id, patchAttributeDto, ct);
     }
 
-    public Task<bool> DeleteAttributeAsync(
+    public Task DeleteAttributeAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

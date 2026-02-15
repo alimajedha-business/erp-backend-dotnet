@@ -76,7 +76,7 @@ public class UnitOfMeasurementService(
             return PatchAsync(companyId, id, patchDoc, ct);
         }
     
-        public Task<bool> DeleteUnitOfMeasurementAsync(
+        public Task DeleteUnitOfMeasurementAsync(
             Guid companyId,
             Guid id,
             CancellationToken ct

@@ -76,7 +76,7 @@ public class CategoryService(
         return PatchAsync(companyId, id, patchDoc, ct);
     }
 
-    public Task<bool> DeleteCategoryAsync(
+    public Task DeleteCategoryAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

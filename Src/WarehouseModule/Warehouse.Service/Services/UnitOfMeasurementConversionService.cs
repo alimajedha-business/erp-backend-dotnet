@@ -77,7 +77,7 @@ public class UnitOfMeasurementConversionService(
         return PatchAsync(companyId, id, patchDoc, ct);
     }
 
-    public Task<bool> DeleteUnitOfMeasurementConversionAsync(
+    public Task DeleteUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

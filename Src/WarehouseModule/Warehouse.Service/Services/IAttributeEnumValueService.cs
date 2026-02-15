@@ -32,7 +32,7 @@ public interface IAttributeEnumValueService
         JsonPatchDocument<PatchAttributeEnumValueDto> patchAttributeEnumValueDto,
         CancellationToken ct
     );
-    Task<bool> DeleteAttributeEnumValueAsync(
+    Task DeleteAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

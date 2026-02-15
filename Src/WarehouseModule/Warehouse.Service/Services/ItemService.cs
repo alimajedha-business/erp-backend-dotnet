@@ -106,7 +106,7 @@ public class ItemService(
         return PatchAsync(companyId, id, patchItemDto, ct);
     }
 
-    public Task<bool> DeleteItemAsync(
+    public Task DeleteItemAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
