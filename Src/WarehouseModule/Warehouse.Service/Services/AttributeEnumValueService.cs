@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -24,35 +21,33 @@ public class AttributeEnumValueService(
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : IAttributeEnumValueService
+) : BaseServiceWithCompany<
+        AttributeEnumValue,
+        AttributeEnumValueDto,
+        AttributeEnumValueParameters,
+        IAttributeEnumValueRepository,
+        WarehouseResource
+    >(
+        filterBuilder,
+        attributeEnumValueRepository,
+        companyService,
+        mapper,
+        localizer
+    ),
+    IAttributeEnumValueService
 {
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly IAttributeEnumValueRepository _attributeEnumValueRepository = attributeEnumValueRepository;
-    private readonly ICompanyService _companyService = companyService;
-    private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
+    protected override string LocalizerKey => "AttributeEnumValue";
 
-    public async Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
+    public Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
         Guid companyId,
         CreateAttributeEnumValueDto createAttributeEnumValueDto,
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var enumValue = _mapper.Map<AttributeEnumValue>(createAttributeEnumValueDto);
-        enumValue.CompanyId = companyId;
-
-        var createdEnumValue = _attributeEnumValueRepository.AddAsync(enumValue, ct);
-        await _attributeEnumValueRepository.SaveChangesAsync(ct);
-
-        return _mapper.Map<AttributeEnumValueDto>(createdEnumValue);
+        return CreateAsync(companyId, createAttributeEnumValueDto, ct);
     }
 
-    public async Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
+    public Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
         Guid companyId,
         Guid attributeId,
         AttributeEnumValueParameters attributeEnumValueParameters,
@@ -60,122 +55,39 @@ public class AttributeEnumValueService(
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await _companyService.GetCompanyByIdAsync(
+        return GetAllAsync(
             companyId,
-            ct
-        );
-
-        var advancedFilters = _filterBuilder
-            .Build<AttributeEnumValue>(filterNodeDto);
-
-        var listQueryResult = await _attributeEnumValueRepository.GetAllAsync(
-            companyId,
-            attributeId,
             attributeEnumValueParameters,
             ct,
-            advancedFilters
-        );
-
-        return new ListResponseModel<AttributeEnumValueDto>(
-            items: _mapper.Map<IReadOnlyList<AttributeEnumValueDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            attributeEnumValueParameters
+            filterNodeDto
         );
     }
 
-    public async Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
+    public Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
+        return GetByIdAsync(companyId, id, ct);
     }
 
-    public async Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
+    public Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchAttributeEnumValueDto> patchDoc,
         CancellationToken ct
     )
     {
-        var attributeEnumValue = await GetByIdOrThrowExceptionAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges: true
-        );
-
-        var patchDto = _mapper.Map<PatchAttributeEnumValueDto>(attributeEnumValue);
-        var errors = new List<string>();
-
-        patchDoc.ApplyTo(patchDto, error =>
-        {
-            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
-        });
-
-        if (errors.Count != 0)
-        {
-            throw new InvalidPatchDocumentException(errors);
-        }
-
-        _mapper.Map(patchDto, attributeEnumValue);
-
-        try
-        {
-            await _attributeEnumValueRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new DbUpdateBadRequestException(ex.Message);
-        }
-
-        return _mapper.Map<AttributeEnumValueDto>(attributeEnumValue);
+        return PatchAsync(companyId, id, patchDoc, ct);
     }
 
-    public async Task<bool> DeleteAttributeEnumValueAsync(
+    public Task<bool> DeleteAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        var attributeEnumValue = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        _attributeEnumValueRepository.Remove(attributeEnumValue);
-
-        try
-        {
-            await _attributeEnumValueRepository.SaveChangesAsync(ct);
-        }
-        catch(DbUpdateException ex)
-        when(ex.InnerException is SqlException { Number: 547 })
-        {
-            throw new ForeignKeyViolationException(_localizer["AttributeEnumValue"].Value);
-        }
-
-        return true;
-    }
-
-    private async Task<AttributeEnumValue> GetByIdOrThrowExceptionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var attributeEnumValue = await _attributeEnumValueRepository.GetByIdAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges
-        );
-
-        return attributeEnumValue ?? 
-            throw new NotFoundException(_localizer["AttributeEnumValue"].Value);
+       return DeleteAsync(companyId, id, ct);
     }
 }

@@ -27,7 +27,7 @@ public interface IItemService
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
-    Task<ItemDto?> GetItemByIdAsync(
+    Task<ItemDto> GetItemByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

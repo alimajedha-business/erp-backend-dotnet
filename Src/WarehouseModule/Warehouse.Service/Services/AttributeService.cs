@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -23,155 +20,67 @@ public class AttributeService(
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : IAttributeService
+) : BaseServiceWithCompany<
+        Domain.Entities.Attribute,
+        AttributeDto,
+        AttributeParameters,
+        IAttributeRepository,
+        WarehouseResource
+    >(
+        filterBuilder,
+        attributeRepository,
+        companyService,
+        mapper,
+        localizer
+    ),
+    IAttributeService
 {
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly IAttributeRepository _attributeRepository = attributeRepository;
-    private readonly ICompanyService _companyService = companyService;
-    private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
+    protected override string LocalizerKey => "Attribute";
 
-    public async Task<AttributeDto> CreateAttributeAsync(
+    public Task<AttributeDto> CreateAttributeAsync(
         Guid companyId,
         CreateAttributeDto createAttributeDto,
         CancellationToken ct
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var category = _mapper.Map<Domain.Entities.Attribute>(createAttributeDto);
-        category.CompanyId = companyId;
-
-        var createdCategory = await _attributeRepository.AddAsync(category, ct);
-        await _attributeRepository.SaveChangesAsync(ct);
-
-        return _mapper.Map<AttributeDto>(createdCategory);
+        return CreateAsync(companyId, createAttributeDto, ct);
     }
 
-    public async Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
+    public Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
         Guid companyId,
         AttributeParameters attributeParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var advancedFilters = _filterBuilder
-            .Build<Domain.Entities.Attribute>(filterNodeDto);
-
-        var listQueryResult = await _attributeRepository.GetAllAsync(
-            companyId,
-            attributeParameters,
-            ct,
-            advancedFilters
-        );
-
-        return new ListResponseModel<AttributeDto>(
-            items: _mapper.Map<IReadOnlyList<AttributeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            attributeParameters
-        );
+       return GetAllAsync(companyId, attributeParameters, ct, filterNodeDto);
     }
 
-    public async Task<AttributeDto> GetAttributeByIdAsync(
+    public Task<AttributeDto> GetAttributeByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        return _mapper.Map<AttributeDto>(attribute);
+        return GetByIdAsync(companyId, id, ct);
     }
 
-    public async Task<AttributeDto> PatchAttributeAsync(
+    public Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
         CancellationToken ct
     )
     {
-        var attribute = await GetByIdOrThrowExceptionAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges: true
-        );
-
-        var patchDto = _mapper.Map<PatchAttributeDto>(attribute);
-        var errors = new List<string>();
-
-        patchAttributeDto.ApplyTo(patchDto, error =>
-        {
-            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
-        });
-
-        if (errors.Count != 0)
-        {
-            throw new InvalidPatchDocumentException(errors);
-        }
-
-        _mapper.Map(patchDto, attribute);
-
-        try
-        {
-            await _attributeRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new DbUpdateBadRequestException(ex.Message);
-        }
-
-        return _mapper.Map<AttributeDto>(attribute);
+        return PatchAsync(companyId, id, patchAttributeDto, ct);
     }
 
-    public async Task<bool> DeleteAttributeAsync(
+    public Task<bool> DeleteAttributeAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        var attribute = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        _attributeRepository.Remove(attribute);
-
-        try
-        {
-            await _attributeRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        when (ex.InnerException is SqlException { Number: 547 })
-        {
-            throw new ForeignKeyViolationException(_localizer["Attribute"].Value);
-        }
-
-        return true;
-    }
-
-    private async Task<Domain.Entities.Attribute> GetByIdOrThrowExceptionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var attribute = await _attributeRepository.GetByIdAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges
-        );
-
-        return attribute ?? throw new NotFoundException(_localizer["Attribute"].Value);
+        return DeleteAsync(companyId, id, ct);
     }
 }
