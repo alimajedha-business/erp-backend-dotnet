@@ -4,28 +4,29 @@ namespace NGErp.HCM.Service.DTOs;
 
 public class OrganizationalStructureTreeNodeDto
 {
-    public Guid ItemId { get; set; }
-    public Guid NodeId { get; set; }
-    public NodeType NodeType { get; set; }
+    public Guid Id { get; set; }
 
-    public string Title { get; set; } = default!; // DepartmentName or PositionTitle
-
+    // public Guid NodeId { get; set; }
     public Guid? ParentItemId { get; set; }
 
-    public List<OrganizationalStructureTreeNodeDto> Children { get; set; }
-        = new();
+    public OrganizationNodeDto Node { get; set; } = null!;
+    public List<OrganizationalStructureTreeNodeDto> Children { get; set; } = [];
 }
 
-public class SaveOrganizationalStructureDto
+public class OrganizationalStructureTreeDto
 {
+    public Guid Id { get; set; }
     public DateOnly EffectiveFrom { get; set; }
     public string? Description { get; set; }
-
-    public List<StructureItemDto> Items { get; set; } = new();
+    public List<OrganizationalStructureTreeNodeDto> Items { get; set; } = [];
 }
 
-public class StructureItemDto
+public record OrganizationNodeDto
 {
-    public Guid NodeId { get; set; }
-    public Guid? ParentNodeId { get; set; }
+    public Guid Id { get; init; }
+    public NodeType NodeType { get; init; }
+    //public Guid? DepartmentId { get; set; }
+    //public Guid? PositionId { get; set; }
+    public DepartmentDto? Department { get; set; }
+    public PositionDto? Position { get; set; }
 }

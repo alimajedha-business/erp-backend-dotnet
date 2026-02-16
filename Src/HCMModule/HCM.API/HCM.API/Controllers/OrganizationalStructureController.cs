@@ -20,7 +20,7 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
         CancellationToken ct
     )
     {
-        var tree = await _organizationalStructureService.GetCurrentTreeAsync(companyId);
+        var tree = await _organizationalStructureService.GetTreeAtDateAsync(companyId, new DateOnly(2026, 2, 14));
         return Ok(tree);
     }
 }

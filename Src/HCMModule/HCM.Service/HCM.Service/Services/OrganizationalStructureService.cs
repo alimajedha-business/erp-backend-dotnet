@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -7,6 +9,8 @@ using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.Resources;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -20,44 +24,126 @@ public class OrganizationalStructureService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
 
-    public Task<Guid> SaveStructureVersionAsync(SaveOrganizationalStructureDto dto)
+    //public Task<Guid> SaveStructureVersionAsync(SaveOrganizationalStructureDto dto)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    public Task<OrganizationalStructureTreeDto> GetCurrentTreeAsync(Guid companyId)
     {
+        //var structure = await _organizationalStructureRepository
+        //    .Find(companyId)
+        //    .Include(s => s.Items!)
+        //        .ThenInclude(i => i.Node)
+        //            .ThenInclude(n => n.Department)
+        //    .Include(s => s.Items!)
+        //        .ThenInclude(i => i.Node)
+        //            .ThenInclude(n => n.Position)
+        //    .OrderByDescending(s => s.EffectiveFrom)
+        //    .FirstOrDefaultAsync();
+
+        //if (structure == null)
+        //{
+        //    return new OrganizationalStructureTreeDto
+        //    {
+        //        Id = Guid.Empty,
+        //        EffectiveFrom = DateOnly.FromDateTime(DateTime.Now),
+        //        Items = []
+        //    };
+        //}
+
+        //var items = structure.Items!.Select(MapToTreeNodeDto).ToList();
+
+        //// Build tree hierarchy
+        //var rootItems = items.Where(x => x.ParentItemId == null).ToList();
+        //var childItems = items.Where(x => x.ParentItemId.HasValue).ToList();
+
+        //// Add children to parents
+        //foreach (var item in rootItems.Concat(childItems))
+        //{
+        //    item.Children = childItems.Where(c => c.ParentItemId == item.Id).ToList();
+        //}
+
+        //return new OrganizationalStructureTreeDto
+        //{
+        //    Id = structure.Id,
+        //    EffectiveFrom = structure.EffectiveFrom,
+        //    Description = structure.Description,
+        //    Items = rootItems
+        //};
         throw new NotImplementedException();
     }
 
-    public Task<List<OrganizationalStructureTreeNodeDto>> GetCurrentTreeAsync(Guid companyId)
+    public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(Guid companyId, DateOnly date)
     {
-        throw new NotImplementedException();
-    }
+        var structure = await _organizationalStructureRepository
+            .Find(companyId, s => s.EffectiveFrom == date)
+            .Include(s => s.Items!)
+                .ThenInclude(i => i.Node)
+                    .ThenInclude(n => n.Department)
+            .Include(s => s.Items!)
+                .ThenInclude(i => i.Node)
+                    .ThenInclude(n => n.Position)
+            .FirstOrDefaultAsync();
 
-    public async Task<List<OrganizationalStructureTreeNodeDto>> GetTreeAtDateAsync(Guid companyId, DateOnly date)
-    {
-        var items = await _organizationalStructureRepository.Find(companyId, x => x.EffectiveFrom == date)
-         .Include(x => x.Items)
-         .ThenInclude(n => n.)
-         .Include(x => x.Node.Position)
-         .Where(x => x.OrganizationalStructureId == structureId)
-         .ToListAsync();
-
-        var lookup = items.ToLookup(x => x.ParentItemId);
-
-        OrganizationalStructureTreeNodeDto Build(Guid? parentId)
+        if (structure == null)
         {
-            var nodes = lookup[parentId];
-
-            return nodes.Select(x => new OrganizationalStructureTreeNodeDto
+            return new OrganizationalStructureTreeDto
             {
-                ItemId = x.Id,
-                NodeId = x.NodeId,
-                NodeType = x.Node.NodeType,
-                Title = x.Node.NodeType == NodeType.Department
-                    ? x.Node.Department!.Name
-                    : x.Node.Position!.Title,
-                ParentItemId = x.ParentItemId,
-                Children = Build(x.Id).Children
-            }).FirstOrDefault()!;
+                Id = Guid.Empty,
+                EffectiveFrom = date,
+                Items = []
+            };
         }
 
-        return Build(null);
+        var items = structure.Items!.Select(MapToTreeNodeDto).ToList();
+
+        // Build tree hierarchy
+        var rootItems = items.Where(x => x.ParentItemId == null).ToList();
+        var childItems = items.Where(x => x.ParentItemId.HasValue).ToList();
+
+        // Add children to parents
+        foreach (var item in rootItems.Concat(childItems))
+        {
+            item.Children = childItems.Where(c => c.ParentItemId == item.Id).ToList();
+        }
+
+        return new OrganizationalStructureTreeDto
+        {
+            Id = structure.Id,
+            EffectiveFrom = structure.EffectiveFrom,
+            Description = structure.Description,
+            Items = rootItems
+        };
+    }
+
+    private OrganizationalStructureTreeNodeDto MapToTreeNodeDto(OrganizationalStructureItem item)
+    {
+        return new OrganizationalStructureTreeNodeDto
+        {
+            Id = item.Id,
+            //NodeId = item.NodeId,
+            ParentItemId = item.ParentItemId,
+            Node = new OrganizationNodeDto
+            {
+                Id = item.Node.Id,
+                NodeType = item.Node.NodeType,
+                //DepartmentId = item.Node.DepartmentId,
+                //PositionId = item.Node.PositionId,
+                Department = item.Node.Department != null ? new DepartmentDto
+                {
+                    Id = item.Node.Department.Id,
+                    Name = item.Node.Department.Name,
+                    Code = item.Node.Department.Code,
+                } : null,
+                Position = item.Node.Position != null ? new PositionDto
+                {
+                    Id = item.Node.Position.Id,
+                    Name = item.Node.Position.Name,
+                    Code = item.Node.Position.Code,
+                } : null
+            },
+            Children = []
+        };
     }
 }
