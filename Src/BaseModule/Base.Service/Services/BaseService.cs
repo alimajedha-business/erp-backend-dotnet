@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel.Design;
+using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -7,55 +8,45 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Entities;
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.Base.Service.Services;
-using NGErp.General.Domain.Entities;
-using NGErp.General.Service.Repository.Contracts;
 
-namespace NGErp.General.Service.Services;
+namespace NGErp.Base.Service.Services;
 
-public abstract class BaseServiceWithCompany<
-    TEntity,
-    TDto,
-    TListDto,
-    TParameters,
-    TRepo,
-    TResource
->(
+public abstract class BaseService<
+        TEntity,
+        TDto,
+        TListDto,
+        TParameters,
+        TRepo,
+        TResource
+    >(
     IAdvancedFilterBuilder filterBuilder,
     TRepo repo,
-    ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
 )
-    where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where TEntity : BaseEntity
+    where TRepo : IRepository<TEntity>
     where TParameters : RequestParameters
 {
     protected readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     protected readonly TRepo _repo = repo;
-    protected readonly ICompanyService _companyService = companyService;
     protected readonly IMapper _mapper = mapper;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
 
     protected abstract string LocalizerKey { get; }
 
-    protected Task EnsureCompanyAsync(Guid companyId, CancellationToken ct) =>
-        _companyService.GetCompanyByIdAsync(companyId, ct);
-
     public virtual async Task<TDto> CreateAsync<TCreateDto>(
-        Guid companyId,
         TCreateDto createDto,
         CancellationToken ct
     )
     {
-        await EnsureCompanyAsync(companyId, ct);
-
         var entity = _mapper.Map<TEntity>(createDto);
-        entity.CompanyId = companyId;
 
         var created = await _repo.AddAsync(entity, ct);
         await _repo.SaveChangesAsync(ct);
@@ -64,18 +55,14 @@ public abstract class BaseServiceWithCompany<
     }
 
     public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
-        Guid companyId,
-        TParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
+       TParameters parameters,
+       CancellationToken ct,
+       FilterNodeDto? filterNodeDto = null
     )
     {
-        await EnsureCompanyAsync(companyId, ct);
-
         var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
 
         var listQueryResult = await _repo.GetAllAsync(
-            companyId,
             parameters,
             ct,
             advancedFilters
@@ -89,19 +76,15 @@ public abstract class BaseServiceWithCompany<
     }
 
     public virtual async Task<ListResponseModel<TListDto>> GetByConditionAsync(
-        Guid companyId,
         TParameters parameters,
         Expression<Func<TEntity, bool>> expression,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await EnsureCompanyAsync(companyId, ct);
-
         var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
 
         var listQueryResult = await _repo.GetByConditionAsync(
-            companyId,
             parameters,
             expression,
             ct,
@@ -115,30 +98,20 @@ public abstract class BaseServiceWithCompany<
         );
     }
 
-    public virtual async Task<TDto> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    )
+    public virtual async Task<TDto> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        await EnsureCompanyAsync(companyId, ct);
-
-        var entity = await GetByIdOrThrowAsync(companyId, id, ct);
+        var entity = await GetByIdOrThrowAsync(id, ct);
         return _mapper.Map<TDto>(entity);
     }
 
     public virtual async Task<TDto> PatchAsync<TPatchDto>(
-        Guid companyId,
         Guid id,
         JsonPatchDocument<TPatchDto> patchDoc,
         CancellationToken ct
     )
         where TPatchDto : class
     {
-        await EnsureCompanyAsync(companyId, ct);
-
         var entity = await GetByIdOrThrowAsync(
-            companyId,
             id,
             ct,
             trackChanges: true
@@ -170,16 +143,12 @@ public abstract class BaseServiceWithCompany<
     }
 
     public virtual async Task<TDto> UpdateAsync<TUpdateDto>(
-        Guid companyId,
         Guid id,
         TUpdateDto updateDto,
         CancellationToken ct
     )
     {
-        await EnsureCompanyAsync(companyId, ct);
-
         var entity = await GetByIdOrThrowAsync(
-            companyId,
             id,
             ct,
             trackChanges: true
@@ -193,14 +162,11 @@ public abstract class BaseServiceWithCompany<
     }
 
     public virtual async Task DeleteAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        await EnsureCompanyAsync(companyId, ct);
-
-        var entity = await GetByIdOrThrowAsync(companyId, id, ct);
+        var entity = await GetByIdOrThrowAsync(id, ct);
         _repo.Remove(entity);
 
         try
@@ -217,18 +183,17 @@ public abstract class BaseServiceWithCompany<
     }
 
     protected virtual async Task<TEntity> GetByIdOrThrowAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct,
         bool trackChanges = false
     )
     {
-        var entity = await _repo.GetByIdAsync(companyId, id, ct, trackChanges);
+        var entity = await _repo.GetByIdAsync(id, ct, trackChanges);
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }
 
-public abstract class BaseServiceWithCompany<
+public abstract class BaseService<
     TEntity,
     TDto,
     TParameters,
@@ -237,10 +202,9 @@ public abstract class BaseServiceWithCompany<
 >(
     IAdvancedFilterBuilder filterBuilder,
     TRepo repo,
-    ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
-) : BaseServiceWithCompany<
+) : BaseService<
         TEntity,
         TDto,
         TDto,
@@ -250,11 +214,10 @@ public abstract class BaseServiceWithCompany<
     >(
         filterBuilder,
         repo,
-        companyService,
         mapper,
         localizer
     )
-    where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where TEntity : BaseEntity
+    where TRepo : IRepository<TEntity>
     where TParameters : RequestParameters
 { }

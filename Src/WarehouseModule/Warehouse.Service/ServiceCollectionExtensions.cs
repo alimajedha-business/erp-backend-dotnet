@@ -32,6 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();

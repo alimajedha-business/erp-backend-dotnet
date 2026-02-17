@@ -21,6 +21,19 @@ public class MappingProfile : Profile
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<PatchCategoryDto, Category>().ReverseMap();
 
+        CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
+        CreateMap<CategoryAttributeRule, CategoryAttributeRuleListDto>()
+            .ForMember(
+                dst => dst.CategoryTitle, 
+                opt => opt.MapFrom(src => src.Category.Title)
+            )
+            .ForMember(
+                dst => dst.AttributeTitle, 
+                opt => opt.MapFrom(src => src.Attribute.Title)
+            );
+        CreateMap<CreateCategoryAttributeRuleDto, CategoryAttributeRule>();
+        CreateMap<PatchCategoryAttributeRuleDto, CategoryAttributeRule>().ReverseMap();
+
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
         CreateMap<PatchItemDto, Item>().ReverseMap();

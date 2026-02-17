@@ -42,10 +42,7 @@ public class AttributeEnumValueService(
         Guid companyId,
         CreateAttributeEnumValueDto createAttributeEnumValueDto,
         CancellationToken ct
-    )
-    {
-        return CreateAsync(companyId, createAttributeEnumValueDto, ct);
-    }
+    ) => CreateAsync(companyId, createAttributeEnumValueDto, ct);
 
     public Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
         Guid companyId,
@@ -53,41 +50,24 @@ public class AttributeEnumValueService(
         AttributeEnumValueParameters attributeEnumValueParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-        return GetAllAsync(
-            companyId,
-            attributeEnumValueParameters,
-            ct,
-            filterNodeDto
-        );
-    }
+    ) => GetAllAsync( companyId, attributeEnumValueParameters, ct, filterNodeDto);
 
     public Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return GetByIdAsync(companyId, id, ct);
-    }
+    ) => GetByIdAsync(companyId, id, ct);
 
     public Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchAttributeEnumValueDto> patchDoc,
         CancellationToken ct
-    )
-    {
-        return PatchAsync(companyId, id, patchDoc, ct);
-    }
+    ) => PatchAsync(companyId, id, patchDoc, ct);
 
     public Task DeleteAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-       return DeleteAsync(companyId, id, ct);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }

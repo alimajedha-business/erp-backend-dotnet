@@ -17,10 +17,14 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
+    ICategoryAttributeRuleService categoryAttributeRuleService,
     IItemService itemService
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
+    private readonly ICategoryAttributeRuleService _categoryAttributeRuleService = 
+        categoryAttributeRuleService;
+
     private readonly IItemService _itemService = itemService;
 
     [HttpPost]
@@ -136,4 +140,110 @@ public class CategoryController(
         await _categoryService.DeleteCategoryAsync(companyId, id, ct);
         return NoContent();
     }
+
+    #region AttributeRules
+
+    [HttpPost("{categoryId:guid}/attribute-rules")]
+    public async Task<IActionResult> CreateAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromBody] CreateCategoryAttributeRuleDto createDto,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .CreateCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                createDto,
+                ct
+            );
+
+        return CreatedAtAction(
+            nameof(GetAttributeRuleById),
+            new { companyId, categoryId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpGet("{categoryId:guid}/attribute-rules")]
+    public async Task<IActionResult> GetAttributeRules(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromQuery] CategoryAttributeRuleParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _categoryAttributeRuleService
+            .GetAllCategoryAttributeRulesAsync(
+                companyId,
+                categoryId,
+                parameters,
+                ct
+            );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
+    public async Task<IActionResult> GetAttributeRuleById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .GetCategoryAttributeRuleByIdAsync(
+                companyId,
+                categoryId,
+                id,
+                ct
+            );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{categoryId:guid}/attribute-rules/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDoc,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .PatchCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                id,
+                patchDoc,
+                ct
+            );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{categoryId:guid}/attribute-rules/{id:guid}")]
+    public async Task<IActionResult> DeleteAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _categoryAttributeRuleService
+            .DeleteCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                id,
+                ct
+            );
+
+        return NoContent();
+    }
+
+    #endregion
 }

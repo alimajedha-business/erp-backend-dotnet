@@ -43,46 +43,33 @@ public class UnitOfMeasurementConversionService(
         Guid companyId,
         CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
         CancellationToken ct
-    )
-    {
-        return CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
-    }
+    ) => CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
 
-    public async Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
+    public Task<
+        ListResponseModel<UnitOfMeasurementConversionListDto>
+    > GetAllUnitOfMeasurementConversionsAsync(
         Guid companyId,
         UnitOfMeasurementConversionParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-        return await GetAllAsync(companyId, parameters, ct, filterNodeDto);
-    }
+    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
     public Task<UnitOfMeasurementConversionDto> GetUnitOfMeasurementConversionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return GetByIdAsync(companyId, id, ct);
-    }
+    ) => GetByIdAsync(companyId, id, ct);
 
     public Task<UnitOfMeasurementConversionDto> PatchUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
         CancellationToken ct
-    )
-    {
-        return PatchAsync(companyId, id, patchDoc, ct);
-    }
+    ) => PatchAsync(companyId, id, patchDoc, ct);
 
     public Task DeleteUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return DeleteAsync(companyId, id, ct);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }

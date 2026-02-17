@@ -43,20 +43,14 @@ public class ItemService(
         Guid companyId,
         CreateItemDto createItemDto,
         CancellationToken ct
-    )
-    {
-        return CreateAsync(companyId, createItemDto, ct);
-    }
+    ) => CreateAsync(companyId, createItemDto, ct);
 
     public Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
         ItemParameters itemParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-        return GetAllAsync(companyId, itemParameters, ct, filterNodeDto);
-    }
+    ) => GetAllAsync(companyId, itemParameters, ct, filterNodeDto);
 
     public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
@@ -91,27 +85,18 @@ public class ItemService(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return GetByIdAsync(companyId, id, ct);
-    }
+    ) => GetByIdAsync(companyId, id, ct);
 
     public Task<ItemDto> PatchItemAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchItemDto> patchItemDto,
         CancellationToken ct
-    )
-    {
-        return PatchAsync(companyId, id, patchItemDto, ct);
-    }
+    ) => PatchAsync(companyId, id, patchItemDto, ct);
 
     public Task DeleteItemAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return DeleteAsync(companyId, id, ct);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }

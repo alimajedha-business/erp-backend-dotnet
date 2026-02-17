@@ -41,46 +41,31 @@ public class AttributeService(
         Guid companyId,
         CreateAttributeDto createAttributeDto,
         CancellationToken ct
-    )
-    {
-        return CreateAsync(companyId, createAttributeDto, ct);
-    }
+    ) => CreateAsync(companyId, createAttributeDto, ct);
 
     public Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
         Guid companyId,
         AttributeParameters attributeParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-       return GetAllAsync(companyId, attributeParameters, ct, filterNodeDto);
-    }
+    ) => GetAllAsync(companyId, attributeParameters, ct, filterNodeDto);
 
     public Task<AttributeDto> GetAttributeByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return GetByIdAsync(companyId, id, ct);
-    }
+    ) => GetByIdAsync(companyId, id, ct);
 
     public Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
         CancellationToken ct
-    )
-    {
-        return PatchAsync(companyId, id, patchAttributeDto, ct);
-    }
+    ) => PatchAsync(companyId, id, patchAttributeDto, ct);
 
     public Task DeleteAttributeAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return DeleteAsync(companyId, id, ct);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }

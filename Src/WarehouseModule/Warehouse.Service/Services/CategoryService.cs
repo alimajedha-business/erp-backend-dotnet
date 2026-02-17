@@ -42,46 +42,31 @@ public class CategoryService(
         Guid companyId,
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
-    )
-    {
-        return CreateAsync(companyId, createCategoryDto, ct);
-    }
+    ) => CreateAsync(companyId, createCategoryDto, ct);
 
     public Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-        return GetAllAsync(companyId, categoryParameters, ct, filterNodeDto);
-    }
+    ) => GetAllAsync(companyId, categoryParameters, ct, filterNodeDto);
 
     public Task<CategoryDto> GetCategoryByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return GetByIdAsync(companyId, id, ct);
-    }
+    ) => GetByIdAsync(companyId, id, ct);
 
     public Task<CategoryDto> PatchCategoryAsync(
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchCategoryDto> patchDoc,
         CancellationToken ct
-    )
-    {
-        return PatchAsync(companyId, id, patchDoc, ct);
-    }
+    ) => PatchAsync(companyId, id, patchDoc, ct);
 
     public Task DeleteCategoryAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        return DeleteAsync(companyId, id, ct);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }
