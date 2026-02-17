@@ -36,52 +36,37 @@ public class UnitOfMeasurementService(
     ),
     IUnitOfMeasurementService
 {
-        protected override string LocalizerKey => "UnitOfMeasurement";
-    
-        public Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
-            Guid companyId,
-            CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
-            CancellationToken ct
-        )
-        {
-            return CreateAsync(companyId, createUnitOfMeasurementDto, ct);
-        }
-    
-        public Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
+    protected override string LocalizerKey => "UnitOfMeasurement";
+
+    public Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
+        Guid companyId,
+        CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
+        CancellationToken ct
+    ) => CreateAsync(companyId, createUnitOfMeasurementDto, ct);
+
+    public Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
             Guid companyId,
             UnitOfMeasurementParameters unitOfMeasurementParameters,
             CancellationToken ct,
             FilterNodeDto? filterNodeDto = null
-        )
-        {
-            return GetAllAsync(companyId, unitOfMeasurementParameters, ct, filterNodeDto);
-        }
-    
-        public Task<UnitOfMeasurementDto> GetUnitOfMeasurementByIdAsync(
-            Guid companyId,
-            Guid id,
-            CancellationToken ct
-        )
-        {
-            return GetByIdAsync(companyId, id, ct);
-        }
-    
-        public Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
-            Guid companyId,
-            Guid id,
-            JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
-            CancellationToken ct
-        )
-        {
-            return PatchAsync(companyId, id, patchDoc, ct);
-        }
-    
-        public Task DeleteUnitOfMeasurementAsync(
-            Guid companyId,
-            Guid id,
-            CancellationToken ct
-        )
-        {
-            return DeleteAsync(companyId, id, ct);
-    }
+        ) => GetAllAsync(companyId, unitOfMeasurementParameters, ct, filterNodeDto);
+
+    public Task<UnitOfMeasurementDto> GetUnitOfMeasurementByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    ) => GetByIdAsync(companyId, id, ct);
+
+    public Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
+        Guid companyId,
+        Guid id,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        CancellationToken ct
+    ) => PatchAsync(companyId, id, patchDoc, ct);
+
+    public Task DeleteUnitOfMeasurementAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    ) => DeleteAsync(companyId, id, ct);
 }
