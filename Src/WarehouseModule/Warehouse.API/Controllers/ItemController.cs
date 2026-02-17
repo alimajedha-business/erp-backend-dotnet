@@ -74,7 +74,7 @@ public class ItemController(
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> Update(
+    public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchItemDto> patchItemDto,
