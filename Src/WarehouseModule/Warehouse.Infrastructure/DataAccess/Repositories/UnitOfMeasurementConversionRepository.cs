@@ -14,15 +14,19 @@ public class UnitOfMeasurementConversionRepository(MainDbContext context) :
     IUnitOfMeasurementConversionRepository
 {
     public override Task<UnitOfMeasurementConversion?> GetByIdAsync(
-    Guid companyId, Guid id, CancellationToken ct, bool trackChanges)
+        Guid companyId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges
+    )
     {
         var query = trackChanges ? _context.Set<UnitOfMeasurementConversion>()
                                  : _context.Set<UnitOfMeasurementConversion>().AsNoTracking();
 
         return query
-            .Where(x => x.CompanyId == companyId && x.Id == id)
-            .Include(x => x.FromUnitOfMeasurement)
-            .Include(x => x.ToUnitOfMeasurement)
+            .Where(e => e.CompanyId == companyId && e.Id == id)
+            .Include(e => e.FromUnitOfMeasurement)
+            .Include(e => e.ToUnitOfMeasurement)
             .FirstOrDefaultAsync(ct);
     }
 
@@ -37,8 +41,8 @@ public class UnitOfMeasurementConversionRepository(MainDbContext context) :
             .Set<UnitOfMeasurementConversion>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .Include(x => x.FromUnitOfMeasurement)
-            .Include(x => x.ToUnitOfMeasurement)
+            .Include(e => e.FromUnitOfMeasurement)
+            .Include(e => e.ToUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
