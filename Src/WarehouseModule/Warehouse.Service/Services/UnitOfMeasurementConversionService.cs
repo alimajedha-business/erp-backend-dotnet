@@ -15,49 +15,50 @@ using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public class CategoryService(
+public class UnitOfMeasurementConversionService(
     IAdvancedFilterBuilder filterBuilder,
-    ICategoryRepository categoryRepository,
+    IUnitOfMeasurementConversionRepository unitOfMeasurementConversionRepository,
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
-        Category,
-        CategoryDto,
-        CategoryParameters,
-        ICategoryRepository,
+        UnitOfMeasurementConversion,
+        UnitOfMeasurementConversionDto,
+        UnitOfMeasurementConversionListDto,
+        UnitOfMeasurementConversionParameters,
+        IUnitOfMeasurementConversionRepository,
         WarehouseResource
     >(
         filterBuilder,
-        categoryRepository,
+        unitOfMeasurementConversionRepository,
         companyService,
         mapper,
         localizer
     ),
-    ICategoryService
+    IUnitOfMeasurementConversionService
 {
-    protected override string LocalizerKey => "Category";
+    protected override string LocalizerKey => "UnitOfMeasurementConversion";
 
-    public Task<CategoryDto> CreateCategoryAsync(
+    public Task<UnitOfMeasurementConversionDto> CreateUnitOfMeasurementConversionAsync(
         Guid companyId,
-        CreateCategoryDto createCategoryDto,
+        CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
         CancellationToken ct
     )
     {
-        return CreateAsync(companyId, createCategoryDto, ct);
+        return CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
     }
 
-    public Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
         Guid companyId,
-        CategoryParameters categoryParameters,
+        UnitOfMeasurementConversionParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
     {
-        return GetAllAsync(companyId, categoryParameters, ct, filterNodeDto);
+        return await GetAllAsync(companyId, parameters, ct, filterNodeDto);
     }
 
-    public Task<CategoryDto> GetCategoryByIdAsync(
+    public Task<UnitOfMeasurementConversionDto> GetUnitOfMeasurementConversionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
@@ -66,17 +67,17 @@ public class CategoryService(
         return GetByIdAsync(companyId, id, ct);
     }
 
-    public Task<CategoryDto> PatchCategoryAsync(
+    public Task<UnitOfMeasurementConversionDto> PatchUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchCategoryDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
         CancellationToken ct
     )
     {
         return PatchAsync(companyId, id, patchDoc, ct);
     }
 
-    public Task DeleteCategoryAsync(
+    public Task DeleteUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

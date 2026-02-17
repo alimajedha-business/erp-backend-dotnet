@@ -24,5 +24,24 @@ public class MappingProfile : Profile
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
         CreateMap<PatchItemDto, Item>().ReverseMap();
+
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementTitleDto>();
+        CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
+        CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();
+
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionDto>();
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionSlimDto>();
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionListDto>()
+            .ForMember(
+                dst => dst.FromUnitOfMeasurementTitle, 
+                opt => opt.MapFrom(src => src.FromUnitOfMeasurement.Title)
+            )
+            .ForMember(
+                dst => dst.ToUnitOfMeasurementTitle, 
+                opt => opt.MapFrom(src => src.ToUnitOfMeasurement.Title)
+            );
+        CreateMap<CreateUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>();
+        CreateMap<PatchUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>().ReverseMap();
     }
 }

@@ -1,8 +1,6 @@
-﻿using NGErp.Base.Service.Repository.Contracts;
+﻿using NGErp.General.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IUnitOfMeasurementRepository : IRepository<UnitOfMeasurement>
-{
-}
+public interface IUnitOfMeasurementRepository : IRepositoryWithCompany<UnitOfMeasurement> { }

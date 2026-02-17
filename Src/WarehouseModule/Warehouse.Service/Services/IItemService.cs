@@ -1,4 +1,6 @@
-﻿using NGErp.Base.Service.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -25,18 +27,18 @@ public interface IItemService
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
-    Task<ItemDto?> GetItemByIdAsync(
+    Task<ItemDto> GetItemByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     );
-    Task<ItemDto> UpdateItemAsync(
+    Task<ItemDto> PatchItemAsync(
         Guid companyId,
         Guid id,
-        PatchItemDto patchItemDto,
+        JsonPatchDocument<PatchItemDto> patchItemDto,
         CancellationToken ct
     );
-    Task<bool> DeleteItemAsync(
+    Task DeleteItemAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
