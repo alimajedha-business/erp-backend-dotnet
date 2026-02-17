@@ -26,6 +26,7 @@ public class CategoryAttributeRuleService(
 ) : BaseService<
         CategoryAttributeRule,
         CategoryAttributeRuleDto,
+        CategoryAttributeRuleSlimDto,
         CategoryAttributeRuleParameters,
         ICategoryAttributeRuleRepository,
         WarehouseResource
@@ -61,7 +62,7 @@ public class CategoryAttributeRuleService(
         return _mapper.Map<CategoryAttributeRuleDto>(created);
     }
 
-    public async Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllCategoryAttributeRulesAsync(
+    public async Task<ListResponseModel<CategoryAttributeRuleSlimDto>> GetAllCategoryAttributeRulesAsync(
         Guid companyId,
         Guid categoryId,
         CategoryAttributeRuleParameters parameters,

@@ -15,7 +15,7 @@ public interface ICategoryAttributeRuleService
         CreateCategoryAttributeRuleDto createDto,
         CancellationToken ct
     );
-    Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllCategoryAttributeRulesAsync(
+    Task<ListResponseModel<CategoryAttributeRuleSlimDto>> GetAllCategoryAttributeRulesAsync(
         Guid companyId,
         Guid categoryId,
         CategoryAttributeRuleParameters parameters,

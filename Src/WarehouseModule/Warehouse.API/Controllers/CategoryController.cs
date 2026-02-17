@@ -166,7 +166,7 @@ public class CategoryController(
         );
     }
 
-    [HttpGet("{categoryId:guid}/attribute-rules")]
+    [HttpGet("{categoryId:guid}/attribute-rules/list")]
     public async Task<IActionResult> GetAttributeRules(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
