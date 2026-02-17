@@ -21,8 +21,40 @@ public class MappingProfile : Profile
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<PatchCategoryDto, Category>().ReverseMap();
 
+        CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
+        CreateMap<CategoryAttributeRule, CategoryAttributeRuleListDto>()
+            .ForMember(
+                dst => dst.CategoryTitle, 
+                opt => opt.MapFrom(src => src.Category.Title)
+            )
+            .ForMember(
+                dst => dst.AttributeTitle, 
+                opt => opt.MapFrom(src => src.Attribute.Title)
+            );
+        CreateMap<CreateCategoryAttributeRuleDto, CategoryAttributeRule>();
+        CreateMap<PatchCategoryAttributeRuleDto, CategoryAttributeRule>().ReverseMap();
+
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
         CreateMap<PatchItemDto, Item>().ReverseMap();
+
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementTitleDto>();
+        CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
+        CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();
+
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionDto>();
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionSlimDto>();
+        CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionListDto>()
+            .ForMember(
+                dst => dst.FromUnitOfMeasurementTitle, 
+                opt => opt.MapFrom(src => src.FromUnitOfMeasurement.Title)
+            )
+            .ForMember(
+                dst => dst.ToUnitOfMeasurementTitle, 
+                opt => opt.MapFrom(src => src.ToUnitOfMeasurement.Title)
+            );
+        CreateMap<CreateUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>();
+        CreateMap<PatchUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>().ReverseMap();
     }
 }

@@ -7,9 +7,24 @@ namespace NGErp.Base.Service.Repository.Contracts;
 
 public interface IRepository<T> where T : class
 {
-    Task<T?> GetByIdAsync(Guid id);
+    Task<T?> GetByIdAsync(
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    );
+    IQueryable<T> GetAll(
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
     Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
+    Task<ListQueryResult<T>> GetByConditionAsync(
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );

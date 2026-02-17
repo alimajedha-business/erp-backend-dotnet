@@ -15,57 +15,56 @@ using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public class AttributeEnumValueService(
+public class UnitOfMeasurementService(
     IAdvancedFilterBuilder filterBuilder,
-    IAttributeEnumValueRepository attributeEnumValueRepository,
+    IUnitOfMeasurementRepository unitOfMeasurementRepository,
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
-        AttributeEnumValue,
-        AttributeEnumValueDto,
-        AttributeEnumValueParameters,
-        IAttributeEnumValueRepository,
+        UnitOfMeasurement,
+        UnitOfMeasurementDto,
+        UnitOfMeasurementParameters,
+        IUnitOfMeasurementRepository,
         WarehouseResource
     >(
         filterBuilder,
-        attributeEnumValueRepository,
+        unitOfMeasurementRepository,
         companyService,
         mapper,
         localizer
     ),
-    IAttributeEnumValueService
+    IUnitOfMeasurementService
 {
-    protected override string LocalizerKey => "AttributeEnumValue";
+    protected override string LocalizerKey => "UnitOfMeasurement";
 
-    public Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
+    public Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
         Guid companyId,
-        CreateAttributeEnumValueDto createAttributeEnumValueDto,
+        CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createAttributeEnumValueDto, ct);
+    ) => CreateAsync(companyId, createUnitOfMeasurementDto, ct);
 
-    public Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
-        Guid companyId,
-        Guid attributeId,
-        AttributeEnumValueParameters attributeEnumValueParameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync( companyId, attributeEnumValueParameters, ct, filterNodeDto);
+    public Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
+            Guid companyId,
+            UnitOfMeasurementParameters unitOfMeasurementParameters,
+            CancellationToken ct,
+            FilterNodeDto? filterNodeDto = null
+        ) => GetAllAsync(companyId, unitOfMeasurementParameters, ct, filterNodeDto);
 
-    public Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
+    public Task<UnitOfMeasurementDto> GetUnitOfMeasurementByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
     ) => GetByIdAsync(companyId, id, ct);
 
-    public Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
+    public Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchAttributeEnumValueDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
         CancellationToken ct
     ) => PatchAsync(companyId, id, patchDoc, ct);
 
-    public Task DeleteAttributeEnumValueAsync(
+    public Task DeleteUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

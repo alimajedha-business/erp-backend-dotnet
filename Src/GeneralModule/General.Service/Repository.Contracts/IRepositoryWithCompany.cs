@@ -16,13 +16,26 @@ public interface IRepositoryWithCompany<T>
         CancellationToken ct,
         bool trackChanges = false
     );
+    IQueryable<T> GetAll(
+        Guid companyId,
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
-   IQueryable<T> Find(
+    Task<ListQueryResult<T>> GetByConditionAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
+    IQueryable<T> Find(
         Guid companyId,
         Expression<Func<T, bool>> predicate,
         IQueryable<T>? baseQuery = null

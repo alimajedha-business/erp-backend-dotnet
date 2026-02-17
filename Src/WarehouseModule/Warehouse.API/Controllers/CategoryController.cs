@@ -17,10 +17,14 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
+    ICategoryAttributeRuleService categoryAttributeRuleService,
     IItemService itemService
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
+    private readonly ICategoryAttributeRuleService _categoryAttributeRuleService = 
+        categoryAttributeRuleService;
+
     private readonly IItemService _itemService = itemService;
 
     [HttpPost]
@@ -28,20 +32,20 @@ public class CategoryController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateCategoryDto createCategoryDto,
+        [FromBody] CreateCategoryDto createDto,
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.CreateCategoryAsync(
+        var dto = await _categoryService.CreateCategoryAsync(
             companyId,
-            createCategoryDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = categoryDto.Id },
-            categoryDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -49,14 +53,14 @@ public class CategoryController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters categoryParameters,
+        [FromQuery] CategoryParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
         var result = await _categoryService.GetAllCategoriesAsync(
             companyId,
-            categoryParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -71,13 +75,13 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var category = await _categoryService.GetCategoryByIdAsync(
+        var dto = await _categoryService.GetCategoryByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("{id:guid}/items/list")]
@@ -85,7 +89,7 @@ public class CategoryController(
     public async Task<IActionResult> GetItems(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromQuery] ItemParameters itemParameters,
+        [FromQuery] ItemParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
@@ -99,7 +103,7 @@ public class CategoryController(
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
             id,
-            itemParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -116,14 +120,14 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var categoryDto = await _categoryService.PatchCategoryAsync(
+        var dto = await _categoryService.PatchCategoryAsync(
             companyId,
             id,
             patchDoc,
             ct
         );
 
-        return Ok(categoryDto);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]
@@ -134,6 +138,112 @@ public class CategoryController(
     )
     {
         await _categoryService.DeleteCategoryAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
+
+    #region AttributeRules
+
+    [HttpPost("{categoryId:guid}/attribute-rules")]
+    public async Task<IActionResult> CreateAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromBody] CreateCategoryAttributeRuleDto createDto,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .CreateCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                createDto,
+                ct
+            );
+
+        return CreatedAtAction(
+            nameof(GetAttributeRuleById),
+            new { companyId, categoryId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpGet("{categoryId:guid}/attribute-rules")]
+    public async Task<IActionResult> GetAttributeRules(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromQuery] CategoryAttributeRuleParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _categoryAttributeRuleService
+            .GetAllCategoryAttributeRulesAsync(
+                companyId,
+                categoryId,
+                parameters,
+                ct
+            );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
+    public async Task<IActionResult> GetAttributeRuleById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .GetCategoryAttributeRuleByIdAsync(
+                companyId,
+                categoryId,
+                id,
+                ct
+            );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{categoryId:guid}/attribute-rules/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDoc,
+        CancellationToken ct
+    )
+    {
+        var dto = await _categoryAttributeRuleService
+            .PatchCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                id,
+                patchDoc,
+                ct
+            );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{categoryId:guid}/attribute-rules/{id:guid}")]
+    public async Task<IActionResult> DeleteAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _categoryAttributeRuleService
+            .DeleteCategoryAttributeRuleAsync(
+                companyId,
+                categoryId,
+                id,
+                ct
+            );
+
+        return NoContent();
+    }
+
+    #endregion
 }

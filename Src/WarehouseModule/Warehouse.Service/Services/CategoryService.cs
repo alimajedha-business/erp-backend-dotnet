@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -24,165 +21,52 @@ public class CategoryService(
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : ICategoryService
+) : BaseServiceWithCompany<
+        Category,
+        CategoryDto,
+        CategoryParameters,
+        ICategoryRepository,
+        WarehouseResource
+    >(
+        filterBuilder,
+        categoryRepository,
+        companyService,
+        mapper,
+        localizer
+    ),
+    ICategoryService
 {
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly ICategoryRepository _categoryRepository = categoryRepository;
-    private readonly ICompanyService _companyService = companyService;
-    private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
+    protected override string LocalizerKey => "Category";
 
-    public async Task<CategoryDto> CreateCategoryAsync(
+    public Task<CategoryDto> CreateCategoryAsync(
         Guid companyId,
         CreateCategoryDto createCategoryDto,
         CancellationToken ct
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
+    ) => CreateAsync(companyId, createCategoryDto, ct);
 
-        var category = _mapper.Map<Category>(createCategoryDto);
-        category.CompanyId = companyId;
-
-        var createdCategory = await _categoryRepository.AddAsync(category, ct);
-        await _categoryRepository.SaveChangesAsync(ct);
-
-        return _mapper.Map<CategoryDto>(createdCategory);
-    }
-
-    public async Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
+    public Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
         CategoryParameters categoryParameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
+    ) => GetAllAsync(companyId, categoryParameters, ct, filterNodeDto);
 
-        var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
-        var listQueryResult = await _categoryRepository.GetAllAsync(
-            companyId,
-            categoryParameters,
-            ct,
-            advancedFilters
-        );
-
-        return new ListResponseModel<CategoryDto>(
-            items: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            categoryParameters
-        );
-    }
-
-    public async Task<CategoryDto> GetCategoryByIdAsync(
+    public Task<CategoryDto> GetCategoryByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
+    ) => GetByIdAsync(companyId, id, ct);
 
-        var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        return _mapper.Map<CategoryDto>(category);
-    }
+    public Task<CategoryDto> PatchCategoryAsync(
+        Guid companyId,
+        Guid id,
+        JsonPatchDocument<PatchCategoryDto> patchDoc,
+        CancellationToken ct
+    ) => PatchAsync(companyId, id, patchDoc, ct);
 
-    public async Task<CategoryDto> PatchCategoryAsync(
-    Guid companyId,
-    Guid id,
-    JsonPatchDocument<PatchCategoryDto> patchDoc,
-    CancellationToken ct
-)
-    {
-        await _companyService.GetCompanyByIdAsync(companyId, ct);
-
-        var category = await GetByIdOrThrowExceptionAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges: true
-        );
-
-        var patchDto = _mapper.Map<PatchCategoryDto>(category);
-        var errors = new List<string>();
-
-        patchDoc.ApplyTo(patchDto, error =>
-        {
-            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
-        });
-
-        if (errors.Count != 0)
-        {
-            throw new InvalidPatchDocumentException(errors);
-        }
-
-        _mapper.Map(patchDto, category);
-
-        try
-        {
-            await _categoryRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new DbUpdateBadRequestException(ex.Message);
-        }
-
-        return _mapper.Map<CategoryDto>(category);
-    }
-
-    public async Task<bool> DeleteCategoryAsync(
+    public Task DeleteCategoryAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var category = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        _categoryRepository.Remove(category);
-
-        try
-        {
-            await _categoryRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        when (ex.InnerException is SqlException { Number: 547 })
-        {
-            throw new ForeignKeyViolationException(_localizer["Category"].Value);
-        }
-
-        return true;
-    }
-
-    private async Task<Category> GetByIdOrThrowExceptionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-    )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-        );
-
-        var category = await _categoryRepository.GetByIdAsync(
-            companyId,
-            id,
-            ct,
-            trackChanges
-        );
-
-        return category ?? throw new NotFoundException(_localizer["Category"].Value);
-    }
+    ) => DeleteAsync(companyId, id, ct);
 }

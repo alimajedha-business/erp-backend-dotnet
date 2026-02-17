@@ -14,27 +14,29 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/items")]
-public class ItemController(
-    IItemService itemService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/uoms")]
+public class UnitOfMeasurementController(
+    IUnitOfMeasurementService unitOfMeasurementService
 ) : ControllerBase
 {
-    private readonly IItemService _itemService = itemService;
+    private readonly IUnitOfMeasurementService _unitOfMeasurementService = 
+        unitOfMeasurementService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateItemDto createDto,
+        [FromBody] CreateUnitOfMeasurementDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _itemService.CreateItemAsync(
-            companyId,
-            createDto,
-            ct
-        );
+        var dto = await _unitOfMeasurementService
+            .CreateUnitOfMeasurementAsync(
+                companyId,
+                createDto,
+                ct
+            );
 
         return CreatedAtAction(
             nameof(GetById),
@@ -47,17 +49,18 @@ public class ItemController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] ItemParameters parameters,
+        [FromQuery] UnitOfMeasurementParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _itemService.GetAllItemsAsync(
-            companyId,
-            parameters,
-            ct,
-            filterNodeDto
-        );
+        var result = await _unitOfMeasurementService
+            .GetAllUnitOfMeasurementsAsync(
+                companyId,
+                parameters,
+                ct,
+                filterNodeDto
+            );
 
         return Ok(result);
     }
@@ -69,24 +72,32 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var dto = await _itemService.GetItemByIdAsync(companyId, id, ct);
+        var dto = await _unitOfMeasurementService
+            .GetUnitOfMeasurementByIdAsync(
+                companyId,
+                id,
+                ct
+            );
+
         return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> Update(
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchItemDto> patchItemDto,
+        [FromBody] JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
         CancellationToken ct
     )
     {
-        var dto = await _itemService.PatchItemAsync(
-            companyId,
-            id,
-            patchItemDto,
-            ct
-        );
+        var dto = await _unitOfMeasurementService
+            .PatchUnitOfMeasurementAsync(
+                companyId,
+                id,
+                patchDoc,
+                ct
+            );
 
         return Ok(dto);
     }
@@ -98,7 +109,13 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        await _itemService.DeleteItemAsync(companyId, id, ct);
+        await _unitOfMeasurementService
+            .DeleteUnitOfMeasurementAsync(
+                companyId,
+                id,
+                ct
+            );
+        
         return NoContent();
     }
 }

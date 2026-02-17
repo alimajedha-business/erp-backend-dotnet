@@ -16,7 +16,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     Repository<T>(context),
     IRepositoryWithCompany<T> where T : BaseEntityWithCompany
 {
-    public virtual async Task<T?> GetByIdAsync(
+    public virtual Task<T?> GetByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct,
@@ -25,9 +25,23 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
 
-        return await query.FirstOrDefaultAsync(
+        return query.FirstOrDefaultAsync(
             e => e.CompanyId == companyId && e.Id == id,
             ct);
+    }
+
+    public virtual IQueryable<T> GetAll(
+        Guid companyId,
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        return _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
     }
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
@@ -41,6 +55,30 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .Set<T>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Where(conditionExpression)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);

@@ -3,6 +3,6 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface ICategoryAttributeRuleRepository : IRepository<CategoryAttributeRule>
-{
-}
+public interface ICategoryAttributeRuleRepository :
+    IRepository<CategoryAttributeRule>
+{ }
