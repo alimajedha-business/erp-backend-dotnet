@@ -11,19 +11,19 @@ public interface IItemService
 {
     Task<ItemDto> CreateItemAsync(
         Guid companyId,
-        CreateItemDto item,
+        CreateItemDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
-        ItemParameters itemParameters,
+        ItemParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
     Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
-        ItemParameters itemParameters,
+        ItemParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -35,7 +35,7 @@ public interface IItemService
     Task<ItemDto> PatchItemAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchItemDto> patchItemDto,
+        JsonPatchDocument<PatchItemDto> patchDoc,
         CancellationToken ct
     );
     Task DeleteItemAsync(

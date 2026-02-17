@@ -11,12 +11,12 @@ public interface ICategoryService
 {
     Task<CategoryDto> CreateCategoryAsync(
         Guid companyId,
-        CreateCategoryDto createCategoryDto,
+        CreateCategoryDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
-        CategoryParameters categoryParameters,
+        CategoryParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );

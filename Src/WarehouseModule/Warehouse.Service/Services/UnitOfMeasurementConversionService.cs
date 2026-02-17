@@ -41,9 +41,9 @@ public class UnitOfMeasurementConversionService(
 
     public Task<UnitOfMeasurementConversionDto> CreateUnitOfMeasurementConversionAsync(
         Guid companyId,
-        CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
+        CreateUnitOfMeasurementConversionDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<
         ListResponseModel<UnitOfMeasurementConversionListDto>

@@ -12,7 +12,7 @@ public interface ICategoryAttributeRuleService
     Task<CategoryAttributeRuleDto> CreateCategoryAttributeRuleAsync(
         Guid companyId,
         Guid categoryId,
-        CreateCategoryAttributeRuleDto createCategoryAttributeRuleDto,
+        CreateCategoryAttributeRuleDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllCategoryAttributeRulesAsync(

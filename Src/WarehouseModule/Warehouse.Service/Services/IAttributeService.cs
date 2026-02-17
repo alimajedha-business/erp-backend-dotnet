@@ -11,12 +11,12 @@ public interface IAttributeService
 {
     Task<AttributeDto> CreateAttributeAsync(
         Guid companyId,
-        CreateAttributeDto createAttributeDto,
+        CreateAttributeDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
         Guid companyId,
-        AttributeParameters attributeParameters,
+        AttributeParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -28,7 +28,7 @@ public interface IAttributeService
     Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
+        JsonPatchDocument<PatchAttributeDto> patchDoc,
         CancellationToken ct
     );
     Task DeleteAttributeAsync(

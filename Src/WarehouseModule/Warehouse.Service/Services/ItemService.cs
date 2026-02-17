@@ -41,21 +41,21 @@ public class ItemService(
 
     public Task<ItemDto> CreateItemAsync(
         Guid companyId,
-        CreateItemDto createItemDto,
+        CreateItemDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createItemDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
         Guid companyId,
-        ItemParameters itemParameters,
+        ItemParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(companyId, itemParameters, ct, filterNodeDto);
+    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
     public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
-        ItemParameters itemParameters,
+        ItemParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
@@ -69,7 +69,7 @@ public class ItemService(
         var listQueryResult = await _itemRepository.GetCategoryAllAsync(
             companyId,
             categoryId,
-            itemParameters,
+            parameters,
             ct,
             advancedFilters
         );
@@ -77,7 +77,7 @@ public class ItemService(
         return new ListResponseModel<ItemDto>(
             items: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
-            itemParameters
+            parameters
         );
     }
 
@@ -90,9 +90,9 @@ public class ItemService(
     public Task<ItemDto> PatchItemAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchItemDto> patchItemDto,
+        JsonPatchDocument<PatchItemDto> patchDoc,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchItemDto, ct);
+    ) => PatchAsync(companyId, id, patchDoc, ct);
 
     public Task DeleteItemAsync(
         Guid companyId,

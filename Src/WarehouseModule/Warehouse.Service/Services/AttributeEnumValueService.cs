@@ -40,17 +40,17 @@ public class AttributeEnumValueService(
 
     public Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
         Guid companyId,
-        CreateAttributeEnumValueDto createAttributeEnumValueDto,
+        CreateAttributeEnumValueDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createAttributeEnumValueDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
         Guid companyId,
         Guid attributeId,
-        AttributeEnumValueParameters attributeEnumValueParameters,
+        AttributeEnumValueParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync( companyId, attributeEnumValueParameters, ct, filterNodeDto);
+    ) => GetAllAsync( companyId, parameters, ct, filterNodeDto);
 
     public Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
         Guid companyId,
