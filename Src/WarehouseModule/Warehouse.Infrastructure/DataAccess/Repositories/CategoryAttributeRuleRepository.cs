@@ -5,9 +5,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class CategoryAttributeRuleRepository :
-    Repository<CategoryAttributeRule>,
+public class CategoryAttributeRuleRepository(MainDbContext context) :
+    Repository<CategoryAttributeRule>(context),
     ICategoryAttributeRuleRepository
-{
-    public CategoryAttributeRuleRepository(MainDbContext context) : base(context) { }
-}
+{ }
