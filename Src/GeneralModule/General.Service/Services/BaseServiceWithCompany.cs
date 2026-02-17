@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
@@ -16,13 +18,13 @@ using NGErp.General.Service.Repository.Contracts;
 namespace NGErp.General.Service.Services;
 
 public abstract class BaseServiceWithCompany<
-        TEntity,
-        TDto,
-        TListDto,
-        TParameters,
-        TRepo,
-        TResource
-    >(
+    TEntity,
+    TDto,
+    TListDto,
+    TParameters,
+    TRepo,
+    TResource
+>(
     IAdvancedFilterBuilder filterBuilder,
     TRepo repo,
     ICompanyService companyService,
@@ -75,6 +77,33 @@ public abstract class BaseServiceWithCompany<
         var listQueryResult = await _repo.GetAllAsync(
             companyId,
             parameters,
+            ct,
+            advancedFilters
+        );
+
+        return new ListResponseModel<TListDto>(
+            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
+    }
+
+    public virtual async Task<ListResponseModel<TListDto>> GetByConditionAsync(
+        Guid companyId,
+        TParameters parameters,
+        Expression<Func<TEntity, bool>> expression,
+        CancellationToken ct,
+        FilterNodeDto? filterNodeDto = null
+    )
+    {
+        await EnsureCompanyAsync(companyId, ct);
+
+        var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
+
+        var listQueryResult = await _repo.GetByConditionAsync(
+            companyId,
+            parameters,
+            expression,
             ct,
             advancedFilters
         );
@@ -211,9 +240,19 @@ public abstract class BaseServiceWithCompany<
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
-)
-    : BaseServiceWithCompany<TEntity, TDto, TDto, TParameters, TRepo, TResource>(
-        filterBuilder, repo, companyService, mapper, localizer
+) : BaseServiceWithCompany<
+        TEntity,
+        TDto,
+        TDto,
+        TParameters,
+        TRepo,
+        TResource
+    >(
+        filterBuilder,
+        repo,
+        companyService,
+        mapper,
+        localizer
     )
     where TEntity : BaseEntityWithCompany
     where TRepo : IRepositoryWithCompany<TEntity>
