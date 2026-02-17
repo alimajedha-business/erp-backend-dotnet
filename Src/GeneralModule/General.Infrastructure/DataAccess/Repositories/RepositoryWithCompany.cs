@@ -30,6 +30,20 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             ct);
     }
 
+    public virtual IQueryable<T> GetAll(
+        Guid companyId,
+        RequestParameters requestParameters,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        return _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
+    }
+
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
@@ -41,6 +55,30 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .Set<T>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Where(conditionExpression)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
