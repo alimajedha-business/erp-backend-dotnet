@@ -164,7 +164,7 @@ public abstract class BaseService<
 
     public virtual async Task<TDto> PatchAsync<TPatchDto>(
         Guid id,
-        JsonPatchDocument<TPatchDto> patchDoc,
+        JsonPatchDocument<TPatchDto> patchDocument,
         CancellationToken ct
     )
         where TPatchDto : class
@@ -178,7 +178,7 @@ public abstract class BaseService<
         var patchDto = _mapper.Map<TPatchDto>(entity);
         var errors = new List<string>();
 
-        patchDoc.ApplyTo(patchDto, error =>
+        patchDocument.ApplyTo(patchDto, error =>
         {
             errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
         });
