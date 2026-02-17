@@ -29,7 +29,7 @@ public interface IAttributeEnumValueService
     Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchAttributeEnumValueDto> patchDoc,
+        JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteAttributeEnumValueAsync(

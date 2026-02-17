@@ -99,12 +99,12 @@ public class CategoryAttributeRuleService(
         Guid companyId,
         Guid categoryId,
         Guid id,
-        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDoc,
+        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
     )
     {
         await EnsureCategoryAsync(companyId, categoryId, ct);
-        return await PatchAsync(id, patchDoc, ct);
+        return await PatchAsync(id, patchDocument, ct);
     }
 
     public async Task DeleteCategoryAttributeRuleAsync(

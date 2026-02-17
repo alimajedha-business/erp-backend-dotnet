@@ -32,7 +32,7 @@ public interface ICategoryAttributeRuleService
         Guid companyId,
         Guid categoryId,
         Guid id,
-        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDoc,
+        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
    );
     Task DeleteCategoryAttributeRuleAsync(

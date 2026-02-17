@@ -90,9 +90,9 @@ public class ItemService(
     public Task<ItemDto> PatchItemAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchItemDto> patchDoc,
+        JsonPatchDocument<PatchItemDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteItemAsync(
         Guid companyId,

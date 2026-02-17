@@ -28,7 +28,7 @@ public interface IAttributeService
     Task<AttributeDto> PatchAttributeAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchAttributeDto> patchDoc,
+        JsonPatchDocument<PatchAttributeDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteAttributeAsync(

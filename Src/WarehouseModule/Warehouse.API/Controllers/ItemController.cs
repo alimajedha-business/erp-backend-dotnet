@@ -77,14 +77,14 @@ public class ItemController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchItemDto> patchItemDto,
+        [FromBody] JsonPatchDocument<PatchItemDto> patchDocument,
         CancellationToken ct
     )
     {
         var dto = await _itemService.PatchItemAsync(
             companyId,
             id,
-            patchItemDto,
+            patchDocument,
             ct
         );
 

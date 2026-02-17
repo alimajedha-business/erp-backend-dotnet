@@ -28,7 +28,7 @@ public interface IUnitOfMeasurementService
     Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteUnitOfMeasurementAsync(

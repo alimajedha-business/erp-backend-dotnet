@@ -60,9 +60,9 @@ public class UnitOfMeasurementService(
     public Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteUnitOfMeasurementAsync(
         Guid companyId,

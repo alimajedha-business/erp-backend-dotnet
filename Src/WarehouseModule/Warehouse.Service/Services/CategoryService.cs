@@ -60,9 +60,9 @@ public class CategoryService(
     public Task<CategoryDto> PatchCategoryAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchCategoryDto> patchDoc,
+        JsonPatchDocument<PatchCategoryDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteCategoryAsync(
         Guid companyId,
