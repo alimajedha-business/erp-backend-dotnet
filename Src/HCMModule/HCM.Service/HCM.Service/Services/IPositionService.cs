@@ -11,12 +11,12 @@ public interface IPositionService
 {
     Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
         Guid companyId,
-        PositionParameters positionParameters,
+        PositionParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
         );
 
-    Task<PositionDto?> GetPositionByIdAsync(
+    Task<PositionDto> GetPositionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
@@ -24,18 +24,18 @@ public interface IPositionService
 
     Task<PositionDto> CreatePositionAsync(
         Guid companyId,
-        CreatePositionDto createDepartmentDto,
+        CreatePositionDto createDto,
         CancellationToken ct
         );
 
     Task<PositionDto> PatchPositionAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchPositionDto> jsonPatch,
+        JsonPatchDocument<PatchPositionDto> patchDocument,
         CancellationToken ct
         );
 
-    Task<bool> DeletePositionAsync(
+    Task DeletePositionAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

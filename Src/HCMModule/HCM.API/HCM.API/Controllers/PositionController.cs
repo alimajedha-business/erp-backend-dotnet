@@ -26,20 +26,20 @@ public class PositionController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreatePositionDto createPositionDto,
+        [FromBody] CreatePositionDto createDto,
         CancellationToken ct
     )
     {
-        var positionDto = await _positionService.CreatePositionAsync(
+        var dto = await _positionService.CreatePositionAsync(
             companyId,
-            createPositionDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = positionDto.Id },
-            positionDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -50,27 +50,27 @@ public class PositionController(
         CancellationToken ct
  )
     {
-        var category = await _positionService.GetPositionByIdAsync(
+        var dto = await _positionService.GetPositionByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] PositionParameters positionParameters,
+        [FromQuery] PositionParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
         )
     {
         var result = await _positionService.GetAllPositionsAsync(
             companyId,
-            positionParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -111,17 +111,17 @@ public class PositionController(
     public async Task<IActionResult> Patch(
     [FromRoute] Guid companyId,
     [FromRoute] Guid id,
-    [FromBody] JsonPatchDocument<PatchPositionDto> patchDoc,
+    [FromBody] JsonPatchDocument<PatchPositionDto> patchDocument,
     CancellationToken ct
 )
     {
-        var categoryDto = await _positionService.PatchPositionAsync(
+        var dto = await _positionService.PatchPositionAsync(
             companyId,
             id,
-            patchDoc,
+            patchDocument,
             ct
         );
 
-        return Ok(categoryDto);
+        return Ok(dto);
     }
 }

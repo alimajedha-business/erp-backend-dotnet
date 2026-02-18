@@ -26,20 +26,20 @@ public class DepartmentController(
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateDepartmentDto createDepartmentDto,
+        [FromBody] CreateDepartmentDto createDto,
         CancellationToken ct
     )
     {
-        var departmentDto = await _departmentService.CreateDepartmentAsync(
+        var dto = await _departmentService.CreateDepartmentAsync(
             companyId,
-            createDepartmentDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = departmentDto.Id },
-            departmentDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -50,27 +50,27 @@ public class DepartmentController(
         CancellationToken ct
  )
     {
-        var category = await _departmentService.GetDepartmentByIdAsync(
+        var dto = await _departmentService.GetDepartmentByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] DepartmentParameters departmentParameters,
+        [FromQuery] DepartmentParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
         )
     {
         var result = await _departmentService.GetAllDepartmentsAsync(
             companyId,
-            departmentParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -111,17 +111,17 @@ public class DepartmentController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
         CancellationToken ct
     )
     {
-        var departmentDto = await _departmentService.PatchDepartmentAsync(
+        var dto = await _departmentService.PatchDepartmentAsync(
             companyId,
             id,
-            patchDoc,
+            patchDocument,
             ct
         );
 
-        return Ok(departmentDto);
+        return Ok(dto);
     }
 }

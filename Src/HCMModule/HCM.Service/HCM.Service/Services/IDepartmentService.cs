@@ -11,12 +11,12 @@ public interface IDepartmentService
 {
     Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
         Guid companyId,
-        DepartmentParameters departmentParameters,
+        DepartmentParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
         );
 
-    Task<DepartmentDto?> GetDepartmentByIdAsync(
+    Task<DepartmentDto> GetDepartmentByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
@@ -24,18 +24,18 @@ public interface IDepartmentService
 
     Task<DepartmentDto> CreateDepartmentAsync(
         Guid companyId,
-        CreateDepartmentDto createDepartmentDto,
+        CreateDepartmentDto createDto,
         CancellationToken ct
         );
 
     Task<DepartmentDto> PatchDepartmentAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchDepartmentDto> jsonPatch,
+        JsonPatchDocument<PatchDepartmentDto> patchDocument,
          CancellationToken ct
         );
 
-    Task<bool> DeleteDepartmentAsync(
+    Task DeleteDepartmentAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Xml.XPath;
 
+using AutoMapper;
+
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +27,23 @@ public class PositionService(
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder,
     ICompanyService companyService
-    ) : IPositionService
+    ) : BaseServiceWithCompany<
+        Position,
+        PositionDto,
+        PositionParameters,
+        IPositionRepository,
+        HCMResource
+        >(
+        filterBuilder,
+        positionRepository,
+        companyService,
+        mapper,
+        localizer
+        ),
+    IPositionService
 {
+    protected override string LocalizerKey => "Position";
     private readonly IPositionRepository _positionRepository = positionRepository;
-    private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer<HCMResource> _localizer = localizer;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly ICompanyService _companyService = companyService;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -38,7 +51,8 @@ public class PositionService(
         bool newStatus,
         CancellationToken ct)
     {
-        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
+        await EnsureCompanyAsync(companyId, ct);
+        var position = await GetByIdOrThrowAsync(companyId, id, ct);
 
         position.ChangeStatus(newStatus, DateTime.UtcNow);
 
@@ -46,139 +60,35 @@ public class PositionService(
         await _positionRepository.SaveChangesAsync(ct);
     }
 
-    public async Task<PositionDto> CreatePositionAsync(
+    public Task<PositionDto> CreatePositionAsync(
         Guid companyId,
-        CreatePositionDto createPositionDto,
+        CreatePositionDto createDto,
         CancellationToken ct
-        )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-            );
+        ) => CreateAsync(companyId, createDto, ct);
 
-        var position = _mapper.Map<Position>(createPositionDto);
-        position.CompanyId = companyId;
-
-        var createdPosition = await _positionRepository.AddAsync(position, ct);
-        await _positionRepository.SaveChangesAsync(ct);
-
-        return _mapper.Map<PositionDto>(createdPosition);
-    }
-
-    public async Task<bool> DeletePositionAsync(
+    public Task DeletePositionAsync(
         Guid companyId,
         Guid id,
-        CancellationToken ct)
-    {
-        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        _positionRepository.Remove(position);
+        CancellationToken ct
+        ) => DeleteAsync(companyId, id, ct);
 
-        try
-        {
-            await _positionRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        when (ex.InnerException is SqlException { Number: 547 })
-        {
-            throw new ForeignKeyViolationException(_localizer["Position"].Value);
-        }
-
-        return true;
-    }
-
-    public async Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
+    public Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
         Guid companyId,
-        PositionParameters positionParameters,
+        PositionParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-        )
+        ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
-    {
-        await _companyService.GetCompanyByIdAsync(
-        companyId,
-        ct
-        );
-
-        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
-        var listQueryResult = await _positionRepository.GetAllAsync(
-          companyId,
-          positionParameters,
-          ct,
-          advancedFilters
-          );
-
-        return new ListResponseModel<PositionDto>(
-            items: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            positionParameters
-        );
-    }
-
-    public async Task<PositionDto?> GetPositionByIdAsync(
+    public Task<PositionDto> GetPositionByIdAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-        )
-    {
-        var position = await GetByIdOrThrowExceptionAsync(companyId, id, ct);
-        return _mapper.Map<PositionDto>(position);
-    }
+        ) => GetByIdAsync(companyId, id, ct);
 
-    public async Task<PositionDto> PatchPositionAsync(
+    public Task<PositionDto> PatchPositionAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchPositionDto> jsonPatch,
+        JsonPatchDocument<PatchPositionDto> patchDocument,
         CancellationToken ct
-        )
-    {
-        var position = await GetByIdOrThrowExceptionAsync(
-           companyId,
-           id,
-           ct,
-           trackChanges: true
-       );
-
-        var patchDto = _mapper.Map<PatchPositionDto>(position);
-        var errors = new List<string>();
-
-        jsonPatch.ApplyTo(patchDto, error =>
-        {
-            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
-        });
-
-        if (errors.Count != 0)
-        {
-            throw new InvalidPatchDocumentException(errors);
-        }
-
-        _mapper.Map(patchDto, position);
-
-        try
-        {
-            await _positionRepository.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new DbUpdateBadRequestException(ex.Message);
-        }
-
-        return _mapper.Map<PositionDto>(position);
-    }
-
-    private async Task<Position> GetByIdOrThrowExceptionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-        )
-    {
-        await _companyService.GetCompanyByIdAsync(
-            companyId,
-            ct
-            );
-
-        var position = await _positionRepository.GetByIdAsync(companyId, id, ct, trackChanges);
-        return position ?? throw new NotFoundException(_localizer["Position"].Value);
-    }
+        ) => PatchAsync(companyId, id, patchDocument, ct);
 }
