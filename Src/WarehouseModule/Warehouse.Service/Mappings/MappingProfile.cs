@@ -10,6 +10,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Domain.Entities.Attribute, AttributeDto>();
+        CreateMap<Domain.Entities.Attribute, AttributeSlimDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();
         CreateMap<PatchAttributeDto, Domain.Entities.Attribute>().ReverseMap();
 
@@ -18,10 +19,12 @@ public class MappingProfile : Profile
         CreateMap<PatchAttributeEnumValueDto, AttributeEnumValue>().ReverseMap();
 
         CreateMap<Category, CategoryDto>();
+        CreateMap<Category, CategorySlimDto>();
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<PatchCategoryDto, Category>().ReverseMap();
 
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
+        CreateMap<CategoryAttributeRule, CategoryAttributeRuleSlimDto>();
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleListDto>()
             .ForMember(
                 dst => dst.CategoryTitle, 

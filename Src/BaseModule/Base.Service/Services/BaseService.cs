@@ -75,6 +75,29 @@ public abstract class BaseService<
         );
     }
 
+    public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
+       TParameters parameters,
+       Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
+       CancellationToken ct,
+       FilterNodeDto? filterNodeDto = null
+    )
+    {
+        var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
+
+        var listQueryResult = await _repo.GetAllAsync(
+            parameters,
+            include,
+            ct,
+            advancedFilters
+        );
+
+        return new ListResponseModel<TListDto>(
+            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
+    }
+
     public virtual async Task<ListResponseModel<TListDto>> GetByConditionAsync(
         TParameters parameters,
         Expression<Func<TEntity, bool>> expression,
@@ -98,15 +121,50 @@ public abstract class BaseService<
         );
     }
 
+    public virtual async Task<ListResponseModel<TListDto>> GetByConditionAsync(
+        TParameters parameters,
+        Expression<Func<TEntity, bool>> expression,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
+        CancellationToken ct,
+        FilterNodeDto? filterNodeDto = null
+    )
+    {
+        var advancedFilters = _filterBuilder.Build<TEntity>(filterNodeDto);
+
+        var listQueryResult = await _repo.GetByConditionAsync(
+            parameters,
+            expression,
+            include,
+            ct,
+            advancedFilters
+        );
+
+        return new ListResponseModel<TListDto>(
+            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
+    }
+
     public virtual async Task<TDto> GetByIdAsync(Guid id, CancellationToken ct)
     {
         var entity = await GetByIdOrThrowAsync(id, ct);
         return _mapper.Map<TDto>(entity);
     }
 
+    public virtual async Task<TDto> GetByIdAsync(
+        Guid id,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
+        CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(id, include, ct);
+        return _mapper.Map<TDto>(entity);
+    }
+
     public virtual async Task<TDto> PatchAsync<TPatchDto>(
         Guid id,
-        JsonPatchDocument<TPatchDto> patchDoc,
+        JsonPatchDocument<TPatchDto> patchDocument,
         CancellationToken ct
     )
         where TPatchDto : class
@@ -120,7 +178,7 @@ public abstract class BaseService<
         var patchDto = _mapper.Map<TPatchDto>(entity);
         var errors = new List<string>();
 
-        patchDoc.ApplyTo(patchDto, error =>
+        patchDocument.ApplyTo(patchDto, error =>
         {
             errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
         });
@@ -189,6 +247,17 @@ public abstract class BaseService<
     )
     {
         var entity = await _repo.GetByIdAsync(id, ct, trackChanges);
+        return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
+    }
+
+    protected virtual async Task<TEntity> GetByIdOrThrowAsync(
+        Guid id,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
+    {
+        var entity = await _repo.GetByIdAsync(id, include, ct, trackChanges);
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }

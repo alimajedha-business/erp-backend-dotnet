@@ -11,12 +11,12 @@ public interface ICategoryService
 {
     Task<CategoryDto> CreateCategoryAsync(
         Guid companyId,
-        CreateCategoryDto createCategoryDto,
+        CreateCategoryDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
-        CategoryParameters categoryParameters,
+        CategoryParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -28,7 +28,7 @@ public interface ICategoryService
     Task<CategoryDto> PatchCategoryAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchCategoryDto> patchDoc,
+        JsonPatchDocument<PatchCategoryDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteCategoryAsync(

@@ -40,16 +40,16 @@ public class CategoryService(
 
     public Task<CategoryDto> CreateCategoryAsync(
         Guid companyId,
-        CreateCategoryDto createCategoryDto,
+        CreateCategoryDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createCategoryDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<ListResponseModel<CategoryDto>> GetAllCategoriesAsync(
         Guid companyId,
-        CategoryParameters categoryParameters,
+        CategoryParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(companyId, categoryParameters, ct, filterNodeDto);
+    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
     public Task<CategoryDto> GetCategoryByIdAsync(
         Guid companyId,
@@ -60,9 +60,9 @@ public class CategoryService(
     public Task<CategoryDto> PatchCategoryAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchCategoryDto> patchDoc,
+        JsonPatchDocument<PatchCategoryDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteCategoryAsync(
         Guid companyId,

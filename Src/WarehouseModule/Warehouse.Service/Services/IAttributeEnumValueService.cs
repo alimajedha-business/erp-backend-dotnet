@@ -11,13 +11,13 @@ public interface IAttributeEnumValueService
 {
     Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
         Guid companyId,
-        CreateAttributeEnumValueDto createAttributeEnumValueDto,
+        CreateAttributeEnumValueDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
         Guid companyId,
         Guid attributeId,
-        AttributeEnumValueParameters attributeEnumValueParameters,
+        AttributeEnumValueParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -29,7 +29,7 @@ public interface IAttributeEnumValueService
     Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchAttributeEnumValueDto> patchAttributeEnumValueDto,
+        JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteAttributeEnumValueAsync(

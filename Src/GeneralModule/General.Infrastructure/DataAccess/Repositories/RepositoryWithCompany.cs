@@ -24,6 +24,21 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return query.FirstOrDefaultAsync(
+            e => e.CompanyId == companyId && e.Id == id,
+            ct);
+    }
+
+    public virtual Task<T?> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        query = include(query);
 
         return query.FirstOrDefaultAsync(
             e => e.CompanyId == companyId && e.Id == id,
@@ -66,6 +81,31 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
         return new ListQueryResult<T>(items, totalCount);
     }
 
+    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
+
+        query = include(query);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
     public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
         Guid companyId,
         RequestParameters requestParameters,
@@ -80,6 +120,33 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Where(conditionExpression)
             .Filter(requestAdvancedFilters);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Where(conditionExpression)
+            .Filter(requestAdvancedFilters);
+
+        query = include(query);
 
         var totalCount = await query.CountAsync(ct);
         var items = await query

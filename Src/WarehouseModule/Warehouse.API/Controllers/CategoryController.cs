@@ -116,14 +116,14 @@ public class CategoryController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchCategoryDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchCategoryDto> patchDocument,
         CancellationToken ct
     )
     {
         var dto = await _categoryService.PatchCategoryAsync(
             companyId,
             id,
-            patchDoc,
+            patchDocument,
             ct
         );
 
@@ -166,7 +166,7 @@ public class CategoryController(
         );
     }
 
-    [HttpGet("{categoryId:guid}/attribute-rules")]
+    [HttpGet("{categoryId:guid}/attribute-rules/list")]
     public async Task<IActionResult> GetAttributeRules(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
@@ -210,7 +210,7 @@ public class CategoryController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
     )
     {
@@ -219,7 +219,7 @@ public class CategoryController(
                 companyId,
                 categoryId,
                 id,
-                patchDoc,
+                patchDocument,
                 ct
             );
 

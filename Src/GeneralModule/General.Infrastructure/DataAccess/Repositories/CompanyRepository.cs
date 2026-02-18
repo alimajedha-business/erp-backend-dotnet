@@ -8,5 +8,4 @@ namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 public class CompanyRepository(MainDbContext context) :
     Repository<Company>(context),
     ICompanyRepository
-{
-}
+{ }

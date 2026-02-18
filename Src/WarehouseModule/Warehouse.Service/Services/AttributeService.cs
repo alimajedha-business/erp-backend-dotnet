@@ -39,16 +39,16 @@ public class AttributeService(
 
     public Task<AttributeDto> CreateAttributeAsync(
         Guid companyId,
-        CreateAttributeDto createAttributeDto,
+        CreateAttributeDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createAttributeDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
         Guid companyId,
-        AttributeParameters attributeParameters,
+        AttributeParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(companyId, attributeParameters, ct, filterNodeDto);
+    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
     public Task<AttributeDto> GetAttributeByIdAsync(
         Guid companyId,

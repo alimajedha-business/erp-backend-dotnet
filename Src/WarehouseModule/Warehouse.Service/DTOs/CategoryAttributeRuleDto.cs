@@ -10,6 +10,15 @@ public record CategoryAttributeRuleDto(
     AttributeDto Attribute
 );
 
+public record CategoryAttributeRuleSlimDto(
+    Guid Id,
+    bool IsItemAttribute,
+    bool IsRequired,
+    bool IsStockDimension,
+    CategorySlimDto Category,
+    AttributeSlimDto Attribute
+);
+
 // List endpoints → Flat DTO
 public record CategoryAttributeRuleListDto(
     Guid Id,

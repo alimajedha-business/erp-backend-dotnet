@@ -40,16 +40,16 @@ public class UnitOfMeasurementService(
 
     public Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
         Guid companyId,
-        CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
+        CreateUnitOfMeasurementDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createUnitOfMeasurementDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
             Guid companyId,
-            UnitOfMeasurementParameters unitOfMeasurementParameters,
+            UnitOfMeasurementParameters parameters,
             CancellationToken ct,
             FilterNodeDto? filterNodeDto = null
-        ) => GetAllAsync(companyId, unitOfMeasurementParameters, ct, filterNodeDto);
+        ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
 
     public Task<UnitOfMeasurementDto> GetUnitOfMeasurementByIdAsync(
         Guid companyId,
@@ -60,9 +60,9 @@ public class UnitOfMeasurementService(
     public Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteUnitOfMeasurementAsync(
         Guid companyId,

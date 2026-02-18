@@ -87,7 +87,7 @@ public class UnitOfMeasurementConversionController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDocument,
         CancellationToken ct
     )
     {
@@ -95,7 +95,7 @@ public class UnitOfMeasurementConversionController(
             .PatchUnitOfMeasurementConversionAsync(
                 companyId,
                 id,
-                patchDoc,
+                patchDocument,
                 ct
             );
 

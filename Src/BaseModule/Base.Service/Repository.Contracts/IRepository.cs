@@ -12,6 +12,12 @@ public interface IRepository<T> where T : class
         CancellationToken ct,
         bool trackChanges = false
     );
+    Task<T?> GetByIdAsync(
+        Guid id,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        bool trackChanges = false
+    );
     IQueryable<T> GetAll(
         RequestParameters requestParameters,
         CancellationToken ct,
@@ -22,9 +28,22 @@ public interface IRepository<T> where T : class
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
+    Task<ListQueryResult<T>> GetAllAsync(
+        RequestParameters requestParameters,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
     Task<ListQueryResult<T>> GetByConditionAsync(
         RequestParameters requestParameters,
         Expression<Func<T, bool>> conditionExpression,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
+    Task<ListQueryResult<T>> GetByConditionAsync(
+        RequestParameters requestParameters,
+        Expression<Func<T, bool>> conditionExpression,
+        Func<IQueryable<T>, IQueryable<T>> include,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
