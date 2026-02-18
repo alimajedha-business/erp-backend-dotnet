@@ -4,5 +4,5 @@ namespace NGErp.General.Service.Services;
 
 public interface ICompanyService
 {
-    Task<CompanyDto> GetCompanyByIdAsync(Guid companyId, CancellationToken ct);
+    Task<CompanyDto> GetByIdAsync(Guid companyId, CancellationToken ct);
 }

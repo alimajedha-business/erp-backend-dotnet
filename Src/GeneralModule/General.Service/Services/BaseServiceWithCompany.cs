@@ -51,7 +51,7 @@ public abstract class BaseServiceWithCompany<
     protected abstract string LocalizerKey { get; }
 
     protected Task EnsureCompanyAsync(Guid companyId, CancellationToken ct) =>
-        _companyService.GetCompanyByIdAsync(companyId, ct);
+        _companyService.GetByIdAsync(companyId, ct);
 
     public virtual async Task<TDto> CreateAsync<TCreateDto>(
         Guid companyId,
