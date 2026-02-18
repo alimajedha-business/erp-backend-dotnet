@@ -30,7 +30,14 @@ public abstract class BaseServiceWithCompany<
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
-)
+) : IBaseServiceWithCompany<
+        TEntity,
+        TDto,
+        TListDto,
+        TParameters,
+        TRepo,
+        TResource
+    >
     where TEntity : BaseEntityWithCompany
     where TRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
@@ -334,7 +341,14 @@ public abstract class BaseServiceWithCompany<
         companyService,
         mapper,
         localizer
-    )
+    ),
+    IBaseServiceWithCompany<
+        TEntity,
+        TDto,
+        TParameters,
+        TRepo,
+        TResource
+    >
     where TEntity : BaseEntityWithCompany
     where TRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
