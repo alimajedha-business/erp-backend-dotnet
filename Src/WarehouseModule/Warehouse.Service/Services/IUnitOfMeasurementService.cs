@@ -1,39 +1,17 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
+﻿using NGErp.General.Service.Services;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public interface IUnitOfMeasurementService
-{
-    Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
-        Guid companyId,
-        CreateUnitOfMeasurementDto createDto,
-        CancellationToken ct
-    );
-    Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
-        Guid companyId,
-        UnitOfMeasurementParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    );
-    Task<UnitOfMeasurementDto> GetUnitOfMeasurementByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    );
-    Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
-        CancellationToken ct
-    );
-    Task DeleteUnitOfMeasurementAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    );
-}
+public interface IUnitOfMeasurementService : IBaseServiceWithCompany<
+    UnitOfMeasurement,
+    UnitOfMeasurementDto,
+    UnitOfMeasurementParameters,
+    IUnitOfMeasurementRepository,
+    WarehouseResource
+>
+{ }
