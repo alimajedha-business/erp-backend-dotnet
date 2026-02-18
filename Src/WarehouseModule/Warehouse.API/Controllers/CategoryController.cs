@@ -9,8 +9,6 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
-using static System.Net.WebRequestMethods;
-
 namespace NGErp.Warehouse.API.Controllers;
 
 [ApiController]
@@ -146,7 +144,7 @@ public class CategoryController(
     #region AttributeRules
 
     [HttpPost("{categoryId:guid}/attribute-rules")]
-    public async Task<IActionResult> CreateAttributeRule(
+    public async Task<IActionResult> CreateCategoryAttributeRule(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromBody] CreateCategoryAttributeRuleDto createDto,
@@ -161,14 +159,14 @@ public class CategoryController(
         );
 
         return CreatedAtAction(
-            nameof(GetAttributeRuleById),
+            nameof(GetCategoryAttributeRuleById),
             new { companyId, categoryId, id = dto.Id },
             dto
         );
     }
 
     [HttpGet("{categoryId:guid}/attribute-rules/list")]
-    public async Task<IActionResult> GetAttributeRules(
+    public async Task<IActionResult> GetCategoryAttributeRules(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromQuery] CategoryAttributeRuleParameters parameters,
@@ -186,7 +184,7 @@ public class CategoryController(
     }
 
     [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
-    public async Task<IActionResult> GetAttributeRuleById(
+    public async Task<IActionResult> GetCategoryAttributeRuleById(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
@@ -204,7 +202,7 @@ public class CategoryController(
 
     [HttpPatch("{categoryId:guid}/attribute-rules/{id:guid}")]
     [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> PatchAttributeRule(
+    public async Task<IActionResult> PatchCategoryAttributeRule(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
@@ -223,7 +221,7 @@ public class CategoryController(
     }
 
     [HttpDelete("{categoryId:guid}/attribute-rules/{id:guid}")]
-    public async Task<IActionResult> DeleteAttributeRule(
+    public async Task<IActionResult> DeleteCategoryAttributeRule(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
