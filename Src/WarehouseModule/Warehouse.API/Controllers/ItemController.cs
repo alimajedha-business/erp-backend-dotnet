@@ -30,7 +30,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var dto = await _itemService.CreateItemAsync(
+        var dto = await _itemService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -52,7 +52,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var result = await _itemService.GetAllItemsAsync(
+        var result = await _itemService.GetAllAsync(
             companyId,
             parameters,
             ct,
@@ -69,7 +69,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var dto = await _itemService.GetItemByIdAsync(companyId, id, ct);
+        var dto = await _itemService.GetByIdAsync(companyId, id, ct);
         return Ok(dto);
     }
 
@@ -81,7 +81,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var dto = await _itemService.PatchItemAsync(
+        var dto = await _itemService.PatchAsync(
             companyId,
             id,
             patchDocument,
@@ -98,7 +98,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        await _itemService.DeleteItemAsync(companyId, id, ct);
+        await _itemService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 }

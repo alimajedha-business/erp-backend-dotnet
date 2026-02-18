@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.DTOs;
@@ -39,19 +38,6 @@ public class ItemService(
     protected override string LocalizerKey => "Item";
     private readonly IItemRepository _itemRepository = itemRepository;
 
-    public Task<ItemDto> CreateItemAsync(
-        Guid companyId,
-        CreateItemDto createDto,
-        CancellationToken ct
-    ) => CreateAsync(companyId, createDto, ct);
-
-    public Task<ListResponseModel<ItemDto>> GetAllItemsAsync(
-        Guid companyId,
-        ItemParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
-
     public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
@@ -80,23 +66,4 @@ public class ItemService(
             parameters
         );
     }
-
-    public Task<ItemDto> GetItemByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    ) => GetByIdAsync(companyId, id, ct);
-
-    public Task<ItemDto> PatchItemAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchItemDto> patchDocument,
-        CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDocument, ct);
-
-    public Task DeleteItemAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    ) => DeleteAsync(companyId, id, ct);
 }

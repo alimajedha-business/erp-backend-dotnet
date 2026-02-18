@@ -29,7 +29,14 @@ public abstract class BaseService<
     TRepo repo,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
-)
+) : IBaseService<
+        TEntity,
+        TDto,
+        TListDto,
+        TParameters,
+        TRepo,
+        TResource
+    >
     where TEntity : BaseEntity
     where TRepo : IRepository<TEntity>
     where TParameters : RequestParameters
@@ -285,7 +292,14 @@ public abstract class BaseService<
         repo,
         mapper,
         localizer
-    )
+    ),
+    IBaseService<
+        TEntity,
+        TDto,
+        TParameters,
+        TRepo,
+        TResource
+    >
     where TEntity : BaseEntity
     where TRepo : IRepository<TEntity>
     where TParameters : RequestParameters

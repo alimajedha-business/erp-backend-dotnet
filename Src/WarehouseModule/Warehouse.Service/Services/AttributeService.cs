@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
@@ -36,36 +33,4 @@ public class AttributeService(
     IAttributeService
 {
     protected override string LocalizerKey => "Attribute";
-
-    public Task<AttributeDto> CreateAttributeAsync(
-        Guid companyId,
-        CreateAttributeDto createDto,
-        CancellationToken ct
-    ) => CreateAsync(companyId, createDto, ct);
-
-    public Task<ListResponseModel<AttributeDto>> GetAllAttributesAsync(
-        Guid companyId,
-        AttributeParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
-
-    public Task<AttributeDto> GetAttributeByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    ) => GetByIdAsync(companyId, id, ct);
-
-    public Task<AttributeDto> PatchAttributeAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchAttributeDto> patchAttributeDto,
-        CancellationToken ct
-    ) => PatchAsync(companyId, id, patchAttributeDto, ct);
-
-    public Task DeleteAttributeAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    ) => DeleteAsync(companyId, id, ct);
 }
