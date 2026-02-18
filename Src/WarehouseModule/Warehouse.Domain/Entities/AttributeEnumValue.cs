@@ -2,17 +2,16 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class AttributeEnumValue :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<AttributeEnumValue>
 {
     public string Code { get; private set; } = default!;
     public string Label { get; private set; } = default!;
-    public Guid AttributeId { get; private set; }
+    public Guid AttributeId { get; set; }
 
     public required Attribute Attribute { get; set; }
 

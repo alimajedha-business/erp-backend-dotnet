@@ -50,10 +50,13 @@ public abstract class BaseService<
 
     public virtual async Task<TDto> CreateAsync<TCreateDto>(
         TCreateDto createDto,
-        CancellationToken ct
+        CancellationToken ct,
+        Action<TEntity>? configureEntity = null
     )
     {
         var entity = _mapper.Map<TEntity>(createDto);
+
+        configureEntity?.Invoke(entity);
 
         var created = await _repo.AddAsync(entity, ct);
         await _repo.SaveChangesAsync(ct);

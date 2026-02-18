@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 
@@ -15,6 +17,11 @@ public class MappingProfile : Profile
         CreateMap<PatchAttributeDto, Domain.Entities.Attribute>().ReverseMap();
 
         CreateMap<AttributeEnumValue, AttributeEnumValueDto>();
+        CreateMap<AttributeEnumValue, AttributeEnumValueListDto>()
+            .ForMember(
+                dst => dst.AttributeTitle,
+                opt => opt.MapFrom(src => src.Attribute.Title)
+            );
         CreateMap<CreateAttributeEnumValueDto, AttributeEnumValue>();
         CreateMap<PatchAttributeEnumValueDto, AttributeEnumValue>().ReverseMap();
 

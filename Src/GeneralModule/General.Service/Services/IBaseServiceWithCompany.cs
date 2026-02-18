@@ -24,7 +24,8 @@ public interface IBaseServiceWithCompany<
     Task<TDto> CreateAsync<TCreateDto>(
         Guid companyId,
         TCreateDto createDto,
-        CancellationToken ct
+        CancellationToken ct,
+        Action<TEntity>? configureEntity = null
     );
 
     Task<ListResponseModel<TListDto>> GetAllAsync(

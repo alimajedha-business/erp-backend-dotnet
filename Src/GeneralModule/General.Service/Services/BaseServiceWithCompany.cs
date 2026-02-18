@@ -56,13 +56,16 @@ public abstract class BaseServiceWithCompany<
     public virtual async Task<TDto> CreateAsync<TCreateDto>(
         Guid companyId,
         TCreateDto createDto,
-        CancellationToken ct
+        CancellationToken ct,
+        Action<TEntity>? configureEntity = null
     )
     {
         await EnsureCompanyAsync(companyId, ct);
 
         var entity = _mapper.Map<TEntity>(createDto);
         entity.CompanyId = companyId;
+
+        configureEntity?.Invoke(entity);
 
         var created = await _repo.AddAsync(entity, ct);
         await _repo.SaveChangesAsync(ct);

@@ -4,6 +4,13 @@ public record AttributeEnumValueDto(
     Guid Id,
     string Code,
     string Label,
+    AttributeDto Attribute
+);
+
+public record AttributeEnumValueListDto(
+    Guid Id,
+    string Code,
+    string Label,
     string AttributeTitle
 );
 
