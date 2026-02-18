@@ -6,7 +6,8 @@ public interface IOrganizationalStructureService
 {
     Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(
         Guid companyId,
-        DateOnly date
+        DateOnly date,
+        CancellationToken ct
         );
 
     Task<OrganizationalStructureTreeDto> GetCurrentTreeAsync(

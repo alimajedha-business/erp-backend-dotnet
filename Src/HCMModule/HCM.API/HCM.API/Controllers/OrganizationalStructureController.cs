@@ -14,13 +14,14 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
 {
     private readonly IOrganizationalStructureService _organizationalStructureService = organizationalStructureService;
 
-    [HttpGet("current")]
-    public async Task<IActionResult> GetCurrentTree(
+    [HttpGet("tree")]
+    public async Task<IActionResult> GetTreeAtDate(
         [FromRoute] Guid companyId,
+        [FromQuery] DateOnly date,
         CancellationToken ct
     )
     {
-        var tree = await _organizationalStructureService.GetTreeAtDateAsync(companyId, new DateOnly(2026, 2, 14));
+        var tree = await _organizationalStructureService.GetTreeAtDateAsync(companyId, date, ct);
         return Ok(tree);
     }
 }
