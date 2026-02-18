@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class AttributeEnumValue :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<AttributeEnumValue>
 {
     public string Code { get; private set; } = default!;
