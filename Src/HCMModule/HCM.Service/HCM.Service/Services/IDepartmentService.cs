@@ -2,45 +2,23 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Service.Services;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IDepartmentService
+public interface IDepartmentService : IBaseServiceWithCompany<
+   Department,
+   DepartmentDto,
+   DepartmentParameters,
+   IDepartmentRepository,
+   HCMResource
+    >
 {
-    Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
-        Guid companyId,
-        DepartmentParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-        );
-
-    Task<DepartmentDto> GetDepartmentByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        );
-
-    Task<DepartmentDto> CreateDepartmentAsync(
-        Guid companyId,
-        CreateDepartmentDto createDto,
-        CancellationToken ct
-        );
-
-    Task<DepartmentDto> PatchDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchDepartmentDto> patchDocument,
-         CancellationToken ct
-        );
-
-    Task DeleteDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        );
-
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,

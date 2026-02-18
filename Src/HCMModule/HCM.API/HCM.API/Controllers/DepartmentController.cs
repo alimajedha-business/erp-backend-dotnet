@@ -30,7 +30,7 @@ public class DepartmentController(
         CancellationToken ct
     )
     {
-        var dto = await _departmentService.CreateDepartmentAsync(
+        var dto = await _departmentService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -50,7 +50,7 @@ public class DepartmentController(
         CancellationToken ct
  )
     {
-        var dto = await _departmentService.GetDepartmentByIdAsync(
+        var dto = await _departmentService.GetByIdAsync(
             companyId,
             id,
             ct
@@ -68,7 +68,7 @@ public class DepartmentController(
         CancellationToken ct
         )
     {
-        var result = await _departmentService.GetAllDepartmentsAsync(
+        var result = await _departmentService.GetAllAsync(
             companyId,
             parameters,
             ct,
@@ -85,7 +85,7 @@ public class DepartmentController(
         CancellationToken ct
         )
     {
-        await _departmentService.DeleteDepartmentAsync(companyId, id, ct);
+        await _departmentService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -115,7 +115,7 @@ public class DepartmentController(
         CancellationToken ct
     )
     {
-        var dto = await _departmentService.PatchDepartmentAsync(
+        var dto = await _departmentService.PatchAsync(
             companyId,
             id,
             patchDocument,

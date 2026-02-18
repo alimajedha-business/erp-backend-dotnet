@@ -30,7 +30,7 @@ public class PositionController(
         CancellationToken ct
     )
     {
-        var dto = await _positionService.CreatePositionAsync(
+        var dto = await _positionService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -50,7 +50,7 @@ public class PositionController(
         CancellationToken ct
  )
     {
-        var dto = await _positionService.GetPositionByIdAsync(
+        var dto = await _positionService.GetByIdAsync(
             companyId,
             id,
             ct
@@ -68,7 +68,7 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        var result = await _positionService.GetAllPositionsAsync(
+        var result = await _positionService.GetAllAsync(
             companyId,
             parameters,
             ct,
@@ -85,7 +85,7 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        await _positionService.DeletePositionAsync(companyId, id, ct);
+        await _positionService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -115,7 +115,7 @@ public class PositionController(
     CancellationToken ct
 )
     {
-        var dto = await _positionService.PatchPositionAsync(
+        var dto = await _positionService.PatchAsync(
             companyId,
             id,
             patchDocument,

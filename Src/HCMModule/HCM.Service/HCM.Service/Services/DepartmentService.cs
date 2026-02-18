@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -40,7 +34,6 @@ public class DepartmentService(
     IDepartmentService
 {
     protected override string LocalizerKey => "Department";
-    private readonly IDepartmentRepository _departmentRepository = departmentRepository;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -53,39 +46,7 @@ public class DepartmentService(
 
         department.ChangeStatus(newStatus, DateTime.UtcNow);
 
-        _departmentRepository.Update(department);
-        await _departmentRepository.SaveChangesAsync(ct);
+        _repo.Update(department);
+        await _repo.SaveChangesAsync(ct);
     }
-
-    public Task<DepartmentDto> CreateDepartmentAsync(
-        Guid companyId,
-        CreateDepartmentDto createDto,
-        CancellationToken ct
-        ) => CreateAsync(companyId, createDto, ct);
-
-    public Task DeleteDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        ) => DeleteAsync(companyId, id, ct);
-
-    public Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
-        Guid companyId,
-        DepartmentParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-        ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
-
-    public Task<DepartmentDto> GetDepartmentByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        ) => GetByIdAsync(companyId, id, ct);
-
-    public Task<DepartmentDto> PatchDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchDepartmentDto> patchDocument,
-        CancellationToken ct
-        ) => PatchAsync(companyId, id, patchDocument, ct);
 }

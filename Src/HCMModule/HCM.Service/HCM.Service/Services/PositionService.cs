@@ -1,14 +1,10 @@
-﻿using System.Xml.XPath;
+﻿using System.Linq.Expressions;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -43,7 +39,6 @@ public class PositionService(
     IPositionService
 {
     protected override string LocalizerKey => "Position";
-    private readonly IPositionRepository _positionRepository = positionRepository;
 
     public async Task ChangeStatusAsync(
         Guid companyId,
@@ -56,39 +51,7 @@ public class PositionService(
 
         position.ChangeStatus(newStatus, DateTime.UtcNow);
 
-        _positionRepository.Update(position);
-        await _positionRepository.SaveChangesAsync(ct);
+        _repo.Update(position);
+        await _repo.SaveChangesAsync(ct);
     }
-
-    public Task<PositionDto> CreatePositionAsync(
-        Guid companyId,
-        CreatePositionDto createDto,
-        CancellationToken ct
-        ) => CreateAsync(companyId, createDto, ct);
-
-    public Task DeletePositionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        ) => DeleteAsync(companyId, id, ct);
-
-    public Task<ListResponseModel<PositionDto>> GetAllPositionsAsync(
-        Guid companyId,
-        PositionParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-        ) => GetAllAsync(companyId, parameters, ct, filterNodeDto);
-
-    public Task<PositionDto> GetPositionByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        ) => GetByIdAsync(companyId, id, ct);
-
-    public Task<PositionDto> PatchPositionAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchPositionDto> patchDocument,
-        CancellationToken ct
-        ) => PatchAsync(companyId, id, patchDocument, ct);
 }
