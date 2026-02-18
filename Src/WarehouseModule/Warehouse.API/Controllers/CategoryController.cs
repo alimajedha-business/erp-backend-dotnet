@@ -192,11 +192,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var dto = await _categoryAttributeRuleService.GetByIdAsync(
-            id,
-            ct
-        );
-
+        var dto = await _categoryAttributeRuleService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 

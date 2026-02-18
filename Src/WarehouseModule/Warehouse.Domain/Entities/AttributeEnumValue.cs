@@ -11,7 +11,7 @@ public class AttributeEnumValue :
 {
     public string Code { get; private set; } = default!;
     public string Label { get; private set; } = default!;
-    public Guid AttributeId { get; private set; }
+    public Guid AttributeId { get; set; }
 
     public required Attribute Attribute { get; set; }
 
