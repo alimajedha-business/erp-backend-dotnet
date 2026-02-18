@@ -31,12 +31,11 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementConversionService
-            .CreateUnitOfMeasurementConversionAsync(
-                companyId,
-                createDto,
-                ct
-            );
+        var dto = await _unitOfMeasurementConversionService.CreateAsync(
+            companyId,
+            createDto,
+            ct
+        );
 
         return CreatedAtAction(
             nameof(GetById),
@@ -54,13 +53,12 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var result = await _unitOfMeasurementConversionService
-            .GetAllUnitOfMeasurementConversionsAsync(
-                companyId,
-                parameters,
-                ct,
-                filterNodeDto
-            );
+        var result = await _unitOfMeasurementConversionService.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
 
         return Ok(result);
     }
@@ -72,12 +70,11 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementConversionService
-            .GetUnitOfMeasurementConversionByIdAsync(
-                companyId,
-                id,
-                ct
-            );
+        var dto = await _unitOfMeasurementConversionService.GetByIdAsync(
+            companyId,
+            id,
+            ct
+        );
 
         return Ok(dto);
     }
@@ -91,13 +88,12 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementConversionService
-            .PatchUnitOfMeasurementConversionAsync(
-                companyId,
-                id,
-                patchDocument,
-                ct
-            );
+        var dto = await _unitOfMeasurementConversionService.PatchAsync(
+            companyId,
+            id,
+            patchDocument,
+            ct
+        );
 
         return Ok(dto);
     }
@@ -109,12 +105,11 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        await _unitOfMeasurementConversionService
-            .DeleteUnitOfMeasurementConversionAsync(
-                companyId,
-                id,
-                ct
-            );
+        await _unitOfMeasurementConversionService.DeleteAsync(
+            companyId,
+            id,
+            ct
+        );
 
         return NoContent();
     }

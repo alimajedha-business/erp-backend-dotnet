@@ -1,39 +1,18 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
+﻿using NGErp.General.Service.Services;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public interface IUnitOfMeasurementConversionService
-{
-    Task<UnitOfMeasurementConversionDto> CreateUnitOfMeasurementConversionAsync(
-        Guid companyId,
-        CreateUnitOfMeasurementConversionDto createDto,
-        CancellationToken ct
-    );
-    Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
-        Guid companyId,
-        UnitOfMeasurementConversionParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    );
-    Task<UnitOfMeasurementConversionDto> GetUnitOfMeasurementConversionByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    );
-    Task<UnitOfMeasurementConversionDto> PatchUnitOfMeasurementConversionAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDocument,
-        CancellationToken ct
-    );
-    Task DeleteUnitOfMeasurementConversionAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    );
-}
+public interface IUnitOfMeasurementConversionService : IBaseServiceWithCompany<
+    UnitOfMeasurementConversion,
+    UnitOfMeasurementConversionDto,
+    UnitOfMeasurementConversionListDto,
+    UnitOfMeasurementConversionParameters,
+    IUnitOfMeasurementConversionRepository,
+    WarehouseResource
+>
+{ }
