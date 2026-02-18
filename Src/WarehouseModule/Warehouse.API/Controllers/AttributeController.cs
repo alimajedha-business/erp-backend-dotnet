@@ -107,14 +107,14 @@ public class AttributeController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchAttributeDto> patchDoc,
+        [FromBody] JsonPatchDocument<PatchAttributeDto> patchDocument,
         CancellationToken ct
     )
     {
         var dto = await _attributeService.PatchAttributeAsync(
             companyId,
             id,
-            patchDoc,
+            patchDocument,
             ct
         );
 

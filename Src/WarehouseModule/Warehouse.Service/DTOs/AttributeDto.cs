@@ -12,6 +12,12 @@ public record AttributeDto(
     bool IsStockDimension
 );
 
+public record AttributeSlimDto(
+    Guid Id,
+    string Code,
+    string Title
+);
+
 public class CreateAttributeDto
 {
     public required string Code { get; set; } = default!;

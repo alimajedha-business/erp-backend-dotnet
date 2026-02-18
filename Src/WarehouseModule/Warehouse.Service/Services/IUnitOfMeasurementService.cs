@@ -11,12 +11,12 @@ public interface IUnitOfMeasurementService
 {
     Task<UnitOfMeasurementDto> CreateUnitOfMeasurementAsync(
         Guid companyId,
-        CreateUnitOfMeasurementDto createUnitOfMeasurementDto,
+        CreateUnitOfMeasurementDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<UnitOfMeasurementDto>> GetAllUnitOfMeasurementsAsync(
         Guid companyId,
-        UnitOfMeasurementParameters unitOfMeasurementParameters,
+        UnitOfMeasurementParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -28,7 +28,7 @@ public interface IUnitOfMeasurementService
     Task<UnitOfMeasurementDto> PatchUnitOfMeasurementAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteUnitOfMeasurementAsync(

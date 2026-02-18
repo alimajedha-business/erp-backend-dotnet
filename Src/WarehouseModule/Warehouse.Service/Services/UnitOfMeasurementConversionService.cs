@@ -41,9 +41,9 @@ public class UnitOfMeasurementConversionService(
 
     public Task<UnitOfMeasurementConversionDto> CreateUnitOfMeasurementConversionAsync(
         Guid companyId,
-        CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
+        CreateUnitOfMeasurementConversionDto createDto,
         CancellationToken ct
-    ) => CreateAsync(companyId, createUnitOfMeasurementConversionDto, ct);
+    ) => CreateAsync(companyId, createDto, ct);
 
     public Task<
         ListResponseModel<UnitOfMeasurementConversionListDto>
@@ -63,9 +63,9 @@ public class UnitOfMeasurementConversionService(
     public Task<UnitOfMeasurementConversionDto> PatchUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDocument,
         CancellationToken ct
-    ) => PatchAsync(companyId, id, patchDoc, ct);
+    ) => PatchAsync(companyId, id, patchDocument, ct);
 
     public Task DeleteUnitOfMeasurementConversionAsync(
         Guid companyId,

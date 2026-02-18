@@ -8,6 +8,12 @@ public record CategoryDto(
     bool IsLastLevel
 );
 
+public record CategorySlimDto(
+    Guid Id,
+    string Code,
+    string Title
+);
+
 public class CreateCategoryDto
 {
     public required string Code { get; set; } = default!;

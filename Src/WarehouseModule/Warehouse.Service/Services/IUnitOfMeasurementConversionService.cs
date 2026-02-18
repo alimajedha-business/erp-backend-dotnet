@@ -11,7 +11,7 @@ public interface IUnitOfMeasurementConversionService
 {
     Task<UnitOfMeasurementConversionDto> CreateUnitOfMeasurementConversionAsync(
         Guid companyId,
-        CreateUnitOfMeasurementConversionDto createUnitOfMeasurementConversionDto,
+        CreateUnitOfMeasurementConversionDto createDto,
         CancellationToken ct
     );
     Task<ListResponseModel<UnitOfMeasurementConversionListDto>> GetAllUnitOfMeasurementConversionsAsync(
@@ -28,7 +28,7 @@ public interface IUnitOfMeasurementConversionService
     Task<UnitOfMeasurementConversionDto> PatchUnitOfMeasurementConversionAsync(
         Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDoc,
+        JsonPatchDocument<PatchUnitOfMeasurementConversionDto> patchDocument,
         CancellationToken ct
     );
     Task DeleteUnitOfMeasurementConversionAsync(
