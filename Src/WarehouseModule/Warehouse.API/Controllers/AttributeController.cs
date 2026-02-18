@@ -32,7 +32,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var dto = await _attributeService.CreateAttributeAsync(
+        var dto = await _attributeService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -54,7 +54,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var attributes = await _attributeService.GetAllAttributesAsync(
+        var attributes = await _attributeService.GetAllAsync(
             companyId,
             parameters,
             ct,
@@ -71,7 +71,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var dto = await _attributeService.GetAttributeByIdAsync(
+        var dto = await _attributeService.GetByIdAsync(
             companyId,
             id,
             ct
@@ -111,7 +111,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var dto = await _attributeService.PatchAttributeAsync(
+        var dto = await _attributeService.PatchAsync(
             companyId,
             id,
             patchDocument,
@@ -128,7 +128,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        await _attributeService.DeleteAttributeAsync(companyId, id, ct);
+        await _attributeService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 }
