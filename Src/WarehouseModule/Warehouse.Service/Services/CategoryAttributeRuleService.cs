@@ -1,8 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using AutoMapper;
 
-using AutoMapper;
-
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
@@ -20,7 +17,6 @@ namespace NGErp.Warehouse.Service.Services;
 public class CategoryAttributeRuleService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryAttributeRuleRepository categoryAttributeRuleRepository,
-    ICategoryService categoryService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
@@ -39,90 +35,27 @@ public class CategoryAttributeRuleService(
     ICategoryAttributeRuleService
 {
     protected override string LocalizerKey => "CategoryAttributeRule";
-    private readonly ICategoryAttributeRuleRepository _categoryAttributeRuleRepository =
-        categoryAttributeRuleRepository;
 
-    private readonly ICategoryService _categoryService = categoryService;
-
-    public async Task<CategoryAttributeRuleDto> CreateCategoryAttributeRuleAsync(
-        Guid companyId,
-        Guid categoryId,
-        CreateCategoryAttributeRuleDto createDto,
-        CancellationToken ct
-    )
-    {
-        await EnsureCategoryAsync(companyId, categoryId, ct);
-
-        var entity = _mapper.Map<CategoryAttributeRule>(createDto);
-        entity.CategoryId = categoryId;
-
-        var created = await _categoryAttributeRuleRepository.AddAsync(entity, ct);
-        await _categoryAttributeRuleRepository.SaveChangesAsync(ct);
-
-        return _mapper.Map<CategoryAttributeRuleDto>(created);
-    }
-
-    public async Task<ListResponseModel<CategoryAttributeRuleSlimDto>> GetAllCategoryAttributeRulesAsync(
-        Guid companyId,
+    public Task<ListResponseModel<CategoryAttributeRuleSlimDto>> GetAllAsync(
         Guid categoryId,
         CategoryAttributeRuleParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await EnsureCategoryAsync(companyId, categoryId, ct);
-
-        Expression<Func<CategoryAttributeRule, bool>> categoryFilter = 
-            rule => rule.CategoryId == categoryId;
-
-        return await GetByConditionAsync(
+        return GetByConditionAsync(
             parameters,
-            categoryFilter,
+            e => e.CategoryId == categoryId,
             includeQuery,
             ct,
             filterNodeDto
         );
     }
 
-    public async Task<CategoryAttributeRuleDto> GetCategoryAttributeRuleByIdAsync(
-        Guid companyId,
-        Guid categoryId,
+    public override Task<CategoryAttributeRuleDto> GetByIdAsync(
         Guid id,
         CancellationToken ct
-    )
-    {
-        await EnsureCategoryAsync(companyId, categoryId, ct);
-        return await GetByIdAsync(id, includeQuery, ct);
-    }
-
-    public async Task<CategoryAttributeRuleDto> PatchCategoryAttributeRuleAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
-        CancellationToken ct
-    )
-    {
-        await EnsureCategoryAsync(companyId, categoryId, ct);
-        return await PatchAsync(id, patchDocument, ct);
-    }
-
-    public async Task DeleteCategoryAttributeRuleAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        CancellationToken ct
-    )
-    {
-        await EnsureCategoryAsync(companyId, categoryId, ct);
-        await DeleteAsync(id, ct);
-    }
-
-    private Task<CategoryDto> EnsureCategoryAsync(
-        Guid companyId,
-        Guid categoryId,
-        CancellationToken ct
-    ) =>  _categoryService.GetCategoryByIdAsync(companyId, categoryId, ct);
+    ) => GetByIdAsync(id, includeQuery, ct);
 
     private static IQueryable<CategoryAttributeRule> includeQuery(
         IQueryable<CategoryAttributeRule> q

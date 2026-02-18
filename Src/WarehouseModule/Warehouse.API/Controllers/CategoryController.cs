@@ -9,6 +9,8 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
 
+using static System.Net.WebRequestMethods;
+
 namespace NGErp.Warehouse.API.Controllers;
 
 [ApiController]
@@ -36,7 +38,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.CreateCategoryAsync(
+        var dto = await _categoryService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -58,7 +60,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var result = await _categoryService.GetAllCategoriesAsync(
+        var result = await _categoryService.GetAllAsync(
             companyId,
             parameters,
             ct,
@@ -75,7 +77,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.GetCategoryByIdAsync(
+        var dto = await _categoryService.GetByIdAsync(
             companyId,
             id,
             ct
@@ -94,7 +96,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetCategoryByIdAsync(
+        await _categoryService.GetByIdAsync(
             companyId,
             id,
             ct
@@ -120,7 +122,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.PatchCategoryAsync(
+        var dto = await _categoryService.PatchAsync(
             companyId,
             id,
             patchDocument,
@@ -137,7 +139,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.DeleteCategoryAsync(companyId, id, ct);
+        await _categoryService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 
@@ -151,13 +153,12 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryAttributeRuleService
-            .CreateCategoryAttributeRuleAsync(
-                companyId,
-                categoryId,
-                createDto,
-                ct
-            );
+        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
+        var dto = await _categoryAttributeRuleService.CreateAsync(
+            createDto,
+            ct,
+            e => e.CategoryId = categoryId
+        );
 
         return CreatedAtAction(
             nameof(GetAttributeRuleById),
@@ -174,13 +175,12 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var result = await _categoryAttributeRuleService
-            .GetAllCategoryAttributeRulesAsync(
-                companyId,
-                categoryId,
-                parameters,
-                ct
-            );
+        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
+        var result = await _categoryAttributeRuleService.GetAllAsync(
+            categoryId,
+            parameters,
+            ct
+        );
 
         return Ok(result);
     }
@@ -193,13 +193,11 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryAttributeRuleService
-            .GetCategoryAttributeRuleByIdAsync(
-                companyId,
-                categoryId,
-                id,
-                ct
-            );
+        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
+        var dto = await _categoryAttributeRuleService.GetByIdAsync(
+            id,
+            ct
+        );
 
         return Ok(dto);
     }
@@ -214,14 +212,12 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var dto = await _categoryAttributeRuleService
-            .PatchCategoryAttributeRuleAsync(
-                companyId,
-                categoryId,
-                id,
-                patchDocument,
-                ct
-            );
+        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
+        var dto = await _categoryAttributeRuleService.PatchAsync(
+            id,
+            patchDocument,
+            ct
+        );
 
         return Ok(dto);
     }
@@ -234,14 +230,8 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryAttributeRuleService
-            .DeleteCategoryAttributeRuleAsync(
-                companyId,
-                categoryId,
-                id,
-                ct
-            );
-
+        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
+        await _categoryAttributeRuleService.DeleteAsync(id, ct);
         return NoContent();
     }
 
