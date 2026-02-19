@@ -66,5 +66,9 @@ public class MappingProfile : Profile
             );
         CreateMap<CreateUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>();
         CreateMap<PatchUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>().ReverseMap();
+
+        CreateMap<WarehouseType, WarehouseTypeDto>();
+        CreateMap<CreateWarehouseTypeDto, WarehouseType>();
+        CreateMap<PatchWarehouseTypeDto, WarehouseType>().ReverseMap();
     }
 }
