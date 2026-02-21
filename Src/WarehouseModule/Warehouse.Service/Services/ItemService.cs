@@ -46,7 +46,7 @@ public class ItemService(
         FilterNodeDto? filterNodeDto = null
     )
     {
-        await _companyService.GetCompanyByIdAsync(
+        await _companyService.GetByIdAsync(
             companyId,
             ct
         );

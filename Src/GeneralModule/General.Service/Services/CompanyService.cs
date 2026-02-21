@@ -20,7 +20,7 @@ public class CompanyService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer _stringLocalizer = stringLocalizer;
 
-    public async Task<CompanyDto> GetCompanyByIdAsync(Guid companyId, CancellationToken ct)
+    public async Task<CompanyDto> GetByIdAsync(Guid companyId, CancellationToken ct)
     {
         var company = await _repository
             .Find(e => e.Id == companyId)
