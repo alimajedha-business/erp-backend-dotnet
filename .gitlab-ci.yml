@@ -40,7 +40,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Release --no-build --no-restore --output "$PUBLISH_DIR"
+    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
