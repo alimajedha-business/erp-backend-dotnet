@@ -56,13 +56,8 @@ deploy:
     - ubuntu
     - deploy
   script:
-    - sudo systemctl stop  "$SERVICE_NAME" || true
-    - sudo rm -rf          "$DEPLOY_TARGET"/*               # Clean old files safely
-    - sudo cp -r           "$PUBLISH_DIR"/* "$DEPLOY_TARGET"/
-    - sudo chown -R emaco:emaco "$DEPLOY_TARGET"
-    - sudo systemctl start "$SERVICE_NAME"
-    - echo "Deployment done. Service logs/status:"
-    - sudo systemctl status "$SERVICE_NAME" --no-pager --lines=20
+    - sudo /usr/local/bin/ngerp-deploy.sh "$PUBLISH_DIR"
+    - echo "Deployment done."
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
