@@ -41,7 +41,8 @@ create-migration-bundle:
   tags: [dotnet, ubuntu, deploy]
   script:
     # Install EF Core CLI tool globally (or per-job)
-    - dotnet tool install --global dotnet-ef --version 8.0.*   # or pin your version e.g. 9.0.*      
+    - dotnet tool install --global dotnet-ef --version 8.0.*   # or pin your version e.g. 9.0.*
+      
 
     # Create self-contained executable bundle
     - dotnet ef migrations bundle
@@ -85,7 +86,7 @@ deploy:
     - ubuntu
     - deploy
   script:
-    export DB_CONNECTION_STRING=$(echo "$DB_CONNECTION_STRING_BASE64" | base64 -d)
+     export DB_CONNECTION_STRING=$(echo "$DB_CONNECTION_STRING_BASE64" | base64 -d)
     - chmod +x "$MIGRATIONS_BUNDLE"
     - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING} --verbose
     
