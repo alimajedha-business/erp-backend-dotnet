@@ -87,7 +87,7 @@ deploy:
     - ubuntu
     - deploy
   script:
-    DB_CONNECTION_STRING=$(base64 --decode <<< "$DB_CONNECTION_STRING_BASE64")
+    #DB_CONNECTION_STRING=$(base64 --decode <<< "$DB_CONNECTION_STRING_BASE64")
     - chmod +x "$MIGRATIONS_BUNDLE"
     - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING} --verbose
     
