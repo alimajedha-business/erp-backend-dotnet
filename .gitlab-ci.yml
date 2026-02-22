@@ -4,12 +4,15 @@
 stages:
   - build
   - publish
+  - migrations
   - deploy
 
 variables:
   SOLUTION_FILE: "NGErp.sln"
   API_PROJECT:   "Src/API/API/NGErp.API.csproj"
+  MIGRATIONS_PROJECT: "Src/BaseModule/Base.Infrastructure/NGErp.Base.Infrastructure.csproj"
   PUBLISH_DIR:   "${CI_PROJECT_DIR}/publish"
+  MIGRATIONS_BUNDLE: "${CI_PROJECT_DIR}/efbundle"
   DEPLOY_TARGET: "/home/emaco/www/dev-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
 
@@ -33,6 +36,33 @@ build:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
 
+create-migration-bundle:
+  stage: migrations
+  tags: [dotnet, ubuntu, deploy]
+  script:
+    # Install EF Core CLI tool globally (or per-job)
+    - dotnet tool install --global dotnet-ef --version 8.0.*   # or pin your version e.g. 9.0.*
+      
+
+    # Create self-contained executable bundle
+    - dotnet ef migrations bundle
+        --project "$MIGRATIONS_PROJECT"
+        --startup-project "$API_PROJECT"
+        --configuration Release
+        --self-contained
+        --runtime linux-x64
+        --output "$MIGRATIONS_BUNDLE"
+        --verbose
+        --force
+  artifacts:
+    paths:
+      - "$MIGRATIONS_BUNDLE"
+    expire_in: 7 days
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
+    
 publish:
   stage: publish
   tags:
@@ -56,6 +86,10 @@ deploy:
     - ubuntu
     - deploy
   script:
+     export DB_CONNECTION_STRING=$(echo "$DB_CONNECTION_STRING_BASE64" | base64 -d)
+    - chmod +x "$MIGRATIONS_BUNDLE"
+    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING} --verbose
+    
     - sudo /usr/local/bin/deploy-ngerp.sh "$PUBLISH_DIR"
     - echo "Deployment done."
   rules:
