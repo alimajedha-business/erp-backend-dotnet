@@ -54,6 +54,7 @@ create-migration-bundle:
         --output "$MIGRATIONS_BUNDLE"
         --verbose
         --force
+        --context MainDbContext
   artifacts:
     paths:
       - "$MIGRATIONS_BUNDLE"
