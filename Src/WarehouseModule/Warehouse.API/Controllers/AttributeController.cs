@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -80,28 +81,6 @@ public class AttributeController(
         return Ok(dto);
     }
 
-    [HttpPost("{id:guid}/enums")]
-    [SkipModelValidation]
-    public async Task<IActionResult> GetAttributeEnums(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromQuery] AttributeEnumValueParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        var enumsDto = await _attributeEnumValueService
-            .GetAttributeAllEnumValuesAsync(
-                companyId,
-                id,
-                parameters,
-                ct,
-                filterNodeDto
-            );
-
-        return Ok(enumsDto);
-    }
-
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
@@ -131,4 +110,91 @@ public class AttributeController(
         await _attributeService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
+
+    #region EnumValue
+
+    [HttpPost("{attributeId:guid}/enums")]
+    public async Task<IActionResult> CreateAttributeEnumValue(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromBody] CreateAttributeEnumValueDto createDto,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var dto = await _attributeEnumValueService.CreateAsync(
+            createDto,
+            ct,
+            e => e.AttributeId = attributeId
+        );
+
+        return CreatedAtAction(
+            nameof(GetAttributeEnumValueById),
+            new { companyId, attributeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpGet("{attributeId:guid}/enums/list")]
+    public async Task<IActionResult> GetAttributeEnumValues(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromQuery] AttributeEnumValueParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var enumsDto = await _attributeEnumValueService.GetAllAsync(
+            attributeId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        return Ok(enumsDto);
+    }
+
+    [HttpGet("{attributeId:guid}/enums/{id:guid}")]
+    public async Task<IActionResult> GetAttributeEnumValueById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var enumsDto = await _attributeEnumValueService.GetByIdAsync(id, ct);
+        return Ok(enumsDto);
+    }
+
+    [HttpPatch("{attributeId:guid}/enums/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchCategoryAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var dto = await _attributeEnumValueService.PatchAsync(id, patchDocument, ct);
+        return Ok(dto);
+    }
+
+    [HttpDelete("{attributeId:guid}/enums/{id:guid}")]
+    public async Task<IActionResult> DeleteCategoryAttributeRule(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        await _attributeEnumValueService.DeleteAsync(id, ct);
+        return NoContent();
+    }
+
+    #endregion
 }

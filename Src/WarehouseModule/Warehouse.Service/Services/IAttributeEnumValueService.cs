@@ -1,40 +1,27 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.DTOs;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public interface IAttributeEnumValueService
+public interface IAttributeEnumValueService : IBaseService<
+    AttributeEnumValue,
+    AttributeEnumValueDto,
+    AttributeEnumValueListDto,
+    AttributeEnumValueParameters,
+    IAttributeEnumValueRepository,
+    WarehouseResource
+>
 {
-    Task<AttributeEnumValueDto> CreateAttributeEnumValueAsync(
-        Guid companyId,
-        CreateAttributeEnumValueDto createDto,
-        CancellationToken ct
-    );
-    Task<ListResponseModel<AttributeEnumValueDto>> GetAttributeAllEnumValuesAsync(
-        Guid companyId,
+    Task<ListResponseModel<AttributeEnumValueListDto>> GetAllAsync(
         Guid attributeId,
         AttributeEnumValueParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    );
-    Task<AttributeEnumValueDto> GetAttributeEnumValueByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    );
-    Task<AttributeEnumValueDto> PatchAttributeEnumValueAsync(
-        Guid companyId,
-        Guid id,
-        JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
-        CancellationToken ct
-    );
-    Task DeleteAttributeEnumValueAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
     );
 }

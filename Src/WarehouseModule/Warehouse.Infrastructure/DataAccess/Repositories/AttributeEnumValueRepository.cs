@@ -1,20 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
 public class AttributeEnumValueRepository(MainDbContext context) :
-    RepositoryWithCompany<AttributeEnumValue>(context),
+    Repository<AttributeEnumValue>(context),
     IAttributeEnumValueRepository
 {
     public async Task<ListQueryResult<AttributeEnumValue>> GetAllAsync(
-        Guid companyId,
         Guid attributeId,
         RequestParameters requestParameters,
         CancellationToken ct,
@@ -24,7 +23,6 @@ public class AttributeEnumValueRepository(MainDbContext context) :
         var query = _context
             .Set<AttributeEnumValue>()
             .AsNoTracking()
-            .Where(e => e.CompanyId == companyId)
             .Where(e => e.AttributeId == attributeId)
             .Include(i => i.Attribute)
             .Filter(requestAdvancedFilters);
