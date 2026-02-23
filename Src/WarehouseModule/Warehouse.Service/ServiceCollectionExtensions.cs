@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
+        services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
         return services;
     }
