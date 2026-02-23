@@ -87,9 +87,19 @@ deploy:
     - ubuntu
     - deploy
   script:
-    chmod +x "$MIGRATIONS_BUNDLE"
-    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING} --verbose
+   # Make bundle executable
+    - chmod +x "$MIGRATIONS_BUNDLE"
+
+    # Run EF Core migrations bundle
+    - >-
+        "$MIGRATIONS_BUNDLE"
+        --connection "$DB_CONNECTION_STRING"
+        --verbose
+
+    # Deploy the published application
     - sudo /usr/local/bin/deploy-ngerp.sh "$PUBLISH_DIR"
+
+    # Confirmation
     - echo "Deployment done."
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
