@@ -2,7 +2,4 @@
 
 namespace NGErp.Warehouse.Service.RequestFeatures;
 
-public class ItemParameters : RequestParameters
-{
-    public Guid? CategoryId { get; set; }
-}
+public class ItemParameters : RequestParameters { }
