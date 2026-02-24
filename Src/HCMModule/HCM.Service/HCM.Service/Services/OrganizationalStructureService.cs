@@ -1,18 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using AutoMapper;
+﻿using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.General.Domain.Entities;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.Resources;
-
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -28,59 +23,9 @@ public class OrganizationalStructureService(
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly ICompanyService _companyService = companyService;
 
-    //public Task<Guid> SaveStructureVersionAsync(SaveOrganizationalStructureDto dto)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    public Task<OrganizationalStructureTreeDto> GetCurrentTreeAsync(Guid companyId)
-    {
-        //var structure = await _organizationalStructureRepository
-        //    .Find(companyId)
-        //    .Include(s => s.Items!)
-        //        .ThenInclude(i => i.Node)
-        //            .ThenInclude(n => n.Department)
-        //    .Include(s => s.Items!)
-        //        .ThenInclude(i => i.Node)
-        //            .ThenInclude(n => n.Position)
-        //    .OrderByDescending(s => s.EffectiveFrom)
-        //    .FirstOrDefaultAsync();
-
-        //if (structure == null)
-        //{
-        //    return new OrganizationalStructureTreeDto
-        //    {
-        //        Id = Guid.Empty,
-        //        EffectiveFrom = DateOnly.FromDateTime(DateTime.Now),
-        //        Items = []
-        //    };
-        //}
-
-        //var items = structure.Items!.Select(MapToTreeNodeDto).ToList();
-
-        //// Build tree hierarchy
-        //var rootItems = items.Where(x => x.ParentItemId == null).ToList();
-        //var childItems = items.Where(x => x.ParentItemId.HasValue).ToList();
-
-        //// Add children to parents
-        //foreach (var item in rootItems.Concat(childItems))
-        //{
-        //    item.Children = childItems.Where(c => c.ParentItemId == item.Id).ToList();
-        //}
-
-        //return new OrganizationalStructureTreeDto
-        //{
-        //    Id = structure.Id,
-        //    EffectiveFrom = structure.EffectiveFrom,
-        //    Description = structure.Description,
-        //    Items = rootItems
-        //};
-        throw new NotImplementedException();
-    }
-
     public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(Guid companyId, DateOnly date, CancellationToken ct)
     {
-        var company = await _companyService.GetCompanyByIdAsync(companyId, ct);
+        var company = await _companyService.GetByIdAsync(companyId, ct);
 
         var structure = await _organizationalStructureRepository
             .Find(companyId, s => s.EffectiveFrom <= date)
@@ -142,6 +87,91 @@ public class OrganizationalStructureService(
             Description = structure.Description,
             Items = [companyNode]
         };
+    }
+
+    public async Task<OrganizationalStructureTreeDto> SaveTreeAsync(
+        Guid companyId,
+        OrganizationalStructureTreeDto incomingTree,
+        DateOnly effectiveFrom,
+        string? description = null,
+        CancellationToken ct = default)
+    {
+        var company = await _companyService.GetByIdAsync(companyId, ct);
+
+        //if (effectiveFrom < DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)))
+        //    throw new BusinessRuleException("Cannot modify or create structure versions in the past.");
+
+        //// 1. Load current active structure at effectiveFrom (the one that would be seen just before this change)
+        //var currentStructure = await GetActiveStructureAtDate(companyId, effectiveFrom, ct);
+
+        //// 2. Load all potentially affected nodes (departments & positions) in one query
+        //var allRelevantNodeIds = CollectAllNodeIdsFromTree(incomingTree);
+        //var nodesDict = await _organizationNodeRepository
+        //    .GetAllActiveNodesByIds(companyId, allRelevantNodeIds, effectiveFrom, ct)
+        //    .ToDictionaryAsync(n => n.Id, ct);
+
+        //// 3. Validate whole incoming tree
+        //await ValidateIncomingTreeStructure(
+        //    company,
+        //    incomingTree,
+        //    currentStructure,
+        //    nodesDict,
+        //    effectiveFrom,
+        //    ct);
+
+        // ────────────────────────────────────────────────────────────────
+        // 4. Decide whether we need to create NEW version or can update future one
+        // ────────────────────────────────────────────────────────────────
+        OrganizationalStructure? structureToSave;
+
+        var futureStructure = await _organizationalStructureRepository
+            .Find(companyId, s => s.EffectiveFrom > effectiveFrom.AddDays(-1))
+            .OrderBy(s => s.EffectiveFrom)
+            .FirstOrDefaultAsync(ct);
+
+        if (futureStructure != null && futureStructure.EffectiveFrom == effectiveFrom)
+        {
+            // We already have a draft/future version exactly on this date → update it
+            structureToSave = futureStructure;
+        }
+        else
+        {
+            // Create brand new version
+            structureToSave = new OrganizationalStructure
+            {
+                CompanyId = companyId,
+                EffectiveFrom = effectiveFrom,
+                Description = description,
+                Items = new List<OrganizationalStructureItem>()
+            };
+        }
+
+        // 5. Clear old items if we're overwriting
+        //if (structureToSave.Items?.Any() == true)
+        //{
+        //    _context.RemoveRange(structureToSave.Items);
+        //}
+
+        //// 6. Build new flat list of OrganizationalStructureItem
+        //var newItems = BuildFlatStructureItems(
+        //    companyId,
+        //    structureToSave,
+        //    incomingTree.Items[0].Children,   // real roots
+        //    nodesDict,
+        //    parentItem: null);
+
+        //structureToSave.Items = newItems;
+
+        //if (structureToSave.Id == Guid.Empty)
+        //{
+        //    await _organizationalStructureRepository.AddAsync(structureToSave, ct);
+        //}
+        //// else → EF will see it as modified
+
+        //await _context.SaveChangesAsync(ct);
+
+        // 7. Return the saved tree (re-read or reconstruct)
+        return await GetTreeAtDateAsync(companyId, effectiveFrom, ct);
     }
 
     private OrganizationalStructureTreeNodeDto MapToTreeNodeDto(OrganizationalStructureItem item)

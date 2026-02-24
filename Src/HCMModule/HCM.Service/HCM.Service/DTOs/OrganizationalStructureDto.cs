@@ -2,6 +2,13 @@
 
 namespace NGErp.HCM.Service.DTOs;
 
+public class OrganizationalStructureDto
+{
+    public Guid Id { get; set; }
+    public DateOnly EffectiveFrom { get; set; }
+    public string? Description { get; set; }
+}
+
 public class OrganizationalStructureTreeNodeDto
 {
     public Guid Id { get; set; }

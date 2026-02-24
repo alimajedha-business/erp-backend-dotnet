@@ -10,9 +10,16 @@ public interface IOrganizationalStructureService
         CancellationToken ct
         );
 
-    Task<OrganizationalStructureTreeDto> GetCurrentTreeAsync(
-        Guid companyId
+    Task<OrganizationalStructureTreeDto> SaveTreeAsync(
+        Guid companyId,
+        OrganizationalStructureTreeDto incomingTree,
+        DateOnly effectiveFrom,
+        string? description = null,
+        CancellationToken ct = default
         );
 
-    // Task<Guid> SaveStructureVersionAsync(SaveOrganizationalStructureDto dto);
+    Task<IEnumerable<OrganizationalStructureDto>> GetTreeAtDateAsync(
+        Guid companyId,
+        CancellationToken ct
+        );
 }
