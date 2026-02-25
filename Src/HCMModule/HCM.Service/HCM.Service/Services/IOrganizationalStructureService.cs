@@ -1,4 +1,7 @@
-﻿using NGErp.HCM.Service.DTOs;
+﻿using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
+using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -18,8 +21,9 @@ public interface IOrganizationalStructureService
         CancellationToken ct = default
         );
 
-    Task<IEnumerable<OrganizationalStructureDto>> GetTreeAtDateAsync(
+    Task<ListResponseModel<OrganizationalStructureDto>> GetAll(
         Guid companyId,
+        OrganizationalStructureParameters parameters,
         CancellationToken ct
         );
 }

@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
 
 namespace NGErp.HCM.API.Controllers;
@@ -23,5 +24,16 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
     {
         var tree = await _organizationalStructureService.GetTreeAtDateAsync(companyId, date, ct);
         return Ok(tree);
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetHistory(
+        [FromRoute] Guid companyId,
+        [FromQuery] OrganizationalStructureParameters parameters,
+        CancellationToken ct
+        )
+    {
+        var result = await _organizationalStructureService.GetAll(companyId, parameters, ct);
+        return Ok(result);
     }
 }
