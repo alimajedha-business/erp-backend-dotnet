@@ -14,6 +14,8 @@ public class WarehouseType :
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; }
 
+    public virtual List<Warehouse> Warehouses { get; set; } = [];
+
     public void Map(EntityTypeBuilder<WarehouseType> builder)
     {
         builder

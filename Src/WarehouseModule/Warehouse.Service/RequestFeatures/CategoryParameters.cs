@@ -2,7 +2,4 @@
 
 namespace NGErp.Warehouse.Service.RequestFeatures;
 
-public class CategoryParameters : RequestParameters
-{
-    public Guid ParentCategoryId { get; set; }
-}
+public class CategoryParameters : RequestParameters { }
