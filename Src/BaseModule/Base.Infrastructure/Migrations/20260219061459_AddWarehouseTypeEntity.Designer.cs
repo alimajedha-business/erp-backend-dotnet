@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260219061459_AddWarehouseTypeEntity")]
+    partial class AddWarehouseTypeEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,6 +232,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("OrganizationalStructureId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("OrganizationalStructureItemId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("ParentItemId")
                         .HasColumnType("uniqueidentifier");
 
@@ -249,6 +255,8 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("NodeId");
 
                     b.HasIndex("OrganizationalStructureId");
+
+                    b.HasIndex("OrganizationalStructureItemId");
 
                     b.HasIndex("ParentItemId");
 
@@ -1487,8 +1495,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("NGErp.HCM.Domain.Entities.OrganizationalStructureItem", "ParentItem")
+                    b.HasOne("NGErp.HCM.Domain.Entities.OrganizationalStructureItem", null)
                         .WithMany("Children")
+                        .HasForeignKey("OrganizationalStructureItemId");
+
+                    b.HasOne("NGErp.HCM.Domain.Entities.OrganizationalStructureItem", "ParentItem")
+                        .WithMany()
                         .HasForeignKey("ParentItemId")
                         .OnDelete(DeleteBehavior.NoAction);
 

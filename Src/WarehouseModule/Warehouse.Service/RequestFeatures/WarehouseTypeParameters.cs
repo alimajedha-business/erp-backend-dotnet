@@ -2,4 +2,4 @@
 
 namespace NGErp.Warehouse.Service.RequestFeatures;
 
-public class ItemParameters : RequestParameters { }
+public class WarehouseTypeParameters : RequestParameters { }

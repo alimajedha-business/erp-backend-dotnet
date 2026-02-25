@@ -83,6 +83,27 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Filter(requestAdvancedFilters);
+
+        query = include(query);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+        Guid companyId,
         RequestParameters requestParameters,
         Func<IQueryable<T>, IQueryable<T>> include,
         CancellationToken ct,

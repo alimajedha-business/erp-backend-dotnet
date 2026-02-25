@@ -37,6 +37,12 @@ public interface IRepositoryWithCompany<T>
     );
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken ct,
+        RequestAdvancedFilters? requestAdvancedFilters = null
+    );
+    Task<ListQueryResult<T>> GetAllAsync(
+        Guid companyId,
         RequestParameters requestParameters,
         Func<IQueryable<T>, IQueryable<T>> include,
         CancellationToken ct,

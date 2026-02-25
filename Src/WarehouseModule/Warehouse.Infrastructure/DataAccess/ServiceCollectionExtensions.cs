@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IUnitOfMeasurementConversionRepository, UnitOfMeasurementConversionRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();
+        services.AddScoped<IWarehouseTypeRepository, WarehouseTypeRepository>();
 
         return services;
     }

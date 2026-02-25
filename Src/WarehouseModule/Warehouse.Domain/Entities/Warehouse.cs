@@ -12,7 +12,10 @@ public class Warehouse :
 {
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
-    public string Type { get; private set; } = default!;
+    public bool IsActive { get; private set; } = true;
+    public Guid TypeId { get; private set; } = default!;
+
+    public required WarehouseType Type { get; set; }
 
     public virtual List<WarehouseLocation> Locations { get; set; } = [];
 
@@ -35,7 +38,13 @@ public class Warehouse :
             .HasMaxLength(250);
 
         builder
-            .Property(e => e.Type)
-            .HasMaxLength(30);
+            .Property(e => e.IsActive)
+            .HasDefaultValue(true);
+
+        builder
+            .HasOne(e => e.Type)
+            .WithMany(e => e.Warehouses)
+            .HasForeignKey(e => e.TypeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
