@@ -2,7 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.VisualBasic;
 
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Service.Services;
