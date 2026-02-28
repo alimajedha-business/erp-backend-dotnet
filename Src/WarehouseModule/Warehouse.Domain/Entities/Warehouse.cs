@@ -14,7 +14,7 @@ public class Warehouse :
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; } = true;
     public decimal MaxMonetaryValue { get; private set; }
-    public Guid TypeId { get; private set; }
+    public Guid WarehouseTypeId { get; private set; }
     public Guid CompanyUnitId { get; private set; }
 
     #region Warehouse
@@ -271,7 +271,7 @@ public class Warehouse :
         builder
             .HasOne(e => e.WarehouseType)
             .WithMany(e => e.Warehouses)
-            .HasForeignKey(e => e.TypeId)
+            .HasForeignKey(e => e.WarehouseTypeId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder

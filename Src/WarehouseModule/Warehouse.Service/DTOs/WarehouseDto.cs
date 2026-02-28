@@ -24,7 +24,7 @@ public class CreateWarehouseDto
     public required string Title { get; set; } = default!;
     public bool IsActive { get; set; } = false;
     public decimal MaxMonetaryValue { get; set; }
-    public required Guid TypeId { get; set; }
+    public required Guid WarehouseTypeId { get; set; }
     public required Guid CompanyUnitId { get; set; }
 
     #region Warehouse
