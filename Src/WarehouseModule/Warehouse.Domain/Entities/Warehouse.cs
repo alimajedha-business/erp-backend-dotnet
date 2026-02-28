@@ -13,7 +13,7 @@ public class Warehouse :
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; } = true;
-    public decimal MaxRialValue { get; private set; }
+    public decimal MaxMonetaryValue { get; private set; }
     public Guid TypeId { get; private set; }
     public Guid CompanyUnitId { get; private set; }
 
@@ -185,7 +185,7 @@ public class Warehouse :
             .HasDefaultValue(true);
 
         builder
-            .Property(e => e.MaxRialValue)
+            .Property(e => e.MaxMonetaryValue)
             .HasColumnType("decimal(22, 4)");
 
         builder

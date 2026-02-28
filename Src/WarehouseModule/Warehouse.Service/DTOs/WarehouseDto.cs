@@ -5,7 +5,7 @@ public record WarehouseDto(
     string Code,
     string Title,
     bool IsActive,
-    decimal MaxRialValue
+    decimal MaxMonetaryValue
 );
 
 public record WarehouseListDto(
@@ -13,7 +13,7 @@ public record WarehouseListDto(
     string Code,
     string Title,
     bool IsActive,
-    decimal MaxRialValue,
+    decimal MaxMonetaryValue,
     string WarehouseTypeTitle,
     string CompanyUnitTitle
 );
@@ -23,7 +23,7 @@ public class CreateWarehouseDto
     public required string Code { get; set; } = default!;
     public required string Title { get; set; } = default!;
     public bool IsActive { get; set; } = false;
-    public decimal MaxRialValue { get; set; }
+    public decimal MaxMonetaryValue { get; set; }
     public required Guid TypeId { get; set; }
     public required Guid CompanyUnitId { get; set; }
 
@@ -73,5 +73,5 @@ public class PatchWarehouseDto
     public string? Code { get; set; }
     public string? Title { get; set; }
     public bool? IsActive { get; set; }
-    public decimal? MaxRialValue { get; set; }
+    public decimal? MaxMonetaryValue { get; set; }
 }
