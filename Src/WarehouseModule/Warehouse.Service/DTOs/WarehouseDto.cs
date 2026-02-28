@@ -13,7 +13,9 @@ public record WarehouseListDto(
     string Code,
     string Title,
     bool IsActive,
-    decimal MaxRialValue
+    decimal MaxRialValue,
+    string WarehouseTypeTitle,
+    string CompanyUnitTitle
 );
 
 public class CreateWarehouseDto

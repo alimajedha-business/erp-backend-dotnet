@@ -57,7 +57,7 @@ public class Warehouse :
     public string? ReturnFromPurchaseAccountDetailed2Value { get; private set; }
     #endregion
 
-    public required WarehouseType Type { get; set; }
+    public required WarehouseType WarehouseType { get; set; }
     public required CompanyUnit CompanyUnit { get; set; }
 
     public virtual List<WarehouseLocation> Locations { get; set; } = [];
@@ -269,7 +269,7 @@ public class Warehouse :
             .HasColumnType("nvarchar(20)");
 
         builder
-            .HasOne(e => e.Type)
+            .HasOne(e => e.WarehouseType)
             .WithMany(e => e.Warehouses)
             .HasForeignKey(e => e.TypeId)
             .OnDelete(DeleteBehavior.NoAction);

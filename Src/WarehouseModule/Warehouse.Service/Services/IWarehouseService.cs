@@ -1,4 +1,5 @@
-﻿using NGErp.General.Service.Services;
+﻿using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
