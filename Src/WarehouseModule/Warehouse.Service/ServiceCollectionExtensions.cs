@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
+        services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
+        services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
         return services;

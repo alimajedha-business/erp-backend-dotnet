@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -12,23 +13,23 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouse-types")]
-public class WarehouseTypeController(
-    IWarehouseTypeService warehouseTypeService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouse")]
+public class WarehouseController(
+    IWarehouseService warehouseService
 ) : ControllerBase
 {
-    private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
+    private readonly IWarehouseService _warehouseService = warehouseService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateWarehouseTypeDto createDto,
+        [FromBody] CreateWarehouseDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.CreateAsync(
+        var dto = await _warehouseService.CreateAsync(
             companyId,
             createDto,
             ct
@@ -41,17 +42,19 @@ public class WarehouseTypeController(
         );
     }
 
-    [HttpGet("list")]
+    [HttpPost("list")]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] WarehouseTypeParameters parameters,
+        [FromQuery] WarehouseParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _warehouseTypeService.GetAllAsync(
+        var result = await _warehouseService.GetAllAsync(
             companyId,
             parameters,
-            ct
+            ct,
+            filterNodeDto
         );
 
         return Ok(result);
@@ -59,30 +62,28 @@ public class WarehouseTypeController(
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        CancellationToken ct
+       [FromRoute] Guid companyId,
+       [FromRoute] Guid id,
+       CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.GetByIdAsync(
+        var warehouse = await _warehouseService.GetByIdAsync(
             companyId,
             id,
             ct
         );
-
-        return Ok(dto);
+        return Ok(warehouse);
     }
 
     [HttpPatch("{id:guid}")]
-    [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchWarehouseTypeDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchWarehouseDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.PatchAsync(
+        var dto = await _warehouseService.PatchAsync(
             companyId,
             id,
             patchDocument,
@@ -99,7 +100,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        await _warehouseTypeService.DeleteAsync(companyId, id, ct);
+        await _warehouseService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 }
