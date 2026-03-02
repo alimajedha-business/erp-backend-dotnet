@@ -10,10 +10,24 @@ public sealed class WarehouseSchema : IFilterSchema<Entities.Warehouse>
         var filterSchema = new FilterSchema();
 
         filterSchema.Fields["code"] = new FilterFieldInfo(
-            PropertyName: nameof(Category.Code),
+            PropertyName: nameof(Entities.Warehouse.Code),
             PropertyType: typeof(string),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             { "eq", "ne", "startsWith", "contains", "endsWith" }
+        );
+
+        filterSchema.Fields["maxMonetaryValue"] = new FilterFieldInfo(
+            PropertyName: nameof(Entities.Warehouse.MaxMonetaryValue),
+            PropertyType: typeof(decimal),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "gte", "lt", "lte" }
+        );
+
+        filterSchema.Fields["isActive"] = new FilterFieldInfo(
+            PropertyName: nameof(Entities.Warehouse.IsActive),
+            PropertyType: typeof(bool),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
         );
 
         return filterSchema;

@@ -132,4 +132,7 @@
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>واحد اندازه‌گیری</value>
   </data>
+  <data name="Warehouse" xml:space="preserve">
+    <value>انبار</value>
+  </data>
 </root>

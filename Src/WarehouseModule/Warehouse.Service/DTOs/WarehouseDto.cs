@@ -1,11 +1,45 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+﻿using NGErp.General.Service.DTOs;
+
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record WarehouseDto(
     Guid Id,
     string Code,
     string Title,
     bool IsActive,
-    decimal MaxMonetaryValue
+    decimal MaxMonetaryValue,
+    WarehouseTypeDto warehouseType,
+    CompanyUnitDto companyUnit,
+
+    Guid? WarehouseSlaveAccountCompanyId,
+    string WarehouseAccountMasterValue,
+    string WarehouseAccountSlaveValue,
+    string WarehouseAccountDetailed1Value,
+    string WarehouseAccountDetailed2Value,
+
+    Guid? SaleSlaveAccountCompanyId,
+    string SaleAccountMasterValue,
+    string SaleAccountSlaveValue,
+    string SaleAccountDetailed1Value,
+    string SaleAccountDetailed2Value,
+
+    Guid? ExportSaleSlaveAccountCompanyId,
+    string ExportSaleAccountMasterValue,
+    string ExportSaleAccountSlaveValue,
+    string ExportSaleAccountDetailed1Value,
+    string ExportSaleAccountDetailed2Value,
+
+    Guid? ReturnFromSaleSlaveAccountCompanyId,
+    string ReturnFromSaleAccountMasterValue,
+    string ReturnFromSaleAccountSlaveValue,
+    string ReturnFromSaleAccountDetailed1Value,
+    string ReturnFromSaleAccountDetailed2Value,
+
+    Guid? ReturnFromPurchaseSlaveAccountCompanyId,
+    string ReturnFromPurchaseAccountMasterValue,
+    string ReturnFromPurchaseAccountSlaveValue,
+    string ReturnFromPurchaseAccountDetailed1Value,
+    string ReturnFromPurchaseAccountDetailed2Value
 );
 
 public record WarehouseListDto(

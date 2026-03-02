@@ -72,6 +72,7 @@ public class WarehouseController(
             id,
             ct
         );
+
         return Ok(warehouse);
     }
 

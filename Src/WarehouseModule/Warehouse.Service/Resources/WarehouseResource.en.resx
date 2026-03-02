@@ -132,4 +132,7 @@
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>UnitOfMeasurement</value>
   </data>
+  <data name="Warehouse" xml:space="preserve">
+    <value>Warehouse</value>
+  </data>
 </root>

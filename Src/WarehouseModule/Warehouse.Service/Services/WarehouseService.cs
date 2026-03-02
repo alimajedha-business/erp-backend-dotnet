@@ -44,13 +44,22 @@ public class WarehouseService(
         WarehouseParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    ) => GetAllAsync(
-        companyId,
-        parameters,
-        includeQuery,
-        ct,
-        filterNodeDto
-    );
+    )
+    {
+        return GetAllAsync(
+            companyId,
+            parameters,
+            includeQuery,
+            ct,
+            filterNodeDto
+        );
+    }
+
+    public override Task<WarehouseDto> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    ) => GetByIdAsync(companyId, id, includeQuery, ct);
 
     private static IQueryable<Domain.Entities.Warehouse> includeQuery(
         IQueryable<Domain.Entities.Warehouse> q
