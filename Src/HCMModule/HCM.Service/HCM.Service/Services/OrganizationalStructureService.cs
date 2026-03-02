@@ -25,7 +25,11 @@ public class OrganizationalStructureService(
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
     private readonly ICompanyService _companyService = companyService;
 
-    public async Task<ListResponseModel<OrganizationalStructureDto>> GetAll(Guid companyId, OrganizationalStructureParameters parameters, CancellationToken ct)
+    public async Task<ListResponseModel<OrganizationalStructureDto>> GetAll(
+        Guid companyId,
+        OrganizationalStructureParameters parameters,
+        CancellationToken ct
+        )
     {
         await _companyService.GetByIdAsync(companyId, ct);
         var listQueryResult = await _organizationalStructureRepository.GetAllAsync(companyId, parameters, ct);
@@ -37,7 +41,11 @@ public class OrganizationalStructureService(
        );
     }
 
-    public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(Guid companyId, DateOnly date, CancellationToken ct)
+    public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(
+        Guid companyId,
+        DateOnly date,
+        CancellationToken ct
+        )
     {
         var company = await _companyService.GetByIdAsync(companyId, ct);
 
@@ -57,7 +65,7 @@ public class OrganizationalStructureService(
         {
             Id = Guid.Empty, // virtual
             ParentItemId = null,
-            Node = new OrganizationNodeDto
+            Node = new OrganizationNodeTreeDto
             {
                 Id = Guid.Empty,
                 NodeType = NodeType.Department,
@@ -118,7 +126,7 @@ public class OrganizationalStructureService(
             .GetAllAsync(companyId, includeQuery, ct);
 
         // 3️ Validate Tree
-        ValidateTree(newTree, allNodes.items, effectiveFrom);
+        // ValidateTree(newTree, allNodes.items, effectiveFrom);
 
         // 4️⃣ Create new structure (history preservation)
         var structure = new OrganizationalStructure
@@ -140,7 +148,7 @@ public class OrganizationalStructureService(
         }
 
         await _organizationalStructureRepository.AddAsync(structure, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        //await _unitOfWork.SaveChangesAsync(ct);
 
         return await GetTreeAtDateAsync(companyId, effectiveFrom, ct);
     }
@@ -152,7 +160,7 @@ public class OrganizationalStructureService(
             Id = item.Id,
             //NodeId = item.NodeId,
             ParentItemId = item.ParentItemId,
-            Node = new OrganizationNodeDto
+            Node = new OrganizationNodeTreeDto
             {
                 Id = item.Node.Id,
                 NodeType = item.Node.NodeType,
@@ -180,22 +188,23 @@ public class OrganizationalStructureService(
     OrganizationalStructureItem? parent,
     OrganizationalStructure structure)
     {
-        var item = new OrganizationalStructureItem
-        {
-            Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
-            CompanyId = structure.CompanyId,
-            OrganizationalStructureId = structure.Id,
-            NodeId = dto.Node.Id,
-            ParentItemId = parent?.Id,
-            Children = new List<OrganizationalStructureItem>()
-        };
+        //var item = new OrganizationalStructureItem
+        //{
+        //    Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
+        //    CompanyId = structure.CompanyId,
+        //    OrganizationalStructureId = structure.Id,
+        //    NodeId = dto.Node.Id,
+        //    ParentItemId = parent?.Id,
+        //    Children = new List<OrganizationalStructureItem>()
+        //};
 
-        structure.Items!.Add(item);
+        //structure.Items!.Add(item);
 
-        foreach (var child in dto.Children)
-        {
-            BuildItemsRecursive(child, item, structure);
-        }
+        //foreach (var child in dto.Children)
+        //{
+        //    BuildItemsRecursive(child, item, structure);
+        //}
+        throw new NotImplementedException();
     }
 
     private void ValidateTree(
@@ -243,7 +252,7 @@ public class OrganizationalStructureService(
             var childType = node.Node.NodeType;
 
             if (parentType == NodeType.Position && childType != NodeType.Position)
-                throw new BusinessException("Position node can only have Position children.");
+                throw new Exception("Position node can only have Position children.");
 
             if (parentType == NodeType.Department)
             {
@@ -254,7 +263,7 @@ public class OrganizationalStructureService(
                                     x.Node.NodeType == NodeType.Position);
 
                     if (positionChildrenCount > 1)
-                        throw new BusinessException("Department can only have one Position.");
+                        throw new Exception("Department can only have one Position.");
                 }
             }
         }
@@ -269,7 +278,7 @@ public class OrganizationalStructureService(
             .Select(x => x.Node.Id);
 
         if (departmentIds.Count() != departmentIds.Distinct().Count())
-            throw new BusinessException("Duplicate department in tree is not allowed.");
+            throw new Exception("Duplicate department in tree is not allowed.");
     }
 
     private void ValidateNoDuplicatePositionsUnderParent(
@@ -281,7 +290,7 @@ public class OrganizationalStructureService(
             .Where(g => g.Count() > 1);
 
         if (duplicates.Any())
-            throw new BusinessException("Duplicate position under same parent.");
+            throw new Exception("Duplicate position under same parent.");
     }
 
     private void ValidateNoCircularReference(
@@ -292,7 +301,7 @@ public class OrganizationalStructureService(
         void DFS(OrganizationalStructureTreeNodeDto node, HashSet<Guid> path)
         {
             if (path.Contains(node.Id))
-                throw new BusinessException("Circular reference detected.");
+                throw new Exception("Circular reference detected.");
 
             path.Add(node.Id);
 

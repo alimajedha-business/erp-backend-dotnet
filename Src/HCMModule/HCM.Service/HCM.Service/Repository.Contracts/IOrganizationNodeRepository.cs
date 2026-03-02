@@ -3,5 +3,5 @@ using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.Repository.Contracts;
 
-public interface IDepartmentRepository : IRepositoryWithCompany<Department>
+public interface IOrganizationNodeRepository : IRepositoryWithCompany<OrganizationNode>
 { }
