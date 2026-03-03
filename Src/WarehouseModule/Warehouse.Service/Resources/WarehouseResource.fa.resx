@@ -126,6 +126,9 @@
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>
+  <data name="InventoryMovementType" xml:space="preserve">
+    <value>نوع حواله</value>
+  </data>
   <data name="Item" xml:space="preserve">
     <value>کالا</value>
   </data>
