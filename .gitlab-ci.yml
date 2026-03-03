@@ -1,6 +1,4 @@
 # .gitlab-ci.yml
-# Root of repo → next to NGErp.sln
-
 stages:
   - build
   - publish
@@ -15,11 +13,13 @@ variables:
   MIGRATIONS_BUNDLE: "${CI_PROJECT_DIR}/efbundle"
   DEPLOY_TARGET: "/home/emaco/www/dev-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
+  NUGET_SOURCE: "/opt/nuget-packages"
 
 cache:
   key: "dotnet-${CI_COMMIT_REF_SLUG}"
   paths:
     - ~/.nuget/packages
+    - /opt/nuget-packages/
 
 build:
   stage: build
@@ -28,11 +28,11 @@ build:
     - ubuntu
     - deploy
   script:
-    - dotnet restore "$SOLUTION_FILE"
+    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE"
     - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: on_success     # Validate on MRs
+      when: on_success
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
 
@@ -40,11 +40,6 @@ create-migration-bundle:
   stage: migrations
   tags: [dotnet, ubuntu, deploy]
   script:
-    # Install EF Core CLI tool globally (or per-job)
-    #- dotnet tool install --global dotnet-ef --version 8.0.*   # or pin your version e.g. 9.0.*
-      
-
-    # Create self-contained executable bundle
     - dotnet ef migrations bundle
         --project "$MIGRATIONS_PROJECT"
         --startup-project "$API_PROJECT"
@@ -63,7 +58,7 @@ create-migration-bundle:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - when: never
-    
+
 publish:
   stage: publish
   tags:
@@ -71,7 +66,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR"
+    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
@@ -88,7 +83,7 @@ deploy:
     - deploy
   script:
     chmod +x "$MIGRATIONS_BUNDLE"
-    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING} --verbose
+    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING}" --verbose
     - sudo /usr/local/bin/deploy-ngerp.sh "$PUBLISH_DIR"
     - echo "Deployment done."
   rules:
