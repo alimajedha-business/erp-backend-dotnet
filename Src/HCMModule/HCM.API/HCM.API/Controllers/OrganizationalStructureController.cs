@@ -1,7 +1,12 @@
-﻿using Asp.Versioning;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
+using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
 
@@ -35,5 +40,23 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
     {
         var result = await _organizationalStructureService.GetAll(companyId, parameters, ct);
         return Ok(result);
+    }
+
+    [HttpPost()]
+    public ActionResult Save(
+        [FromRoute] Guid companyId,
+        [FromQuery,Required] DateOnly effectiveDate,
+        [FromQuery] string? description,
+        [FromBody] OrganizationalStructureTreeDto dto,
+        CancellationToken ct
+        )
+    {
+        _organizationalStructureService.SaveTreeAsync(
+            companyId,
+            dto,
+            effectiveDate,
+            description,
+            ct);
+        return Ok(dto);
     }
 }
