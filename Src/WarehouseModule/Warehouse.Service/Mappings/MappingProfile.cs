@@ -44,6 +44,10 @@ public class MappingProfile : Profile
         CreateMap<CreateCategoryAttributeRuleDto, CategoryAttributeRule>();
         CreateMap<PatchCategoryAttributeRuleDto, CategoryAttributeRule>().ReverseMap();
 
+        CreateMap<InventoryMovementType, InventoryMovementTypeDto>();
+        CreateMap<CreateInventoryMovementTypeDto, InventoryMovementType>();
+        CreateMap<PatchInventoryMovementTypeDto, InventoryMovementType>().ReverseMap();
+
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
         CreateMap<PatchItemDto, Item>().ReverseMap();
