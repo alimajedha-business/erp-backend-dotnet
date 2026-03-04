@@ -2,7 +2,7 @@
 stages:
   - build
   - publish
-  - migrations
+ # - migrations
   - deploy
 
 variables:
@@ -36,30 +36,30 @@ build:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
 
-create-migration-bundle:
-  stage: migrations
-  tags: [dotnet, ubuntu, deploy]
-  script:
-    - export NUGET_PACKAGES=/opt/nuget-packages
-    - dotnet ef migrations bundle
-        --project "$MIGRATIONS_PROJECT"
-        --startup-project "$API_PROJECT"
-        --configuration Release
-        --self-contained
-        --runtime linux-x64
-        --output "$MIGRATIONS_BUNDLE"
-        --verbose
-        --force
-        --context MainDbContext
-        --suppress-warnings
-  artifacts:
-    paths:
-      - "$MIGRATIONS_BUNDLE"
-    expire_in: 7 days
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: on_success
-    - when: never
+#create-migration-bundle:
+#  stage: migrations
+#  tags: [dotnet, ubuntu, deploy]
+#  script:
+#    - export NUGET_PACKAGES=/opt/nuget-packages
+#    - dotnet ef migrations bundle
+#        --project "$MIGRATIONS_PROJECT"
+#        --startup-project "$API_PROJECT"
+#        --configuration Release
+#        --self-contained
+#        --runtime linux-x64
+#        --output "$MIGRATIONS_BUNDLE"
+#        --verbose
+#        --force
+#        --context MainDbContext
+#       --suppress-warnings
+# artifacts:
+#    paths:
+#     - "$MIGRATIONS_BUNDLE"
+#    expire_in: 7 days
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      when: on_success
+#    - when: never
 
 publish:
   stage: publish
