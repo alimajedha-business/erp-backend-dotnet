@@ -50,6 +50,7 @@ create-migration-bundle:
         --verbose
         --force
         --context MainDbContext
+        --source "$NUGET_SOURCE"
   artifacts:
     paths:
       - "$MIGRATIONS_BUNDLE"
