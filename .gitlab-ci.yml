@@ -51,7 +51,6 @@ create-migration-bundle:
         --verbose
         --force
         --context MainDbContext
-        --no-build
         --suppress-warnings
   artifacts:
     paths:
