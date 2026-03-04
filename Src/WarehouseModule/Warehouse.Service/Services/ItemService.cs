@@ -61,7 +61,7 @@ public class ItemService(
         );
 
         return new ListResponseModel<ItemDto>(
-            items: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );

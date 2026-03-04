@@ -101,7 +101,7 @@ public class PositionService(
           );
 
         return new ListResponseModel<PositionDto>(
-            items: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             positionParameters
         );

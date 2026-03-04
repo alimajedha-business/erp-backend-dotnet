@@ -94,7 +94,7 @@ public class DepartmentService(
           );
 
         return new ListResponseModel<DepartmentDto>(
-            items: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             departmentParameters
         );
