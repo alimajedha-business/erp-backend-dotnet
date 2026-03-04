@@ -40,6 +40,7 @@ create-migration-bundle:
   stage: migrations
   tags: [dotnet, ubuntu, deploy]
   script:
+    - export NUGET_PACKAGES=/opt/nuget-packages
     - dotnet ef migrations bundle
         --project "$MIGRATIONS_PROJECT"
         --startup-project "$API_PROJECT"
@@ -50,6 +51,8 @@ create-migration-bundle:
         --verbose
         --force
         --context MainDbContext
+        --no-build
+        --suppress-warnings
   artifacts:
     paths:
       - "$MIGRATIONS_BUNDLE"
