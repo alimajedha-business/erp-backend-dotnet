@@ -1,7 +1,5 @@
-﻿using NGErp.Base.Service.Repository.Contracts;
+﻿using NGErp.General.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IWarehouseRepository : IRepository<Domain.Entities.Warehouse>
-{
-}
+public interface IWarehouseRepository : IRepositoryWithCompany<Domain.Entities.Warehouse> { }

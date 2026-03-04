@@ -126,10 +126,16 @@
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
+  <data name="InventoryMovementType" xml:space="preserve">
+    <value>InventoryMovementType</value>
+  </data>
   <data name="Item" xml:space="preserve">
     <value>Item</value>
   </data>
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>UnitOfMeasurement</value>
+  </data>
+  <data name="Warehouse" xml:space="preserve">
+    <value>Warehouse</value>
   </data>
 </root>

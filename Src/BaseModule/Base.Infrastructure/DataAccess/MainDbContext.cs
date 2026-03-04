@@ -81,6 +81,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
         public virtual DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+        public virtual DbSet<WarehouseType> WarehouseTypes { get; set; }
 
         #endregion Warehouse
     }

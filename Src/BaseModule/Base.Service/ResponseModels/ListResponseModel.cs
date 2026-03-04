@@ -4,11 +4,18 @@ namespace NGErp.Base.Service.ResponseModels;
 
 public sealed class ListResponseModel<T>
 {
-    public IReadOnlyList<T> Items { get; }
-    public MetaData MetaData { get; }
+    public IReadOnlyList<T> Results { get; }
+    public int TotalCount { get; }
+
+    public int CurrentPage { get; }
+    public int TotalPages { get; }
+    public int PageSize { get; }
+
+    public bool? HasPrevious => CurrentPage > 1;
+    public bool? HasNext => CurrentPage < TotalPages;
 
     public ListResponseModel(
-        IReadOnlyList<T> items,
+        IReadOnlyList<T> results,
         int totalCount,
         RequestParameters requestParameters
     )
@@ -17,21 +24,19 @@ public sealed class ListResponseModel<T>
         var pageNumber = paginated ? requestParameters.PageNumber : 1;
         var pageSize = paginated ? requestParameters.PageSize : totalCount;
 
-        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(results);
         ArgumentOutOfRangeException.ThrowIfNegative(totalCount);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageNumber);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
+        ArgumentOutOfRangeException.ThrowIfNegative(pageSize);
 
-        Items = items;
+        Results = results;
 
-        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        var ps = (double)pageSize;
+        var totalPages = ps > 0 ? (int)Math.Ceiling(totalCount / ps) : 0;
 
-        MetaData = new MetaData
-        {
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            CurrentPage = pageNumber,
-            TotalPages = totalPages,
-        };
+        TotalCount = totalCount;
+        PageSize = pageSize;
+        CurrentPage = pageNumber;
+        TotalPages = totalPages;
     }
 }

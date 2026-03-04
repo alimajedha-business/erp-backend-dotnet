@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260228062755_RenameWarehouseProp")]
+    partial class RenameWarehouseProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -847,14 +850,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -874,8 +869,8 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -883,8 +878,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("IsDeleted");
 
@@ -1390,6 +1383,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1410,16 +1406,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("WarehouseSlaveAccountCompanyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("WarehouseTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyUnitId");
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("WarehouseTypeId");
+                    b.HasIndex("TypeId");
 
                     b.HasIndex("CompanyId", "Code")
                         .IsUnique()
@@ -1789,15 +1782,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("ToLocation");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryMovementType", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Item", b =>
                 {
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Category", "Category")
@@ -1954,7 +1938,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseType", "WarehouseType")
                         .WithMany("Warehouses")
-                        .HasForeignKey("WarehouseTypeId")
+                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
