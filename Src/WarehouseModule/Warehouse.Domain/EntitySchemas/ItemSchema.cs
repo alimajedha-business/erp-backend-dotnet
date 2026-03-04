@@ -37,6 +37,13 @@ public sealed class ItemSchema : IFilterSchema<Item>
             { "eq", "ne" }
         );
 
+        filterSchema.Fields["categoryId"] = new FilterFieldInfo(
+            PropertyName: nameof(Item.CategoryId),
+            PropertyType: typeof(Guid),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         return filterSchema;
     }
 }
