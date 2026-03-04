@@ -84,8 +84,8 @@ deploy:
     - ubuntu
     - deploy
   script:
-    chmod +x "$MIGRATIONS_BUNDLE"
-    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING}" --verbose
+#    chmod +x "$MIGRATIONS_BUNDLE"
+#    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING}" --verbose
     - sudo /usr/local/bin/deploy-ngerp.sh "$PUBLISH_DIR"
     - echo "Deployment done."
   rules:
