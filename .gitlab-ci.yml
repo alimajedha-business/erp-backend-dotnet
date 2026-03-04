@@ -28,7 +28,7 @@ build:
     - ubuntu
     - deploy
   script:
-    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE"
+    - dotnet restore "$SOLUTION_FILE"
     - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -50,7 +50,6 @@ create-migration-bundle:
         --verbose
         --force
         --context MainDbContext
-        --source "$NUGET_SOURCE"
   artifacts:
     paths:
       - "$MIGRATIONS_BUNDLE"
@@ -67,7 +66,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE"
+    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
