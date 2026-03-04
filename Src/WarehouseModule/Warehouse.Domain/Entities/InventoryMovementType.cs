@@ -12,7 +12,6 @@ public class InventoryMovementType :
 {
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
-    public bool IncreaseStockQuantity { get; private set; } = true;
 
     public void Map(EntityTypeBuilder<InventoryMovementType> builder)
     {
@@ -26,9 +25,5 @@ public class InventoryMovementType :
         builder
             .Property(e => e.Title)
             .HasMaxLength(50);
-
-        builder
-            .Property(e => e.IncreaseStockQuantity)
-            .HasDefaultValue(true);
     }
 }
