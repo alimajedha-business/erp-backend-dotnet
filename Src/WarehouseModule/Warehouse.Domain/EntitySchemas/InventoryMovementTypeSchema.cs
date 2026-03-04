@@ -23,13 +23,6 @@ public sealed class InventoryMovementTypeSchema : IFilterSchema<InventoryMovemen
             { "eq", "ne", "gt", "gte", "lt", "lte" }
         );
 
-        filterSchema.Fields["increaseStockQuantity"] = new FilterFieldInfo(
-            PropertyName: nameof(InventoryMovementType.IncreaseStockQuantity),
-            PropertyType: typeof(bool),
-            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne" }
-        );
-
         return filterSchema;
     }
 }
