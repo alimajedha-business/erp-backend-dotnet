@@ -1,6 +1,4 @@
-﻿using NGErp.Base.Service.DTOs;
-
-namespace NGErp.Base.Service.RequestFeatures;
+﻿namespace NGErp.Base.Service.RequestFeatures;
 
 public abstract class RequestParameters
 {

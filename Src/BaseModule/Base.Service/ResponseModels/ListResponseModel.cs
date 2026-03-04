@@ -20,11 +20,12 @@ public sealed class ListResponseModel<T>
         ArgumentNullException.ThrowIfNull(items);
         ArgumentOutOfRangeException.ThrowIfNegative(totalCount);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageNumber);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
+        ArgumentOutOfRangeException.ThrowIfNegative(pageSize);
 
         Items = items;
 
-        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        var ps = (double)pageSize;
+        var totalPages = ps > 0 ? (int)Math.Ceiling(totalCount / ps) : 0;
 
         MetaData = new MetaData
         {
