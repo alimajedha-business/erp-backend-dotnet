@@ -1659,7 +1659,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany()
                         .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -1686,7 +1686,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany()
                         .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Category", "Category")
@@ -1738,7 +1738,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
                         .WithMany()
                         .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -1836,7 +1836,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
