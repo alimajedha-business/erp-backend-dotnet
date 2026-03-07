@@ -10,10 +10,12 @@ public class UnitOfMeasurement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<UnitOfMeasurement>
 {
-    public string Dimension { get; private set; } = default!;
+    public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public string Symbol { get; private set; } = default!;
-    public bool IsDiscrete { get; private set; } = false;
+    public Guid DimensionId { get; private set; }
+
+    public required MeasurementDimension Dimension { get; set; }
 
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
@@ -26,7 +28,7 @@ public class UnitOfMeasurement :
             .HasDatabaseName("UX_Uom_Dimension_Title");
 
         builder
-            .Property(e => e.Dimension)
+            .Property(e => e.Code)
             .HasMaxLength(50);
 
         builder
@@ -38,7 +40,9 @@ public class UnitOfMeasurement :
             .HasMaxLength(20);
 
         builder
-            .Property(e => e.IsDiscrete)
-            .HasDefaultValue(false);
+            .HasOne(e => e.Dimension)
+            .WithMany(e => e.Measurements)
+            .HasForeignKey(e => e.Dimension)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
