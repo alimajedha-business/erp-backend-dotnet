@@ -13,9 +13,9 @@ public class UnitOfMeasurement :
     public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public string Symbol { get; private set; } = default!;
-    public Guid DimensionId { get; private set; }
+    public Guid MeasurementDimensionId { get; private set; }
 
-    public required MeasurementDimension Dimension { get; set; }
+    public required MeasurementDimension MeasurementDimension { get; set; }
 
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
@@ -23,7 +23,7 @@ public class UnitOfMeasurement :
             .ToTable(nameof(UnitOfMeasurement), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.Dimension, i.Title })
+            .HasIndex(i => new { i.MeasurementDimensionId, i.Title })
             .IsUnique()
             .HasDatabaseName("UX_Uom_Dimension_Title");
 
@@ -40,9 +40,9 @@ public class UnitOfMeasurement :
             .HasMaxLength(20);
 
         builder
-            .HasOne(e => e.Dimension)
-            .WithMany(e => e.Measurements)
-            .HasForeignKey(e => e.Dimension)
+            .HasOne(e => e.MeasurementDimension)
+            .WithMany(e => e.UnitOfMeasurements)
+            .HasForeignKey(e => e.MeasurementDimensionId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
