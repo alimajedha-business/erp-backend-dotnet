@@ -5,7 +5,7 @@ namespace NGErp.Base.Service.ResponseModels;
 public sealed class ListResponseModel<T>
 {
     public IReadOnlyList<T> Results { get; }
-    public int TotalCount { get; }
+    public int Count { get; }
 
     public int CurrentPage { get; }
     public int TotalPages { get; }
@@ -34,7 +34,7 @@ public sealed class ListResponseModel<T>
         var ps = (double)pageSize;
         var totalPages = ps > 0 ? (int)Math.Ceiling(totalCount / ps) : 0;
 
-        TotalCount = totalCount;
+        Count = totalCount;
         PageSize = pageSize;
         CurrentPage = pageNumber;
         TotalPages = totalPages;
