@@ -15,7 +15,7 @@ public interface IOrganizationalStructureService
 
     Task<OrganizationalStructureTreeDto> SaveTreeAsync(
         Guid companyId,
-        OrganizationalStructureTreeDto incomingTree,
+        CreateOrganizationStructureDto incomingTree,
         DateOnly effectiveFrom,
         string? description = null,
         CancellationToken ct = default

@@ -1,4 +1,4 @@
-﻿using NGErp.HCM.Domain.Entities;
+﻿using System.Text.Json.Serialization;
 
 namespace NGErp.HCM.Service.DTOs;
 
@@ -9,21 +9,17 @@ public class OrganizationalStructureDto
     public string? Description { get; set; }
 }
 
-public class OrganizationalStructureTreeNodeDto
-{
-    public Guid Id { get; set; }
-
-    // public Guid NodeId { get; set; }
-    public Guid? ParentItemId { get; set; }
-
-    public OrganizationNodeTreeDto Node { get; set; } = null!;
-    public List<OrganizationalStructureTreeNodeDto> Children { get; set; } = [];
-}
-
 public class OrganizationalStructureTreeDto
 {
     public Guid Id { get; set; }
     public DateOnly EffectiveFrom { get; set; }
     public string? Description { get; set; }
-    public List<OrganizationalStructureTreeNodeDto> Items { get; set; } = [];
+    public List<OrganizationalStructureTreeItemDto> Items { get; set; } = [];
+}
+
+public class CreateOrganizationStructureDto
+{
+    public required DateOnly EffectiveFrom { get; set; }
+    public string? Description { get; set; }
+    public List<CreateOrganizationalStructureItemDto> Items { get; set; } = [];
 }

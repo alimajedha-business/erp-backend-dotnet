@@ -45,9 +45,9 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
     [HttpPost()]
     public ActionResult Save(
         [FromRoute] Guid companyId,
-        [FromQuery,Required] DateOnly effectiveDate,
+        [FromQuery, Required] DateOnly effectiveDate,
         [FromQuery] string? description,
-        [FromBody] OrganizationalStructureTreeDto dto,
+        [FromBody] CreateOrganizationStructureDto dto,
         CancellationToken ct
         )
     {

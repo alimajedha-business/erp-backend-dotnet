@@ -61,7 +61,7 @@ public class OrganizationalStructureService(
                     .ThenInclude(n => n.Position)
             .OrderByDescending(s => s.EffectiveFrom)
             .FirstOrDefaultAsync();
-        var companyNode = new OrganizationalStructureTreeNodeDto
+        var companyNode = new OrganizationalStructureTreeItemDto
         {
             Id = Guid.Empty, // virtual
             ParentItemId = null,
@@ -113,7 +113,7 @@ public class OrganizationalStructureService(
 
     public async Task<OrganizationalStructureTreeDto> SaveTreeAsync(
         Guid companyId,
-        OrganizationalStructureTreeDto newTree,
+        CreateOrganizationStructureDto incomingTree,
         DateOnly effectiveFrom,
         string? description = null,
         CancellationToken ct = default)
@@ -134,16 +134,16 @@ public class OrganizationalStructureService(
             Id = Guid.NewGuid(),
             CompanyId = companyId,
             EffectiveFrom = effectiveFrom,
-            Description = newTree.Description,
+            Description = incomingTree.Description,
             Items = new List<OrganizationalStructureItem>()
         };
 
         // 5️⃣ Flatten tree and build items
-        foreach (var root in newTree.Items)
+        foreach (var root in incomingTree.Items)
         {
             foreach (var child in root.Children)
             {
-                BuildItemsRecursive(child, null, structure);
+                //  BuildItemsRecursive(child, null, structure);
             }
         }
 
@@ -153,9 +153,9 @@ public class OrganizationalStructureService(
         return await GetTreeAtDateAsync(companyId, effectiveFrom, ct);
     }
 
-    private OrganizationalStructureTreeNodeDto MapToTreeNodeDto(OrganizationalStructureItem item)
+    private OrganizationalStructureTreeItemDto MapToTreeNodeDto(OrganizationalStructureItem item)
     {
-        return new OrganizationalStructureTreeNodeDto
+        return new OrganizationalStructureTreeItemDto
         {
             Id = item.Id,
             //NodeId = item.NodeId,
@@ -184,7 +184,7 @@ public class OrganizationalStructureService(
     }
 
     private void BuildItemsRecursive(
-    OrganizationalStructureTreeNodeDto dto,
+    OrganizationalStructureTreeItemDto dto,
     OrganizationalStructureItem? parent,
     OrganizationalStructure structure)
     {
@@ -220,12 +220,12 @@ public class OrganizationalStructureService(
         ValidateNoCircularReference(tree);
     }
 
-    private List<OrganizationalStructureTreeNodeDto> Flatten(
+    private List<OrganizationalStructureTreeItemDto> Flatten(
     OrganizationalStructureTreeDto tree)
     {
-        var result = new List<OrganizationalStructureTreeNodeDto>();
+        var result = new List<OrganizationalStructureTreeItemDto>();
 
-        void Traverse(OrganizationalStructureTreeNodeDto node)
+        void Traverse(OrganizationalStructureTreeItemDto node)
         {
             result.Add(node);
             foreach (var child in node.Children)
@@ -239,7 +239,7 @@ public class OrganizationalStructureService(
     }
 
     private void ValidateParentChildRules(
-    List<OrganizationalStructureTreeNodeDto> nodes,
+    List<OrganizationalStructureTreeItemDto> nodes,
     List<OrganizationNode> allNodes)
     {
         var lookup = nodes.ToDictionary(x => x.Id);
@@ -270,7 +270,7 @@ public class OrganizationalStructureService(
     }
 
     private void ValidateNoDuplicateUnits(
-    List<OrganizationalStructureTreeNodeDto> nodes,
+    List<OrganizationalStructureTreeItemDto> nodes,
     List<OrganizationNode> allNodes)
     {
         var departmentIds = nodes
@@ -282,7 +282,7 @@ public class OrganizationalStructureService(
     }
 
     private void ValidateNoDuplicatePositionsUnderParent(
-    List<OrganizationalStructureTreeNodeDto> nodes)
+    List<OrganizationalStructureTreeItemDto> nodes)
     {
         var duplicates = nodes
             .Where(x => x.Node.NodeType == NodeType.Position)
@@ -298,7 +298,7 @@ public class OrganizationalStructureService(
     {
         var visited = new HashSet<Guid>();
 
-        void DFS(OrganizationalStructureTreeNodeDto node, HashSet<Guid> path)
+        void DFS(OrganizationalStructureTreeItemDto node, HashSet<Guid> path)
         {
             if (path.Contains(node.Id))
                 throw new Exception("Circular reference detected.");
