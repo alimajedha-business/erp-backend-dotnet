@@ -35,7 +35,7 @@ public class OrganizationalStructureService(
         var listQueryResult = await _organizationalStructureRepository.GetAllAsync(companyId, parameters, ct);
 
         return new ListResponseModel<OrganizationalStructureDto>(
-           items: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(listQueryResult.items),
+           results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(listQueryResult.items),
            totalCount: listQueryResult.count,
            parameters
        );
