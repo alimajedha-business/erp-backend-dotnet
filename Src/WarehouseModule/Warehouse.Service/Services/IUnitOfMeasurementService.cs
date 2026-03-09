@@ -10,6 +10,7 @@ namespace NGErp.Warehouse.Service.Services;
 public interface IUnitOfMeasurementService : IBaseServiceWithCompany<
     UnitOfMeasurement,
     UnitOfMeasurementDto,
+    UnitOfMeasurementListDto,
     UnitOfMeasurementParameters,
     IUnitOfMeasurementRepository,
     WarehouseResource

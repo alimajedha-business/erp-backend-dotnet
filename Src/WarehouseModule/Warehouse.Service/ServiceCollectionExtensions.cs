@@ -27,7 +27,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
         services.AddSingleton<IFilterSchema<InventoryMovementType>, InventoryMovementTypeSchema>();
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
-        services.AddSingleton<IFilterSchema<MeasurementDimension>, MeasurementDimensionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
