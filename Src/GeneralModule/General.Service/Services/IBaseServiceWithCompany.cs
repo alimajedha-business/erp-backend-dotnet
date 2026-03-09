@@ -73,6 +73,11 @@ public interface IBaseServiceWithCompany<
         CancellationToken ct
     );
 
+    Task<int> GetNextCode(
+        Guid companyId,
+        CancellationToken ct
+    );
+
     Task<TDto> PatchAsync<TPatchDto>(
         Guid companyId,
         Guid id,

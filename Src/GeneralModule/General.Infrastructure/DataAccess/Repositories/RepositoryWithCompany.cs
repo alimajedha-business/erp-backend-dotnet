@@ -188,4 +188,29 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Where(predicate);
     }
+
+    public virtual async Task<int> GetNextCode(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var codeField = typeof(T).GetProperty("Code");
+        if (codeField == null)
+        {
+            throw new Exception("Property named Code does not exist.");
+        }
+
+        if (codeField.PropertyType != typeof(int))
+        {
+            throw new Exception("Type of property Code is not integer.");
+        }
+
+        var code = await _dbSet
+            .Where(e => e.CompanyId == companyId)
+            .Select(e => EF.Property<int>(e, "Code"))
+            .OrderByDescending(e => e)
+            .FirstOrDefaultAsync(ct);
+
+        return code + 1;
+    }
 }
