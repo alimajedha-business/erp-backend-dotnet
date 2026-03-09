@@ -9,9 +9,9 @@ public class MeasurementDimension :
     BaseEntity,
     IBaseEntityTypeConfiguration<MeasurementDimension>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsDiscrete { get; private set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required bool IsDiscrete { get; set; } = false;
 
     public virtual List<UnitOfMeasurement> UnitOfMeasurements { get; set; } = [];
 

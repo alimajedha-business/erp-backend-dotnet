@@ -7,7 +7,7 @@ namespace NGErp.Warehouse.Service.DTOs;
 
 public record AttributeDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title,
     AttributeDataType DataType,
     string DataTypeDescription,
@@ -26,23 +26,23 @@ public record AttributeDto(
 
 public record AttributeSlimDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title
 );
 
 public class CreateAttributeDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
     public required AttributeDataType DataType { get; set; }
-    public bool IsItemAttribute { get; set; } = false;
-    public bool IsRequired { get; set; } = false;
-    public bool IsStockDimension { get; set; } = false;
+    public required bool IsItemAttribute { get; set; } = false;
+    public required bool IsRequired { get; set; } = false;
+    public required bool IsStockDimension { get; set; } = false;
 }
 
 public class PatchAttributeDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Title { get; set; }
     public AttributeDataType? DataType { get; set; }
 }

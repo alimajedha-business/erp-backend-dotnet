@@ -9,9 +9,9 @@ public record WarehouseTypeDto(
 
 public class CreateWarehouseTypeDto
 {
-    public required int Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
-    public bool IsActive { get; set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
 }
 
 public class PatchWarehouseTypeDto

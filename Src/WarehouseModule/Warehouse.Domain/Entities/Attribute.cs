@@ -15,12 +15,12 @@ public class Attribute :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Attribute>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public AttributeDataType DataType { get; private set; }
-    public bool IsItemAttribute { get; private set; } = false;
-    public bool IsRequired { get; private set; } = false;
-    public bool IsStockDimension {  get; private set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required AttributeDataType DataType { get; set; }
+    public required bool IsItemAttribute { get; set; } = false;
+    public required bool IsRequired { get; set; } = false;
+    public required bool IsStockDimension {  get; set; } = false;
 
     public void Map(EntityTypeBuilder<Attribute> builder)
     {

@@ -10,51 +10,51 @@ public class Warehouse :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Warehouse>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; } = true;
-    public decimal MaxMonetaryValue { get; private set; }
-    public Guid WarehouseTypeId { get; private set; }
-    public Guid CompanyUnitId { get; private set; }
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
+    public decimal MaxMonetaryValue { get; set; }
+    public required Guid WarehouseTypeId { get; set; }
+    public required Guid CompanyUnitId { get; set; }
 
     #region Warehouse
-    public Guid? WarehouseSlaveAccountCompanyId { get; private set; }
-    public string? WarehouseAccountMasterValue { get; private set; }
-    public string? WarehouseAccountSlaveValue { get; private set; }
-    public string? WarehouseAccountDetailed1Value { get; private set; }
-    public string? WarehouseAccountDetailed2Value { get; private set; }
+    public Guid? WarehouseSlaveAccountCompanyId { get; set; }
+    public string? WarehouseAccountMasterValue { get; set; }
+    public string? WarehouseAccountSlaveValue { get; set; }
+    public string? WarehouseAccountDetailed1Value { get; set; }
+    public string? WarehouseAccountDetailed2Value { get; set; }
     #endregion
 
     #region Sale
-    public Guid? SaleSlaveAccountCompanyId { get; private set; }
-    public string? SaleAccountMasterValue { get; private set; }
-    public string? SaleAccountSlaveValue { get; private set; }
-    public string? SaleAccountDetailed1Value { get; private set; }
-    public string? SaleAccountDetailed2Value { get; private set; }
+    public Guid? SaleSlaveAccountCompanyId { get; set; }
+    public string? SaleAccountMasterValue { get; set; }
+    public string? SaleAccountSlaveValue { get; set; }
+    public string? SaleAccountDetailed1Value { get; set; }
+    public string? SaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ExportSale
-    public Guid? ExportSaleSlaveAccountCompanyId { get; private set; }
-    public string? ExportSaleAccountMasterValue { get; private set; }
-    public string? ExportSaleAccountSlaveValue { get; private set; }
-    public string? ExportSaleAccountDetailed1Value { get; private set; }
-    public string? ExportSaleAccountDetailed2Value { get; private set; }
+    public Guid? ExportSaleSlaveAccountCompanyId { get; set; }
+    public string? ExportSaleAccountMasterValue { get; set; }
+    public string? ExportSaleAccountSlaveValue { get; set; }
+    public string? ExportSaleAccountDetailed1Value { get; set; }
+    public string? ExportSaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ReturnFromSale
-    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; private set; }
-    public string? ReturnFromSaleAccountMasterValue { get; private set; }
-    public string? ReturnFromSaleAccountSlaveValue { get; private set; }
-    public string? ReturnFromSaleAccountDetailed1Value { get; private set; }
-    public string? ReturnFromSaleAccountDetailed2Value { get; private set; }
+    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; set; }
+    public string? ReturnFromSaleAccountMasterValue { get; set; }
+    public string? ReturnFromSaleAccountSlaveValue { get; set; }
+    public string? ReturnFromSaleAccountDetailed1Value { get; set; }
+    public string? ReturnFromSaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ReturnFromPurchase
-    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; private set; }
-    public string? ReturnFromPurchaseAccountMasterValue { get; private set; }
-    public string? ReturnFromPurchaseAccountSlaveValue { get; private set; }
-    public string? ReturnFromPurchaseAccountDetailed1Value { get; private set; }
-    public string? ReturnFromPurchaseAccountDetailed2Value { get; private set; }
+    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; set; }
+    public string? ReturnFromPurchaseAccountMasterValue { get; set; }
+    public string? ReturnFromPurchaseAccountSlaveValue { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed1Value { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed2Value { get; set; }
     #endregion
 
     public required WarehouseType WarehouseType { get; set; }
