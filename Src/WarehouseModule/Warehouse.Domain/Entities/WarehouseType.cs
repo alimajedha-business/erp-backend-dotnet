@@ -10,7 +10,7 @@ public class WarehouseType :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<WarehouseType>
 {
-    public string Code { get; private set;  } = default!;
+    public int Code { get; private set;  } = default!;
     public string Title { get; private set; } = default!;
     public bool IsActive { get; private set; }
 
