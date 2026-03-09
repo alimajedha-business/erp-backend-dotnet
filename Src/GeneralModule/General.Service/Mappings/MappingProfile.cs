@@ -10,6 +10,7 @@ namespace NGErp.General.Service.Mappings
         public MappingProfile()
         {
            CreateMap<Company, CompanyDto>();
+           CreateMap<CompanyUnit, CompanyUnitDto>();
         }
     }
 }

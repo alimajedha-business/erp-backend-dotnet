@@ -1,10 +1,8 @@
 # .gitlab-ci.yml
-# Root of repo → next to NGErp.sln
-
 stages:
   - build
   - publish
-  - migrations
+ # - migrations
   - deploy
 
 variables:
@@ -15,11 +13,13 @@ variables:
   MIGRATIONS_BUNDLE: "${CI_PROJECT_DIR}/efbundle"
   DEPLOY_TARGET: "/home/emaco/www/dev-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
+  NUGET_SOURCE: "/opt/nuget-packages"
 
 cache:
   key: "dotnet-${CI_COMMIT_REF_SLUG}"
   paths:
     - ~/.nuget/packages
+    - /opt/nuget-packages/
 
 build:
   stage: build
@@ -28,42 +28,39 @@ build:
     - ubuntu
     - deploy
   script:
-    - dotnet restore "$SOLUTION_FILE"
+    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE"
     - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: on_success     # Validate on MRs
+      when: on_success
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
 
-create-migration-bundle:
-  stage: migrations
-  tags: [dotnet, ubuntu, deploy]
-  script:
-    # Install EF Core CLI tool globally (or per-job)
-    #- dotnet tool install --global dotnet-ef --version 8.0.*   # or pin your version e.g. 9.0.*
-      
+#create-migration-bundle:
+#  stage: migrations
+#  tags: [dotnet, ubuntu, deploy]
+#  script:
+#    - export NUGET_PACKAGES=/opt/nuget-packages
+#    - dotnet ef migrations bundle
+#        --project "$MIGRATIONS_PROJECT"
+#        --startup-project "$API_PROJECT"
+#        --configuration Release
+#        --self-contained
+#        --runtime linux-x64
+#        --output "$MIGRATIONS_BUNDLE"
+#        --verbose
+#        --force
+#        --context MainDbContext
+#       --suppress-warnings
+# artifacts:
+#    paths:
+#     - "$MIGRATIONS_BUNDLE"
+#    expire_in: 7 days
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      when: on_success
+#    - when: never
 
-    # Create self-contained executable bundle
-    - dotnet ef migrations bundle
-        --project "$MIGRATIONS_PROJECT"
-        --startup-project "$API_PROJECT"
-        --configuration Release
-        --self-contained
-        --runtime linux-x64
-        --output "$MIGRATIONS_BUNDLE"
-        --verbose
-        --force
-        --context MainDbContext
-  artifacts:
-    paths:
-      - "$MIGRATIONS_BUNDLE"
-    expire_in: 7 days
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: on_success
-    - when: never
-    
 publish:
   stage: publish
   tags:
@@ -71,7 +68,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR"
+    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
@@ -87,19 +84,9 @@ deploy:
     - ubuntu
     - deploy
   script:
-   # Make bundle executable
-    - chmod +x "$MIGRATIONS_BUNDLE"
-
-    # Run EF Core migrations bundle
-    - >-
-        "$MIGRATIONS_BUNDLE"
-        --connection "$DB_CONNECTION_STRING"
-        --verbose
-
-    # Deploy the published application
+#    chmod +x "$MIGRATIONS_BUNDLE"
+#    - "$MIGRATIONS_BUNDLE" --connection "${DB_CONNECTION_STRING}" --verbose
     - sudo /usr/local/bin/deploy-ngerp.sh "$PUBLISH_DIR"
-
-    # Confirmation
     - echo "Deployment done."
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'

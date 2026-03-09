@@ -18,8 +18,8 @@ public class MappingProfile : Profile
 
         CreateMap<AttributeEnumValue, AttributeEnumValueDto>();
         CreateMap<AttributeEnumValue, AttributeEnumValueListDto>()
-            .ForMember(
-                dst => dst.AttributeTitle,
+            .ForCtorParam(
+                nameof(AttributeEnumValueListDto.AttributeTitle),
                 opt => opt.MapFrom(src => src.Attribute.Title)
             );
         CreateMap<CreateAttributeEnumValueDto, AttributeEnumValue>();
@@ -33,20 +33,28 @@ public class MappingProfile : Profile
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleSlimDto>();
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleListDto>()
-            .ForMember(
-                dst => dst.CategoryTitle, 
+            .ForCtorParam(
+                nameof(CategoryAttributeRuleListDto.CategoryTitle), 
                 opt => opt.MapFrom(src => src.Category.Title)
             )
-            .ForMember(
-                dst => dst.AttributeTitle, 
+            .ForCtorParam(
+                nameof(CategoryAttributeRuleListDto.AttributeTitle), 
                 opt => opt.MapFrom(src => src.Attribute.Title)
             );
         CreateMap<CreateCategoryAttributeRuleDto, CategoryAttributeRule>();
         CreateMap<PatchCategoryAttributeRuleDto, CategoryAttributeRule>().ReverseMap();
 
+        CreateMap<InventoryMovementType, InventoryMovementTypeDto>();
+        CreateMap<CreateInventoryMovementTypeDto, InventoryMovementType>();
+        CreateMap<PatchInventoryMovementTypeDto, InventoryMovementType>().ReverseMap();
+
         CreateMap<Item, ItemDto>();
         CreateMap<CreateItemDto, Item>();
         CreateMap<PatchItemDto, Item>().ReverseMap();
+
+        CreateMap<MeasurementDimension, MeasurementDimensionDto>();
+        CreateMap<CreateMeasurementDimensionDto, MeasurementDimension>();
+        CreateMap<PatchMeasurementDimensionDto, MeasurementDimension>().ReverseMap();
 
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
         CreateMap<UnitOfMeasurement, UnitOfMeasurementTitleDto>();
@@ -56,16 +64,29 @@ public class MappingProfile : Profile
         CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionDto>();
         CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionSlimDto>();
         CreateMap<UnitOfMeasurementConversion, UnitOfMeasurementConversionListDto>()
-            .ForMember(
-                dst => dst.FromUnitOfMeasurementTitle, 
+            .ForCtorParam(
+                nameof(UnitOfMeasurementConversionListDto.FromUnitOfMeasurementTitle), 
                 opt => opt.MapFrom(src => src.FromUnitOfMeasurement.Title)
             )
-            .ForMember(
-                dst => dst.ToUnitOfMeasurementTitle, 
+            .ForCtorParam(
+                nameof(UnitOfMeasurementConversionListDto.ToUnitOfMeasurementTitle), 
                 opt => opt.MapFrom(src => src.ToUnitOfMeasurement.Title)
             );
         CreateMap<CreateUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>();
         CreateMap<PatchUnitOfMeasurementConversionDto, UnitOfMeasurementConversion>().ReverseMap();
+
+        CreateMap<Domain.Entities.Warehouse, WarehouseDto>();
+        CreateMap<Domain.Entities.Warehouse, WarehouseListDto>()
+            .ForCtorParam(
+                nameof(WarehouseListDto.WarehouseTypeTitle),
+                opt => opt.MapFrom(src => src.WarehouseType.Title)
+            )
+            .ForCtorParam(
+                nameof(WarehouseListDto.CompanyUnitTitle),
+                opt => opt.MapFrom(src => src.CompanyUnit.Name)
+            );
+        CreateMap<CreateWarehouseDto, Domain.Entities.Warehouse>();
+        CreateMap<PatchWarehouseDto, Domain.Entities.Warehouse>().ReverseMap();
 
         CreateMap<WarehouseType, WarehouseTypeDto>();
         CreateMap<CreateWarehouseTypeDto, WarehouseType>();

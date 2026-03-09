@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CleanMigrations : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +16,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             migrationBuilder.EnsureSchema(
                 name: "General");
+
+            migrationBuilder.EnsureSchema(
+                name: "Shared");
 
             migrationBuilder.EnsureSchema(
                 name: "HCM");
@@ -34,24 +36,19 @@ namespace NGErp.Base.Infrastructure.Migrations
             //        table.PrimaryKey("PK_Companies", x => x.Id);
             //    });
 
-            migrationBuilder.CreateTable(
-                name: "InventoryMovementType",
-                schema: "Warehouse",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Title = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InventoryMovementType", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "company_units",
+            //    schema: "Shared",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+            //        Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+            //        Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_company_units", x => x.Id);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "Attribute",
@@ -154,6 +151,33 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "InventoryMovementType",
+                schema: "Warehouse",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InventoryMovementType", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InventoryMovementType_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "General",
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrganizationalStructure",
                 schema: "HCM",
                 columns: table => new
@@ -240,14 +264,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Warehouse",
+                name: "WarehouseType",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -258,9 +282,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouse", x => x.Id);
+                    table.PrimaryKey("PK_WarehouseType", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Warehouse_Companies_CompanyId",
+                        name: "FK_WarehouseType_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalSchema: "General",
                         principalTable: "Companies",
@@ -281,8 +305,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -294,12 +317,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         principalTable: "Attribute",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AttributeEnumValue_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalSchema: "General",
-                        principalTable: "Companies",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -308,12 +325,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AttributeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsItemAttribute = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsRequired = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsStockDimension = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AttributeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -458,15 +475,42 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WarehouseLocation",
+                name: "Warehouse",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    ParentLocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    WarehouseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    MaxMonetaryValue = table.Column<decimal>(type: "decimal(22,4)", nullable: false),
+                    WarehouseTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyUnitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WarehouseSlaveAccountCompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    WarehouseAccountMasterValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    WarehouseAccountSlaveValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    WarehouseAccountDetailed1Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    WarehouseAccountDetailed2Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    SaleSlaveAccountCompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SaleAccountMasterValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    SaleAccountSlaveValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    SaleAccountDetailed1Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    SaleAccountDetailed2Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ExportSaleSlaveAccountCompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ExportSaleAccountMasterValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ExportSaleAccountSlaveValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ExportSaleAccountDetailed1Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ExportSaleAccountDetailed2Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromSaleSlaveAccountCompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ReturnFromSaleAccountMasterValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromSaleAccountSlaveValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromSaleAccountDetailed1Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromSaleAccountDetailed2Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromPurchaseSlaveAccountCompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ReturnFromPurchaseAccountMasterValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromPurchaseAccountSlaveValue = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromPurchaseAccountDetailed1Value = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ReturnFromPurchaseAccountDetailed2Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -477,24 +521,29 @@ namespace NGErp.Base.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WarehouseLocation", x => x.Id);
+                    table.PrimaryKey("PK_Warehouse", x => x.Id);
+                    table.CheckConstraint("CK_ExportSale_Account", "(\r\n                    (\r\n                        ExportSaleSlaveAccountCompanyId IS NOT NULL\r\n                        AND ExportSaleAccountMasterValue IS NULL\r\n                        AND ExportSaleAccountSlaveValue IS NULL\r\n                        AND ExportSaleAccountDetailed1Value IS NULL\r\n                        AND ExportSaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ExportSaleSlaveAccountCompanyId IS NULL\r\n                        AND ExportSaleAccountMasterValue IS NOT NULL\r\n                        AND ExportSaleAccountSlaveValue IS NOT NULL\r\n                        AND ExportSaleAccountDetailed1Value IS NOT NULL\r\n                        AND ExportSaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
+                    table.CheckConstraint("CK_ReturnFromPurchase_Account", "(\r\n                    (\r\n                        ReturnFromPurchaseSlaveAccountCompanyId IS NOT NULL \r\n                        AND ReturnFromPurchaseAccountMasterValue IS NULL \r\n                        AND ReturnFromPurchaseAccountSlaveValue IS NULL\r\n                        AND ReturnFromPurchaseAccountDetailed1Value IS NULL\r\n                        AND ReturnFromPurchaseAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ReturnFromPurchaseSlaveAccountCompanyId IS NULL \r\n                        AND ReturnFromPurchaseAccountMasterValue IS NOT NULL \r\n                        AND ReturnFromPurchaseAccountSlaveValue IS NOT NULL\r\n                        AND ReturnFromPurchaseAccountDetailed1Value IS NOT NULL\r\n                        AND ReturnFromPurchaseAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
+                    table.CheckConstraint("CK_ReturnFromSale_Account", "(\r\n                    (\r\n                        ReturnFromSaleSlaveAccountCompanyId IS NOT NULL \r\n                        AND ReturnFromSaleAccountMasterValue IS NULL \r\n                        AND ReturnFromSaleAccountSlaveValue IS NULL\r\n                        AND ReturnFromSaleAccountDetailed1Value IS NULL\r\n                        AND ReturnFromSaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ReturnFromSaleSlaveAccountCompanyId IS NULL \r\n                        AND ReturnFromSaleAccountMasterValue IS NOT NULL \r\n                        AND ReturnFromSaleAccountSlaveValue IS NOT NULL\r\n                        AND ReturnFromSaleAccountDetailed1Value IS NOT NULL\r\n                        AND ReturnFromSaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
+                    table.CheckConstraint("CK_Sale_Account", "(\r\n                    (\r\n                        SaleSlaveAccountCompanyId IS NOT NULL \r\n                        AND SaleAccountMasterValue IS NULL \r\n                        AND SaleAccountSlaveValue IS NULL\r\n                        AND SaleAccountDetailed1Value IS NULL\r\n                        AND SaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        SaleSlaveAccountCompanyId IS NULL \r\n                        AND SaleAccountMasterValue IS NOT NULL \r\n                        AND SaleAccountSlaveValue IS NOT NULL\r\n                        AND SaleAccountDetailed1Value IS NOT NULL\r\n                        AND SaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
+                    table.CheckConstraint("CK_Warehouse_Account", "(\r\n                    (\r\n                        WarehouseSlaveAccountCompanyId IS NOT NULL \r\n                        AND WarehouseAccountMasterValue IS NULL \r\n                        AND WarehouseAccountSlaveValue IS NULL\r\n                        AND WarehouseAccountDetailed1Value IS NULL\r\n                        AND WarehouseAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        WarehouseSlaveAccountCompanyId IS NULL \r\n                        AND WarehouseAccountMasterValue IS NOT NULL \r\n                        AND WarehouseAccountSlaveValue IS NOT NULL\r\n                        AND WarehouseAccountDetailed1Value IS NOT NULL\r\n                        AND WarehouseAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
                     table.ForeignKey(
-                        name: "FK_WarehouseLocation_Companies_CompanyId",
+                        name: "FK_Warehouse_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalSchema: "General",
                         principalTable: "Companies",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_WarehouseLocation_WarehouseLocation_ParentLocationId",
-                        column: x => x.ParentLocationId,
+                        name: "FK_Warehouse_WarehouseType_WarehouseTypeId",
+                        column: x => x.WarehouseTypeId,
                         principalSchema: "Warehouse",
-                        principalTable: "WarehouseLocation",
+                        principalTable: "WarehouseType",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_WarehouseLocation_Warehouse_WarehouseId",
-                        column: x => x.WarehouseId,
-                        principalSchema: "Warehouse",
-                        principalTable: "Warehouse",
+                        name: "FK_Warehouse_company_units_CompanyUnitId",
+                        column: x => x.CompanyUnitId,
+                        principalSchema: "Shared",
+                        principalTable: "company_units",
                         principalColumn: "Id");
                 });
 
@@ -730,6 +779,47 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WarehouseLocation",
+                schema: "Warehouse",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    ParentLocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    WarehouseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WarehouseLocation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WarehouseLocation_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "General",
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_WarehouseLocation_WarehouseLocation_ParentLocationId",
+                        column: x => x.ParentLocationId,
+                        principalSchema: "Warehouse",
+                        principalTable: "WarehouseLocation",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_WarehouseLocation_Warehouse_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalSchema: "Warehouse",
+                        principalTable: "Warehouse",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InventoryLotAttributeValue",
                 schema: "Warehouse",
                 columns: table => new
@@ -851,12 +941,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                 table: "Attribute",
                 columns: new[] { "CompanyId", "Code" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AttributeEnumValue_CompanyId",
-                schema: "Warehouse",
-                table: "AttributeEnumValue",
-                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AttributeEnumValue_IsDeleted",
@@ -1055,6 +1139,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                 table: "InventoryMovement",
                 column: "ToLocationId")
                 .Annotation("SqlServer:Include", new[] { "QuantityBase" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InventoryMovementType_CompanyId",
+                schema: "Warehouse",
+                table: "InventoryMovementType",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryMovementType_IsDeleted",
@@ -1295,10 +1385,22 @@ namespace NGErp.Base.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Warehouse_CompanyUnitId",
+                schema: "Warehouse",
+                table: "Warehouse",
+                column: "CompanyUnitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Warehouse_IsDeleted",
                 schema: "Warehouse",
                 table: "Warehouse",
                 column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Warehouse_WarehouseTypeId",
+                schema: "Warehouse",
+                table: "Warehouse",
+                column: "WarehouseTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "UX_Warehouse_Company_Code",
@@ -1330,6 +1432,19 @@ namespace NGErp.Base.Infrastructure.Migrations
                 schema: "Warehouse",
                 table: "WarehouseLocation",
                 column: "ParentLocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WarehouseType_IsDeleted",
+                schema: "Warehouse",
+                table: "WarehouseType",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "UX_WarehouseType_Company_Code",
+                schema: "Warehouse",
+                table: "WarehouseType",
+                columns: new[] { "CompanyId", "Code" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -1418,6 +1533,14 @@ namespace NGErp.Base.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "Category",
                 schema: "Warehouse");
+
+            migrationBuilder.DropTable(
+                name: "WarehouseType",
+                schema: "Warehouse");
+
+            migrationBuilder.DropTable(
+                name: "company_units",
+                schema: "Shared");
 
             migrationBuilder.DropTable(
                 name: "Companies",

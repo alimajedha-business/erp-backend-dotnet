@@ -49,7 +49,7 @@ public class ItemAttributeValue :
             .HasOne(e => e.Item)
             .WithMany()
             .HasForeignKey(e => e.ItemId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.Attribute)

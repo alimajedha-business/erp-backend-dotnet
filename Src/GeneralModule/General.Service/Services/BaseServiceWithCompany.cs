@@ -92,7 +92,7 @@ public abstract class BaseServiceWithCompany<
         );
 
         return new ListResponseModel<TListDto>(
-            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -119,7 +119,7 @@ public abstract class BaseServiceWithCompany<
         );
 
         return new ListResponseModel<TListDto>(
-            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -146,7 +146,7 @@ public abstract class BaseServiceWithCompany<
         );
 
         return new ListResponseModel<TListDto>(
-            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -175,7 +175,7 @@ public abstract class BaseServiceWithCompany<
         );
 
         return new ListResponseModel<TListDto>(
-            items: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );

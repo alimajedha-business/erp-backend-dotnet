@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
+using NGErp.Accounting.Domain.Entities;
 using NGErp.Base.Domain.Entities;
 using NGErp.Base.Service.Services;
 using NGErp.General.Domain.Entities;
@@ -12,8 +13,11 @@ namespace NGErp.Base.Infrastructure.DataAccess
     public class MainDbContext(
         DbContextOptions<MainDbContext> options,
         ICurrentUserService currentUserService
-    ) : ApplicationContext(options, typeof(Company),
-        [typeof(Department), typeof(Category)])
+    ) : ApplicationContext(
+            options,
+            typeof(Company),
+            [typeof(Department), typeof(Category), typeof(Period)]
+        )
     {
         private readonly ICurrentUserService _currentUserService = currentUserService;
 
@@ -81,6 +85,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
         public virtual DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+        public virtual DbSet<WarehouseType> WarehouseTypes { get; set; }
 
         #endregion Warehouse
     }
