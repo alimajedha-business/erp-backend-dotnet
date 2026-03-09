@@ -1,46 +1,28 @@
-﻿using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.RequestFeatures;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.General.Service.Services;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IDepartmentService
+public interface IDepartmentService : IBaseServiceWithCompany<
+   Department,
+   DepartmentDto,
+   DepartmentParameters,
+   IDepartmentRepository,
+   HCMResource
+    >
 {
-    Task<ListResponseModel<DepartmentDto>> GetAllDepartmentsAsync(
-        Guid companyId,
-        DepartmentParameters departmentParameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-        );
-    Task<DepartmentDto?> GetDepartmentByIdAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        );
-    Task<DepartmentDto> CreateDepartmentAsync(
-        Guid companyId,
-        CreateDepartmentDto createDepartmentDto,
-        CancellationToken ct
-        );
-    Task<DepartmentDto> UpdateDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        UpdateDepartmentDto updateDepartmentDto,
-         CancellationToken ct
-        );
-    Task<bool> DeleteDepartmentAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-        );
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
         bool NewStatus,
         CancellationToken ct
         );
-
-
 }

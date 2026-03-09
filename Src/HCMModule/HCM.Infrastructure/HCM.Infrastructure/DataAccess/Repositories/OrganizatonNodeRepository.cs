@@ -5,7 +5,7 @@ using NGErp.HCM.Service.Repository.Contracts;
 
 namespace NGErp.HCM.Infrastructure.DataAccess.Repositories;
 
-public class DepartmentRepository(MainDbContext context) :
-    RepositoryWithCompany<Department>(context),
-    IDepartmentRepository
+public class OrganizationNodeRepository(MainDbContext context) :
+    RepositoryWithCompany<OrganizationNode>(context),
+    IOrganizationNodeRepository
 { }

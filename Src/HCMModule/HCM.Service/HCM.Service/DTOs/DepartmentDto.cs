@@ -9,16 +9,18 @@ public class DepartmentDto
     public bool Status { get; set; } = true;
     public DateTime? StatusChangeDate { get; set; }
 }
+
 public class CreateDepartmentDto
 {
     public string? Code { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
 }
-public class UpdateDepartmentDto
+
+public class PatchDepartmentDto
 {
     public string? Code { get; set; }
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     public string? Description { get; set; }
 }
 

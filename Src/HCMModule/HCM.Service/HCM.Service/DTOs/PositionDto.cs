@@ -15,16 +15,18 @@ public class PositionDto
     public bool Status { get; set; } = true;
     public DateTime? StatusChangeDate { get; set; }
 }
+
 public class CreatePositionDto
 {
     public string? Code { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
 }
-public class UpdatePositionDto
+
+public class PatchPositionDto
 {
     public string? Code { get; set; }
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     public string? Description { get; set; }
 }
 

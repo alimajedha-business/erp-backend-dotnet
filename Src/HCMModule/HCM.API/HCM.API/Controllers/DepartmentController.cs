@@ -1,15 +1,13 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.Services;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
-
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -17,34 +15,31 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/departments")]
-//[JwtAuthorize]
 public class DepartmentController(
-    IDepartmentService departmentService,
-    IAdvancedFilterBuilder filterBuilder
+    IDepartmentService departmentService
     ) : ControllerBase
 {
     private readonly IDepartmentService _departmentService = departmentService;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateDepartmentDto createDepartmentDto,
+        [FromBody] CreateDepartmentDto createDto,
         CancellationToken ct
     )
     {
-        var departmentDto = await _departmentService.CreateDepartmentAsync(
+        var dto = await _departmentService.CreateAsync(
             companyId,
-            createDepartmentDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = departmentDto.Id },
-            departmentDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -55,28 +50,27 @@ public class DepartmentController(
         CancellationToken ct
  )
     {
-        var category = await _departmentService.GetDepartmentByIdAsync(
+        var dto = await _departmentService.GetByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] DepartmentParameters departmentParameters,
+        [FromQuery] DepartmentParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
         )
-    {       
-        
-        var result = await _departmentService.GetAllDepartmentsAsync(
+    {
+        var result = await _departmentService.GetAllAsync(
             companyId,
-            departmentParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -91,7 +85,7 @@ public class DepartmentController(
         CancellationToken ct
         )
     {
-        await _departmentService.DeleteDepartmentAsync(companyId, id, ct);
+        await _departmentService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -112,20 +106,22 @@ public class DepartmentController(
         return NoContent();
     }
 
-    //[HttpPatch("{id:guid}")]
-    //public async Task<IActionResult> Update(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    [FromBody] JsonPatchDocument<UpdateDepartmentDto> updateDepartmentDto,
-    //    CancellationToken ct
-    //)
-    //{
-    //    var updatedDepartment = await _departmentService.UpdateDepartmentAsync(
-    //        companyId,
-    //        id,
-    //        updateDepartmentDto,
-    //        ct
-    //    );
-    //    return Ok(updatedDepartment);
-    //}
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _departmentService.PatchAsync(
+            companyId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
 }
