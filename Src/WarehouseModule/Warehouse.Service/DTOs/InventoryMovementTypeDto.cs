@@ -8,8 +8,8 @@ public record InventoryMovementTypeDto(
 
 public class CreateInventoryMovementTypeDto
 {
-    public required int Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
 }
 
 public class PatchInventoryMovementTypeDto
