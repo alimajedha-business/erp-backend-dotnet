@@ -11,7 +11,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Domain.Entities.Attribute, AttributeDto>();
+        CreateMap<Domain.Entities.Attribute, AttributeDto>()
+            .ForCtorParam(
+                nameof(AttributeDto.DataTypeDescription),
+                opt => opt.MapFrom(src => AttributeDto.GetDescription(src.DataType))
+            );
         CreateMap<Domain.Entities.Attribute, AttributeSlimDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();
         CreateMap<PatchAttributeDto, Domain.Entities.Attribute>().ReverseMap();
