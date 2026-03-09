@@ -1157,12 +1157,68 @@ namespace NGErp.Base.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.MeasurementDimension", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDiscrete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("MeasurementDimension", "Warehouse");
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -1175,18 +1231,11 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Dimension")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDiscrete")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<Guid>("MeasurementDimensionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
@@ -1215,7 +1264,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("Dimension", "Title")
+                    b.HasIndex("MeasurementDimensionId", "Title")
                         .IsUnique()
                         .HasDatabaseName("UX_Uom_Dimension_Title");
 
@@ -1659,7 +1708,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany()
                         .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -1686,7 +1735,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany()
                         .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Category", "Category")
@@ -1738,7 +1787,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
                         .WithMany()
                         .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -1836,7 +1885,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -1911,6 +1960,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.MeasurementDimension", "MeasurementDimension")
+                        .WithMany("UnitOfMeasurements")
+                        .HasForeignKey("MeasurementDimensionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MeasurementDimension");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurementConversion", b =>
@@ -2011,6 +2068,11 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.MeasurementDimension", b =>
+                {
+                    b.Navigation("UnitOfMeasurements");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Warehouse", b =>

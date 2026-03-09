@@ -1,10 +1,14 @@
-﻿namespace NGErp.Base.Service.RequestFeatures;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace NGErp.Base.Service.RequestFeatures;
 
 public abstract class RequestParameters
 {
     const int maxPageSize = 50;
 
     private int _pageNumber = 1;
+
+    [FromQuery(Name = "page")]
     public int PageNumber
     {
         get => _pageNumber;
@@ -12,6 +16,8 @@ public abstract class RequestParameters
     }
 
     private int _pageSize = 10;
+
+    [FromQuery(Name = "page_size")]
     public int PageSize
     {
         get => _pageSize;
@@ -32,6 +38,9 @@ public abstract class RequestParameters
         }
     }
 
+    [FromQuery(Name = "paginated")]
     public bool Paginated { get; set; } = true;
+
+    [FromQuery(Name = "ordering")]
     public string? OrderBy { get; set; }
 }

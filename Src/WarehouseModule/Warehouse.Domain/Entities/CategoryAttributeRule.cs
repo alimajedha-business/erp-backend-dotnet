@@ -50,6 +50,6 @@ public class CategoryAttributeRule :
             .HasOne(e => e.Attribute)
             .WithMany()
             .HasForeignKey(e => e.AttributeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

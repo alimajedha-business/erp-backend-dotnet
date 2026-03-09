@@ -10,10 +10,12 @@ public class UnitOfMeasurement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<UnitOfMeasurement>
 {
-    public string Dimension { get; private set; } = default!;
+    public string Code { get; private set; } = default!;
     public string Title { get; private set; } = default!;
     public string Symbol { get; private set; } = default!;
-    public bool IsDiscrete { get; private set; } = false;
+    public Guid MeasurementDimensionId { get; private set; }
+
+    public required MeasurementDimension MeasurementDimension { get; set; }
 
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
@@ -21,12 +23,12 @@ public class UnitOfMeasurement :
             .ToTable(nameof(UnitOfMeasurement), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.Dimension, i.Title })
+            .HasIndex(i => new { i.MeasurementDimensionId, i.Title })
             .IsUnique()
             .HasDatabaseName("UX_Uom_Dimension_Title");
 
         builder
-            .Property(e => e.Dimension)
+            .Property(e => e.Code)
             .HasMaxLength(50);
 
         builder
@@ -38,7 +40,9 @@ public class UnitOfMeasurement :
             .HasMaxLength(20);
 
         builder
-            .Property(e => e.IsDiscrete)
-            .HasDefaultValue(false);
+            .HasOne(e => e.MeasurementDimension)
+            .WithMany(e => e.UnitOfMeasurements)
+            .HasForeignKey(e => e.MeasurementDimensionId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
