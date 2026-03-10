@@ -10,10 +10,10 @@ public class ItemUnitOfMeasurementConversion :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ItemUnitOfMeasurementConversion>
 {
-    public decimal Factor { get; private set; }
-    public Guid ItemId { get; private set; }
-    public Guid FromUnitOfMeasurementId { get; private set; }
-    public Guid ToUnitOfMeasurementId { get; private set; }
+    public required decimal Factor { get; set; }
+    public required Guid ItemId { get; set; }
+    public required Guid FromUnitOfMeasurementId { get; set; }
+    public required Guid ToUnitOfMeasurementId { get; set; }
 
     public required Item Item { get; set; }
     public required UnitOfMeasurement FromUnitOfMeasurement { get; set; }

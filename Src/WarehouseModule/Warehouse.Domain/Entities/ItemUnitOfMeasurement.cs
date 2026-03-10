@@ -10,11 +10,11 @@ public class ItemUnitOfMeasurement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ItemUnitOfMeasurement>
 {
-    public Guid ItemId { get; private set; }
-    public Guid UnitOfMeasurementId { get; private set; }
-    public bool IsBase { get; private set; }
-    public bool IsDefaultPurchase { get; private set; }
-    public bool IsDefaultIssue { get; private set; }
+    public required Guid ItemId { get; set; }
+    public required Guid UnitOfMeasurementId { get; set; }
+    public required bool IsBase { get; set; } = false;
+    public required bool IsDefaultPurchase { get; set; } = false;
+    public required bool IsDefaultIssue { get; set; } = false;
 
     public required Item Item { get; set; }
     public required UnitOfMeasurement UnitOfMeasurement { get; set; }
@@ -29,6 +29,18 @@ public class ItemUnitOfMeasurement :
             .HasOne(e => e.Item)
             .WithMany()
             .HasForeignKey(e => e.ItemId);
+
+        builder
+            .Property(e => e.IsBase)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.IsDefaultPurchase)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.IsDefaultIssue)
+            .HasDefaultValue(false);
 
         builder
             .HasOne(e => e.UnitOfMeasurement)

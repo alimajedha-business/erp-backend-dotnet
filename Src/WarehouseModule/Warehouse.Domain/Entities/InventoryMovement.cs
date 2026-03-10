@@ -10,13 +10,13 @@ public class InventoryMovement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryMovement>
 {
-    public DateTime MovementDate { get; private set; }
-    public Guid ReferenceDocId { get; private set; }
-    public decimal QuantityBase { get; private set; }
-    public Guid MovementTypeId { get; private set; }
-    public Guid LotId { get; private set; }
-    public Guid FromLocationId { get; private set; }
-    public Guid ToLocationId { get; private set; }
+    public required DateTime MovementDate { get; set; }
+    public required Guid ReferenceDocId { get; set; }
+    public required decimal QuantityBase { get; set; }
+    public required Guid MovementTypeId { get; set; }
+    public required Guid LotId { get; set; }
+    public required Guid FromLocationId { get; set; }
+    public required Guid ToLocationId { get; set; }
 
     public required InventoryMovementType MovementType { get; set; }
     public required InventoryLot Lot { get; set; }
