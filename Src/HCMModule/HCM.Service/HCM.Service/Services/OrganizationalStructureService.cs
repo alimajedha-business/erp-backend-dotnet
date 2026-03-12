@@ -126,7 +126,7 @@ public class OrganizationalStructureService(
             .GetAllAsync(companyId, includeQuery, ct);
 
         // 3️ Validate Tree
-        // ValidateTree(newTree, allNodes.items, effectiveFrom);
+        //ValidateTree(incomingTree, allNodes.items, effectiveFrom);
 
         // 4️⃣ Create new structure (history preservation)
         var structure = new OrganizationalStructure

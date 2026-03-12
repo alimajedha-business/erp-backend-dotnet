@@ -1,10 +1,13 @@
-﻿using Asp.Versioning;
+﻿using System.Linq.Expressions;
+
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
@@ -74,6 +77,31 @@ public class DepartmentController(
             ct,
             filterNodeDto
         );
+
+        return Ok(result);
+    }
+
+    [HttpGet("active")]
+    public async Task<IActionResult> GetActiveDepartments(
+    [FromRoute] Guid companyId,
+    [FromQuery] DepartmentParameters parameters,
+    [FromQuery] DateOnly? activeAt,
+    CancellationToken ct
+)
+    {
+        Expression<Func<Department, bool>> filterCondition = x => x.Status == true;
+        if (activeAt.HasValue)
+        {
+            var activateAtDateTime = activeAt!.Value.ToDateTime(TimeOnly.MinValue);
+            filterCondition = x => x.Status == true && x.StatusChangeDate >= activateAtDateTime;
+        }
+
+        var result = await _departmentService.GetByConditionAsync(
+             companyId,
+             parameters,
+             filterCondition,
+             ct
+         );
 
         return Ok(result);
     }
