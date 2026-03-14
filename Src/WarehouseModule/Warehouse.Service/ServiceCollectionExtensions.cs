@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
+        services.AddSingleton<IFilterSchema<WarehouseType>, WarehouseTypeSchema>();
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
