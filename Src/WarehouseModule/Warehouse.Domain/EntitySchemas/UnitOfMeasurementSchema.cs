@@ -8,6 +8,7 @@ public sealed class UnitOfMeasurementSchema : IFilterSchema<UnitOfMeasurement>
     public FilterSchema Build()
     {
         var filterSchema = new FilterSchema();
+
         filterSchema.Fields["title"] = new FilterFieldInfo(
             PropertyName: nameof(UnitOfMeasurement.Title),
             PropertyType: typeof(string),
