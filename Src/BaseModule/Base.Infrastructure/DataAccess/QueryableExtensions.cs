@@ -1,4 +1,9 @@
 ﻿using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+
+using AutoMapper.Execution;
+
+using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.RequestFeatures;
 
@@ -11,16 +16,91 @@ public static class QueryableExtensions
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
     {
-        if (requestAdvancedFilters is not null)
-        {
-            var (search, args) = requestAdvancedFilters;
+        if (requestAdvancedFilters is null)
+            return query;
 
-            if (!string.IsNullOrWhiteSpace(search))
+        var (search, args) = requestAdvancedFilters;
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = (args is { Length: > 0 })
+                ? query.Where(search, args)
+                : query.Where(search);
+        }
+
+        return query;
+    }
+
+    public static IQueryable<T> Filter<T>(
+    this IQueryable<T> query,
+    RequestParameters? requestParameters = null
+)
+    {
+        if (requestParameters is null)
+            return query;
+
+        var q = requestParameters.Q;
+
+        if (string.IsNullOrWhiteSpace(q))
+            return query;
+
+        var searchTerms = q.Split('+', StringSplitOptions.RemoveEmptyEntries)
+                          .Select(term => term.Trim())
+                          .Where(term => !string.IsNullOrEmpty(term))
+                          .ToList();
+
+        if (searchTerms.Count == 0)
+            return query;
+
+        var conditions = new List<Expression<Func<T, bool>>>();
+
+        var codeField = typeof(T).GetProperty("Code");
+        if (codeField is not null)
+        {
+            if (codeField.PropertyType == typeof(int))
             {
-                query = (args is { Length: > 0 })
-                    ? query.Where(search, args)
-                    : query.Where(search);
+                conditions.Add(w => w != null && searchTerms.All(term =>
+                    EF.Property<int>(w, "Code").ToString().StartsWith(term))
+                );
             }
+
+            if (codeField.PropertyType == typeof(string))
+            {
+                conditions.Add(w => w != null && searchTerms.All(term =>
+                    EF.Property<string>(w, "Code").Contains(term))
+                );
+            }
+        }
+
+        var titleField = typeof(T).GetProperty("Title");
+        if (titleField is not null)
+        {
+            conditions.Add(w => w != null && searchTerms.All(term =>
+                EF.Property<string>(w, "Title").Contains(term))
+            );
+        }
+
+        var nameField = typeof(T).GetProperty("Name");
+        if (nameField is not null)
+        {
+            conditions.Add(w => w != null && searchTerms.All(term =>
+                EF.Property<string>(w, "Name").Contains(term))
+            );
+        }
+
+        if (conditions.Count > 0)
+        {
+            Expression<Func<T, bool>> combinedExpression = conditions[0];
+            for (int i = 1; i < conditions.Count; i++)
+            {
+                combinedExpression = CombineExpressions(
+                    combinedExpression,
+                    conditions[i],
+                    ExpressionType.OrElse
+                );
+            }
+
+            query = query.Where(combinedExpression);
         }
 
         return query;
@@ -50,12 +130,25 @@ public static class QueryableExtensions
         )
     {
         if (!requestParameters.Paginated)
-        {
             return query;
-        }
 
         return query
             .Skip(requestParameters.PageSize * (requestParameters.PageNumber - 1))
             .Take(requestParameters.PageSize);
+    }
+
+    private static Expression<Func<T, bool>> CombineExpressions<T>(
+    Expression<Func<T, bool>> expr1,
+    Expression<Func<T, bool>> expr2,
+    ExpressionType expressionType)
+    {
+        var parameter = Expression.Parameter(typeof(T));
+
+        var left = expr1.Body.Replace(expr1.Parameters[0], parameter);
+        var right = expr2.Body.Replace(expr2.Parameters[0], parameter);
+
+        var body = Expression.MakeBinary(expressionType, left, right);
+
+        return Expression.Lambda<Func<T, bool>>(body, parameter);
     }
 }

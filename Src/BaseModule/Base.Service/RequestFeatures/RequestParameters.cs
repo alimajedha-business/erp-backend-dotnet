@@ -43,4 +43,7 @@ public abstract class RequestParameters
 
     [FromQuery(Name = "ordering")]
     public string? OrderBy { get; set; }
+
+    [FromQuery(Name = "q")]
+    public string? Q { get; set; }
 }

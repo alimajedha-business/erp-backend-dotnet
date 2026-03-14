@@ -76,6 +76,27 @@ public abstract class BaseServiceWithCompany<
     public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
         Guid companyId,
         TParameters parameters,
+        CancellationToken ct
+    )
+    {
+        await EnsureCompanyAsync(companyId, ct);
+
+        var listQueryResult = await _repo.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return new ListResponseModel<TListDto>(
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
+    }
+
+    public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
+        Guid companyId,
+        TParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )

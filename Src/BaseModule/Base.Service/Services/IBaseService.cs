@@ -28,6 +28,11 @@ public interface IBaseService<
 
     Task<ListResponseModel<TListDto>> GetAllAsync(
         TParameters parameters,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<TListDto>> GetAllAsync(
+        TParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
