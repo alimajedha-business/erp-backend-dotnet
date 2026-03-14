@@ -1,15 +1,13 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.Services;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
-
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -17,34 +15,31 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/positions")]
-//[JwtAuthorize]
 public class PositionController(
-    IPositionService positionService,
-    IAdvancedFilterBuilder filterBuilder
+    IPositionService positionService
     ) : ControllerBase
 {
     private readonly IPositionService _positionService = positionService;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreatePositionDto createPositionDto,
+        [FromBody] CreatePositionDto createDto,
         CancellationToken ct
     )
     {
-        var positionDto = await _positionService.CreatePositionAsync(
+        var dto = await _positionService.CreateAsync(
             companyId,
-            createPositionDto,
+            createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = positionDto.Id },
-            positionDto
+            new { companyId, id = dto.Id },
+            dto
         );
     }
 
@@ -55,28 +50,27 @@ public class PositionController(
         CancellationToken ct
  )
     {
-        var category = await _positionService.GetPositionByIdAsync(
+        var dto = await _positionService.GetByIdAsync(
             companyId,
             id,
             ct
         );
 
-        return Ok(category);
+        return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] PositionParameters positionParameters,
+        [FromQuery] PositionParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
         )
     {
-        
-        var result = await _positionService.GetAllPositionsAsync(
+        var result = await _positionService.GetAllAsync(
             companyId,
-            positionParameters,
+            parameters,
             ct,
             filterNodeDto
         );
@@ -91,7 +85,7 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        await _positionService.DeletePositionAsync(companyId, id, ct);
+        await _positionService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -110,5 +104,24 @@ public class PositionController(
             ct
             );
         return NoContent();
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+    [FromRoute] Guid companyId,
+    [FromRoute] Guid id,
+    [FromBody] JsonPatchDocument<PatchPositionDto> patchDocument,
+    CancellationToken ct
+)
+    {
+        var dto = await _positionService.PatchAsync(
+            companyId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
     }
 }
