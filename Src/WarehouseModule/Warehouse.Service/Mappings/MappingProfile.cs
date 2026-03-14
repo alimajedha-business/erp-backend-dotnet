@@ -11,7 +11,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Domain.Entities.Attribute, AttributeDto>();
+        CreateMap<Domain.Entities.Attribute, AttributeDto>()
+            .ForCtorParam(
+                nameof(AttributeDto.DataTypeDescription),
+                opt => opt.MapFrom(src => AttributeDto.GetDescription(src.DataType))
+            );
         CreateMap<Domain.Entities.Attribute, AttributeSlimDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();
         CreateMap<PatchAttributeDto, Domain.Entities.Attribute>().ReverseMap();
@@ -57,7 +61,7 @@ public class MappingProfile : Profile
         CreateMap<PatchMeasurementDimensionDto, MeasurementDimension>().ReverseMap();
 
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
-        CreateMap<UnitOfMeasurement, UnitOfMeasurementTitleDto>();
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementListDto>();
         CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
         CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();
 

@@ -138,4 +138,7 @@
   <data name="Warehouse" xml:space="preserve">
     <value>Warehouse</value>
   </data>
+  <data name="WarehouseType" xml:space="preserve">
+    <value>WarehouseType</value>
+  </data>
 </root>

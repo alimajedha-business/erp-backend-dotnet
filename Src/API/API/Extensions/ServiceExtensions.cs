@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
-using NGErp.API.Services;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Infrastructure;
 using NGErp.Base.Service;
@@ -19,201 +18,200 @@ using NGErp.HCM.Service;
 using NGErp.Warehouse.Infrastructure.DataAccess;
 using NGErp.Warehouse.Service;
 
-namespace NGErp.API.Extensions
+namespace NGErp.API.Extensions;
+
+public static class ServiceExtensions
 {
-    public static class ServiceExtensions
+    public static void ConfigureCors(this IServiceCollection services) =>
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", builder =>
+            builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("X-Pagination"));
+        });
+
+    public static void ConfigureIISIntegration(this IServiceCollection services) =>
+        services.Configure<IISOptions>(options => { });
+
+    public static void AddServices(this IServiceCollection services)
     {
-        public static void ConfigureCors(this IServiceCollection services) =>
-            services.AddCors(options =>
+        services.AddBaseServices();
+        services.AddGeneralServices();
+        services.AddGeneralApiServices();
+        services.AddWarehouseServices();
+        services.AddHCMServices();
+    }
+
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddBaseInfrastructureServices(configuration);
+        services.AddGeneralInfrastructureServices(configuration);
+        services.AddWarehouseInfrastructureServices(configuration);
+        services.AddHCMInfrastructureServices(configuration);
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureControllers(this IServiceCollection services)
+    {
+        services.AddControllers(config =>
+        {
+            config.ReturnHttpNotAcceptable = true;
+            config.Filters.Add<LogApiRequestFilter>();
+            config.Filters.Add<ValidationFilterAttribute>();
+            config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+        })
+            .AddNewtonsoftJson()
+            .AddDataAnnotationsLocalization(options =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
-                builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .WithExposedHeaders("X-Pagination"));
-            });
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                {
+                    var module = ProjectConstants
+                        .Modules
+                        .FirstOrDefault(m => type.Namespace?.Contains(m) == true);
 
-        public static void ConfigureIISIntegration(this IServiceCollection services) =>
-            services.Configure<IISOptions>(options => { });
+                    if (module is not null)
+                    {
+                        var resourceTypeName = $"{module}.Resources.{module}Resource";
+                        var resourceType = AppDomain.CurrentDomain.GetAssemblies()
+                            .Select(a => a.GetType(resourceTypeName, throwOnError: false, ignoreCase: false))
+                            .FirstOrDefault(t => t != null);
 
-        public static void AddServices(this IServiceCollection services)
-        {
-            services.AddBaseServices();
-            services.AddGeneralServices();
-            services.AddGeneralApiServices();
-            services.AddWarehouseServices();
-            services.AddHCMServices();
-        }
+                        if (resourceType is not null)
+                            return factory.Create(resourceType);
+                    }
 
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddBaseInfrastructureServices(configuration);
-            services.AddGeneralInfrastructureServices(configuration);
-            services.AddWarehouseInfrastructureServices(configuration);
-            services.AddHCMInfrastructureServices(configuration);
-
-            return services;
-        }
-
-        public static IServiceCollection ConfigureControllers(this IServiceCollection services)
-        {
-            services.AddControllers(config =>
-            {
-                config.ReturnHttpNotAcceptable = true;
-                config.Filters.Add<LogApiRequestFilter>();
-                config.Filters.Add<ValidationFilterAttribute>();
-                config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                    // Fallback to shared/common resource
+                    return factory.Create(typeof(BaseResource));
+                };
             })
-                .AddNewtonsoftJson()
-                .AddDataAnnotationsLocalization(options =>
-                {
-                    options.DataAnnotationLocalizerProvider = (type, factory) =>
-                    {
-                        var module = ProjectConstants
-                            .Modules
-                            .FirstOrDefault(m => type.Namespace?.Contains(m) == true);
+            .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
+            .AddApplicationPart(typeof(AssemblyReference).Assembly)
+            .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
+            .AddApplicationPart(typeof(HCM.API.AssemblyReference).Assembly)
+            .AddApplicationPart(typeof(Warehouse.API.AssemblyReference).Assembly);
 
-                        if (module is not null)
-                        {
-                            var resourceTypeName = $"{module}.Resources.{module}Resource";
-                            var resourceType = AppDomain.CurrentDomain.GetAssemblies()
-                                .Select(a => a.GetType(resourceTypeName, throwOnError: false, ignoreCase: false))
-                                .FirstOrDefault(t => t != null);
+        return services;
+    }
 
-                            if (resourceType is not null)
-                                return factory.Create(resourceType);
-                        }
-
-                        // Fallback to shared/common resource
-                        return factory.Create(typeof(BaseResource));
-                    };
-                })
-                .AddApplicationPart(typeof(ValidationFilterAttribute).Assembly)
-                .AddApplicationPart(typeof(AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(Base.API.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(HCM.API.AssemblyReference).Assembly)
-                .AddApplicationPart(typeof(Warehouse.API.AssemblyReference).Assembly);
-
-            return services;
-        }
-
-        public static void ConfigureSwagger(this IServiceCollection services)
+    public static void ConfigureSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(s =>
         {
-            services.AddSwaggerGen(s =>
+            foreach (var module in ProjectConstants.Modules)
             {
-                foreach (var module in ProjectConstants.Modules)
+                s.SwaggerDoc($"v1-{module.ToLower()}", new OpenApiInfo
                 {
-                    s.SwaggerDoc($"v1-{module.ToLower()}", new OpenApiInfo
-                    {
-                        Title = $"{module} API",
-                        Version = "v1",
-                        Description = $"{module} Module API"
-                    });
-                }
-
-                // Add JWT Bearer token authentication
-                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT"
+                    Title = $"{module} API",
+                    Version = "v1",
+                    Description = $"{module} Module API"
                 });
-
-                // Add Cookie authentication
-                s.AddSecurityDefinition("Cookie", new OpenApiSecurityScheme
-                {
-                    Description = "Cookie-based authentication. The authentication cookie will be sent automatically.",
-                    Name = "Cookie",
-                    In = ParameterLocation.Cookie,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Cookie"
-                });
-
-                // Add security requirement - supports both Bearer and Cookie
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    },
-                    Scheme = "oauth2",
-                    Name = "Bearer",
-                    In = ParameterLocation.Header,
-                },
-                new List<string>()
-            },
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Cookie"
-                    },
-                    Name = "Cookie",
-                    In = ParameterLocation.Cookie,
-                },
-                new List<string>()
             }
-         });
 
-                //Enable XML comments if available
-                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath))
-                {
-                    s.IncludeXmlComments(xmlPath);
-                }
-            }
-        );
-        }
-
-        public static void ConfigureLocalization(this IServiceCollection services)
-        {
-            services.AddLocalization();
-
-            services.Configure<RequestLocalizationOptions>(options =>
+            // Add JWT Bearer token authentication
+            s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
-                options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-                options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-
-                // Derive culture from Accept-Language header
-                options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
-                {
-                    var lang = context.Request.Headers.AcceptLanguage.FirstOrDefault();
-                    var culture = !string.IsNullOrEmpty(lang) ? lang : "fa";
-                    return await Task.FromResult(new ProviderCultureResult(culture));
-                }));
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT"
             });
-        }
 
-        /* https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/10.0.0-preview.5.25277.114
-         * 
-         * AddNewtonsoftJson replaces the default System.Text.Json-based input and output formatters used for formatting all JSON content.
-         * To add support for JSON Patch using Newtonsoft.Json, while leaving the other input and output formatters unchanged:
-         */
-        static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+            // Add Cookie authentication
+            s.AddSecurityDefinition("Cookie", new OpenApiSecurityScheme
+            {
+                Description = "Cookie-based authentication. The authentication cookie will be sent automatically.",
+                Name = "Cookie",
+                In = ParameterLocation.Cookie,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Cookie"
+            });
+
+            // Add security requirement - supports both Bearer and Cookie
+            s.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            var builder = new ServiceCollection()
-                .AddLogging()
-                .AddMvc()
-                .AddNewtonsoftJson()
-                .Services.BuildServiceProvider();
-
-            return builder
-                .GetRequiredService<IOptions<MvcOptions>>()
-                .Value
-                .InputFormatters
-                .OfType<NewtonsoftJsonPatchInputFormatter>()
-                .First();
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        },
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Cookie"
+                },
+                Name = "Cookie",
+                In = ParameterLocation.Cookie,
+            },
+            new List<string>()
         }
+     });
+
+            //Enable XML comments if available
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (File.Exists(xmlPath))
+            {
+                s.IncludeXmlComments(xmlPath);
+            }
+        }
+    );
+    }
+
+    public static void ConfigureLocalization(this IServiceCollection services)
+    {
+        services.AddLocalization();
+
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options.DefaultRequestCulture = new RequestCulture(ProjectConstants.SupportedCultures[0]);
+            options.SupportedCultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+            options.SupportedUICultures = ProjectConstants.SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+
+            // Derive culture from Accept-Language header
+            options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
+            {
+                var lang = context.Request.Headers.AcceptLanguage.FirstOrDefault();
+                var culture = !string.IsNullOrEmpty(lang) ? lang : "fa";
+                return await Task.FromResult(new ProviderCultureResult(culture));
+            }));
+        });
+    }
+
+    /* https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/10.0.0-preview.5.25277.114
+     * 
+     * AddNewtonsoftJson replaces the default System.Text.Json-based input and output formatters used for formatting all JSON content.
+     * To add support for JSON Patch using Newtonsoft.Json, while leaving the other input and output formatters unchanged:
+     */
+    static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+    {
+        var builder = new ServiceCollection()
+            .AddLogging()
+            .AddMvc()
+            .AddNewtonsoftJson()
+            .Services.BuildServiceProvider();
+
+        return builder
+            .GetRequiredService<IOptions<MvcOptions>>()
+            .Value
+            .InputFormatters
+            .OfType<NewtonsoftJsonPatchInputFormatter>()
+            .First();
     }
 }

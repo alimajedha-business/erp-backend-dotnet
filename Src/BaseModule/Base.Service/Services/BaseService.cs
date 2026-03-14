@@ -210,6 +210,11 @@ public abstract class BaseService<
         return _mapper.Map<TDto>(entity);
     }
 
+    public virtual async Task<int> GetNextCode(CancellationToken ct)
+    {
+        return await _repo.GetNextCode(ct);
+    }
+
     public virtual async Task<TDto> UpdateAsync<TUpdateDto>(
         Guid id,
         TUpdateDto updateDto,

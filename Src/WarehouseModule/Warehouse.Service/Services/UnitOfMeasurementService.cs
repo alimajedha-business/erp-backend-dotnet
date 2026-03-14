@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
@@ -21,6 +24,7 @@ public class UnitOfMeasurementService(
 ) : BaseServiceWithCompany<
         UnitOfMeasurement,
         UnitOfMeasurementDto,
+        UnitOfMeasurementListDto,
         UnitOfMeasurementParameters,
         IUnitOfMeasurementRepository,
         WarehouseResource
@@ -34,4 +38,14 @@ public class UnitOfMeasurementService(
     IUnitOfMeasurementService
 {
     protected override string LocalizerKey => "UnitOfMeasurement";
+
+    public override Task<UnitOfMeasurementDto> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    ) => GetByIdAsync(companyId, id, includeQuery, ct);
+
+    private static IQueryable<UnitOfMeasurement> includeQuery(
+        IQueryable<UnitOfMeasurement> q
+    ) => q.Include(c => c.MeasurementDimension);
 }

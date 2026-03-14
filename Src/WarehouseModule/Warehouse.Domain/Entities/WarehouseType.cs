@@ -10,9 +10,9 @@ public class WarehouseType :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<WarehouseType>
 {
-    public string Code { get; private set;  } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; }
+    public required int Code { get; set;  }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
 
     public virtual List<Warehouse> Warehouses { get; set; } = [];
 
@@ -36,6 +36,6 @@ public class WarehouseType :
 
         builder
             .Property(e => e.IsActive)
-            .HasDefaultValue(false);
+            .HasDefaultValue(true);
     }
 }

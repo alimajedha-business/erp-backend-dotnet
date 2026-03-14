@@ -206,6 +206,14 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(entity);
     }
 
+    public virtual async Task<int> GetNextCode(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        return await _repo.GetNextCode(companyId, ct);
+    }
+
     public virtual async Task<TDto> PatchAsync<TPatchDto>(
         Guid companyId,
         Guid id,

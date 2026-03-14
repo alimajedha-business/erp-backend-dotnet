@@ -2,18 +2,18 @@
 
 public record InventoryMovementTypeDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title
 );
 
 public class CreateInventoryMovementTypeDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
 }
 
 public class PatchInventoryMovementTypeDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Title { get; set; }
 }

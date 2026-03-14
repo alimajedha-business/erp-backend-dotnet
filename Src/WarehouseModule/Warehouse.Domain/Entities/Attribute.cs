@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -10,12 +15,12 @@ public class Attribute :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Attribute>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public AttributeDataType DataType { get; private set; }
-    public bool IsItemAttribute { get; private set; } = false;
-    public bool IsRequired { get; private set; } = false;
-    public bool IsStockDimension {  get; private set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required AttributeDataType DataType { get; set; }
+    public required bool IsItemAttribute { get; set; } = false;
+    public required bool IsRequired { get; set; } = false;
+    public required bool IsStockDimension {  get; set; } = false;
 
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
@@ -49,12 +54,54 @@ public class Attribute :
     }
 }
 
+[JsonConverter(typeof(AttributeDataTypeConverter))]
 public enum AttributeDataType
 {
+    [Description("Text")]
     Text = 1,
+
+    [Description("Integer")]
     Int = 2,
+
+    [Description("Decimal")]
     Decimal = 3,
+
+    [Description("Date")]
     Date = 4,
+
+    [Description("Boolean")]
     Bool = 5,
+
+    [Description("Enum")]
     Enum = 6
+}
+
+public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
+{
+    public override AttributeDataType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var value = reader.GetString();
+        return value switch
+        {
+            "Text" => AttributeDataType.Text,
+            "Integer" => AttributeDataType.Int,
+            "Decimal" => AttributeDataType.Decimal,
+            "Date" => AttributeDataType.Date,
+            "Boolean" => AttributeDataType.Bool,
+            "Enum" => AttributeDataType.Enum,
+            _ => throw new JsonException($"Unknown AttributeDataType: {value}")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, AttributeDataType value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(GetDescription(value));
+    }
+
+    private static string GetDescription(AttributeDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
 }

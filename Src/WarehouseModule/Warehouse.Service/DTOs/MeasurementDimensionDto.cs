@@ -2,21 +2,21 @@
 
 public record MeasurementDimensionDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title,
     bool IsDiscrete
 );
 
 public class CreateMeasurementDimensionDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
-    public bool IsDiscrete { get; set; }
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required bool IsDiscrete { get; set; } = false;
 }
 
 public class PatchMeasurementDimensionDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Title { get; set; }
     public bool? IsDiscrete { get; set; }
 }

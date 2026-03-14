@@ -2,26 +2,26 @@
 
 public record AttributeEnumValueDto(
     Guid Id,
-    string Code,
+    int Code,
     string Label,
     AttributeDto Attribute
 );
 
 public record AttributeEnumValueListDto(
     Guid Id,
-    string Code,
+    int Code,
     string Label,
     string AttributeTitle
 );
 
 public class CreateAttributeEnumValueDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Label { get; set; } = default!;
+    public required int Code { get; set; }
+    public required string Label { get; set; }
 }
 
 public class PatchAttributeEnumValueDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Label { get; set; }
 }
