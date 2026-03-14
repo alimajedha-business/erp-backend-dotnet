@@ -80,6 +80,16 @@ public class AttributeController(
         return Ok(dto);
     }
 
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+    [FromRoute] Guid companyId,
+    CancellationToken ct
+)
+    {
+        var code = await _attributeService.GetNextCode(companyId, ct);
+        return Ok(code);
+    }
+
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(

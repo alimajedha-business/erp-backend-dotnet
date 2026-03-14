@@ -76,17 +76,13 @@ public class InventoryMovementTypeController(
         return Ok(warehouse);
     }
 
-    [HttpGet("next-code")]
+    [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
         [FromRoute] Guid companyId,
         CancellationToken ct
     )
     {
-        var code = await _inventoryMovementTypeService.GetNextCode(
-            companyId,
-            ct
-        );
-
+        var code = await _inventoryMovementTypeService.GetNextCode(companyId, ct);
         return Ok(code);
     }
 

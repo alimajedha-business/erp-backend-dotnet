@@ -79,7 +79,7 @@ public class UnitOfMeasurementController(
         return Ok(dto);
     }
 
-    [HttpGet("next-code")]
+    [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
         [FromRoute] Guid companyId,
         CancellationToken ct

@@ -76,6 +76,16 @@ public class WarehouseController(
         return Ok(warehouse);
     }
 
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _warehouseService.GetNextCode(companyId, ct);
+        return Ok(code);
+    }
+
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
