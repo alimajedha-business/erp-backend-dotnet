@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -42,7 +43,24 @@ public class InventoryMovementTypeController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+    [FromRoute] Guid companyId,
+    [FromQuery] InventoryMovementTypeParameters parameters,
+    CancellationToken ct
+)
+    {
+        var result = await _inventoryMovementTypeService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
+    [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] InventoryMovementTypeParameters parameters,

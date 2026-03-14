@@ -18,8 +18,7 @@ public class MeasurementDimensionController(
 {
     private readonly IMeasurementDimensionService _dimensionService = dimensionService;
 
-    [HttpGet("list")]
-    [SkipModelValidation]
+    [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
         [FromQuery] MeasurementDimensionParameters parameters,
         CancellationToken ct

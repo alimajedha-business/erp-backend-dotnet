@@ -44,6 +44,22 @@ public class UnitOfMeasurementController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] UnitOfMeasurementParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _unitOfMeasurementService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(

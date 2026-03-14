@@ -49,9 +49,25 @@ public class CategoryController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] CategoryParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _categoryService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> Get(
+    public async Task<IActionResult> GetAdvancedSearch(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
