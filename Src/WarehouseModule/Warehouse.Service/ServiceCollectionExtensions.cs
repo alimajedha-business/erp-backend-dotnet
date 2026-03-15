@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
+        services.AddSingleton<IFilterSchema<CategoryLevelConstraint>, CategoryLevelConstraintSchema>();
         services.AddSingleton<IFilterSchema<InventoryMovementType>, InventoryMovementTypeSchema>();
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
+        services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
         services.AddScoped<IInventoryMovementTypeService, InventoryMovementTypeService>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();

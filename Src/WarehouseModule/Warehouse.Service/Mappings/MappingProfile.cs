@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 
@@ -33,6 +31,10 @@ public class MappingProfile : Profile
         CreateMap<Category, CategorySlimDto>();
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<PatchCategoryDto, Category>().ReverseMap();
+
+        CreateMap<CategoryLevelConstraint, CategoryLevelConstraintDto>();
+        CreateMap<CreateCategoryLevelConstraintDto, CategoryLevelConstraint>();
+        CreateMap<PatchCategoryLevelConstraintDto, CategoryLevelConstraint>().ReverseMap();
 
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleSlimDto>();
