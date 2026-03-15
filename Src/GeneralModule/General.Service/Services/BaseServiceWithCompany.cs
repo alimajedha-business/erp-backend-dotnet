@@ -67,10 +67,30 @@ public abstract class BaseServiceWithCompany<
 
         configureEntity?.Invoke(entity);
 
-        var created = await _repo.AddAsync(entity, ct);
-        await _repo.SaveChangesAsync(ct);
+        try
+        {
+            var created = await _repo.AddAsync(entity, ct);
+            await _repo.SaveChangesAsync(ct);
 
-        return _mapper.Map<TDto>(created);
+            return _mapper.Map<TDto>(created);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx)
+        {
+            if (sqlEx.Number == 2601 || sqlEx.Number == 2605)
+            {
+                throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
+            }
+            else
+            {
+                // Handle other SQL errors
+                throw;
+            }
+        }
+        catch (Exception)
+        {
+            // Handle other general exceptions
+            throw;
+        }
     }
 
     public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
