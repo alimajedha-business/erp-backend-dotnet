@@ -14,4 +14,10 @@ public interface ICategoryLevelConstraintService : IBaseServiceWithCompany<
     ICategoryLevelConstraintRepository,
     WarehouseResource
 >
-{ }
+{
+    Task<CategoryLevelConstraintDto> GetByLevelNo(
+        Guid companyId,
+        int levelNo,
+        CancellationToken ct
+    );
+}

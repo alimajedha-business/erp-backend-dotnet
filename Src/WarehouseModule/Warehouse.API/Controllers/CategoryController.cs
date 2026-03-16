@@ -17,14 +17,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
 public class CategoryController(
     ICategoryService categoryService,
-    ICategoryAttributeRuleService categoryAttributeRuleService,
+    ICategoryAttributeRuleService attributeRuleService,
     IItemService itemService
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
-    private readonly ICategoryAttributeRuleService _categoryAttributeRuleService = 
-        categoryAttributeRuleService;
-
+    private readonly ICategoryAttributeRuleService _attributeRuleService = attributeRuleService;
     private readonly IItemService _itemService = itemService;
 
     [HttpPost]
@@ -168,7 +166,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var dto = await _categoryAttributeRuleService.CreateAsync(
+        var dto = await _attributeRuleService.CreateAsync(
             createDto,
             ct,
             e => e.CategoryId = categoryId
@@ -190,7 +188,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var result = await _categoryAttributeRuleService.GetAllAsync(
+        var result = await _attributeRuleService.GetAllAsync(
             categoryId,
             parameters,
             ct
@@ -208,7 +206,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var dto = await _categoryAttributeRuleService.GetByIdAsync(id, ct);
+        var dto = await _attributeRuleService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 
@@ -223,7 +221,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var dto = await _categoryAttributeRuleService.PatchAsync(
+        var dto = await _attributeRuleService.PatchAsync(
             id,
             patchDocument,
             ct
@@ -241,7 +239,7 @@ public class CategoryController(
     )
     {
         await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        await _categoryAttributeRuleService.DeleteAsync(id, ct);
+        await _attributeRuleService.DeleteAsync(id, ct);
         return NoContent();
     }
 
