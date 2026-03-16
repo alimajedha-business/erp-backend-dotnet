@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace NGErp.Base.Service.RequestFeatures;
 
@@ -45,5 +47,6 @@ public abstract class RequestParameters
     public string? OrderBy { get; set; }
 
     [FromQuery(Name = "q")]
+    [Description("This parameter is used in list APIs with GET method.")]
     public string? Q { get; set; }
 }
