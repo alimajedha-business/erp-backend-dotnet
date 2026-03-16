@@ -71,16 +71,20 @@ public abstract class BaseService<
             {
                 throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
             }
+            else if (sqlEx.Number == 547)
+            {
+                throw new ForeignKeyConstraintException(_localizer[LocalizerKey].Value);
+            }
             else
             {
                 // Handle other SQL errors
-                throw;
+                throw new Exception("Xxx");
             }
         }
         catch (Exception)
         {
             // Handle other general exceptions
-            throw;
+            throw new Exception("Yyy");
         }
     }
 
