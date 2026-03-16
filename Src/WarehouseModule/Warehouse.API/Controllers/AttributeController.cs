@@ -45,6 +45,22 @@ public class AttributeController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] AttributeParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _attributeService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
