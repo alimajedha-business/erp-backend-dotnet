@@ -11,9 +11,9 @@ public sealed class WarehouseTypeSchema : IFilterSchema<WarehouseType>
 
         filterSchema.Fields["code"] = new FilterFieldInfo(
             PropertyName: nameof(Entities.Warehouse.Code),
-            PropertyType: typeof(string),
+            PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "startsWith", "contains", "endsWith" }
+            { "eq", "ne", "gt", "gte", "lt", "lte" }
         );
 
         filterSchema.Fields["title"] = new FilterFieldInfo(
