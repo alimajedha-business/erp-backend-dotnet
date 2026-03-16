@@ -98,6 +98,10 @@ public class MappingProfile : Profile
         CreateMap<CreateWarehouseDto, Domain.Entities.Warehouse>();
         CreateMap<PatchWarehouseDto, Domain.Entities.Warehouse>().ReverseMap();
 
+        CreateMap<WarehouseLocation, WarehouseLocationDto>();
+        CreateMap<CreateWarehouseLocationDto, WarehouseLocation>();
+        CreateMap<PatchWarehouseLocationDto, WarehouseLocation>().ReverseMap();
+
         CreateMap<WarehouseType, WarehouseTypeDto>();
         CreateMap<CreateWarehouseTypeDto, WarehouseType>();
         CreateMap<PatchWarehouseTypeDto, WarehouseType>().ReverseMap();

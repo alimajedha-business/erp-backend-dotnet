@@ -53,7 +53,7 @@ public enum AttributeDataType
     Text = 1,
 
     [Description("Integer")]
-    Int = 2,
+    Integer = 2,
 
     [Description("Decimal")]
     Decimal = 3,
@@ -62,7 +62,7 @@ public enum AttributeDataType
     Date = 4,
 
     [Description("Boolean")]
-    Bool = 5,
+    Boolean = 5,
 
     [Description("Enum")]
     Enum = 6
@@ -76,10 +76,10 @@ public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
         return value switch
         {
             "Text" => AttributeDataType.Text,
-            "Integer" => AttributeDataType.Int,
+            "Integer" => AttributeDataType.Integer,
             "Decimal" => AttributeDataType.Decimal,
             "Date" => AttributeDataType.Date,
-            "Boolean" => AttributeDataType.Bool,
+            "Boolean" => AttributeDataType.Boolean,
             "Enum" => AttributeDataType.Enum,
             _ => throw new JsonException($"Unknown AttributeDataType: {value}")
         };
