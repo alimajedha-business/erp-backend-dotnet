@@ -31,6 +31,11 @@ public class WarehouseLocation :
             .HasDatabaseName("IX_Location_Warehouse_Parent");
 
         builder
+            .HasIndex(i => new { i.WarehouseId, i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_WarehouseLocation_Warehouse_Code");
+
+        builder
             .Property(e => e.Title)
             .HasMaxLength(250);
 
