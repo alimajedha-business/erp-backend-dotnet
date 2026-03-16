@@ -34,27 +34,4 @@ public class WarehouseLocationService(
     IWarehouseLocationService
 {
     protected override string LocalizerKey => "WarehouseLocation";
-
-    public async Task<WarehouseLocationDto> CreateAsync(
-        CreateWarehouseLocationDto createDto,
-        CancellationToken ct
-    )
-    {
-        var parentLocationId = createDto.ParentLocationId;
-        if (parentLocationId is not null)
-        {
-            var parentLocation = await _repo.GetByIdAsync(parentLocationId.Value, ct);
-            if (parentLocation is null)
-            {
-                throw new NotFoundException(_localizer[LocalizerKey].Value);
-            }
-
-            if (parentLocation.WarehouseId != createDto.WarehouseId)
-            {
-                throw new NotFoundException(_localizer["WarehouseLocation-Warehouse"].Value);
-            }
-        }
-
-        return await base.CreateAsync(createDto, ct);
-    }
 }

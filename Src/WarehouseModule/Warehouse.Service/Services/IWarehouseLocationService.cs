@@ -13,9 +13,4 @@ public interface IWarehouseLocationService : IBaseService<
     IWarehouseLocationRepository,
     IWarehouseRepository
 >
-{
-    Task<WarehouseLocationDto> CreateAsync(
-        CreateWarehouseLocationDto createDto,
-        CancellationToken ct
-    );
-}
+{ }
