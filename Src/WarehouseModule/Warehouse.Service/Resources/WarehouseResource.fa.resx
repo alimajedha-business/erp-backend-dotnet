@@ -141,6 +141,9 @@
   <data name="Warehouse" xml:space="preserve">
     <value>انبار</value>
   </data>
+  <data name="WarehouseLocation" xml:space="preserve">
+    <value>محل نگهداری</value>
+  </data>
   <data name="WarehouseType" xml:space="preserve">
     <value>نوع انبار</value>
   </data>
