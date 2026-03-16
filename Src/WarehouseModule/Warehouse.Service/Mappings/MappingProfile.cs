@@ -12,7 +12,11 @@ public class MappingProfile : Profile
         CreateMap<Domain.Entities.Attribute, AttributeDto>()
             .ForCtorParam(
                 nameof(AttributeDto.DataTypeDescription),
-                opt => opt.MapFrom(src => AttributeDto.GetDescription(src.DataType))
+                opt => opt.MapFrom(src => AttributeDto.GetDataTypeDescription(src.DataType))
+            )
+            .ForCtorParam(
+                nameof(AttributeDto.AttributeEntityDescription),
+                opt => opt.MapFrom(src => AttributeDto.GetEntityDescription(src.AttributeEntity))
             );
         CreateMap<Domain.Entities.Attribute, AttributeSlimDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();

@@ -11,12 +11,20 @@ public record AttributeDto(
     string Title,
     AttributeDataType DataType,
     string DataTypeDescription,
-    bool IsItemAttribute,
+    AttributeEntity AttributeEntity,
+    string AttributeEntityDescription,
     bool IsRequired,
     bool IsStockDimension
 )
 {
-    public static string GetDescription(AttributeDataType value)
+    public static string GetDataTypeDescription(AttributeDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+
+    public static string GetEntityDescription(AttributeEntity value)
     {
         var field = value.GetType().GetField(value.ToString());
         var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
@@ -35,7 +43,7 @@ public class CreateAttributeDto
     public required int Code { get; set; }
     public required string Title { get; set; }
     public required AttributeDataType DataType { get; set; }
-    public required bool IsItemAttribute { get; set; } = false;
+    public required AttributeEntity AttributeEntity { get; set; }
     public required bool IsRequired { get; set; } = false;
     public required bool IsStockDimension { get; set; } = false;
 }
@@ -45,4 +53,5 @@ public class PatchAttributeDto
     public int? Code { get; set; }
     public string? Title { get; set; }
     public AttributeDataType? DataType { get; set; }
+    public AttributeEntity? AttributeEntity { get; set; }
 }
