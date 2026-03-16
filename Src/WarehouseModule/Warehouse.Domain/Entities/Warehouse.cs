@@ -173,10 +173,6 @@ public class Warehouse :
             .HasDatabaseName("UX_Warehouse_Company_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(250);
 

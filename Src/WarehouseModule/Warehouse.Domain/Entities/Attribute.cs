@@ -18,7 +18,7 @@ public class Attribute :
     public required int Code { get; set; }
     public required string Title { get; set; }
     public required AttributeDataType DataType { get; set; }
-    public required bool IsItemAttribute { get; set; } = false;
+    public required AttributeEntity AttributeEntity { get; set; }
     public required bool IsRequired { get; set; } = false;
     public required bool IsStockDimension {  get; set; } = false;
 
@@ -33,16 +33,8 @@ public class Attribute :
             .HasDatabaseName("UX_Attribute_Company_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(50);
-
-        builder
-            .Property(e => e.IsItemAttribute)
-            .HasDefaultValue(false);
 
         builder
             .Property(e => e.IsRequired)
@@ -95,10 +87,46 @@ public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
 
     public override void Write(Utf8JsonWriter writer, AttributeDataType value, JsonSerializerOptions options)
     {
-        writer.WriteStringValue(GetDescription(value));
+        writer.WriteStringValue(GetDataTypeDescription(value));
     }
 
-    private static string GetDescription(AttributeDataType value)
+    private static string GetDataTypeDescription(AttributeDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+}
+
+[JsonConverter(typeof(AttributeEntityConverter))]
+public enum AttributeEntity
+{
+    [Description("Item")]
+    Item = 1,
+
+    [Description("Location")]
+    Location = 2,
+}
+
+public class AttributeEntityConverter : JsonConverter<AttributeEntity>
+{
+    public override AttributeEntity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var value = reader.GetString();
+        return value switch
+        {
+            "Item" => AttributeEntity.Item,
+            "Location" => AttributeEntity.Location,
+            _ => throw new JsonException($"Unknown AttributeEntity: {value}")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, AttributeEntity value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(GetEntityDescription(value));
+    }
+
+    private static string GetEntityDescription(AttributeEntity value)
     {
         var field = value.GetType().GetField(value.ToString());
         var attribute = field?.GetCustomAttribute<DescriptionAttribute>();

@@ -21,10 +21,6 @@ public class MeasurementDimension :
             .ToTable(nameof(MeasurementDimension), "Warehouse");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(64);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(200);
 
