@@ -144,4 +144,7 @@
   <data name="DuplicateInsert" xml:space="preserve">
     <value>رکوردی با مقادیر مشخص شده برای {0} در پایگاه داده وجود دارد.</value>
   </data>
+  <data name="ForeignKeyConstraint" xml:space="preserve">
+    <value>موجودیت مرجع {0} در پایگاه داده وجود ندارد.</value>
+  </data>
 </root>

@@ -29,7 +29,7 @@ namespace NGErp.API.Extensions
                     // Select proper status code
                     var statusCode = ex switch
                     {
-                        NotFoundException => StatusCodes.Status404NotFound,
+                        NotFoundException or ForeignKeyConstraintException => StatusCodes.Status404NotFound,
                         BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                         ForeignKeyViolationException or DuplicateInsertException => StatusCodes.Status409Conflict,

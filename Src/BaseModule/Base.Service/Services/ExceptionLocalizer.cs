@@ -22,6 +22,9 @@ public class ExceptionLocalizer<TEntityResource>(
         if (ex is ForeignKeyViolationException fkViolation)
             return LocalizeOrFallback(fkViolation.LocalizationKey, fkViolation.Arguments);
 
+        if (ex is ForeignKeyConstraintException fkConstraint)
+            return LocalizeOrFallback(fkConstraint.LocalizationKey, fkConstraint.Arguments);
+
         if (ex is DuplicateInsertException duplicateInsert)
             return LocalizeOrFallback(duplicateInsert.LocalizationKey, duplicateInsert.Arguments);
 
