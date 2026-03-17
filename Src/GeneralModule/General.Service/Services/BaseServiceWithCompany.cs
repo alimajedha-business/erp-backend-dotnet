@@ -76,10 +76,12 @@ public abstract class BaseServiceWithCompany<
         }
         catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx)
         {
+            // Duplicate Key Insertion Exception
             if (sqlEx.Number == 2601 || sqlEx.Number == 2605)
             {
                 throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
             }
+            // Foreign-Key Insertion Exception
             else if (sqlEx.Number == 547)
             {
                 throw new ForeignKeyConstraintException(_localizer[LocalizerKey].Value);
