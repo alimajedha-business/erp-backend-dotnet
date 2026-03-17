@@ -81,10 +81,16 @@ public abstract class BaseServiceWithCompany<
             {
                 throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
             }
-            // Foreign-Key Insertion Exception
+            // CHECK Constraint Exception
             else if (sqlEx.Number == 547)
             {
-                throw new ForeignKeyConstraintException(_localizer[LocalizerKey].Value);
+                var match = RegexHelpers.SqlConstraintRegex().Match(sqlEx.Message);
+                string constraintName = match.Groups["name"].Value;
+
+                throw new CheckConstraintException(
+                    _localizer[LocalizerKey].Value,
+                    _localizer[constraintName].Value
+                );
             }
             else
             {

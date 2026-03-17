@@ -74,7 +74,13 @@ public abstract class BaseService<
             // Foreign-Key Insertion Exception
             else if (sqlEx.Number == 547)
             {
-                throw new ForeignKeyConstraintException(_localizer[LocalizerKey].Value);
+                var match = RegexHelpers.SqlConstraintRegex().Match(sqlEx.Message);
+                string constraintName = match.Groups["name"].Value;
+
+                throw new CheckConstraintException(
+                    _localizer[LocalizerKey].Value,
+                    _localizer[constraintName].Value
+                );
             }
             else
             {
