@@ -34,6 +34,15 @@ public class CategoryController(
         CancellationToken ct
     )
     {
+        if (createDto.ParentCategoryId is not null)
+        {
+            await _categoryService.GetByIdAsync(
+                companyId,
+                createDto.ParentCategoryId.Value,
+                ct
+            );
+        }
+
         var dto = await _categoryService.CreateAsync(
             companyId,
             createDto,
