@@ -160,7 +160,26 @@ public class AttributeController(
         );
     }
 
-    [HttpGet("{attributeId:guid}/enums/list")]
+    [HttpGet("{attributeId:guid}/enums/filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromQuery] AttributeEnumValueParameters parameters,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var result = await _attributeEnumValueService.GetAllAsync(
+            attributeId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("{attributeId:guid}/enums/list")]
+    [SkipModelValidation]
     public async Task<IActionResult> GetAttributeEnumValues(
         [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
