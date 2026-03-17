@@ -32,7 +32,9 @@ namespace NGErp.API.Extensions
                         NotFoundException or ForeignKeyConstraintException => StatusCodes.Status404NotFound,
                         BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-                        ForeignKeyViolationException or DuplicateInsertException => StatusCodes.Status409Conflict,
+                        ForeignKeyViolationException 
+                            or DuplicateInsertException
+                            or CheckConstraintException => StatusCodes.Status409Conflict,
                         _ => StatusCodes.Status500InternalServerError
                     };
                     context.Response.StatusCode = statusCode;
