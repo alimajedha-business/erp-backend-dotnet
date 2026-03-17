@@ -129,9 +129,6 @@
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>محدودیت سطوح طبقه‌بندی</value>
   </data>
-  <data name="CK_ExportSale_Account" xml:space="preserve">
-    <value>حساب فروش صادراتی نمی‌تواند خالی باشد.</value>
-  </data>
   <data name="InventoryMovementType" xml:space="preserve">
     <value>نوع حواله</value>
   </data>
