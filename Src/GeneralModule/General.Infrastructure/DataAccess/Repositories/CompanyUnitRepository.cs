@@ -5,7 +5,7 @@ using NGErp.General.Service.Repository.Contracts;
 
 namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 
-internal class CompanyUnitRepository(MainDbContext context) :
+public class CompanyUnitRepository(MainDbContext context) :
     Repository<CompanyUnit>(context),
     ICompanyUnitRepository
 { }
