@@ -129,6 +129,9 @@
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>Category Level Constraint</value>
   </data>
+  <data name="CK_ExportSale_Account" xml:space="preserve">
+    <value>Export sale account could not be empty.</value>
+  </data>
   <data name="InventoryMovementType" xml:space="preserve">
     <value>Inventory Movement Type</value>
   </data>
