@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -16,10 +17,14 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
 public class WarehouseController(
-    IWarehouseService warehouseService
+    IWarehouseService warehouseService,
+    IWarehouseTypeService warehouseTypeService,
+    ICompanyUnitService companyUnitService
 ) : ControllerBase
 {
     private readonly IWarehouseService _warehouseService = warehouseService;
+    private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
+    private readonly ICompanyUnitService _companyUnitService = companyUnitService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -30,6 +35,18 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
+        await _warehouseTypeService.GetByIdAsync(
+            companyId,
+            createDto.WarehouseTypeId,
+            ct
+        );
+
+        await _companyUnitService.GetByIdAsync(
+            companyId,
+            createDto.CompanyUnitId,
+            ct
+        );
+
         var dto = await _warehouseService.CreateAsync(
             companyId,
             createDto,
