@@ -66,27 +66,8 @@ public abstract class BaseService<
         }
         catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx)
         {
-            // Duplicate Key Insertion Exception
-            if (sqlEx.Number == 2601 || sqlEx.Number == 2605)
-            {
-                throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
-            }
-            // Foreign-Key Insertion Exception
-            else if (sqlEx.Number == 547)
-            {
-                var match = RegexHelpers.SqlConstraintRegex().Match(sqlEx.Message);
-                string constraintName = match.Groups["name"].Value;
-
-                throw new CheckConstraintException(
-                    _localizer[LocalizerKey].Value,
-                    _localizer[constraintName].Value
-                );
-            }
-            else
-            {
-                // Handle other SQL errors
-                throw new Exception("Xxx");
-            }
+            HandleSqlExceptionOnCreate(sqlEx);
+            throw new Exception("Xxx");
         }
         catch (Exception)
         {
@@ -250,9 +231,14 @@ public abstract class BaseService<
         {
             await _repo.SaveChangesAsync(ct);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx)
         {
-            throw new DbUpdateBadRequestException(ex.Message);
+            HandleSqlExceptionOnCreate(sqlEx);
+        }
+        catch (Exception)
+        {
+            // Handle other general exceptions
+            throw new Exception("Yyy");
         }
 
         return _mapper.Map<TDto>(entity);
@@ -322,6 +308,31 @@ public abstract class BaseService<
     {
         var entity = await _repo.GetByIdAsync(id, include, ct, trackChanges);
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
+    }
+
+    protected virtual void HandleSqlExceptionOnCreate(SqlException sqlEx)
+    {
+        // 2601, 2627: duplicate key / unique index
+        if (sqlEx.Number == 2601 || sqlEx.Number == 2627)
+        {
+            throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
+        }
+        // 547: FK or check constraint
+        else if (sqlEx.Number == 547)
+        {
+            var match = RegexHelpers.SqlConstraintRegex().Match(sqlEx.Message);
+            string constraintName = match.Groups["name"].Value;
+
+            throw new CheckConstraintException(
+                _localizer[LocalizerKey].Value,
+                _localizer[constraintName].Value
+            );
+        }
+        else
+        {
+            // Handle other SQL errors
+            throw new Exception("Xxx");
+        }
     }
 }
 
