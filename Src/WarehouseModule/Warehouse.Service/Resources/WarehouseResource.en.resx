@@ -129,6 +129,12 @@
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>Category Level Constraint</value>
   </data>
+  <data name="CK_Category_LevelNo" xml:space="preserve">
+    <value>Level number should be between 1 and 7.</value>
+  </data>
+  <data name="CK_Category_LevelNo_LastLevel" xml:space="preserve">
+    <value>The very top level could not be set as the last level.</value>
+  </data>
   <data name="InventoryMovementType" xml:space="preserve">
     <value>Inventory Movement Type</value>
   </data>

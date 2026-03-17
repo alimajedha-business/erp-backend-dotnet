@@ -129,6 +129,12 @@
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>محدودیت سطوح طبقه‌بندی</value>
   </data>
+  <data name="CK_Category_LevelNo" xml:space="preserve">
+    <value>شماره سطح باید بین اعداد 1 و 7 باشد.</value>
+  </data>
+  <data name="CK_Category_LevelNo_LastLevel" xml:space="preserve">
+    <value>بالاترین سطح نمی‌تواند به عنوان سطح آخر ثبت شود.</value>
+  </data>
   <data name="InventoryMovementType" xml:space="preserve">
     <value>نوع حواله</value>
   </data>
