@@ -93,14 +93,14 @@ public class PositionController(
     public async Task<IActionResult> ChangeStatus(
         Guid companyId,
         Guid id,
-        [FromBody] ChangeStatusDto changeStatusDto,
+        [FromBody] PositionChangeStatusDto changeStatusDto,
         CancellationToken ct
         )
     {
         await _positionService.ChangeStatusAsync(
             companyId,
             id,
-            changeStatusDto.Status,
+            changeStatusDto,
             ct
             );
         return NoContent();

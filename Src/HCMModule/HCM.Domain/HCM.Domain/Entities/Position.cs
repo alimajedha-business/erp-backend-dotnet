@@ -18,13 +18,13 @@ namespace NGErp.HCM.Domain.Entities
 
         public DateTime? StatusChangeDate { get; private set; }
 
-        public void ChangeStatus(bool newStatus, DateTime now)
+        public void ChangeStatus(bool newStatus, DateTime? statusChangeDate)
         {
             if (Status == newStatus)
                 return;
 
             Status = newStatus;
-            StatusChangeDate = newStatus ? null : now;
+            StatusChangeDate = newStatus ? null : statusChangeDate;
         }
 
         public void Map(EntityTypeBuilder<Position> builder)

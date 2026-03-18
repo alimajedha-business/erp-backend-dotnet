@@ -33,4 +33,5 @@ public class PatchPositionDto
 public class PositionChangeStatusDto
 {
     public bool Status { get; set; }
+    public DateOnly Date { get; set; }
 }

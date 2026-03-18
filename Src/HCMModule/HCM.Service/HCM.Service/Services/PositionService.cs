@@ -1,12 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using AutoMapper;
 
-using AutoMapper;
-
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -43,13 +38,15 @@ public class PositionService(
     public async Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
-        bool newStatus,
+        PositionChangeStatusDto changeStatusDto,
         CancellationToken ct)
     {
         await EnsureCompanyAsync(companyId, ct);
         var position = await GetByIdOrThrowAsync(companyId, id, ct);
 
-        position.ChangeStatus(newStatus, DateTime.UtcNow);
+        position.ChangeStatus(changeStatusDto.Status,
+            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
+            );
 
         _repo.Update(position);
         await _repo.SaveChangesAsync(ct);

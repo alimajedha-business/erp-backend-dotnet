@@ -31,7 +31,7 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromBody] CreateDepartmentDto createDto,
         CancellationToken ct
-    )
+        )
     {
         var dto = await _departmentService.CreateAsync(
             companyId,
@@ -51,7 +51,7 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
- )
+        )
     {
         var dto = await _departmentService.GetByIdAsync(
             companyId,
@@ -81,31 +81,6 @@ public class DepartmentController(
         return Ok(result);
     }
 
-    [HttpGet("active")]
-    public async Task<IActionResult> GetActiveDepartments(
-    [FromRoute] Guid companyId,
-    [FromQuery] DepartmentParameters parameters,
-    [FromQuery] DateOnly? activeAt,
-    CancellationToken ct
-)
-    {
-        Expression<Func<Department, bool>> filterCondition = x => x.Status == true;
-        if (activeAt.HasValue)
-        {
-            var activateAtDateTime = activeAt!.Value.ToDateTime(TimeOnly.MinValue);
-            filterCondition = x => x.Status == true && x.StatusChangeDate >= activateAtDateTime;
-        }
-
-        var result = await _departmentService.GetByConditionAsync(
-             companyId,
-             parameters,
-             filterCondition,
-             ct
-         );
-
-        return Ok(result);
-    }
-
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
@@ -121,14 +96,14 @@ public class DepartmentController(
     public async Task<IActionResult> ChangeStatus(
         Guid companyId,
         Guid id,
-        [FromBody] ChangeStatusDto changeStatusDto,
+        [FromBody] DepartmentChangeStatusDto changeStatusDto,
         CancellationToken ct
         )
     {
         await _departmentService.ChangeStatusAsync(
             companyId,
             id,
-            changeStatusDto.Status,
+            changeStatusDto,
             ct
             );
         return NoContent();
@@ -141,7 +116,7 @@ public class DepartmentController(
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
         CancellationToken ct
-    )
+        )
     {
         var dto = await _departmentService.PatchAsync(
             companyId,
