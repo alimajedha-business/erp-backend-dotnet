@@ -1,4 +1,6 @@
-﻿namespace NGErp.HCM.Service.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NGErp.HCM.Service.DTOs;
 
 public class DepartmentDto
 {
@@ -13,7 +15,10 @@ public class DepartmentDto
 public class CreateDepartmentDto
 {
     public string? Code { get; set; }
+
+    [MinLength(2)]
     public required string Name { get; set; }
+
     public string? Description { get; set; }
 }
 
@@ -24,7 +29,8 @@ public class PatchDepartmentDto
     public string? Description { get; set; }
 }
 
-public class ChangeStatusDto
+public class DepartmentChangeStatusDto
 {
     public bool Status { get; set; }
+    public DateOnly Date { get; set; }
 }

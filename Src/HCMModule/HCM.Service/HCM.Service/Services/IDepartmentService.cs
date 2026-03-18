@@ -22,7 +22,7 @@ public interface IDepartmentService : IBaseServiceWithCompany<
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
-        bool NewStatus,
+        DepartmentChangeStatusDto changeStatusDto,
         CancellationToken ct
         );
 }

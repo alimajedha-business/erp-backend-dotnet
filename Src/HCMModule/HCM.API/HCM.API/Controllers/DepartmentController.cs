@@ -1,10 +1,13 @@
-﻿using Asp.Versioning;
+﻿using System.Linq.Expressions;
+
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
@@ -28,7 +31,7 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromBody] CreateDepartmentDto createDto,
         CancellationToken ct
-    )
+        )
     {
         var dto = await _departmentService.CreateAsync(
             companyId,
@@ -48,7 +51,7 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
- )
+        )
     {
         var dto = await _departmentService.GetByIdAsync(
             companyId,
@@ -93,14 +96,14 @@ public class DepartmentController(
     public async Task<IActionResult> ChangeStatus(
         Guid companyId,
         Guid id,
-        [FromBody] ChangeStatusDto changeStatusDto,
+        [FromBody] DepartmentChangeStatusDto changeStatusDto,
         CancellationToken ct
         )
     {
         await _departmentService.ChangeStatusAsync(
             companyId,
             id,
-            changeStatusDto.Status,
+            changeStatusDto,
             ct
             );
         return NoContent();
@@ -113,7 +116,7 @@ public class DepartmentController(
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
         CancellationToken ct
-    )
+        )
     {
         var dto = await _departmentService.PatchAsync(
             companyId,

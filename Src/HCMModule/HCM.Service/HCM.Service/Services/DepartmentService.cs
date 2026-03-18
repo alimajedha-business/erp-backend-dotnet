@@ -38,14 +38,15 @@ public class DepartmentService(
     public async Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
-        bool newStatus,
+        DepartmentChangeStatusDto changeStatusDto,
         CancellationToken ct)
     {
         await EnsureCompanyAsync(companyId, ct);
+
         var department = await GetByIdOrThrowAsync(companyId, id, ct);
-
-        department.ChangeStatus(newStatus, DateTime.UtcNow);
-
+        department.ChangeStatus(changeStatusDto.Status,
+            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
+            );
         _repo.Update(department);
         await _repo.SaveChangesAsync(ct);
     }

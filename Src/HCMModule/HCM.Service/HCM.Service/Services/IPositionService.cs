@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
-using NGErp.HCM.Service.DTOs;
+﻿using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -22,7 +18,7 @@ public interface IPositionService : IBaseServiceWithCompany<
     Task ChangeStatusAsync(
         Guid companyId,
         Guid id,
-        bool NewStatus,
+        PositionChangeStatusDto changeStatusDto,
         CancellationToken ct
         );
 }
