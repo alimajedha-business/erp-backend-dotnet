@@ -17,12 +17,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAttributeEnumValueRepository, AttributeEnumValueRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICategoryAttributeRuleRepository, CategoryAttributeRuleRepository>();
+        services.AddScoped<ICategoryLevelConstraintRepository, CategoryLevelConstraintRepository>();
         services.AddScoped<IInventoryMovementTypeRepository, InventoryMovementTypeRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IMeasurementDimensionRepository, MeasurementDimensionRepository>();
         services.AddScoped<IUnitOfMeasurementConversionRepository, UnitOfMeasurementConversionRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();
         services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        services.AddScoped<IWarehouseLocationRepository, WarehouseLocationRepository>();
         services.AddScoped<IWarehouseTypeRepository, WarehouseTypeRepository>();
 
         return services;

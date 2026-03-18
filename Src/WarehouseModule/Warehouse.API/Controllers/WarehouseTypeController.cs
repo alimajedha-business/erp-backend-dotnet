@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -41,7 +43,7 @@ public class WarehouseTypeController(
         );
     }
 
-    [HttpGet("list")]
+    [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] WarehouseTypeParameters parameters,
@@ -52,6 +54,25 @@ public class WarehouseTypeController(
             companyId,
             parameters,
             ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetAdvancedSearch(
+        [FromRoute] Guid companyId,
+        [FromQuery] WarehouseTypeParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var result = await _warehouseTypeService.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            filterNodeDto
         );
 
         return Ok(result);
@@ -71,6 +92,16 @@ public class WarehouseTypeController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _warehouseTypeService.GetNextCode(companyId, ct);
+        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]

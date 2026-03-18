@@ -10,51 +10,51 @@ public class Warehouse :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Warehouse>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; } = true;
-    public decimal MaxMonetaryValue { get; private set; }
-    public Guid WarehouseTypeId { get; private set; }
-    public Guid CompanyUnitId { get; private set; }
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
+    public decimal MaxMonetaryValue { get; set; }
+    public required Guid WarehouseTypeId { get; set; }
+    public required Guid CompanyUnitId { get; set; }
 
     #region Warehouse
-    public Guid? WarehouseSlaveAccountCompanyId { get; private set; }
-    public string? WarehouseAccountMasterValue { get; private set; }
-    public string? WarehouseAccountSlaveValue { get; private set; }
-    public string? WarehouseAccountDetailed1Value { get; private set; }
-    public string? WarehouseAccountDetailed2Value { get; private set; }
+    public Guid? WarehouseSlaveAccountCompanyId { get; set; }
+    public string? WarehouseAccountMasterValue { get; set; }
+    public string? WarehouseAccountSlaveValue { get; set; }
+    public string? WarehouseAccountDetailed1Value { get; set; }
+    public string? WarehouseAccountDetailed2Value { get; set; }
     #endregion
 
     #region Sale
-    public Guid? SaleSlaveAccountCompanyId { get; private set; }
-    public string? SaleAccountMasterValue { get; private set; }
-    public string? SaleAccountSlaveValue { get; private set; }
-    public string? SaleAccountDetailed1Value { get; private set; }
-    public string? SaleAccountDetailed2Value { get; private set; }
+    public Guid? SaleSlaveAccountCompanyId { get; set; }
+    public string? SaleAccountMasterValue { get; set; }
+    public string? SaleAccountSlaveValue { get; set; }
+    public string? SaleAccountDetailed1Value { get; set; }
+    public string? SaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ExportSale
-    public Guid? ExportSaleSlaveAccountCompanyId { get; private set; }
-    public string? ExportSaleAccountMasterValue { get; private set; }
-    public string? ExportSaleAccountSlaveValue { get; private set; }
-    public string? ExportSaleAccountDetailed1Value { get; private set; }
-    public string? ExportSaleAccountDetailed2Value { get; private set; }
+    public Guid? ExportSaleSlaveAccountCompanyId { get; set; }
+    public string? ExportSaleAccountMasterValue { get; set; }
+    public string? ExportSaleAccountSlaveValue { get; set; }
+    public string? ExportSaleAccountDetailed1Value { get; set; }
+    public string? ExportSaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ReturnFromSale
-    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; private set; }
-    public string? ReturnFromSaleAccountMasterValue { get; private set; }
-    public string? ReturnFromSaleAccountSlaveValue { get; private set; }
-    public string? ReturnFromSaleAccountDetailed1Value { get; private set; }
-    public string? ReturnFromSaleAccountDetailed2Value { get; private set; }
+    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; set; }
+    public string? ReturnFromSaleAccountMasterValue { get; set; }
+    public string? ReturnFromSaleAccountSlaveValue { get; set; }
+    public string? ReturnFromSaleAccountDetailed1Value { get; set; }
+    public string? ReturnFromSaleAccountDetailed2Value { get; set; }
     #endregion
 
     #region ReturnFromPurchase
-    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; private set; }
-    public string? ReturnFromPurchaseAccountMasterValue { get; private set; }
-    public string? ReturnFromPurchaseAccountSlaveValue { get; private set; }
-    public string? ReturnFromPurchaseAccountDetailed1Value { get; private set; }
-    public string? ReturnFromPurchaseAccountDetailed2Value { get; private set; }
+    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; set; }
+    public string? ReturnFromPurchaseAccountMasterValue { get; set; }
+    public string? ReturnFromPurchaseAccountSlaveValue { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed1Value { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed2Value { get; set; }
     #endregion
 
     public required WarehouseType WarehouseType { get; set; }
@@ -65,116 +65,12 @@ public class Warehouse :
     public void Map(EntityTypeBuilder<Warehouse> builder)
     {
         builder
-            .ToTable(nameof(Warehouse), "Warehouse")
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_Warehouse_Account",
-                @"(
-                    (
-                        WarehouseSlaveAccountCompanyId IS NOT NULL 
-                        AND WarehouseAccountMasterValue IS NULL 
-                        AND WarehouseAccountSlaveValue IS NULL
-                        AND WarehouseAccountDetailed1Value IS NULL
-                        AND WarehouseAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        WarehouseSlaveAccountCompanyId IS NULL 
-                        AND WarehouseAccountMasterValue IS NOT NULL 
-                        AND WarehouseAccountSlaveValue IS NOT NULL
-                        AND WarehouseAccountDetailed1Value IS NOT NULL
-                        AND WarehouseAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_Sale_Account",
-                @"(
-                    (
-                        SaleSlaveAccountCompanyId IS NOT NULL 
-                        AND SaleAccountMasterValue IS NULL 
-                        AND SaleAccountSlaveValue IS NULL
-                        AND SaleAccountDetailed1Value IS NULL
-                        AND SaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        SaleSlaveAccountCompanyId IS NULL 
-                        AND SaleAccountMasterValue IS NOT NULL 
-                        AND SaleAccountSlaveValue IS NOT NULL
-                        AND SaleAccountDetailed1Value IS NOT NULL
-                        AND SaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ExportSale_Account",
-                @"(
-                    (
-                        ExportSaleSlaveAccountCompanyId IS NOT NULL
-                        AND ExportSaleAccountMasterValue IS NULL
-                        AND ExportSaleAccountSlaveValue IS NULL
-                        AND ExportSaleAccountDetailed1Value IS NULL
-                        AND ExportSaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ExportSaleSlaveAccountCompanyId IS NULL
-                        AND ExportSaleAccountMasterValue IS NOT NULL
-                        AND ExportSaleAccountSlaveValue IS NOT NULL
-                        AND ExportSaleAccountDetailed1Value IS NOT NULL
-                        AND ExportSaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ReturnFromSale_Account",
-                @"(
-                    (
-                        ReturnFromSaleSlaveAccountCompanyId IS NOT NULL 
-                        AND ReturnFromSaleAccountMasterValue IS NULL 
-                        AND ReturnFromSaleAccountSlaveValue IS NULL
-                        AND ReturnFromSaleAccountDetailed1Value IS NULL
-                        AND ReturnFromSaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ReturnFromSaleSlaveAccountCompanyId IS NULL 
-                        AND ReturnFromSaleAccountMasterValue IS NOT NULL 
-                        AND ReturnFromSaleAccountSlaveValue IS NOT NULL
-                        AND ReturnFromSaleAccountDetailed1Value IS NOT NULL
-                        AND ReturnFromSaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ReturnFromPurchase_Account",
-                @"(
-                    (
-                        ReturnFromPurchaseSlaveAccountCompanyId IS NOT NULL 
-                        AND ReturnFromPurchaseAccountMasterValue IS NULL 
-                        AND ReturnFromPurchaseAccountSlaveValue IS NULL
-                        AND ReturnFromPurchaseAccountDetailed1Value IS NULL
-                        AND ReturnFromPurchaseAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ReturnFromPurchaseSlaveAccountCompanyId IS NULL 
-                        AND ReturnFromPurchaseAccountMasterValue IS NOT NULL 
-                        AND ReturnFromPurchaseAccountSlaveValue IS NOT NULL
-                        AND ReturnFromPurchaseAccountDetailed1Value IS NOT NULL
-                        AND ReturnFromPurchaseAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ));
+            .ToTable(nameof(Warehouse), "Warehouse");
 
         builder
             .HasIndex(i => new { i.CompanyId, i.Code })
             .IsUnique()
             .HasDatabaseName("UX_Warehouse_Company_Code");
-
-        builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
 
         builder
             .Property(e => e.Title)

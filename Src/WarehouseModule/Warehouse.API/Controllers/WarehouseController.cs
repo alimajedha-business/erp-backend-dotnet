@@ -3,7 +3,9 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
@@ -15,10 +17,14 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
 public class WarehouseController(
-    IWarehouseService warehouseService
+    IWarehouseService warehouseService,
+    IWarehouseTypeService warehouseTypeService,
+    ICompanyUnitService companyUnitService
 ) : ControllerBase
 {
     private readonly IWarehouseService _warehouseService = warehouseService;
+    private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
+    private readonly ICompanyUnitService _companyUnitService = companyUnitService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -29,6 +35,18 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
+        await _warehouseTypeService.GetByIdAsync(
+            companyId,
+            createDto.WarehouseTypeId,
+            ct
+        );
+
+        await _companyUnitService.GetByIdAsync(
+            companyId,
+            createDto.CompanyUnitId,
+            ct
+        );
+
         var dto = await _warehouseService.CreateAsync(
             companyId,
             createDto,
@@ -42,7 +60,24 @@ public class WarehouseController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] WarehouseParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _warehouseService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
+    [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] WarehouseParameters parameters,
@@ -74,6 +109,16 @@ public class WarehouseController(
         );
 
         return Ok(warehouse);
+    }
+
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _warehouseService.GetNextCode(companyId, ct);
+        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]

@@ -10,9 +10,9 @@ public class WarehouseType :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<WarehouseType>
 {
-    public string Code { get; private set;  } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; }
+    public required int Code { get; set;  }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
 
     public virtual List<Warehouse> Warehouses { get; set; } = [];
 
@@ -27,15 +27,11 @@ public class WarehouseType :
             .HasDatabaseName("UX_WarehouseType_Company_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(50);
 
         builder
             .Property(e => e.IsActive)
-            .HasDefaultValue(false);
+            .HasDefaultValue(true);
     }
 }

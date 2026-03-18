@@ -11,9 +11,9 @@ public class AttributeEnumValueSchema : IFilterSchema<AttributeEnumValue>
 
         filterSchema.Fields["code"] = new FilterFieldInfo(
             PropertyName: nameof(AttributeEnumValue.Code),
-            PropertyType: typeof(string),
+            PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "startsWith", "contains", "endsWith" }
+            { "eq", "ne", "gt", "gte", "lt", "lte" }
         );
 
         return filterSchema;

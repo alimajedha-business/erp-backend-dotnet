@@ -12,8 +12,8 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260307071224_AddMeasurementDimensionEntity")]
-    partial class AddMeasurementDimensionEntity
+    [Migration("20260314052438_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -251,9 +251,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("OrganizationalStructureId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OrganizationalStructureItemId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("ParentItemId")
                         .HasColumnType("uniqueidentifier");
 
@@ -274,8 +271,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("NodeId");
 
                     b.HasIndex("OrganizationalStructureId");
-
-                    b.HasIndex("OrganizationalStructureItemId");
 
                     b.HasIndex("ParentItemId");
 
@@ -349,10 +344,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -423,10 +417,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("AttributeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -584,7 +577,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("SortOrder")
+                    b.Property<int?>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("TimeZone")
@@ -850,10 +843,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -1054,13 +1046,19 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsBase")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDefaultIssue")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDefaultPurchase")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1167,10 +1165,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -1218,10 +1215,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -1341,10 +1337,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -1560,10 +1555,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<int>("Code")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -1579,7 +1573,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1672,12 +1666,8 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("NGErp.HCM.Domain.Entities.OrganizationalStructureItem", null)
-                        .WithMany("Children")
-                        .HasForeignKey("OrganizationalStructureItemId");
-
                     b.HasOne("NGErp.HCM.Domain.Entities.OrganizationalStructureItem", "ParentItem")
-                        .WithMany()
+                        .WithMany("Children")
                         .HasForeignKey("ParentItemId")
                         .OnDelete(DeleteBehavior.NoAction);
 

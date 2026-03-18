@@ -10,17 +10,13 @@ public class InventoryMovementType :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryMovementType>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryMovementType> builder)
     {
         builder
             .ToTable(nameof(InventoryMovementType), "Warehouse");
-
-        builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
 
         builder
             .Property(e => e.Title)

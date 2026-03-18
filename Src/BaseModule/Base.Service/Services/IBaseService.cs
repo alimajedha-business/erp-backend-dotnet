@@ -28,6 +28,11 @@ public interface IBaseService<
 
     Task<ListResponseModel<TListDto>> GetAllAsync(
         TParameters parameters,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<TListDto>> GetAllAsync(
+        TParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -64,6 +69,8 @@ public interface IBaseService<
         Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
         CancellationToken ct
     );
+
+    Task<int> GetNextCode(CancellationToken ct);
 
     Task<TDto> PatchAsync<TPatchDto>(
         Guid id,

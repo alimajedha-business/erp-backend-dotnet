@@ -62,6 +62,27 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
+        CancellationToken ct
+    )
+    {
+        IQueryable<T> query = _context
+            .Set<T>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Filter(requestParameters);
+
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     )
@@ -187,5 +208,30 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
         return (baseQuery ?? _dbSet)
             .Where(e => e.CompanyId == companyId)
             .Where(predicate);
+    }
+
+    public virtual async Task<int> GetNextCode(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var codeField = typeof(T).GetProperty("Code");
+        if (codeField == null)
+        {
+            throw new Exception("Property named Code does not exist.");
+        }
+
+        if (codeField.PropertyType != typeof(int))
+        {
+            throw new Exception("Type of property Code is not integer.");
+        }
+
+        var code = await _dbSet
+            .Where(e => e.CompanyId == companyId)
+            .Select(e => EF.Property<int>(e, "Code"))
+            .OrderByDescending(e => e)
+            .FirstOrDefaultAsync(ct);
+
+        return code + 1;
     }
 }

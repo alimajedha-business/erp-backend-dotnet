@@ -68,9 +68,30 @@ public abstract class BaseServiceWithCompany<
         configureEntity?.Invoke(entity);
 
         var created = await _repo.AddAsync(entity, ct);
-        await _repo.SaveChangesAsync(ct);
 
+        await TrySaveMutationAsync(ct);
         return _mapper.Map<TDto>(created);
+    }
+
+    public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
+        Guid companyId,
+        TParameters parameters,
+        CancellationToken ct
+    )
+    {
+        await EnsureCompanyAsync(companyId, ct);
+
+        var listQueryResult = await _repo.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return new ListResponseModel<TListDto>(
+            results: _mapper.Map<IReadOnlyList<TListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
     }
 
     public virtual async Task<ListResponseModel<TListDto>> GetAllAsync(
@@ -206,6 +227,14 @@ public abstract class BaseServiceWithCompany<
         return _mapper.Map<TDto>(entity);
     }
 
+    public virtual async Task<int> GetNextCode(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        return await _repo.GetNextCode(companyId, ct);
+    }
+
     public virtual async Task<TDto> PatchAsync<TPatchDto>(
         Guid companyId,
         Guid id,
@@ -236,15 +265,7 @@ public abstract class BaseServiceWithCompany<
 
         _mapper.Map(patchDto, entity);
 
-        try
-        {
-            await _repo.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new DbUpdateBadRequestException(ex.Message);
-        }
-
+        await TrySaveMutationAsync(ct);
         return _mapper.Map<TDto>(entity);
     }
 
@@ -316,6 +337,44 @@ public abstract class BaseServiceWithCompany<
     {
         var entity = await _repo.GetByIdAsync(companyId, id, include, ct, trackChanges);
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
+    }
+
+    protected virtual async Task TrySaveMutationAsync(CancellationToken ct)
+    {
+        try
+        {
+            await _repo.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx)
+        {
+
+            // 2601, 2627: duplicate key / unique index
+            if (sqlEx.Number == 2601 || sqlEx.Number == 2627)
+            {
+                throw new DuplicateInsertException(_localizer[LocalizerKey].Value);
+            }
+            // 547: FK or check constraint
+            else if (sqlEx.Number == 547)
+            {
+                var match = RegexHelpers.SqlConstraintRegex().Match(sqlEx.Message);
+                string constraintName = match.Groups["name"].Value;
+
+                throw new CheckConstraintException(
+                    _localizer[LocalizerKey].Value,
+                    _localizer[constraintName].Value
+                );
+            }
+            else
+            {
+                // Handle other SQL errors
+                throw new Exception("Xxx");
+            }
+        }
+        catch (Exception)
+        {
+            // Handle other general exceptions
+            throw new Exception("Yyy");
+        }
     }
 }
 

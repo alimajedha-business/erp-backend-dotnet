@@ -74,6 +74,7 @@ public class ItemController(
     }
 
     [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,

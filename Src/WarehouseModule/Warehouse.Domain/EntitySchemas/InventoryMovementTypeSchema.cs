@@ -11,16 +11,16 @@ public sealed class InventoryMovementTypeSchema : IFilterSchema<InventoryMovemen
 
         filterSchema.Fields["code"] = new FilterFieldInfo(
             PropertyName: nameof(InventoryMovementType.Code),
-            PropertyType: typeof(string),
+            PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "startsWith", "contains", "endsWith" }
+            { "eq", "ne", "gt", "gte", "lt", "lte" }
         );
 
         filterSchema.Fields["title"] = new FilterFieldInfo(
             PropertyName: nameof(InventoryMovementType.Title),
             PropertyType: typeof(string),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "startsWith", "contains", "endsWith" }
         );
 
         return filterSchema;

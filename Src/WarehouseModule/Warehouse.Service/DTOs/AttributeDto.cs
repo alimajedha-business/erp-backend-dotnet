@@ -1,35 +1,57 @@
-﻿using NGErp.Warehouse.Domain.Entities;
+﻿using System.ComponentModel;
+using System.Reflection;
+
+using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.DTOs;
 
 public record AttributeDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title,
     AttributeDataType DataType,
-    bool IsItemAttribute,
+    string DataTypeDescription,
+    AttributeEntity AttributeEntity,
+    string AttributeEntityDescription,
     bool IsRequired,
     bool IsStockDimension
-);
+)
+{
+    public static string GetDataTypeDescription(AttributeDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+
+    public static string GetEntityDescription(AttributeEntity value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+}
 
 public record AttributeSlimDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title
 );
 
 public class CreateAttributeDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
-    public AttributeDataType DataType { get; set; }
-    public bool IsItemAttribute { get; set; } = false;
-    public bool IsRequired { get; set; } = false;
-    public bool IsStockDimension { get; set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required AttributeDataType DataType { get; set; }
+    public required AttributeEntity AttributeEntity { get; set; }
+    public required bool IsRequired { get; set; } = false;
+    public required bool IsStockDimension { get; set; } = false;
 }
 
 public class PatchAttributeDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Title { get; set; }
+    public AttributeDataType? DataType { get; set; }
+    public AttributeEntity? AttributeEntity { get; set; }
 }

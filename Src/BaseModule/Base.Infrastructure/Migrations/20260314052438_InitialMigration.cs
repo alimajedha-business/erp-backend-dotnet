@@ -51,12 +51,33 @@ namespace NGErp.Base.Infrastructure.Migrations
             //    });
 
             migrationBuilder.CreateTable(
+                name: "MeasurementDimension",
+                schema: "Warehouse",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Code = table.Column<int>(type: "int", maxLength: 64, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    IsDiscrete = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MeasurementDimension", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Attribute",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 20, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DataType = table.Column<int>(type: "int", nullable: false),
                     IsItemAttribute = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -156,7 +177,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 20, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
@@ -235,43 +256,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UnitOfMeasurement",
-                schema: "Warehouse",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Dimension = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Symbol = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IsDiscrete = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnitOfMeasurement", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UnitOfMeasurement_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalSchema: "General",
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "WarehouseType",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 20, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -292,12 +284,47 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UnitOfMeasurement",
+                schema: "Warehouse",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Code = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Symbol = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    MeasurementDimensionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitOfMeasurement", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UnitOfMeasurement_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "General",
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UnitOfMeasurement_MeasurementDimension_MeasurementDimensionId",
+                        column: x => x.MeasurementDimensionId,
+                        principalSchema: "Warehouse",
+                        principalTable: "MeasurementDimension",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AttributeEnumValue",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 80, nullable: false),
                     Label = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     AttributeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
@@ -315,8 +342,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.AttributeId,
                         principalSchema: "Warehouse",
                         principalTable: "Attribute",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -330,7 +356,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     IsItemAttribute = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsRequired = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IsStockDimension = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    SortOrder = table.Column<int>(type: "int", nullable: false),
+                    SortOrder = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -346,8 +372,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.AttributeId,
                         principalSchema: "Warehouse",
                         principalTable: "Attribute",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CategoryAttributeRule_Category_CategoryId",
                         column: x => x.CategoryId,
@@ -434,53 +459,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UnitOfMeasurementConversion",
-                schema: "Warehouse",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Factor = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
-                    FromUnitOfMeasurementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ToUnitOfMeasurementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnitOfMeasurementConversion", x => x.Id);
-                    table.CheckConstraint("CK_UomConv_Factor", "Factor > 0");
-                    table.ForeignKey(
-                        name: "FK_UnitOfMeasurementConversion_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalSchema: "General",
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UnitOfMeasurementConversion_UnitOfMeasurement_FromUnitOfMeasurementId",
-                        column: x => x.FromUnitOfMeasurementId,
-                        principalSchema: "Warehouse",
-                        principalTable: "UnitOfMeasurement",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UnitOfMeasurementConversion_UnitOfMeasurement_ToUnitOfMeasurementId",
-                        column: x => x.ToUnitOfMeasurementId,
-                        principalSchema: "Warehouse",
-                        principalTable: "UnitOfMeasurement",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Warehouse",
                 schema: "Warehouse",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 50, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     MaxMonetaryValue = table.Column<decimal>(type: "decimal(22,4)", nullable: false),
@@ -544,6 +528,47 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.CompanyUnitId,
                         principalSchema: "Shared",
                         principalTable: "company_units",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitOfMeasurementConversion",
+                schema: "Warehouse",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Factor = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
+                    FromUnitOfMeasurementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ToUnitOfMeasurementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitOfMeasurementConversion", x => x.Id);
+                    table.CheckConstraint("CK_UomConv_Factor", "Factor > 0");
+                    table.ForeignKey(
+                        name: "FK_UnitOfMeasurementConversion_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalSchema: "General",
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UnitOfMeasurementConversion_UnitOfMeasurement_FromUnitOfMeasurementId",
+                        column: x => x.FromUnitOfMeasurementId,
+                        principalSchema: "Warehouse",
+                        principalTable: "UnitOfMeasurement",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UnitOfMeasurementConversion_UnitOfMeasurement_ToUnitOfMeasurementId",
+                        column: x => x.ToUnitOfMeasurementId,
+                        principalSchema: "Warehouse",
+                        principalTable: "UnitOfMeasurement",
                         principalColumn: "Id");
                 });
 
@@ -629,8 +654,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.ItemId,
                         principalSchema: "Warehouse",
                         principalTable: "Item",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -641,9 +665,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UnitOfMeasurementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsBase = table.Column<bool>(type: "bit", nullable: false),
-                    IsDefaultPurchase = table.Column<bool>(type: "bit", nullable: false),
-                    IsDefaultIssue = table.Column<bool>(type: "bit", nullable: false),
+                    IsBase = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsDefaultPurchase = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsDefaultIssue = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -734,7 +758,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     OrganizationalStructureId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ParentItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrganizationalStructureItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     TimeZone = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -757,12 +780,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.NodeId,
                         principalSchema: "HCM",
                         principalTable: "OrganizationNode",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OrganizationalStructureItem_OrganizationalStructureItem_OrganizationalStructureItemId",
-                        column: x => x.OrganizationalStructureItemId,
-                        principalSchema: "HCM",
-                        principalTable: "OrganizationalStructureItem",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OrganizationalStructureItem_OrganizationalStructureItem_ParentItemId",
@@ -867,8 +884,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         column: x => x.LotId,
                         principalSchema: "Warehouse",
                         principalTable: "InventoryLot",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1257,6 +1273,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_MeasurementDimension_IsDeleted",
+                schema: "Warehouse",
+                table: "MeasurementDimension",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrganizationalStructure_CompanyId",
                 schema: "HCM",
                 table: "OrganizationalStructure",
@@ -1291,12 +1313,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                 schema: "HCM",
                 table: "OrganizationalStructureItem",
                 column: "OrganizationalStructureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrganizationalStructureItem_OrganizationalStructureItemId",
-                schema: "HCM",
-                table: "OrganizationalStructureItem",
-                column: "OrganizationalStructureItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrganizationalStructureItem_ParentItemId",
@@ -1356,7 +1372,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                 name: "UX_Uom_Dimension_Title",
                 schema: "Warehouse",
                 table: "UnitOfMeasurement",
-                columns: new[] { "Dimension", "Title" },
+                columns: new[] { "MeasurementDimensionId", "Title" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1529,6 +1545,10 @@ namespace NGErp.Base.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "Position",
                 schema: "HCM");
+
+            migrationBuilder.DropTable(
+                name: "MeasurementDimension",
+                schema: "Warehouse");
 
             migrationBuilder.DropTable(
                 name: "Category",

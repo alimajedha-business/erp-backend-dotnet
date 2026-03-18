@@ -13,19 +13,19 @@ namespace NGErp.General.Service.Services;
 public class CompanyService(
     ICompanyRepository repository,
     IMapper mapper,
-    IStringLocalizer<GeneralResource> stringLocalizer
+    IStringLocalizer<GeneralResource> localizer
 ) : ICompanyService
 {
     private readonly ICompanyRepository _repository = repository;
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _stringLocalizer = stringLocalizer;
+    private readonly IStringLocalizer _localizer = localizer;
 
     public async Task<CompanyDto> GetByIdAsync(Guid companyId, CancellationToken ct)
     {
         var company = await _repository
             .Find(e => e.Id == companyId)
             .AsNoTracking()
-            .FirstOrDefaultAsync(ct) ?? throw new NotFoundException(_stringLocalizer["Company"]);
+            .FirstOrDefaultAsync(ct) ?? throw new NotFoundException(_localizer["Company"]);
 
         return _mapper.Map<CompanyDto>(company);
     }

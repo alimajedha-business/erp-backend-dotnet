@@ -31,6 +31,12 @@ public interface IBaseServiceWithCompany<
     Task<ListResponseModel<TListDto>> GetAllAsync(
         Guid companyId,
         TParameters parameters,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<TListDto>> GetAllAsync(
+        Guid companyId,
+        TParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -70,6 +76,11 @@ public interface IBaseServiceWithCompany<
         Guid companyId,
         Guid id,
         Func<IQueryable<TEntity>, IQueryable<TEntity>> include,
+        CancellationToken ct
+    );
+
+    Task<int> GetNextCode(
+        Guid companyId,
         CancellationToken ct
     );
 

@@ -9,9 +9,9 @@ public class AttributeEnumValue :
     BaseEntity,
     IBaseEntityTypeConfiguration<AttributeEnumValue>
 {
-    public string Code { get; private set; } = default!;
-    public string Label { get; private set; } = default!;
-    public Guid AttributeId { get; set; }
+    public required int Code { get; set; }
+    public required string Label { get; set; }
+    public required Guid AttributeId { get; set; }
 
     public required Attribute Attribute { get; set; }
 
@@ -24,10 +24,6 @@ public class AttributeEnumValue :
             .HasIndex(i => new { i.AttributeId, i.Code })
             .IsUnique()
             .HasDatabaseName("UX_AttributeEnum_Attribute_Code");
-
-        builder
-            .Property(e => e.Code)
-            .HasMaxLength(80);
 
         builder
             .Property(e => e.Label)

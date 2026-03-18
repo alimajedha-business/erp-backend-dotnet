@@ -10,10 +10,10 @@ public class UnitOfMeasurement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<UnitOfMeasurement>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public string Symbol { get; private set; } = default!;
-    public Guid MeasurementDimensionId { get; private set; }
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required string Symbol { get; set; }
+    public required Guid MeasurementDimensionId { get; set; }
 
     public required MeasurementDimension MeasurementDimension { get; set; }
 
@@ -26,10 +26,6 @@ public class UnitOfMeasurement :
             .HasIndex(i => new { i.MeasurementDimensionId, i.Title })
             .IsUnique()
             .HasDatabaseName("UX_Uom_Dimension_Title");
-
-        builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
 
         builder
             .Property(e => e.Title)

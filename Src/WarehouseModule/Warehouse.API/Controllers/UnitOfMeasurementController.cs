@@ -44,6 +44,22 @@ public class UnitOfMeasurementController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] UnitOfMeasurementParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _unitOfMeasurementService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
@@ -77,6 +93,20 @@ public class UnitOfMeasurementController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _unitOfMeasurementService.GetNextCode(
+            companyId,
+            ct
+        );
+
+        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]

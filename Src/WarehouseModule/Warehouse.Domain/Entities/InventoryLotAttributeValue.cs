@@ -10,14 +10,14 @@ public class InventoryLotAttributeValue :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryLotAttributeValue>
 {
-    public Guid LotId { get; private set; }
-    public Guid AttributeId { get; private set; }
-    public string? ValueText { get; private set; } = default!;
-    public int? ValueInt { get; private set; }
-    public decimal? ValueDecimal { get; private set; }
-    public DateTime? ValueDate { get; private set; }
-    public bool? ValueBoolean { get; private set; }
-    public Guid? EnumValueId { get; private set; }
+    public required Guid LotId { get; set; }
+    public required Guid AttributeId { get; set; }
+    public string? ValueText { get; set; }
+    public int? ValueInt { get; set; }
+    public decimal? ValueDecimal { get; set; }
+    public DateTime? ValueDate { get; set; }
+    public bool? ValueBoolean { get; set; }
+    public Guid? EnumValueId { get; set; }
 
     public required AttributeEnumValue? EnumValue { get; set; }
     public required InventoryLot Lot { get; set; }

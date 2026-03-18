@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -10,12 +15,12 @@ public class Attribute :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Attribute>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public AttributeDataType DataType { get; private set; }
-    public bool IsItemAttribute { get; private set; } = false;
-    public bool IsRequired { get; private set; } = false;
-    public bool IsStockDimension {  get; private set; } = false;
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public required AttributeDataType DataType { get; set; }
+    public required AttributeEntity AttributeEntity { get; set; }
+    public required bool IsRequired { get; set; } = false;
+    public required bool IsStockDimension {  get; set; } = false;
 
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
@@ -28,16 +33,8 @@ public class Attribute :
             .HasDatabaseName("UX_Attribute_Company_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(50);
-
-        builder
-            .Property(e => e.IsItemAttribute)
-            .HasDefaultValue(false);
 
         builder
             .Property(e => e.IsRequired)
@@ -49,12 +46,90 @@ public class Attribute :
     }
 }
 
+[JsonConverter(typeof(AttributeDataTypeConverter))]
 public enum AttributeDataType
 {
+    [Description("Text")]
     Text = 1,
-    Int = 2,
+
+    [Description("Integer")]
+    Integer = 2,
+
+    [Description("Decimal")]
     Decimal = 3,
+
+    [Description("Date")]
     Date = 4,
-    Bool = 5,
+
+    [Description("Boolean")]
+    Boolean = 5,
+
+    [Description("Enum")]
     Enum = 6
+}
+
+public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
+{
+    public override AttributeDataType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var value = reader.GetString();
+        return value switch
+        {
+            "Text" => AttributeDataType.Text,
+            "Integer" => AttributeDataType.Integer,
+            "Decimal" => AttributeDataType.Decimal,
+            "Date" => AttributeDataType.Date,
+            "Boolean" => AttributeDataType.Boolean,
+            "Enum" => AttributeDataType.Enum,
+            _ => throw new JsonException($"Unknown AttributeDataType: {value}")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, AttributeDataType value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(GetDataTypeDescription(value));
+    }
+
+    private static string GetDataTypeDescription(AttributeDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+}
+
+[JsonConverter(typeof(AttributeEntityConverter))]
+public enum AttributeEntity
+{
+    [Description("Item")]
+    Item = 1,
+
+    [Description("Location")]
+    Location = 2,
+}
+
+public class AttributeEntityConverter : JsonConverter<AttributeEntity>
+{
+    public override AttributeEntity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var value = reader.GetString();
+        return value switch
+        {
+            "Item" => AttributeEntity.Item,
+            "Location" => AttributeEntity.Location,
+            _ => throw new JsonException($"Unknown AttributeEntity: {value}")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, AttributeEntity value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(GetEntityDescription(value));
+    }
+
+    private static string GetEntityDescription(AttributeEntity value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
 }

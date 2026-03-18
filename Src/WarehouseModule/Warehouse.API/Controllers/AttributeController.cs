@@ -45,6 +45,22 @@ public class AttributeController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] AttributeParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _attributeService.GetAllAsync(
+            companyId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
@@ -78,6 +94,16 @@ public class AttributeController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+    [FromRoute] Guid companyId,
+    CancellationToken ct
+)
+    {
+        var code = await _attributeService.GetNextCode(companyId, ct);
+        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]
@@ -134,7 +160,26 @@ public class AttributeController(
         );
     }
 
-    [HttpGet("{attributeId:guid}/enums/list")]
+    [HttpGet("{attributeId:guid}/enums/filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromQuery] AttributeEnumValueParameters parameters,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var result = await _attributeEnumValueService.GetAllAsync(
+            attributeId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("{attributeId:guid}/enums/list")]
+    [SkipModelValidation]
     public async Task<IActionResult> GetAttributeEnumValues(
         [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
