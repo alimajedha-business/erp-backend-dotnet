@@ -19,10 +19,6 @@ public class InventoryMovementType :
             .ToTable(nameof(InventoryMovementType), "Warehouse");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(50);
     }

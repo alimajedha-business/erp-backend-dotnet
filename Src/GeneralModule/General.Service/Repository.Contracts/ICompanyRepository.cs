@@ -3,6 +3,4 @@ using NGErp.General.Domain.Entities;
 
 namespace NGErp.General.Service.Repository.Contracts;
 
-public interface ICompanyRepository : IRepository<Company>
-{
-}
+public interface ICompanyRepository : IRepository<Company> { }

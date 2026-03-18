@@ -35,6 +35,12 @@ public interface IRepositoryWithCompany<T>
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
+        CancellationToken ct
+    );
+
+    Task<ListQueryResult<T>> GetAllAsync(
+        Guid companyId,
+        RequestParameters requestParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );

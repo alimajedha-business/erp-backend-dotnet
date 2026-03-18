@@ -341,8 +341,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<int>("AttributeEntity")
+                        .HasColumnType("int");
+
                     b.Property<int>("Code")
-                        .HasMaxLength(20)
                         .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
@@ -361,11 +363,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsItemAttribute")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsRequired")
                         .ValueGeneratedOnAdd()
@@ -415,7 +412,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(80)
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -596,6 +592,55 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDatabaseName("UX_CategoryAttribute_Category_Attribute");
 
                     b.ToTable("CategoryAttributeRule", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.CategoryLevelConstraint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<int>("CodeLength")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LevelNo")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("CompanyId", "LevelNo")
+                        .IsUnique()
+                        .HasDatabaseName("UX_CategoryLevelConst_Company_No");
+
+                    b.ToTable("CategoryLevelConstraint", "Warehouse");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLot", b =>
@@ -841,7 +886,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(20)
                         .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
@@ -1043,13 +1087,19 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsBase")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDefaultIssue")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDefaultPurchase")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1157,7 +1207,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(64)
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1207,7 +1256,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
@@ -1329,7 +1377,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
@@ -1463,18 +1510,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UX_Warehouse_Company_Code");
 
-                    b.ToTable("Warehouse", "Warehouse", t =>
-                        {
-                            t.HasCheckConstraint("CK_ExportSale_Account", "(\r\n                    (\r\n                        ExportSaleSlaveAccountCompanyId IS NOT NULL\r\n                        AND ExportSaleAccountMasterValue IS NULL\r\n                        AND ExportSaleAccountSlaveValue IS NULL\r\n                        AND ExportSaleAccountDetailed1Value IS NULL\r\n                        AND ExportSaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ExportSaleSlaveAccountCompanyId IS NULL\r\n                        AND ExportSaleAccountMasterValue IS NOT NULL\r\n                        AND ExportSaleAccountSlaveValue IS NOT NULL\r\n                        AND ExportSaleAccountDetailed1Value IS NOT NULL\r\n                        AND ExportSaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
-
-                            t.HasCheckConstraint("CK_ReturnFromPurchase_Account", "(\r\n                    (\r\n                        ReturnFromPurchaseSlaveAccountCompanyId IS NOT NULL \r\n                        AND ReturnFromPurchaseAccountMasterValue IS NULL \r\n                        AND ReturnFromPurchaseAccountSlaveValue IS NULL\r\n                        AND ReturnFromPurchaseAccountDetailed1Value IS NULL\r\n                        AND ReturnFromPurchaseAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ReturnFromPurchaseSlaveAccountCompanyId IS NULL \r\n                        AND ReturnFromPurchaseAccountMasterValue IS NOT NULL \r\n                        AND ReturnFromPurchaseAccountSlaveValue IS NOT NULL\r\n                        AND ReturnFromPurchaseAccountDetailed1Value IS NOT NULL\r\n                        AND ReturnFromPurchaseAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
-
-                            t.HasCheckConstraint("CK_ReturnFromSale_Account", "(\r\n                    (\r\n                        ReturnFromSaleSlaveAccountCompanyId IS NOT NULL \r\n                        AND ReturnFromSaleAccountMasterValue IS NULL \r\n                        AND ReturnFromSaleAccountSlaveValue IS NULL\r\n                        AND ReturnFromSaleAccountDetailed1Value IS NULL\r\n                        AND ReturnFromSaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        ReturnFromSaleSlaveAccountCompanyId IS NULL \r\n                        AND ReturnFromSaleAccountMasterValue IS NOT NULL \r\n                        AND ReturnFromSaleAccountSlaveValue IS NOT NULL\r\n                        AND ReturnFromSaleAccountDetailed1Value IS NOT NULL\r\n                        AND ReturnFromSaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
-
-                            t.HasCheckConstraint("CK_Sale_Account", "(\r\n                    (\r\n                        SaleSlaveAccountCompanyId IS NOT NULL \r\n                        AND SaleAccountMasterValue IS NULL \r\n                        AND SaleAccountSlaveValue IS NULL\r\n                        AND SaleAccountDetailed1Value IS NULL\r\n                        AND SaleAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        SaleSlaveAccountCompanyId IS NULL \r\n                        AND SaleAccountMasterValue IS NOT NULL \r\n                        AND SaleAccountSlaveValue IS NOT NULL\r\n                        AND SaleAccountDetailed1Value IS NOT NULL\r\n                        AND SaleAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
-
-                            t.HasCheckConstraint("CK_Warehouse_Account", "(\r\n                    (\r\n                        WarehouseSlaveAccountCompanyId IS NOT NULL \r\n                        AND WarehouseAccountMasterValue IS NULL \r\n                        AND WarehouseAccountSlaveValue IS NULL\r\n                        AND WarehouseAccountDetailed1Value IS NULL\r\n                        AND WarehouseAccountDetailed2Value IS NULL\r\n                    )\r\n                        OR\r\n                    (\r\n                        WarehouseSlaveAccountCompanyId IS NULL \r\n                        AND WarehouseAccountMasterValue IS NOT NULL \r\n                        AND WarehouseAccountSlaveValue IS NOT NULL\r\n                        AND WarehouseAccountDetailed1Value IS NOT NULL\r\n                        AND WarehouseAccountDetailed2Value IS NOT NULL\r\n                    )\r\n                )");
-                        });
+                    b.ToTable("Warehouse", "Warehouse");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.WarehouseLocation", b =>
@@ -1484,13 +1520,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("CanStoreItem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -1527,11 +1563,13 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("ParentLocationId");
+
+                    b.HasIndex("WarehouseId", "Code")
+                        .IsUnique()
+                        .HasDatabaseName("UX_WarehouseLocation_Warehouse_Code");
 
                     b.HasIndex("WarehouseId", "ParentLocationId")
                         .HasDatabaseName("IX_Location_Warehouse_Parent");
@@ -1547,7 +1585,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Code")
-                        .HasMaxLength(20)
                         .HasColumnType("int");
 
                     b.Property<Guid>("CompanyId")
@@ -1731,6 +1768,15 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("Attribute");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.CategoryLevelConstraint", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLot", b =>
@@ -2006,12 +2052,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.WarehouseLocation", b =>
                 {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "ParentLocation")
                         .WithMany("SubLocations")
                         .HasForeignKey("ParentLocationId")

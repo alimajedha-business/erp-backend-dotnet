@@ -10,10 +10,10 @@ public record ItemDto(
 
 public class CreateItemDto
 {
-    public required string Code { get; set; } = default!;
-    public required string Title { get; set; } = default!;
-    public required string Sku { get; set; } = default!;
-    public bool IsActive { get; set; }
+    public required string Code { get; set; }
+    public required string Title { get; set; }
+    public required string Sku { get; set; }
+    public required bool IsActive { get; set; } = true;
     public required Guid CategoryId { get; set; }
 }
 

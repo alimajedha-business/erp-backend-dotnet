@@ -121,24 +121,36 @@
     <value>Attribute</value>
   </data>
   <data name="AttributeEnumValue" xml:space="preserve">
-    <value>AttributeEnumValue</value>
+    <value>Attribute Enum Value</value>
   </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
+  <data name="CategoryLevelConstraint" xml:space="preserve">
+    <value>Category Level Constraint</value>
+  </data>
+  <data name="CK_Category_LevelNo" xml:space="preserve">
+    <value>Level number should be between 1 and 7.</value>
+  </data>
+  <data name="CK_Category_LevelNo_LastLevel" xml:space="preserve">
+    <value>The very top level could not be set as the last level.</value>
+  </data>
   <data name="InventoryMovementType" xml:space="preserve">
-    <value>InventoryMovementType</value>
+    <value>Inventory Movement Type</value>
   </data>
   <data name="Item" xml:space="preserve">
     <value>Item</value>
   </data>
   <data name="UnitOfMeasurement" xml:space="preserve">
-    <value>UnitOfMeasurement</value>
+    <value>Unit of Measurement</value>
   </data>
   <data name="Warehouse" xml:space="preserve">
     <value>Warehouse</value>
   </data>
+  <data name="WarehouseLocation" xml:space="preserve">
+    <value>Warehouse Location</value>
+  </data>
   <data name="WarehouseType" xml:space="preserve">
-    <value>WarehouseType</value>
+    <value>Warehouse Type</value>
   </data>
 </root>

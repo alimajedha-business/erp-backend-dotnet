@@ -27,10 +27,6 @@ public class WarehouseType :
             .HasDatabaseName("UX_WarehouseType_Company_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(50);
 

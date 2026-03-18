@@ -26,10 +26,6 @@ public class AttributeEnumValue :
             .HasDatabaseName("UX_AttributeEnum_Attribute_Code");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(80);
-
-        builder
             .Property(e => e.Label)
             .HasMaxLength(200);
 

@@ -28,10 +28,6 @@ public class UnitOfMeasurement :
             .HasDatabaseName("UX_Uom_Dimension_Title");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
-
-        builder
             .Property(e => e.Title)
             .HasMaxLength(100);
 

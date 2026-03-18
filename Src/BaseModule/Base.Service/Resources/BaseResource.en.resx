@@ -141,4 +141,13 @@
   <data name="ForeignKeyViolation" xml:space="preserve">
     <value>Removing {0} is not permitted due to relations.</value>
   </data>
+  <data name="DuplicateInsert" xml:space="preserve">
+    <value>There is already a record for {0} with the current values in database.</value>
+  </data>
+  <data name="ForeignKeyConstraint" xml:space="preserve">
+    <value>The reference entity {0} was not found.</value>
+  </data>
+  <data name="CheckConstraint" xml:space="preserve">
+    <value>Error in creating {0}: {1}</value>
+  </data>
 </root>

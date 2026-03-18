@@ -25,22 +25,27 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
+        services.AddSingleton<IFilterSchema<CategoryLevelConstraint>, CategoryLevelConstraintSchema>();
         services.AddSingleton<IFilterSchema<InventoryMovementType>, InventoryMovementTypeSchema>();
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
+        services.AddSingleton<IFilterSchema<WarehouseLocation>, WarehouseLocationSchema>();
+        services.AddSingleton<IFilterSchema<WarehouseType>, WarehouseTypeSchema>();
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
+        services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
         services.AddScoped<IInventoryMovementTypeService, InventoryMovementTypeService>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
+        services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
         return services;

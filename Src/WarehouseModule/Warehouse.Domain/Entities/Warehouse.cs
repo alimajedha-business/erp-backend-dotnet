@@ -65,116 +65,12 @@ public class Warehouse :
     public void Map(EntityTypeBuilder<Warehouse> builder)
     {
         builder
-            .ToTable(nameof(Warehouse), "Warehouse")
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_Warehouse_Account",
-                @"(
-                    (
-                        WarehouseSlaveAccountCompanyId IS NOT NULL 
-                        AND WarehouseAccountMasterValue IS NULL 
-                        AND WarehouseAccountSlaveValue IS NULL
-                        AND WarehouseAccountDetailed1Value IS NULL
-                        AND WarehouseAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        WarehouseSlaveAccountCompanyId IS NULL 
-                        AND WarehouseAccountMasterValue IS NOT NULL 
-                        AND WarehouseAccountSlaveValue IS NOT NULL
-                        AND WarehouseAccountDetailed1Value IS NOT NULL
-                        AND WarehouseAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_Sale_Account",
-                @"(
-                    (
-                        SaleSlaveAccountCompanyId IS NOT NULL 
-                        AND SaleAccountMasterValue IS NULL 
-                        AND SaleAccountSlaveValue IS NULL
-                        AND SaleAccountDetailed1Value IS NULL
-                        AND SaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        SaleSlaveAccountCompanyId IS NULL 
-                        AND SaleAccountMasterValue IS NOT NULL 
-                        AND SaleAccountSlaveValue IS NOT NULL
-                        AND SaleAccountDetailed1Value IS NOT NULL
-                        AND SaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ExportSale_Account",
-                @"(
-                    (
-                        ExportSaleSlaveAccountCompanyId IS NOT NULL
-                        AND ExportSaleAccountMasterValue IS NULL
-                        AND ExportSaleAccountSlaveValue IS NULL
-                        AND ExportSaleAccountDetailed1Value IS NULL
-                        AND ExportSaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ExportSaleSlaveAccountCompanyId IS NULL
-                        AND ExportSaleAccountMasterValue IS NOT NULL
-                        AND ExportSaleAccountSlaveValue IS NOT NULL
-                        AND ExportSaleAccountDetailed1Value IS NOT NULL
-                        AND ExportSaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ReturnFromSale_Account",
-                @"(
-                    (
-                        ReturnFromSaleSlaveAccountCompanyId IS NOT NULL 
-                        AND ReturnFromSaleAccountMasterValue IS NULL 
-                        AND ReturnFromSaleAccountSlaveValue IS NULL
-                        AND ReturnFromSaleAccountDetailed1Value IS NULL
-                        AND ReturnFromSaleAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ReturnFromSaleSlaveAccountCompanyId IS NULL 
-                        AND ReturnFromSaleAccountMasterValue IS NOT NULL 
-                        AND ReturnFromSaleAccountSlaveValue IS NOT NULL
-                        AND ReturnFromSaleAccountDetailed1Value IS NOT NULL
-                        AND ReturnFromSaleAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_ReturnFromPurchase_Account",
-                @"(
-                    (
-                        ReturnFromPurchaseSlaveAccountCompanyId IS NOT NULL 
-                        AND ReturnFromPurchaseAccountMasterValue IS NULL 
-                        AND ReturnFromPurchaseAccountSlaveValue IS NULL
-                        AND ReturnFromPurchaseAccountDetailed1Value IS NULL
-                        AND ReturnFromPurchaseAccountDetailed2Value IS NULL
-                    )
-                        OR
-                    (
-                        ReturnFromPurchaseSlaveAccountCompanyId IS NULL 
-                        AND ReturnFromPurchaseAccountMasterValue IS NOT NULL 
-                        AND ReturnFromPurchaseAccountSlaveValue IS NOT NULL
-                        AND ReturnFromPurchaseAccountDetailed1Value IS NOT NULL
-                        AND ReturnFromPurchaseAccountDetailed2Value IS NOT NULL
-                    )
-                )"
-            ));
+            .ToTable(nameof(Warehouse), "Warehouse");
 
         builder
             .HasIndex(i => new { i.CompanyId, i.Code })
             .IsUnique()
             .HasDatabaseName("UX_Warehouse_Company_Code");
-
-        builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
 
         builder
             .Property(e => e.Title)

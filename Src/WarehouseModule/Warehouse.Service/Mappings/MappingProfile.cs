@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 
@@ -14,7 +12,11 @@ public class MappingProfile : Profile
         CreateMap<Domain.Entities.Attribute, AttributeDto>()
             .ForCtorParam(
                 nameof(AttributeDto.DataTypeDescription),
-                opt => opt.MapFrom(src => AttributeDto.GetDescription(src.DataType))
+                opt => opt.MapFrom(src => AttributeDto.GetDataTypeDescription(src.DataType))
+            )
+            .ForCtorParam(
+                nameof(AttributeDto.AttributeEntityDescription),
+                opt => opt.MapFrom(src => AttributeDto.GetEntityDescription(src.AttributeEntity))
             );
         CreateMap<Domain.Entities.Attribute, AttributeSlimDto>();
         CreateMap<CreateAttributeDto, Domain.Entities.Attribute>();
@@ -33,6 +35,10 @@ public class MappingProfile : Profile
         CreateMap<Category, CategorySlimDto>();
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<PatchCategoryDto, Category>().ReverseMap();
+
+        CreateMap<CategoryLevelConstraint, CategoryLevelConstraintDto>();
+        CreateMap<CreateCategoryLevelConstraintDto, CategoryLevelConstraint>();
+        CreateMap<PatchCategoryLevelConstraintDto, CategoryLevelConstraint>().ReverseMap();
 
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleDto>();
         CreateMap<CategoryAttributeRule, CategoryAttributeRuleSlimDto>();
@@ -91,6 +97,10 @@ public class MappingProfile : Profile
             );
         CreateMap<CreateWarehouseDto, Domain.Entities.Warehouse>();
         CreateMap<PatchWarehouseDto, Domain.Entities.Warehouse>().ReverseMap();
+
+        CreateMap<WarehouseLocation, WarehouseLocationDto>();
+        CreateMap<CreateWarehouseLocationDto, WarehouseLocation>();
+        CreateMap<PatchWarehouseLocationDto, WarehouseLocation>().ReverseMap();
 
         CreateMap<WarehouseType, WarehouseTypeDto>();
         CreateMap<CreateWarehouseTypeDto, WarehouseType>();

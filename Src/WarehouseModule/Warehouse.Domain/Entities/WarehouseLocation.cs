@@ -2,18 +2,18 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class WarehouseLocation :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<WarehouseLocation>
 {
-    public string Code { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public Guid? ParentLocationId { get; private set; }
-    public Guid WarehouseId { get; private set; }
+    public required int Code { get; set; }
+    public required string Title { get; set; }
+    public Guid? ParentLocationId { get; set; }
+    public required Guid WarehouseId { get; set; }
+    public required bool CanStoreItem { get; set; } = false;
 
     public WarehouseLocation? ParentLocation { get; set; }
     public required Warehouse Warehouse { get; set; }
@@ -31,12 +31,17 @@ public class WarehouseLocation :
             .HasDatabaseName("IX_Location_Warehouse_Parent");
 
         builder
-            .Property(e => e.Code)
-            .HasMaxLength(50);
+            .HasIndex(i => new { i.WarehouseId, i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_WarehouseLocation_Warehouse_Code");
 
         builder
             .Property(e => e.Title)
             .HasMaxLength(250);
+
+        builder
+            .Property(e => e.CanStoreItem)
+            .HasDefaultValue(false);
 
         builder
             .HasOne(e => e.ParentLocation)

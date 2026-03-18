@@ -141,4 +141,13 @@
   <data name="ForeignKeyViolation" xml:space="preserve">
     <value>امکان حذف {0} به دلیل وجود وابستگی وجود ندارد.</value>
   </data>
+  <data name="DuplicateInsert" xml:space="preserve">
+    <value>رکوردی با مقادیر مشخص شده برای {0} در پایگاه داده وجود دارد.</value>
+  </data>
+  <data name="ForeignKeyConstraint" xml:space="preserve">
+    <value>موجودیت مرجع {0} در پایگاه داده وجود ندارد.</value>
+  </data>
+  <data name="CheckConstraint" xml:space="preserve">
+    <value>خطا در ایجاد {0}: {1}</value>
+  </data>
 </root>

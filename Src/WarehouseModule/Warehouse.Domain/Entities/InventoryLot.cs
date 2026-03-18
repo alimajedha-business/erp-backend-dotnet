@@ -10,9 +10,9 @@ public class InventoryLot :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryLot>
 {
-    public byte[] DimHash { get; private set; } = default!;
-    public string Serial { get; private set; } = default!;
-    public Guid ItemId { get; private set; }
+    public required byte[] DimHash { get; set; }
+    public required string Serial { get; set; }
+    public required Guid ItemId { get; set; }
 
     public required Item Item { get; set; }
 

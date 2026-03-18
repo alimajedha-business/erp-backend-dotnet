@@ -18,6 +18,7 @@ namespace NGErp.General.Service
 
             services.AddScoped<IPythonIntegrationService, PythonIntegrationService>();
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ICompanyUnitService, CompanyUnitService>();
 
             return services;
         }

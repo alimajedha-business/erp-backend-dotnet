@@ -5,9 +5,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class WarehouseLocationRepository :
-    Repository<WarehouseLocation>,
+public class WarehouseLocationRepository(MainDbContext context) :
+    Repository<WarehouseLocation>(context),
     IWarehouseLocationRepository
-{
-    public WarehouseLocationRepository(MainDbContext context) : base(context) { }
-}
+{ }

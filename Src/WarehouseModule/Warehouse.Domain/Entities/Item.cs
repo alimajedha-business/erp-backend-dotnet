@@ -10,11 +10,11 @@ public class Item :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Item>
 {
-    public string Code { get; private set; } = default!;
-    public string Sku { get; private set; } = default!;
-    public string Title { get; private set; } = default!;
-    public bool IsActive { get; private set; } = true;
-    public Guid CategoryId { get; private set; }
+    public required string Code { get; set; }
+    public required string Sku { get; set; }
+    public required string Title { get; set; }
+    public required bool IsActive { get; set; } = true;
+    public required Guid CategoryId { get; set; }
 
     public required Category Category { get; set; }
 
