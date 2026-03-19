@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -44,9 +45,12 @@ public class DepartmentService(
         await EnsureCompanyAsync(companyId, ct);
 
         var department = await GetByIdOrThrowAsync(companyId, id, ct);
-        department.ChangeStatus(changeStatusDto.Status,
-            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
-            );
+        if (changeStatusDto.Status == false && !changeStatusDto.Date.HasValue)
+            throw new NotImplementedException();
+        DateTime? dateTime = null;
+        if (changeStatusDto.Date.HasValue)
+            dateTime = new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue);
+        department.ChangeStatus(changeStatusDto.Status, dateTime);
         _repo.Update(department);
         await _repo.SaveChangesAsync(ct);
     }
