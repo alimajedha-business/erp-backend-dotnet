@@ -1,10 +1,4 @@
 # .gitlab-ci.yml
-workflow:
-  rules:
-    - if: '$CI_DISABLED == "true"'
-      when: never
-    - when: always
-
 stages:
   - build
   - publish
