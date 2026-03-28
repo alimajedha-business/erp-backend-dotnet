@@ -44,10 +44,12 @@ public class PositionService(
         await EnsureCompanyAsync(companyId, ct);
         var position = await GetByIdOrThrowAsync(companyId, id, ct);
 
-        position.ChangeStatus(changeStatusDto.Status,
-            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
-            );
-
+        if (changeStatusDto.Status == false && !changeStatusDto.Date.HasValue)
+            throw new NotImplementedException();
+        DateTime? dateTime = null;
+        if (changeStatusDto.Date.HasValue)
+            dateTime = new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue);
+        position.ChangeStatus(changeStatusDto.Status, dateTime);
         _repo.Update(position);
         await _repo.SaveChangesAsync(ct);
     }
