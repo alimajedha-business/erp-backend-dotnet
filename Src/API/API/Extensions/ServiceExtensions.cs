@@ -17,6 +17,9 @@ using NGErp.HCM.Infrastructure.DataAccess;
 using NGErp.HCM.Service;
 using NGErp.Warehouse.Infrastructure.DataAccess;
 using NGErp.Warehouse.Service;
+using NGErp.Warehouse.Service.RequestExamples;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.API.Extensions;
 
@@ -133,35 +136,35 @@ public static class ServiceExtensions
 
             // Add security requirement - supports both Bearer and Cookie
             s.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
                 },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        },
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Cookie"
-                },
-                Name = "Cookie",
-                In = ParameterLocation.Cookie,
-            },
-            new List<string>()
-        }
-     });
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Cookie"
+                        },
+                        Name = "Cookie",
+                        In = ParameterLocation.Cookie,
+                    },
+                    new List<string>()
+                }
+             });
 
             //Enable XML comments if available
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -170,8 +173,11 @@ public static class ServiceExtensions
             {
                 s.IncludeXmlComments(xmlPath);
             }
-        }
-    );
+
+            s.ExampleFilters();
+        });
+
+        services.AddSwaggerExamplesFromAssemblyOf<WarehouseRequestExamples>();
     }
 
     public static void ConfigureLocalization(this IServiceCollection services)
