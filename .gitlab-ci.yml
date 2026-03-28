@@ -30,11 +30,10 @@ build:
     - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
     - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
   rules:
-    - when: never
-    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    #   when: on_success
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-    #   when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
 
 #create-migration-bundle:
 #  stage: migrations
