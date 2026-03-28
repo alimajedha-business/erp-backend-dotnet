@@ -1,8 +1,8 @@
 # .gitlab-ci.yml
 stages:
-  - build
-  - publish
- # - migrations
+  # - build
+  # - publish
+  # - migrations
   - deploy
 
 variables:
