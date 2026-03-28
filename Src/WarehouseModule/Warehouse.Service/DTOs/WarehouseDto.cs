@@ -4,7 +4,7 @@ namespace NGErp.Warehouse.Service.DTOs;
 
 public record WarehouseDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title,
     bool IsActive,
     decimal MaxMonetaryValue,
@@ -44,7 +44,7 @@ public record WarehouseDto(
 
 public record WarehouseListDto(
     Guid Id,
-    string Code,
+    int Code,
     string Title,
     bool IsActive,
     decimal MaxMonetaryValue,
@@ -54,7 +54,7 @@ public record WarehouseListDto(
 
 public class CreateWarehouseDto
 {
-    public required string Code { get; set; }
+    public required int Code { get; set; }
     public required string Title { get; set; }
     public bool IsActive { get; set; } = true;
     public decimal MaxMonetaryValue { get; set; }
@@ -104,8 +104,10 @@ public class CreateWarehouseDto
 
 public class PatchWarehouseDto
 {
-    public string? Code { get; set; }
+    public int? Code { get; set; }
     public string? Title { get; set; }
-    public bool? IsActive { get; set; }
     public decimal? MaxMonetaryValue { get; set; }
+    public Guid? WarehouseTypeId { get; set; }
+    public Guid? CompanyUnitId { get; set; }
+    public bool? IsActive { get; set; }
 }

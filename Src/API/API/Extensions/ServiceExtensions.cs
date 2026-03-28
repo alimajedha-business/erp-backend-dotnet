@@ -17,6 +17,9 @@ using NGErp.HCM.Infrastructure.DataAccess;
 using NGErp.HCM.Service;
 using NGErp.Warehouse.Infrastructure.DataAccess;
 using NGErp.Warehouse.Service;
+using NGErp.Warehouse.Service.RequestExamples;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.API.Extensions;
 
@@ -170,7 +173,11 @@ public static class ServiceExtensions
             {
                 s.IncludeXmlComments(xmlPath);
             }
+
+            s.ExampleFilters();
         });
+
+        services.AddSwaggerExamplesFromAssemblyOf<WarehouseRequestExamples>();
     }
 
     public static void ConfigureLocalization(this IServiceCollection services)

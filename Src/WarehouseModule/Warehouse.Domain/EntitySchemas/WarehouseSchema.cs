@@ -30,6 +30,20 @@ public sealed class WarehouseSchema : IFilterSchema<Entities.Warehouse>
             { "eq", "ne", "gt", "gte", "lt", "lte" }
         );
 
+        filterSchema.Fields["warehouseTypeId"] = new FilterFieldInfo(
+            PropertyName: nameof(Entities.Warehouse.WarehouseTypeId),
+            PropertyType: typeof(Guid),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["companyUnitId"] = new FilterFieldInfo(
+            PropertyName: nameof(Entities.Warehouse.CompanyUnitId),
+            PropertyType: typeof(Guid),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         filterSchema.Fields["isActive"] = new FilterFieldInfo(
             PropertyName: nameof(Entities.Warehouse.IsActive),
             PropertyType: typeof(bool),

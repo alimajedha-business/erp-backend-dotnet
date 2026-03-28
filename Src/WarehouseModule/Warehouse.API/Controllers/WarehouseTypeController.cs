@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -24,6 +27,7 @@ public class WarehouseTypeController(
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(CreateWarehouseTypeDto), typeof(WarehouseTypeCategoryExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
         [FromBody] CreateWarehouseTypeDto createDto,
@@ -61,6 +65,7 @@ public class WarehouseTypeController(
 
     [HttpPost("list")]
     [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseTypeAdvancedSearchExample))]
     public async Task<IActionResult> GetAdvancedSearch(
         [FromRoute] Guid companyId,
         [FromQuery] WarehouseTypeParameters parameters,
@@ -106,6 +111,10 @@ public class WarehouseTypeController(
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchWarehouseTypeDto>),
+        typeof(WarehouseTypePatchExample)
+    )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
