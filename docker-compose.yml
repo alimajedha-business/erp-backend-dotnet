@@ -14,7 +14,7 @@ services:
       - ASPNETCORE_URLS=http://+:8080
       - DjangoApi__BaseUrl=http://django-api:8000
       - Serilog__WriteTo__1__Args__serverUrl=http://seq:80
-      - ConnectionStrings__NGERPDatabase=Server=sqlserver;Database=ngerp;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__NGERPDatabase=Server=172.16.193.133\MSSQLSERVER2022;Database=NgErp;User Id=AliMajedHA;Password=AliMajedHA19Dec1992;TrustServerCertificate=True;
     depends_on:
       - django-api
       - sqlserver
@@ -31,12 +31,12 @@ services:
   # Django/Python API (Using existing project)
   django-api:
     build:
-      context: ../erp-backend
+      context: ../ngerp-backend-django/erp-backend
       dockerfile: Dockerfile
     container_name: django-api
     working_dir: /app
     volumes:
-      - ../erp-backend:/app
+      - ../ngerp-backend-django/erp-backend:/app
     ports:
       - "8000:8000"
     environment:
