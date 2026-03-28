@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -28,6 +31,7 @@ public class CategoryController(
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(CreateCategoryDto), typeof(CreateCategoryExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
         [FromBody] CreateCategoryDto createDto,
@@ -74,6 +78,7 @@ public class CategoryController(
 
     [HttpPost("list")]
     [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
     public async Task<IActionResult> GetAdvancedSearch(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters parameters,
@@ -136,6 +141,10 @@ public class CategoryController(
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchCategoryDto>),
+        typeof(CategoryPatchExample)
+    )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
