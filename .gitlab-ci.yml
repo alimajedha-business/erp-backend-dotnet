@@ -1,5 +1,7 @@
 # .gitlab-ci.yml
 stages:
+  - build
+  - publish
   - deploy
 
 variables:
@@ -18,20 +20,21 @@ cache:
   paths:
     - ~/.nuget/packages    
 
-# build:
-#   stage: build
-#   tags:
-#     - dotnet
-#     - ubuntu
-#     - deploy
-#   script:
-#     - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
-#     - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: on_success
-#     - if: '$CI_COMMIT_BRANCH == "main"'
-#       when: on_success
+build:
+  stage: build
+  tags:
+    - dotnet
+    - ubuntu
+    - deploy
+  script:
+    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
+    - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
+  rules:
+    - when: never
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    #   when: on_success
+    # - if: '$CI_COMMIT_BRANCH == "main"'
+    #   when: on_success
 
 #create-migration-bundle:
 #  stage: migrations
@@ -58,21 +61,21 @@ cache:
 #      when: on_success
 #    - when: never
 
-# publish:
-#   stage: publish
-#   tags:
-#     - dotnet
-#     - ubuntu
-#     - deploy
-#   script:
-#     - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
-#   artifacts:
-#     paths:
-#       - "$PUBLISH_DIR"
-#     expire_in: 7 days
-#   rules:
-#     - if: '$CI_COMMIT_BRANCH == "main"'
-#       when: on_success
+publish:
+  stage: publish
+  tags:
+    - dotnet
+    - ubuntu
+    - deploy
+  script:
+    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
+  artifacts:
+    paths:
+      - "$PUBLISH_DIR"
+    expire_in: 7 days
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
 
 deploy:
   stage: deploy
