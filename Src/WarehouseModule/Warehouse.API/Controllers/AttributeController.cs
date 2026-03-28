@@ -98,9 +98,9 @@ public class AttributeController(
 
     [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
-    [FromRoute] Guid companyId,
-    CancellationToken ct
-)
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
     {
         var code = await _attributeService.GetNextCode(companyId, ct);
         return Ok(code);
@@ -189,6 +189,7 @@ public class AttributeController(
     )
     {
         await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+
         var enumsDto = await _attributeEnumValueService.GetAllAsync(
             attributeId,
             parameters,
@@ -208,8 +209,22 @@ public class AttributeController(
     )
     {
         await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+
         var enumsDto = await _attributeEnumValueService.GetByIdAsync(id, ct);
         return Ok(enumsDto);
+    }
+
+    [HttpGet("{attributeId:guid}/enums/new-code")]
+    public async Task<IActionResult> GetEnumNextCode(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        CancellationToken ct
+    )
+    {
+        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+
+        var code = await _attributeEnumValueService.GetNextCode(ct);
+        return Ok(code);
     }
 
     [HttpPatch("{attributeId:guid}/enums/{id:guid}")]
@@ -223,6 +238,7 @@ public class AttributeController(
     )
     {
         await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+
         var dto = await _attributeEnumValueService.PatchAsync(id, patchDocument, ct);
         return Ok(dto);
     }
@@ -236,6 +252,7 @@ public class AttributeController(
     )
     {
         await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+
         await _attributeEnumValueService.DeleteAsync(id, ct);
         return NoContent();
     }

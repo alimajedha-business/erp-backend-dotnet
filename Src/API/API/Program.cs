@@ -50,7 +50,7 @@ try
     builder.Services.AddScoped<IAdvancedFilterBuilder, AdvancedFilterBuilder>();
 
     // Add Prometheus metrics
-    builder.Services.AddSingleton<Prometheus.IMetricFactory>(Prometheus.Metrics.DefaultFactory);
+    builder.Services.AddSingleton<IMetricFactory>(Metrics.DefaultFactory);
 
     var app = builder.Build();
 
