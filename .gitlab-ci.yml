@@ -13,13 +13,12 @@ variables:
   MIGRATIONS_BUNDLE: "${CI_PROJECT_DIR}/efbundle"
   DEPLOY_TARGET: "/home/emaco/www/dev-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
-  NUGET_SOURCE: "/opt/nuget-packages"
+  NUGET_SOURCE: "https://mirror-nuget.runflare.com/"
 
 cache:
   key: "dotnet-${CI_COMMIT_REF_SLUG}"
   paths:
-    - ~/.nuget/packages
-    - /opt/nuget-packages/
+    - ~/.nuget/packages    
 
 build:
   stage: build
