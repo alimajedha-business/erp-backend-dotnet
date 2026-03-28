@@ -133,35 +133,35 @@ public static class ServiceExtensions
 
             // Add security requirement - supports both Bearer and Cookie
             s.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
                 },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        },
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Cookie"
-                },
-                Name = "Cookie",
-                In = ParameterLocation.Cookie,
-            },
-            new List<string>()
-        }
-     });
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Cookie"
+                        },
+                        Name = "Cookie",
+                        In = ParameterLocation.Cookie,
+                    },
+                    new List<string>()
+                }
+             });
 
             //Enable XML comments if available
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -170,8 +170,7 @@ public static class ServiceExtensions
             {
                 s.IncludeXmlComments(xmlPath);
             }
-        }
-    );
+        });
     }
 
     public static void ConfigureLocalization(this IServiceCollection services)
