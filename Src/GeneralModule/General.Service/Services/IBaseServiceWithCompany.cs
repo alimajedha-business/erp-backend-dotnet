@@ -16,7 +16,8 @@ public interface IBaseServiceWithCompany<
     TListDto,
     TParameters,
     TRepo,
-    TResource>
+    TResource
+>
     where TEntity : BaseEntityWithCompany
     where TRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
