@@ -23,6 +23,11 @@ public class ShippingCompany :
             ToTable(nameof(ShippingCompany), "Warehouse");
 
         builder
+            .HasIndex(i => new { i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_ShippingCompany_Code");
+
+        builder
             .Property(e => e.Title)
             .HasMaxLength(200);
 
