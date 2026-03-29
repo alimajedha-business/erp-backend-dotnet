@@ -8,8 +8,15 @@ namespace NGErp.HCM.Domain.Entities;
 
 public class EmploymentGroup : BaseEntityWithCompany, IBaseEntityTypeConfiguration<EmploymentGroup>
 {
+    public required string Name { get; set; }
+
     public void Map(EntityTypeBuilder<EmploymentGroup> builder)
     {
-        builder.ToTable("EmploymentGroup", "HCM");
+        builder.ToTable("EmploymentGroup", "HCM")
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_Name_Min_Length",
+                "LEN(Username) >= 2"
+                ));
+        builder.Property<string>(e => e.Name).HasMaxLength(500);
     }
 }
