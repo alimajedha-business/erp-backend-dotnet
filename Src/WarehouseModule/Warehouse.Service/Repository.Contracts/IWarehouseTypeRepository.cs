@@ -1,6 +1,6 @@
-﻿using NGErp.General.Service.Repository.Contracts;
+﻿using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IWarehouseTypeRepository : IRepositoryWithCompany<WarehouseType> { }
+public interface IWarehouseTypeRepository : IRepository<WarehouseType> { }

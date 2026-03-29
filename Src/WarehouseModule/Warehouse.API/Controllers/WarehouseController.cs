@@ -40,7 +40,6 @@ public class WarehouseController(
     )
     {
         await _warehouseTypeService.GetByIdAsync(
-            companyId,
             createDto.WarehouseTypeId,
             ct
         );
