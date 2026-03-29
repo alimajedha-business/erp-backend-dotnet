@@ -1,20 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
 public class UnitOfMeasurementConversionRepository(MainDbContext context) :
-    RepositoryWithCompany<UnitOfMeasurementConversion>(context),
+    Repository<UnitOfMeasurementConversion>(context),
     IUnitOfMeasurementConversionRepository
 {
     public override Task<UnitOfMeasurementConversion?> GetByIdAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct,
         bool trackChanges
@@ -24,14 +23,13 @@ public class UnitOfMeasurementConversionRepository(MainDbContext context) :
                                  : _context.Set<UnitOfMeasurementConversion>().AsNoTracking();
 
         return query
-            .Where(e => e.CompanyId == companyId && e.Id == id)
+            .Where(e => e.Id == id)
             .Include(e => e.FromUnitOfMeasurement)
             .Include(e => e.ToUnitOfMeasurement)
             .FirstOrDefaultAsync(ct);
     }
 
     public override async Task<ListQueryResult<UnitOfMeasurementConversion>> GetAllAsync(
-        Guid companyId,
         RequestParameters requestParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
@@ -40,7 +38,6 @@ public class UnitOfMeasurementConversionRepository(MainDbContext context) :
         IQueryable<UnitOfMeasurementConversion> query = _context
             .Set<UnitOfMeasurementConversion>()
             .AsNoTracking()
-            .Where(e => e.CompanyId == companyId)
             .Include(e => e.FromUnitOfMeasurement)
             .Include(e => e.ToUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
