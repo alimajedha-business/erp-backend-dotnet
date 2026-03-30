@@ -17,27 +17,27 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/shipping-companies")]
-public class ShippingCompanyController(
-    IShippingCompanyService shippingCompanyService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/item-types")]
+public class ItemTypeController(
+    IItemTypeService itemTypeService
 ) : ControllerBase
 {
-    private readonly IShippingCompanyService _shippingCompanyService = shippingCompanyService;
+    private readonly IItemTypeService _itemTypeService = itemTypeService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     [SwaggerRequestExample(
-        typeof(CreateShippingCompanyDto),
-        typeof(CreateShippingCompanyExample)
+        typeof(CreateItemTypeDto),
+        typeof(CreateItemTypeExample)
     )]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateShippingCompanyDto createDto,
+        [FromBody] CreateItemTypeDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _shippingCompanyService.CreateAsync(createDto, ct);
+        var dto = await _itemTypeService.CreateAsync(createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -48,24 +48,24 @@ public class ShippingCompanyController(
 
     [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
-        [FromQuery] ShippingCompanyParameters parameters,
+        [FromQuery] ItemTypeParameters parameters,
         CancellationToken ct
     )
     {
-        var result = await _shippingCompanyService.GetAllAsync(parameters, ct);
+        var result = await _itemTypeService.GetAllAsync(parameters, ct);
         return Ok(result);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(ShippingCompanyAdvancedSearchExample))]
+    [SwaggerRequestExample(typeof(object), typeof(ItemTypeAdvancedSearchExample))]
     public async Task<IActionResult> Get(
-        [FromQuery] ShippingCompanyParameters parameters,
+        [FromQuery] ItemTypeParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var attributes = await _shippingCompanyService.GetAllAsync(
+        var attributes = await _itemTypeService.GetAllAsync(
             parameters,
             ct,
             filterNodeDto
@@ -80,7 +80,7 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var dto = await _shippingCompanyService.GetByIdAsync(id, ct);
+        var dto = await _itemTypeService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 
@@ -89,23 +89,23 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var code = await _shippingCompanyService.GetNextCode(ct);
+        var code = await _itemTypeService.GetNextCode(ct);
         return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
-        typeof(JsonPatchDocument<PatchShippingCompanyDto>),
-        typeof(ShippingCompanyPatchExample)
+        typeof(JsonPatchDocument<PatchItemTypeDto>),
+        typeof(ItemTypePatchExample)
     )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchShippingCompanyDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchItemTypeDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _shippingCompanyService.PatchAsync(
+        var dto = await _itemTypeService.PatchAsync(
             id,
             patchDocument,
             ct
@@ -120,7 +120,7 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        await _shippingCompanyService.DeleteAsync(id, ct);
+        await _itemTypeService.DeleteAsync(id, ct);
         return NoContent();
     }
 }
