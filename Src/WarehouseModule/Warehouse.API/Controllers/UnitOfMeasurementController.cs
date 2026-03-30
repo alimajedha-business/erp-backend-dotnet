@@ -31,11 +31,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
+        var dto = await _unitOfMeasurementService.CreateAsync(createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -51,12 +47,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var result = await _unitOfMeasurementService.GetAllAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
+        var result = await _unitOfMeasurementService.GetAllAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -70,7 +61,6 @@ public class UnitOfMeasurementController(
     )
     {
         var result = await _unitOfMeasurementService.GetAllAsync(
-            companyId,
             parameters,
             ct,
             filterNodeDto
@@ -86,12 +76,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementService.GetByIdAsync(
-            companyId,
-            id,
-            ct
-        );
-
+        var dto = await _unitOfMeasurementService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 
@@ -101,11 +86,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var code = await _unitOfMeasurementService.GetNextCode(
-            companyId,
-            ct
-        );
-
+        var code = await _unitOfMeasurementService.GetNextCode(ct);
         return Ok(code);
     }
 
@@ -119,7 +100,6 @@ public class UnitOfMeasurementController(
     )
     {
         var dto = await _unitOfMeasurementService.PatchAsync(
-            companyId,
             id,
             patchDocument,
             ct
@@ -135,12 +115,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        await _unitOfMeasurementService.DeleteAsync(
-            companyId,
-            id,
-            ct
-        );
-        
+        await _unitOfMeasurementService.DeleteAsync(id, ct);
         return NoContent();
     }
 }

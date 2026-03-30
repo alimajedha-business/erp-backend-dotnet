@@ -31,12 +31,7 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementConversionService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
-
+        var dto = await _unitOfMeasurementConversionService.CreateAsync(createDto,ct);
         return CreatedAtAction(
             nameof(GetById),
             new { companyId, id = dto.Id },
@@ -54,7 +49,6 @@ public class UnitOfMeasurementConversionController(
     )
     {
         var result = await _unitOfMeasurementConversionService.GetAllAsync(
-            companyId,
             parameters,
             ct,
             filterNodeDto
@@ -70,12 +64,7 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementConversionService.GetByIdAsync(
-            companyId,
-            id,
-            ct
-        );
-
+        var dto = await _unitOfMeasurementConversionService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 
@@ -89,7 +78,6 @@ public class UnitOfMeasurementConversionController(
     )
     {
         var dto = await _unitOfMeasurementConversionService.PatchAsync(
-            companyId,
             id,
             patchDocument,
             ct
@@ -105,12 +93,7 @@ public class UnitOfMeasurementConversionController(
         CancellationToken ct
     )
     {
-        await _unitOfMeasurementConversionService.DeleteAsync(
-            companyId,
-            id,
-            ct
-        );
-
+        await _unitOfMeasurementConversionService.DeleteAsync(id, ct);
         return NoContent();
     }
 }

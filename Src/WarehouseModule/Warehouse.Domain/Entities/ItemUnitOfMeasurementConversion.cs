@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class ItemUnitOfMeasurementConversion :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<ItemUnitOfMeasurementConversion>
 {
     public required decimal Factor { get; set; }

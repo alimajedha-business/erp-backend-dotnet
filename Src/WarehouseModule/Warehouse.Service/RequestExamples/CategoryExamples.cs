@@ -17,7 +17,6 @@ public class CreateCategoryExample :
             Title = "Dairy",
             LevelNo = 3,
             IsLastLevel = false,
-            CategoryPath = "/FOOD/DAIRY",
             ParentCategoryId = new Guid("B1EEAA38-0D79-4520-8C5A-DDEB63DE1351")
         };
     }
@@ -74,7 +73,6 @@ public class CategoryPatchExample :
     {
         var patchDoc = new JsonPatchDocument<PatchCategoryDto>();
         patchDoc.Replace(x => x.Title, "New Category Title");
-        patchDoc.Replace(x => x.CategoryPath, "New Category Path");
         patchDoc.Replace(x => x.IsLastLevel, false);
 
         return patchDoc;

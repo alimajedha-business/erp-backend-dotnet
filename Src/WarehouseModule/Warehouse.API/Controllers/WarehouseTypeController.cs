@@ -34,11 +34,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
+        var dto = await _warehouseTypeService.CreateAsync(createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -54,12 +50,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseTypeService.GetAllAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
+        var result = await _warehouseTypeService.GetAllAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -74,7 +65,6 @@ public class WarehouseTypeController(
     )
     {
         var result = await _warehouseTypeService.GetAllAsync(
-            companyId,
             parameters,
             ct,
             filterNodeDto
@@ -90,12 +80,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.GetByIdAsync(
-            companyId,
-            id,
-            ct
-        );
-
+        var dto = await _warehouseTypeService.GetByIdAsync(id, ct);
         return Ok(dto);
     }
 
@@ -105,7 +90,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var code = await _warehouseTypeService.GetNextCode(companyId, ct);
+        var code = await _warehouseTypeService.GetNextCode(ct);
         return Ok(code);
     }
 
@@ -123,7 +108,6 @@ public class WarehouseTypeController(
     )
     {
         var dto = await _warehouseTypeService.PatchAsync(
-            companyId,
             id,
             patchDocument,
             ct
@@ -139,7 +123,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        await _warehouseTypeService.DeleteAsync(companyId, id, ct);
+        await _warehouseTypeService.DeleteAsync(id, ct);
         return NoContent();
     }
 }
