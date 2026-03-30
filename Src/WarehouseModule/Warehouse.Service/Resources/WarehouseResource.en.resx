@@ -144,6 +144,9 @@
   <data name="ItemType" xml:space="preserve">
     <value>Item Type</value>
   </data>
+  <data name="MeasurementDimension" xml:space="preserve">
+    <value>Measurement Dimension</value>
+  </data>
   <data name="ShippingCompany" xml:space="preserve">
     <value>Shipping Company</value>
   </data>
