@@ -14,7 +14,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/uoms")]
+[Route("api/v{version:apiVersion}/warehouse/uoms")]
 public class UnitOfMeasurementController(
     IUnitOfMeasurementService unitOfMeasurementService
 ) : ControllerBase
@@ -26,7 +26,6 @@ public class UnitOfMeasurementController(
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
         [FromBody] CreateUnitOfMeasurementDto createDto,
         CancellationToken ct
     )
@@ -35,14 +34,13 @@ public class UnitOfMeasurementController(
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { id = dto.Id },
             dto
         );
     }
 
     [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
         [FromQuery] UnitOfMeasurementParameters parameters,
         CancellationToken ct
     )
@@ -54,7 +52,6 @@ public class UnitOfMeasurementController(
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
         [FromQuery] UnitOfMeasurementParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
@@ -71,7 +68,6 @@ public class UnitOfMeasurementController(
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
@@ -82,7 +78,6 @@ public class UnitOfMeasurementController(
 
     [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
-        [FromRoute] Guid companyId,
         CancellationToken ct
     )
     {
@@ -93,7 +88,6 @@ public class UnitOfMeasurementController(
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
         CancellationToken ct
@@ -110,7 +104,6 @@ public class UnitOfMeasurementController(
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
