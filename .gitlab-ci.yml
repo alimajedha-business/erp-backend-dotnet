@@ -18,7 +18,7 @@ variables:
 cache:
   key: "dotnet-${CI_COMMIT_REF_SLUG}"
   paths:
-    - ~/.nuget/packages    
+    - /opt/nuget-packages/   
 
 build:
   stage: build
