@@ -17,7 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/shipping-companies")]
+[Route("api/v{version:apiVersion}/warehouse/shipping-companies")]
 public class ShippingCompanyController(
     IShippingCompanyService shippingCompanyService
 ) : ControllerBase
@@ -32,7 +32,6 @@ public class ShippingCompanyController(
         typeof(CreateShippingCompanyExample)
     )]
     public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
         [FromBody] CreateShippingCompanyDto createDto,
         CancellationToken ct
     )
@@ -41,7 +40,7 @@ public class ShippingCompanyController(
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { id = dto.Id },
             dto
         );
     }

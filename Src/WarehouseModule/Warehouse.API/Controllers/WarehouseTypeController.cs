@@ -17,7 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouse-types")]
+[Route("api/v{version:apiVersion}/warehouse/warehouse-types")]
 public class WarehouseTypeController(
     IWarehouseTypeService warehouseTypeService
 ) : ControllerBase
@@ -29,7 +29,6 @@ public class WarehouseTypeController(
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(CreateWarehouseTypeDto), typeof(WarehouseTypeCategoryExample))]
     public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
         [FromBody] CreateWarehouseTypeDto createDto,
         CancellationToken ct
     )
@@ -38,14 +37,13 @@ public class WarehouseTypeController(
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { id = dto.Id },
             dto
         );
     }
 
     [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
         [FromQuery] WarehouseTypeParameters parameters,
         CancellationToken ct
     )
@@ -58,7 +56,6 @@ public class WarehouseTypeController(
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseTypeAdvancedSearchExample))]
     public async Task<IActionResult> GetAdvancedSearch(
-        [FromRoute] Guid companyId,
         [FromQuery] WarehouseTypeParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
@@ -75,7 +72,6 @@ public class WarehouseTypeController(
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
@@ -86,7 +82,6 @@ public class WarehouseTypeController(
 
     [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
-        [FromRoute] Guid companyId,
         CancellationToken ct
     )
     {
@@ -101,7 +96,6 @@ public class WarehouseTypeController(
         typeof(WarehouseTypePatchExample)
     )]
     public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchWarehouseTypeDto> patchDocument,
         CancellationToken ct
@@ -118,7 +112,6 @@ public class WarehouseTypeController(
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )

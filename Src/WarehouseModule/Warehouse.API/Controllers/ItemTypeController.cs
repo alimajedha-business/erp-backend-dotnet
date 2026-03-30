@@ -17,7 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/item-types")]
+[Route("api/v{version:apiVersion}/warehouse/item-types")]
 public class ItemTypeController(
     IItemTypeService itemTypeService
 ) : ControllerBase
@@ -32,7 +32,6 @@ public class ItemTypeController(
         typeof(CreateItemTypeExample)
     )]
     public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
         [FromBody] CreateItemTypeDto createDto,
         CancellationToken ct
     )
@@ -41,7 +40,7 @@ public class ItemTypeController(
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { id = dto.Id },
             dto
         );
     }
