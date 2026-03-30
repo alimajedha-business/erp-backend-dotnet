@@ -10,7 +10,7 @@ variables:
   MIGRATIONS_PROJECT: "Src/BaseModule/Base.Infrastructure/NGErp.Base.Infrastructure.csproj"
   PUBLISH_DIR:   "${CI_PROJECT_DIR}/publish"
   MIGRATIONS_BUNDLE: "${CI_PROJECT_DIR}/efbundle"
-  DEPLOY_TARGET: "/home/emaco/www/dev-ngerp/backend-dotnet/"
+  DEPLOY_TARGET: "/home/emaco/www/devg-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
   NUGET_SOURCE_RUNFLARE: "https://mirror-nuget.runflare.com/v3/index.json"
   NUGET_SOURCE_LIARA: "https://package-mirror.liara.ir/repository/nuget/index.json"
