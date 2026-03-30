@@ -28,7 +28,7 @@ build:
     - deploy
   script:
     - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
-    - dotnet build   "$SOLUTION_FILE" --configuration Release --no-restore
+    - dotnet build   "$SOLUTION_FILE" --configuration Debug --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: on_success
@@ -67,7 +67,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Release --output "$PUBLISH_DIR" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
+    - dotnet publish "$API_PROJECT" --configuration Debug --output "$PUBLISH_DIR" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
