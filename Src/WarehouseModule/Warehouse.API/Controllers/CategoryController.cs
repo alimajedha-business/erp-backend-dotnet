@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -21,12 +22,14 @@ namespace NGErp.Warehouse.API.Controllers;
 public class CategoryController(
     ICategoryService categoryService,
     ICategoryAttributeRuleService attributeRuleService,
-    IItemService itemService
+    IItemService itemService,
+    IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
     private readonly ICategoryAttributeRuleService _attributeRuleService = attributeRuleService;
     private readonly IItemService _itemService = itemService;
+    private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -94,6 +97,46 @@ public class CategoryController(
         );
 
         return Ok(result);
+    }
+
+    [HttpPost("excel")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
+    public async Task<IActionResult> ExportToExcel(
+        [FromRoute] Guid companyId,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromQuery] string? columns,
+        CancellationToken ct
+    )
+    {
+        var parameters = new CategoryParameters
+        {
+            Paginated = false,
+        };
+
+        var result = await _categoryService.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        var columnsList = string.IsNullOrWhiteSpace(columns)
+            ? []
+            : columns
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+
+        var excludedColumns = new List<string> { "Id" };
+
+        var fileBytes = _excelExportService.ExportToExcel(
+            result.Results,
+            columnsList,
+            excludedColumns
+        );
+
+        return File(fileBytes.FileContents, fileBytes.ContentType, "categories.xlsx");
     }
 
     [HttpGet("{id:guid}")]
