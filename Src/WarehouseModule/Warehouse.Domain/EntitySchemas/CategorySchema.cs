@@ -23,6 +23,13 @@ public sealed class CategorySchema : IFilterSchema<Category>
             { "eq", "ne", "startsWith", "contains", "endsWith" }
         );
 
+        filterSchema.Fields["title"] = new FilterFieldInfo(
+            PropertyName: nameof(Category.Title),
+            PropertyType: typeof(string),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "startsWith", "contains", "endsWith" }
+        );
+
         filterSchema.Fields["levelNo"] = new FilterFieldInfo(
             PropertyName: nameof(Category.LevelNo),
             PropertyType: typeof(int),
