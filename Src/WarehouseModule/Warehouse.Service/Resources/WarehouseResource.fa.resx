@@ -141,6 +141,15 @@
   <data name="Item" xml:space="preserve">
     <value>کالا</value>
   </data>
+  <data name="ItemType" xml:space="preserve">
+    <value>نوع کالا</value>
+  </data>
+  <data name="MeasurementDimension" xml:space="preserve">
+    <value>بعد اندازه گیری</value>
+  </data>
+  <data name="ShippingCompany" xml:space="preserve">
+    <value>شرکت باربری</value>
+  </data>
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>واحد اندازه‌گیری</value>
   </data>

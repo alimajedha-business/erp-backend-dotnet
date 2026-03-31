@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class WarehouseType :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<WarehouseType>
 {
     public required int Code { get; set;  }
@@ -22,9 +21,9 @@ public class WarehouseType :
             .ToTable(nameof(WarehouseType), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.CompanyId, i.Code })
+            .HasIndex(i => new { i.Code })
             .IsUnique()
-            .HasDatabaseName("UX_WarehouseType_Company_Code");
+            .HasDatabaseName("UX_WarehouseType_Code");
 
         builder
             .Property(e => e.Title)

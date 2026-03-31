@@ -12,6 +12,10 @@ COPY ["Src/GeneralModule/General.API/NGErp.General.API.csproj", "Src/GeneralModu
 COPY ["Src/GeneralModule/General.Service/NGErp.General.Service.csproj", "Src/GeneralModule/General.Service/"]
 COPY ["Src/GeneralModule/General.Infrastructure/NGErp.General.Infrastructure.csproj", "Src/GeneralModule/General.Infrastructure/"]
 COPY ["Src/GeneralModule/General.Domain/NGErp.General.Domain.csproj", "Src/GeneralModule/General.Domain/"]
+COPY ["Src/WarehouseModule/Warehouse.API/NGErp.Warehouse.API.csproj", "Src/WarehouseModule/Warehouse.API/"]
+COPY ["Src/WarehouseModule/Warehouse.Service/NGErp.Warehouse.Service.csproj", "Src/WarehouseModule/Warehouse.Service/"]
+COPY ["Src/WarehouseModule/Warehouse.Infrastructure/NGErp.Warehouse.Infrastructure.csproj", "Src/WarehouseModule/Warehouse.Infrastructure/"]
+COPY ["Src/WarehouseModule/Warehouse.Domain/NGErp.Warehouse.Domain.csproj", "Src/WarehouseModule/Warehouse.Domain/"]
 
 RUN dotnet restore "Src/API/API/NGErp.API.csproj"
 

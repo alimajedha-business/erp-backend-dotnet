@@ -14,7 +14,6 @@ public class Category :
     public required string Title { get; set; }
     public required int LevelNo { get; set; }
     public required bool IsLastLevel { get; set; } = false;
-    public required string CategoryPath { get; set; }
     public Guid? ParentCategoryId { get; set; }
 
     public Category? ParentCategory { get; private set; }
@@ -35,9 +34,9 @@ public class Category :
             ));
 
         builder
-            .HasIndex(i => new { i.Code, i.CompanyId })
+            .HasIndex(i => new { i.CompanyId, i.Code })
             .IsUnique()
-            .HasDatabaseName("UX_Attribute_Company_Code");
+            .HasDatabaseName("UX_Category_Company_Code");
 
         builder
             .Property(e => e.Code)
@@ -48,8 +47,8 @@ public class Category :
             .HasMaxLength(200);
 
         builder
-            .Property(e => e.CategoryPath)
-            .HasMaxLength(1024);
+            .Property(e => e.IsLastLevel)
+            .HasDefaultValue(false);
 
         builder
             .HasOne(e => e.ParentCategory)

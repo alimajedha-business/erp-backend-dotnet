@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class UnitOfMeasurement :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<UnitOfMeasurement>
 {
     public required int Code { get; set; }
@@ -26,6 +25,11 @@ public class UnitOfMeasurement :
             .HasIndex(i => new { i.MeasurementDimensionId, i.Title })
             .IsUnique()
             .HasDatabaseName("UX_Uom_Dimension_Title");
+
+        builder
+            .HasIndex(i => new { i.Code })
+            .IsUnique()
+            .HasDatabaseName("UX_UnitOfMeasurement_Code");
 
         builder
             .Property(e => e.Title)

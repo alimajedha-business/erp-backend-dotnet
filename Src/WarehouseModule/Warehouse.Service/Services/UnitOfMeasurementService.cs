@@ -18,10 +18,9 @@ namespace NGErp.Warehouse.Service.Services;
 public class UnitOfMeasurementService(
     IAdvancedFilterBuilder filterBuilder,
     IUnitOfMeasurementRepository unitOfMeasurementRepository,
-    ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : BaseServiceWithCompany<
+) : BaseService<
         UnitOfMeasurement,
         UnitOfMeasurementDto,
         UnitOfMeasurementListDto,
@@ -31,7 +30,6 @@ public class UnitOfMeasurementService(
     >(
         filterBuilder,
         unitOfMeasurementRepository,
-        companyService,
         mapper,
         localizer
     ),
@@ -40,10 +38,9 @@ public class UnitOfMeasurementService(
     protected override string LocalizerKey => "UnitOfMeasurement";
 
     public override Task<UnitOfMeasurementDto> GetByIdAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct
-    ) => GetByIdAsync(companyId, id, includeQuery, ct);
+    ) => GetByIdAsync(id, includeQuery, ct);
 
     private static IQueryable<UnitOfMeasurement> includeQuery(
         IQueryable<UnitOfMeasurement> q

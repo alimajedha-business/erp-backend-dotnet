@@ -1,8 +1,8 @@
-﻿using NGErp.General.Service.Repository.Contracts;
+﻿using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IUnitOfMeasurementConversionRepository :
-    IRepositoryWithCompany<UnitOfMeasurementConversion>
+    IRepository<UnitOfMeasurementConversion>
 { }

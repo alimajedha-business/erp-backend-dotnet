@@ -6,25 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class WarehouseLocationEntityParent : Migration
+    public partial class RmvCmpIdUoMConversionEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_WarehouseLocation_Companies_CompanyId",
+                name: "FK_UnitOfMeasurementConversion_Companies_CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation");
+                table: "UnitOfMeasurementConversion");
 
             migrationBuilder.DropIndex(
-                name: "IX_WarehouseLocation_CompanyId",
+                name: "IX_UnitOfMeasurementConversion_CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation");
+                table: "UnitOfMeasurementConversion");
 
             migrationBuilder.DropColumn(
                 name: "CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation");
+                table: "UnitOfMeasurementConversion");
         }
 
         /// <inheritdoc />
@@ -33,21 +33,21 @@ namespace NGErp.Base.Infrastructure.Migrations
             migrationBuilder.AddColumn<Guid>(
                 name: "CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation",
+                table: "UnitOfMeasurementConversion",
                 type: "uniqueidentifier",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.CreateIndex(
-                name: "IX_WarehouseLocation_CompanyId",
+                name: "IX_UnitOfMeasurementConversion_CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation",
+                table: "UnitOfMeasurementConversion",
                 column: "CompanyId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_WarehouseLocation_Companies_CompanyId",
+                name: "FK_UnitOfMeasurementConversion_Companies_CompanyId",
                 schema: "Warehouse",
-                table: "WarehouseLocation",
+                table: "UnitOfMeasurementConversion",
                 column: "CompanyId",
                 principalSchema: "General",
                 principalTable: "Companies",

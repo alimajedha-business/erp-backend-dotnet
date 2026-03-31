@@ -12,8 +12,8 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260317070310_RemoveWarehouseAccountingConstraints")]
-    partial class RemoveWarehouseAccountingConstraints
+    [Migration("20260329131007_RmvCmpIdUomEntity")]
+    partial class RmvCmpIdUomEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -462,11 +462,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("CategoryPath")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -487,7 +482,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsLastLevel")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("LevelNo")
                         .HasColumnType("int");
@@ -513,15 +510,13 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.HasIndex("Code", "CompanyId")
+                    b.HasIndex("CompanyId", "Code")
                         .IsUnique()
-                        .HasDatabaseName("UX_Attribute_Company_Code");
+                        .HasDatabaseName("UX_Category_Company_Code");
 
                     b.ToTable("Category", "Warehouse", t =>
                         {
@@ -1144,9 +1139,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1183,8 +1175,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("FromUnitOfMeasurementId");
 
@@ -1251,6 +1241,77 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("MeasurementDimension", "Warehouse");
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ShippingCompany", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ManagerFirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ManagerLastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("UX_ShippingCompany_Code");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("ShippingCompany", "Warehouse");
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1260,9 +1321,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<int>("Code")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -1301,7 +1359,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("UX_UnitOfMeasurement_Code");
 
                     b.HasIndex("IsDeleted");
 
@@ -1590,9 +1650,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<int>("Code")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1627,11 +1684,11 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("CompanyId", "Code")
+                    b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("UX_WarehouseType_Company_Code");
+                        .HasDatabaseName("UX_WarehouseType_Code");
+
+                    b.HasIndex("IsDeleted");
 
                     b.ToTable("WarehouseType", "Warehouse");
                 });
@@ -1955,12 +2012,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemUnitOfMeasurementConversion", b =>
                 {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "FromUnitOfMeasurement")
                         .WithMany()
                         .HasForeignKey("FromUnitOfMeasurementId")
@@ -1988,12 +2039,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
                 {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("NGErp.Warehouse.Domain.Entities.MeasurementDimension", "MeasurementDimension")
                         .WithMany("UnitOfMeasurements")
                         .HasForeignKey("MeasurementDimensionId")
@@ -2069,15 +2114,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("ParentLocation");
 
                     b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.WarehouseType", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationalStructure", b =>
