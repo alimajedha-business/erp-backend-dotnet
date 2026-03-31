@@ -135,8 +135,17 @@
   <data name="CK_Category_LevelNo_LastLevel" xml:space="preserve">
     <value>The very top level could not be set as the last level.</value>
   </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
   <data name="InventoryMovementType" xml:space="preserve">
     <value>Inventory Movement Type</value>
+  </data>
+  <data name="IsActive" xml:space="preserve">
+    <value>Is Active</value>
   </data>
   <data name="Item" xml:space="preserve">
     <value>Item</value>
@@ -147,8 +156,14 @@
   <data name="MeasurementDimension" xml:space="preserve">
     <value>Measurement Dimension</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="ShippingCompany" xml:space="preserve">
     <value>Shipping Company</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
   </data>
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>Unit of Measurement</value>
@@ -161,5 +176,8 @@
   </data>
   <data name="WarehouseType" xml:space="preserve">
     <value>Warehouse Type</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>
