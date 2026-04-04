@@ -20,5 +20,5 @@ public interface IPositionService : IBaseServiceWithCompany<
         Guid id,
         PositionChangeStatusDto changeStatusDto,
         CancellationToken ct
-        );
+    );
 }

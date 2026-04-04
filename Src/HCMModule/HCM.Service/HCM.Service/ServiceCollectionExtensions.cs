@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using NGErp.HCM.Service.Mappings;
+using NGErp.HCM.Service.RequestValidators;
 using NGErp.HCM.Service.Services;
 
 
@@ -10,11 +14,14 @@ namespace NGErp.HCM.Service
     {
         public static IServiceCollection AddHCMServices(this IServiceCollection services)
         {
-            
-            services.AddAutoMapper(typeof(MappingProfile));            
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddValidatorsFromAssemblyContaining<DepartmentValidator>();
+
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
+
             return services;
         }
     }
