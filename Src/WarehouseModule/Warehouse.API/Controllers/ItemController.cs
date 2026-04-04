@@ -1,13 +1,18 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Services;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -16,14 +21,17 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/items")]
 public class ItemController(
-    IItemService itemService
+    IItemService itemService,
+    IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly IItemService _itemService = itemService;
+    private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(CreateItemDto), typeof(CreateItemExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
         [FromBody] CreateItemDto createDto,
@@ -45,6 +53,7 @@ public class ItemController(
 
     [HttpPost("list")]
     [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ItemParameters parameters,
@@ -62,6 +71,46 @@ public class ItemController(
         return Ok(result);
     }
 
+    [HttpPost("excel")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
+    public async Task<IActionResult> ExportToExcel(
+        [FromRoute] Guid companyId,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromQuery] string? columns,
+        CancellationToken ct
+    )
+    {
+        var parameters = new ItemParameters
+        {
+            Paginated = false,
+        };
+
+        var result = await _itemService.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        var columnsList = string.IsNullOrWhiteSpace(columns)
+            ? []
+            : columns
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+        var excludedColumns = new List<string> { "Id" };
+
+        var fileBytes = _excelExportService.ExportToExcel(
+            result.Results,
+            columnsList,
+            excludedColumns
+        );
+
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"items.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -75,6 +124,10 @@ public class ItemController(
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchItemDto>),
+        typeof(ItemPatchExample)
+    )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,

@@ -128,7 +128,6 @@ public class CategoryController(
                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .ToList();
 
-
         var excludedColumns = new List<string> { "Id" };
 
         var fileBytes = _excelExportService.ExportToExcel(
