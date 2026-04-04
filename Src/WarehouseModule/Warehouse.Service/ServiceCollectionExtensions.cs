@@ -52,6 +52,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
+        services.AddScoped<IExcelExportService, ExcelExportService<WarehouseResource>>();
+
         return services;
     }
 }
