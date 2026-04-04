@@ -39,7 +39,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmploymentGroup", x => x.Id);
-                    table.CheckConstraint("CK_Name_Min_Length", "LEN(Username) >= 2");
+                    table.CheckConstraint("CK_Name_Min_Length", "LEN(Name) >= 2");
                     table.ForeignKey(
                         name: "FK_EmploymentGroup_Companies_CompanyId",
                         column: x => x.CompanyId,

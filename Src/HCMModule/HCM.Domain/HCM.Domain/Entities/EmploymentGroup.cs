@@ -12,10 +12,10 @@ public class EmploymentGroup : BaseEntityWithCompany, IBaseEntityTypeConfigurati
 
     public void Map(EntityTypeBuilder<EmploymentGroup> builder)
     {
-        builder.ToTable("EmploymentGroup", "HCM")
+        builder.ToTable(nameof(EmploymentGroup), "HCM")
             .ToTable(t => t.HasCheckConstraint(
                 "CK_Name_Min_Length",
-                "LEN(Username) >= 2"
+                "LEN(Name) >= 2"
                 ));
         builder.Property<string>(e => e.Name).HasMaxLength(500);
     }

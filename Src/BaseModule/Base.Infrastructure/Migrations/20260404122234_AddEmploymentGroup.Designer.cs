@@ -12,7 +12,7 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260331090926_AddEmploymentGroup")]
+    [Migration("20260404122234_AddEmploymentGroup")]
     partial class AddEmploymentGroup
     {
         /// <inheritdoc />
@@ -171,7 +171,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.ToTable("EmploymentGroup", "HCM", t =>
                         {
-                            t.HasCheckConstraint("CK_Name_Min_Length", "LEN(Username) >= 2");
+                            t.HasCheckConstraint("CK_Name_Min_Length", "LEN(Name) >= 2");
                         });
                 });
 
