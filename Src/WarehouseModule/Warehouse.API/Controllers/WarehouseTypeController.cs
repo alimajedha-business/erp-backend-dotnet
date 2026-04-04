@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -108,7 +109,8 @@ public class WarehouseTypeController(
             excludedColumns
         );
 
-        return File(fileBytes.FileContents, fileBytes.ContentType, "warehouse_types.xlsx");
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"warehouse_types.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]

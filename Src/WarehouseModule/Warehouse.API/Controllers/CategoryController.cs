@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -136,7 +137,8 @@ public class CategoryController(
             excludedColumns
         );
 
-        return File(fileBytes.FileContents, fileBytes.ContentType, "categories.xlsx");
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"categories.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]
