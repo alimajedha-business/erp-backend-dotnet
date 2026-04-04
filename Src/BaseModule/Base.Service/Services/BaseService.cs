@@ -21,11 +21,11 @@ public abstract class BaseService<
         TDto,
         TListDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
 ) : IBaseService<
@@ -33,15 +33,15 @@ public abstract class BaseService<
         TDto,
         TListDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntity
-    where TRepo : IRepository<TEntity>
+    where IRepo : IRepository<TEntity>
     where TParameters : RequestParameters
 {
     protected readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    protected readonly TRepo _repo = repo;
+    protected readonly IRepo _repo = repo;
     protected readonly IMapper _mapper = mapper;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
 
@@ -340,11 +340,11 @@ public abstract class BaseService<
     TEntity,
     TDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
 ) : BaseService<
@@ -352,7 +352,7 @@ public abstract class BaseService<
         TDto,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >(
         filterBuilder,
@@ -364,10 +364,10 @@ public abstract class BaseService<
         TEntity,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntity
-    where TRepo : IRepository<TEntity>
+    where IRepo : IRepository<TEntity>
     where TParameters : RequestParameters
 { }

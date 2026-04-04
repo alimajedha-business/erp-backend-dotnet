@@ -22,11 +22,11 @@ public abstract class BaseServiceWithCompany<
     TDto,
     TListDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
@@ -35,15 +35,15 @@ public abstract class BaseServiceWithCompany<
         TDto,
         TListDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where IRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
 {
     protected readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    protected readonly TRepo _repo = repo;
+    protected readonly IRepo _repo = repo;
     protected readonly ICompanyService _companyService = companyService;
     protected readonly IMapper _mapper = mapper;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
@@ -382,11 +382,11 @@ public abstract class BaseServiceWithCompany<
     TEntity,
     TDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
     IStringLocalizer<TResource> localizer
@@ -395,7 +395,7 @@ public abstract class BaseServiceWithCompany<
         TDto,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >(
         filterBuilder,
@@ -408,10 +408,10 @@ public abstract class BaseServiceWithCompany<
         TEntity,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where IRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
 { }
