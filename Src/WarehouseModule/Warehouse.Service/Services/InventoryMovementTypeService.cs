@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,6 +19,7 @@ public class InventoryMovementTypeService(
     IInventoryMovementTypeRepository inventoryMovementTypeRepository,
     ICompanyService companyService,
     IMapper mapper,
+    IValidator<InventoryMovementType> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         InventoryMovementType,
@@ -29,6 +32,7 @@ public class InventoryMovementTypeService(
         inventoryMovementTypeRepository,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     IInventoryMovementTypeService

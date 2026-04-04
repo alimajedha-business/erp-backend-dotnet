@@ -1,10 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using NGErp.Base.Domain.EntitySchemas;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.EntitySchemas;
 using NGErp.Warehouse.Service.Mappings;
+using NGErp.Warehouse.Service.RequestValidators;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Services;
 
@@ -21,6 +24,8 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
 
         services.AddAutoMapper(typeof(MappingProfile));
+
+        services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
 
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
