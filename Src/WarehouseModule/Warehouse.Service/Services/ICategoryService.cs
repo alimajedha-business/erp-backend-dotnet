@@ -14,10 +14,4 @@ public interface ICategoryService : IBaseServiceWithCompany<
     ICategoryRepository,
     WarehouseResource
 >
-{
-    Task<CategoryDto> CreateAsync(
-        Guid companyId,
-        CreateCategoryDto createDto,
-        CancellationToken ct
-    );
-}
+{ }
