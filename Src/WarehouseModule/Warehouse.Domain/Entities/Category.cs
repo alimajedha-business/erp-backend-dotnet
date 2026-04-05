@@ -27,6 +27,10 @@ public class Category :
             .ToTable(t => t.HasCheckConstraint(
                 "CK_Category_LevelNo",
                 "LevelNo BETWEEN 1 AND 6"
+            ))
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_Category_LevelNo_HasNextLevel",
+                "(LevelNo = 1 AND HasNextLevel = 1) OR (LevelNo = 6 AND HasNextLevel = 0) OR (LevelNo > 1 AND LevelNo < 6 AND HasNextLevel IN (0, 1))"
             ));
 
         builder
