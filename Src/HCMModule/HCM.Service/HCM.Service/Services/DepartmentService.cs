@@ -49,8 +49,7 @@ public class DepartmentService(
         await EnsureCompanyAsync(companyId, ct);
 
         var department = await GetByIdOrThrowAsync(companyId, id, ct);
-        if (changeStatusDto.Status == false && !changeStatusDto.Date.HasValue)
-            throw new NotImplementedException();
+
         DateTime? dateTime = null;
         if (changeStatusDto.Date.HasValue)
             dateTime = new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue);
