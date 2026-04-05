@@ -13,7 +13,7 @@ public class Category :
     public required string Code { get; set; }
     public required string Title { get; set; }
     public required int LevelNo { get; set; }
-    public required bool IsLastLevel { get; set; } = false;
+    public required bool HasNextLevel { get; set; } = true;
     public Guid? ParentCategoryId { get; set; }
 
     public Category? ParentCategory { get; private set; }
@@ -26,11 +26,7 @@ public class Category :
             .ToTable(nameof(Category), "Warehouse")
             .ToTable(t => t.HasCheckConstraint(
                 "CK_Category_LevelNo",
-                "LevelNo BETWEEN 1 AND 7"
-            ))
-            .ToTable(t => t.HasCheckConstraint(
-                "CK_Category_LevelNo_LastLevel",
-                "(LevelNo = 1 AND IsLastLevel = 0) OR LevelNo <> 1"
+                "LevelNo BETWEEN 1 AND 6"
             ));
 
         builder
@@ -47,8 +43,8 @@ public class Category :
             .HasMaxLength(200);
 
         builder
-            .Property(e => e.IsLastLevel)
-            .HasDefaultValue(false);
+            .Property(e => e.HasNextLevel)
+            .HasDefaultValue(true);
 
         builder
             .HasOne(e => e.ParentCategory)
