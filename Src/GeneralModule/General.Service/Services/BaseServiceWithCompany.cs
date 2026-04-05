@@ -2,6 +2,8 @@
 
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -22,30 +24,32 @@ public abstract class BaseServiceWithCompany<
     TDto,
     TListDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
+    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : IBaseServiceWithCompany<
         TEntity,
         TDto,
         TListDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where IRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
 {
     protected readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    protected readonly TRepo _repo = repo;
+    protected readonly IRepo _repo = repo;
     protected readonly ICompanyService _companyService = companyService;
     protected readonly IMapper _mapper = mapper;
+    protected readonly IValidator<TEntity> _validator = validator;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
 
     protected abstract string LocalizerKey { get; }
@@ -64,6 +68,17 @@ public abstract class BaseServiceWithCompany<
 
         var entity = _mapper.Map<TEntity>(createDto);
         entity.CompanyId = companyId;
+
+        var validationResult = await _validator.ValidateAsync(entity);
+
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage);
+
+            throw new ValidationException(string.Join("; ", errors));
+        }
 
         configureEntity?.Invoke(entity);
 
@@ -382,36 +397,38 @@ public abstract class BaseServiceWithCompany<
     TEntity,
     TDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >(
     IAdvancedFilterBuilder filterBuilder,
-    TRepo repo,
+    IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
+    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : BaseServiceWithCompany<
         TEntity,
         TDto,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >(
         filterBuilder,
         repo,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     IBaseServiceWithCompany<
         TEntity,
         TDto,
         TParameters,
-        TRepo,
+        IRepo,
         TResource
     >
     where TEntity : BaseEntityWithCompany
-    where TRepo : IRepositoryWithCompany<TEntity>
+    where IRepo : IRepositoryWithCompany<TEntity>
     where TParameters : RequestParameters
 { }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -15,6 +17,7 @@ public class WarehouseLocationService(
     IAdvancedFilterBuilder filterBuilder,
     IWarehouseLocationRepository locationRepository,
     IMapper mapper,
+    IValidator<WarehouseLocation> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         WarehouseLocation,
@@ -26,6 +29,7 @@ public class WarehouseLocationService(
         filterBuilder,
         locationRepository,
         mapper,
+        validator,
         localizer
     ),
     IWarehouseLocationService

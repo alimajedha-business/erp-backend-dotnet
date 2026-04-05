@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.DTOs;
@@ -19,6 +21,7 @@ public class ItemService(
     ICompanyService companyService,
     IItemRepository itemRepository,
     IMapper mapper,
+    IValidator<Item> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         Item,
@@ -31,6 +34,7 @@ public class ItemService(
         itemRepository,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     IItemService

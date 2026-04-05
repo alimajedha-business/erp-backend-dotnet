@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,6 +19,7 @@ public class CategoryLevelConstraintService(
     ICategoryLevelConstraintRepository constraintRepository,
     ICompanyService companyService,
     IMapper mapper,
+    IValidator<CategoryLevelConstraint> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         CategoryLevelConstraint,
@@ -29,6 +32,7 @@ public class CategoryLevelConstraintService(
         constraintRepository,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     ICategoryLevelConstraintService
