@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -19,10 +21,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/warehouse-types")]
 public class WarehouseTypeController(
-    IWarehouseTypeService warehouseTypeService
+    IWarehouseTypeService warehouseTypeService,
+    IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
+    private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -68,6 +72,44 @@ public class WarehouseTypeController(
         );
 
         return Ok(result);
+    }
+
+    [HttpPost("excel")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseTypeAdvancedSearchExample))]
+    public async Task<IActionResult> ExportToExcel(
+        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromQuery] string? columns,
+        CancellationToken ct
+    )
+    {
+        var parameters = new WarehouseTypeParameters
+        {
+            Paginated = false,
+        };
+
+        var result = await _warehouseTypeService.GetAllAsync(
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        var columnsList = string.IsNullOrWhiteSpace(columns)
+            ? []
+            : columns
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+        var excludedColumns = new List<string> { "Id" };
+
+        var fileBytes = _excelExportService.ExportToExcel(
+            result.Results,
+            columnsList,
+            excludedColumns
+        );
+
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"warehouse_types.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]

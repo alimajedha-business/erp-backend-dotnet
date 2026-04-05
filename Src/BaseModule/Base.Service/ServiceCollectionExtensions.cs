@@ -10,11 +10,13 @@ namespace NGErp.Base.Service
     {
         public static IServiceCollection AddBaseServices(this IServiceCollection services)
         {
-            
             services.AddAutoMapper(typeof(MappingProfile));
-            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();            
             services.AddHttpContextAccessor();
+
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IExcelExportService, ExcelExportService<BaseResource>>();
+            services.AddScoped<IExceptionLocalizer<BaseResource>, ExceptionLocalizer<BaseResource>>();
+
             return services;
         }
     }

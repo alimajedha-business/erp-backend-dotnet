@@ -33,12 +33,12 @@ public class ItemRepository(MainDbContext context) :
 
             var children = await _context.Categories
                 .Where(c => c.ParentCategoryId == current)
-                .Select(c => new { c.Id, c.IsLastLevel })
+                .Select(c => new { c.Id, c.HasNextLevel })
                 .ToListAsync();
 
             foreach (var ch in children)
             {
-                if (ch.IsLastLevel)
+                if (!ch.HasNextLevel)
                     leafIds.Add(ch.Id);
                 else
                     queue.Enqueue(ch.Id);
@@ -46,7 +46,7 @@ public class ItemRepository(MainDbContext context) :
 
             var isCurrentLeaf = await _context.Categories
                 .Where(c => c.Id == current)
-                .Select(c => c.IsLastLevel)
+                .Select(c => !c.HasNextLevel)
                 .SingleAsync();
 
             if (isCurrentLeaf)
