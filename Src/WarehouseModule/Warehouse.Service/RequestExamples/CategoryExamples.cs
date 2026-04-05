@@ -16,7 +16,7 @@ public class CreateCategoryExample :
             Code = "100500",
             Title = "Dairy",
             LevelNo = 3,
-            IsLastLevel = false,
+            HasNextLevel = false,
             ParentCategoryId = new Guid("B1EEAA38-0D79-4520-8C5A-DDEB63DE1351")
         };
     }
@@ -55,9 +55,9 @@ public class CategoryAdvancedSearchExample : IExamplesProvider<object>
                         new
                         {
                             type = "condition",
-                            field = "code",
-                            @operator = "startsWith",
-                            value = "10"
+                            field = "hasNextLevel",
+                            @operator = "eq",
+                            value = true
                         }
                     }
                 }
@@ -73,7 +73,7 @@ public class CategoryPatchExample :
     {
         var patchDoc = new JsonPatchDocument<PatchCategoryDto>();
         patchDoc.Replace(x => x.Title, "New Category Title");
-        patchDoc.Replace(x => x.IsLastLevel, false);
+        patchDoc.Replace(x => x.HasNextLevel, false);
 
         return patchDoc;
     }
