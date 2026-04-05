@@ -156,33 +156,6 @@ public class CategoryController(
         return Ok(dto);
     }
 
-    [HttpPost("{id:guid}/items/list")]
-    [SkipModelValidation]
-    public async Task<IActionResult> GetItems(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromQuery] ItemParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        await _categoryService.GetByIdAsync(
-            companyId,
-            id,
-            ct
-        );
-
-        var result = await _itemService.GetCategoryAllItemsAsync(
-            companyId,
-            id,
-            parameters,
-            ct,
-            filterNodeDto
-        );
-
-        return Ok(result);
-    }
-
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
@@ -216,6 +189,172 @@ public class CategoryController(
         await _categoryService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
+
+    #region Items
+
+    [HttpPost("{categoryId:guid}/items")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(CreateItemDto), typeof(CreateItemExample))]
+    public async Task<IActionResult> CreateItem(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromBody] CreateItemDto createDto,
+        CancellationToken ct
+    )
+    {
+        await _categoryService.GetByIdAsync(
+            companyId,
+            categoryId,
+            ct
+        );
+
+        var dto = await _itemService.CreateAsync(
+            companyId,
+            categoryId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetItemById),
+            new { companyId, categoryId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{categoryId:guid}/items/list")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
+    public async Task<IActionResult> GetItems(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromQuery] ItemParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await _categoryService.GetByIdAsync(
+            companyId,
+            categoryId,
+            ct
+        );
+
+        var result = await _itemService.GetCategoryAllItemsAsync(
+            companyId,
+            categoryId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("{categoryId:guid}/items/excel")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
+    public async Task<IActionResult> ExportItemsToExcel(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromQuery] string? columns,
+        CancellationToken ct
+    )
+    {
+        await _categoryService.GetByIdAsync(
+           companyId,
+           categoryId,
+           ct
+       );
+
+        var parameters = new ItemParameters
+        {
+            Paginated = false,
+        };
+
+        var result = await _itemService.GetCategoryAllItemsAsync(
+            companyId,
+            categoryId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        var columnsList = string.IsNullOrWhiteSpace(columns)
+            ? []
+            : columns
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+        var excludedColumns = new List<string> { "Id" };
+
+        var fileBytes = _excelExportService.ExportToExcel(
+            result.Results,
+            columnsList,
+            excludedColumns
+        );
+
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"items.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
+    }
+
+    [HttpGet("{categoryId:guid}/items/{id:guid}")]
+    public async Task<IActionResult> GetItemById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _itemService.GetByIdAsync(
+            companyId,
+            categoryId,
+            id,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{categoryId:guid}/items/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchItemDto>),
+        typeof(ItemPatchExample)
+    )]
+    public async Task<IActionResult> PatchItem(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchItemDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _itemService.PatchAsync(
+            companyId,
+            categoryId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{categoryId:guid}/items/{id:guid}")]
+    public async Task<IActionResult> DeleteItem(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _itemService.DeleteAsync(companyId, categoryId, id, ct);
+        return NoContent();
+    }
+
+    #endregion
 
     #region AttributeRules
 

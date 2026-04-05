@@ -1,7 +1,13 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -19,6 +25,7 @@ public class ItemService(
     ICompanyService companyService,
     IItemRepository itemRepository,
     IMapper mapper,
+    IValidator<Item> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         Item,
@@ -31,12 +38,30 @@ public class ItemService(
         itemRepository,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     IItemService
 {
     protected override string LocalizerKey => "Item";
     private readonly IItemRepository _itemRepository = itemRepository;
+
+    public async Task<ItemDto> CreateAsync(
+        Guid companyId,
+        Guid categoryId,
+        CreateItemDto createItemDto,
+        CancellationToken ct
+    )
+    {
+        var item = _mapper.Map<Item>(createItemDto);
+        item.CompanyId = companyId;
+        item.CategoryId = categoryId;
+
+        var created = await _itemRepository.AddAsync(item, ct);
+        await _itemRepository.SaveChangesAsync(ct);
+
+        return _mapper.Map<ItemDto>(created);
+    }
 
     public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
         Guid companyId,
@@ -65,5 +90,100 @@ public class ItemService(
             totalCount: listQueryResult.count,
             parameters
         );
+    }
+
+    public async Task<ItemDto> GetByIdAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        await _companyService.GetByIdAsync(
+            companyId,
+            ct
+        );
+
+        var item = await GetByIdOrThrowAsync(
+            companyId,
+            categoryId,
+            id,
+            ct,
+            trackChanges: true
+        );
+
+        return _mapper.Map<ItemDto>(item);
+    }
+
+    public virtual async Task<ItemDto> PatchAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        JsonPatchDocument<PatchItemDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureCompanyAsync(companyId, ct);
+
+        var item = await GetByIdOrThrowAsync(
+            companyId,
+            categoryId,
+            id,
+            ct,
+            trackChanges: true
+        );
+
+        var patchDto = _mapper.Map<PatchItemDto>(item);
+        var errors = new List<string>();
+
+        patchDocument.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+            throw new InvalidPatchDocumentException(errors);
+
+        _mapper.Map(patchDto, item);
+
+        await TrySaveMutationAsync(ct);
+        return _mapper.Map<ItemDto>(item);
+    }
+
+    public async Task DeleteAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureCompanyAsync(companyId, ct);
+
+        var entity = await GetByIdOrThrowAsync(companyId, categoryId, id, ct);
+        _itemRepository.Remove(entity);
+
+        try
+        {
+            await _itemRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex)
+        when (ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new ForeignKeyViolationException(_localizer[LocalizerKey].Value);
+        }
+
+        return;
+    }
+
+    private async Task<Item> GetByIdOrThrowAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
+    {
+        var entity = await _itemRepository.GetByIdAsync(companyId, categoryId, id, ct, trackChanges);
+        return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }

@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -19,6 +18,7 @@ public class UnitOfMeasurementService(
     IAdvancedFilterBuilder filterBuilder,
     IUnitOfMeasurementRepository unitOfMeasurementRepository,
     IMapper mapper,
+    IValidator<UnitOfMeasurement> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         UnitOfMeasurement,
@@ -31,6 +31,7 @@ public class UnitOfMeasurementService(
         filterBuilder,
         unitOfMeasurementRepository,
         mapper,
+        validator,
         localizer
     ),
     IUnitOfMeasurementService

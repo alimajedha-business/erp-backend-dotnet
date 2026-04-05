@@ -13,11 +13,11 @@ public interface IBaseService<
     TDto,
     TListDto,
     TParameters,
-    TRepo,
+    IRepo,
     TResource
 >
     where TEntity : BaseEntity
-    where TRepo : IRepository<TEntity>
+    where IRepo : IRepository<TEntity>
     where TParameters : RequestParameters
 {
     Task<TDto> CreateAsync<TCreateDto>(

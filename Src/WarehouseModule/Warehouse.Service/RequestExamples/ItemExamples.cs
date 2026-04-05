@@ -16,7 +16,6 @@ public class CreateItemExample :
             Code = "100500",
             Title = "Kale Milk",
             Sku = "10040-14001-112-2020",
-            CategoryId = new Guid("C0348488-FE54-45A1-909F-DF3B0F57871B"),
             IsActive = true,
         };
     }

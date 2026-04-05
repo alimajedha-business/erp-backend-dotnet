@@ -5,7 +5,7 @@ public record CategoryDto(
     string Code,
     string Title,
     int LevelNo,
-    bool IsLastLevel
+    bool HasNextLevel
 );
 
 public record CategorySlimDto(
@@ -19,7 +19,7 @@ public class CreateCategoryDto
     public required string Code { get; set; }
     public required string Title { get; set; }
     public required int LevelNo { get; set; }
-    public bool IsLastLevel { get; set; } = false;
+    public bool HasNextLevel { get; set; } = false;
     public Guid? ParentCategoryId { get; set; }
 }
 
@@ -27,5 +27,5 @@ public class PatchCategoryDto
 {
     public string? Code { get; set; }
     public string? Title { get; set; }
-    public bool? IsLastLevel { get; set; }
+    public bool? HasNextLevel { get; set; }
 }

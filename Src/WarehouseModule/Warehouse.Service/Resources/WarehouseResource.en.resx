@@ -126,6 +126,21 @@
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
+  <data name="Category.Code.ExceedsMaxLength" xml:space="preserve">
+    <value>The length of category's code exceeded the length defined in constraints.</value>
+  </data>
+  <data name="Category.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>The 6th level could not have sub-categories as children.</value>
+  </data>
+  <data name="Category.LevelNo.NotLastLevelIf1" xml:space="preserve">
+    <value>The very top level could not be set as the last level.</value>
+  </data>
+  <data name="Category.Title.MinLength" xml:space="preserve">
+    <value>Category title must be at least 3 characters.</value>
+  </data>
+  <data name="Category.Title.NotEmpty" xml:space="preserve">
+    <value>Category title could not be empty.</value>
+  </data>
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>Category Level Constraint</value>
   </data>

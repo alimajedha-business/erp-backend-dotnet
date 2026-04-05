@@ -536,13 +536,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsLastLevel")
+                    b.Property<bool>("HasNextLevel")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("LevelNo")
                         .HasColumnType("int");
@@ -578,9 +578,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.ToTable("Category", "Warehouse", t =>
                         {
-                            t.HasCheckConstraint("CK_Category_LevelNo", "LevelNo BETWEEN 1 AND 7");
+                            t.HasCheckConstraint("CK_Category_LevelNo", "LevelNo BETWEEN 1 AND 6");
 
-                            t.HasCheckConstraint("CK_Category_LevelNo_LastLevel", "(LevelNo = 1 AND IsLastLevel = 0) OR LevelNo <> 1");
+                            t.HasCheckConstraint("CK_Category_LevelNo_HasNextLevel", "(LevelNo = 1 AND HasNextLevel = 1) OR (LevelNo = 6 AND HasNextLevel = 0) OR (LevelNo > 1 AND LevelNo < 6 AND HasNextLevel IN (0, 1))");
                         });
                 });
 

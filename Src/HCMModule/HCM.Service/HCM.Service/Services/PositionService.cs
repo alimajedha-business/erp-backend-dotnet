@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -15,6 +17,7 @@ namespace NGErp.HCM.Service.Services;
 public class PositionService(
     IPositionRepository positionRepository,
     IMapper mapper,
+    IValidator<Position> validator,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder,
     ICompanyService companyService
@@ -29,6 +32,7 @@ public class PositionService(
         positionRepository,
         companyService,
         mapper,
+        validator,
         localizer
         ),
     IPositionService

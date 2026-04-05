@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -16,6 +18,7 @@ public class AttributeService(
     IAttributeRepository attributeRepository,
     ICompanyService companyService,
     IMapper mapper,
+    IValidator<Domain.Entities.Attribute> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         Domain.Entities.Attribute,
@@ -28,6 +31,7 @@ public class AttributeService(
         attributeRepository,
         companyService,
         mapper,
+        validator,
         localizer
     ),
     IAttributeService

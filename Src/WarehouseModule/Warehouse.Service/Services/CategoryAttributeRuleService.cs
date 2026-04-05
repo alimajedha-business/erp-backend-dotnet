@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
@@ -18,6 +20,7 @@ public class CategoryAttributeRuleService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryAttributeRuleRepository categoryAttributeRuleRepository,
     IMapper mapper,
+    IValidator<CategoryAttributeRule> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         CategoryAttributeRule,
@@ -30,6 +33,7 @@ public class CategoryAttributeRuleService(
         filterBuilder,
         categoryAttributeRuleRepository,
         mapper,
+        validator,
         localizer
     ),
     ICategoryAttributeRuleService
