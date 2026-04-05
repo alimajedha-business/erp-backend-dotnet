@@ -28,29 +28,6 @@ public class ItemController(
     private readonly IItemService _itemService = itemService;
     private readonly IExcelExportService _excelExportService = excelExportService;
 
-    [HttpPost]
-    [Produces("application/json")]
-    [Consumes("application/json")]
-    [SwaggerRequestExample(typeof(CreateItemDto), typeof(CreateItemExample))]
-    public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
-        [FromBody] CreateItemDto createDto,
-        CancellationToken ct
-    )
-    {
-        var dto = await _itemService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { companyId, id = dto.Id },
-            dto
-        );
-    }
-
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
