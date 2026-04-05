@@ -2,6 +2,8 @@
 
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,7 @@ public abstract class BaseService<
     IAdvancedFilterBuilder filterBuilder,
     IRepo repo,
     IMapper mapper,
+    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : IBaseService<
         TEntity,
@@ -43,6 +46,7 @@ public abstract class BaseService<
     protected readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     protected readonly IRepo _repo = repo;
     protected readonly IMapper _mapper = mapper;
+    protected readonly IValidator<TEntity> _validator = validator;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
 
     protected abstract string LocalizerKey { get; }
@@ -54,6 +58,17 @@ public abstract class BaseService<
     )
     {
         var entity = _mapper.Map<TEntity>(createDto);
+
+        var validationResult = await _validator.ValidateAsync(entity);
+
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage);
+
+            throw new ValidationException(string.Join("; ", errors));
+        }
 
         configureEntity?.Invoke(entity);
 
@@ -346,6 +361,7 @@ public abstract class BaseService<
     IAdvancedFilterBuilder filterBuilder,
     IRepo repo,
     IMapper mapper,
+    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : BaseService<
         TEntity,
@@ -358,6 +374,7 @@ public abstract class BaseService<
         filterBuilder,
         repo,
         mapper,
+        validator,
         localizer
     ),
     IBaseService<
