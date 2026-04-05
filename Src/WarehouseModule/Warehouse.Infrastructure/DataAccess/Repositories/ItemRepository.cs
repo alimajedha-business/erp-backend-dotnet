@@ -15,6 +15,23 @@ public class ItemRepository(MainDbContext context) :
     RepositoryWithCompany<Item>(context),
     IItemRepository
 {
+    public async Task<Item?> GetByIdAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+
+        return await query
+            .Where(e => e.CompanyId == companyId)
+            .Where(e => e.CategoryId == categoryId)
+            .Where(e => e.Id == id)
+            .SingleOrDefaultAsync(cancellationToken: ct);
+    }
+
     public async Task<ListQueryResult<Item>> GetCategoryAllAsync(
         Guid companyId,
         Guid categoryId,

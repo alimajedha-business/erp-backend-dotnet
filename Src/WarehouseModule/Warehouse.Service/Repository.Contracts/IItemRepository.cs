@@ -7,6 +7,14 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IItemRepository : IRepositoryWithCompany<Item>
 {
+    Task<Item?> GetByIdAsync(
+        Guid companyId,
+        Guid categoryId,
+        Guid id,
+        CancellationToken ct,
+        bool trackChanges = false
+    );
+
     Task<ListQueryResult<Item>> GetCategoryAllAsync(
         Guid companyId,
         Guid categoryId,
