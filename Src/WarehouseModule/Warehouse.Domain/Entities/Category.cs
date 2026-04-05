@@ -13,7 +13,7 @@ public class Category :
     public required string Code { get; set; }
     public required string Title { get; set; }
     public required int LevelNo { get; set; }
-    public required bool HasNextLevel { get; set; } = true;
+    public required bool HasNextLevel { get; set; } = false;
     public Guid? ParentCategoryId { get; set; }
 
     public Category? ParentCategory { get; private set; }
@@ -48,7 +48,7 @@ public class Category :
 
         builder
             .Property(e => e.HasNextLevel)
-            .HasDefaultValue(true);
+            .HasDefaultValue(false);
 
         builder
             .HasOne(e => e.ParentCategory)

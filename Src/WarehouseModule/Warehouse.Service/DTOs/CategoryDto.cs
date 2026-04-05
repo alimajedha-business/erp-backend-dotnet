@@ -19,7 +19,7 @@ public class CreateCategoryDto
     public required string Code { get; set; }
     public required string Title { get; set; }
     public required int LevelNo { get; set; }
-    public bool HasNextLevel { get; set; } = true;
+    public bool HasNextLevel { get; set; } = false;
     public Guid? ParentCategoryId { get; set; }
 }
 
