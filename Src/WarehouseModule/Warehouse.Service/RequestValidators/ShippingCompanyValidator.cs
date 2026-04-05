@@ -14,5 +14,11 @@ public class ShippingCompanyValidator : AbstractValidator<ShippingCompany>
     public ShippingCompanyValidator(IStringLocalizer<WarehouseResource> localizer)
     {
         _localizer = localizer;
+
+        RuleFor(p => p.Title)
+            .NotEmpty()
+            .WithMessage(_localizer["ShippingCompany.Title.NotEmpty"].Value)
+            .MinimumLength(3)
+            .WithMessage(_localizer["ShippingCompany.Title.MinLength"].Value);
     }
 }
