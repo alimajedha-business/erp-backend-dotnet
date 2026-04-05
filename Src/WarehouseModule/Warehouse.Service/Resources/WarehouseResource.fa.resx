@@ -126,6 +126,12 @@
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>
+  <data name="Category.Code.ExceedsMaxLength" xml:space="preserve">
+    <value>طول کد طبقه‌بندی از مقدار تعریف‌شده در محدودیت سطوح طبقه‌بندی بیشتر است.</value>
+  </data>
+  <data name="Category.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>سطح ششم نمی‌تواند زیر-سطح داشته باشد.</value>
+  </data>
   <data name="Category.LevelNo.NotLastLevelIf1" xml:space="preserve">
     <value>بالاترین سطح نمی‌تواند به عنوان سطح آخر ثبت شود.</value>
   </data>
