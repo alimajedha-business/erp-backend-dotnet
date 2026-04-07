@@ -5,7 +5,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class ItemUnitOfMeasurementRepository(MainDbContext context) :
-    Repository<ItemUnitOfMeasurement>(context),
-    IItemUnitOfMeasurementRepository
+public class ItemAttributeRepository(MainDbContext context) :
+    Repository<ItemAttribute>(context),
+    IItemAttributeRepository
 { }

@@ -44,7 +44,6 @@ public class ItemService(
     IItemService
 {
     protected override string LocalizerKey => "Item";
-    private readonly IItemRepository _itemRepository = itemRepository;
 
     public async Task<ItemDto> CreateAsync(
         Guid companyId,
@@ -57,10 +56,25 @@ public class ItemService(
         item.CompanyId = companyId;
         item.CategoryId = categoryId;
 
-        var created = await _itemRepository.AddAsync(item, ct);
-        await _itemRepository.SaveChangesAsync(ct);
+        var createdItem = await _repo.AddAsync(item, ct);
 
-        return _mapper.Map<ItemDto>(created);
+        item.ItemAttributes = [.. createItemDto.AttributeIds
+            .Select(attributeId => new ItemAttribute
+            {
+                AttributeId = attributeId,
+                Item = item
+            })];
+
+        item.ItemUnitOfMeasurements = [.. createItemDto.SecondaryUnitOfMeasurementIds
+            .Select((uomId, index) => new ItemUnitOfMeasurement
+            {
+                UnitOfMeasurementId = uomId,
+                Item = item,
+                UnitOrder = index + 2
+            })];
+
+        await _repo.SaveChangesAsync(ct);
+        return _mapper.Map<ItemDto>(createdItem);
     }
 
     public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
@@ -77,7 +91,7 @@ public class ItemService(
         );
 
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
-        var listQueryResult = await _itemRepository.GetCategoryAllAsync(
+        var listQueryResult = await _repo.GetCategoryAllAsync(
             companyId,
             categoryId,
             parameters,
@@ -160,11 +174,11 @@ public class ItemService(
         await EnsureCompanyAsync(companyId, ct);
 
         var entity = await GetByIdOrThrowAsync(companyId, categoryId, id, ct);
-        _itemRepository.Remove(entity);
+        _repo.Remove(entity);
 
         try
         {
-            await _itemRepository.SaveChangesAsync(ct);
+            await _repo.SaveChangesAsync(ct);
         }
         catch (DbUpdateException ex)
         when (ex.InnerException is SqlException { Number: 547 })
@@ -183,7 +197,7 @@ public class ItemService(
         bool trackChanges = false
     )
     {
-        var entity = await _itemRepository.GetByIdAsync(companyId, categoryId, id, ct, trackChanges);
+        var entity = await _repo.GetByIdAsync(companyId, categoryId, id, ct, trackChanges);
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }
