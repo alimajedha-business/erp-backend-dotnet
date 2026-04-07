@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -11,13 +12,12 @@ public static class DynamicLinqConditionBuilder
 {
     public static (string where, object[] parameters) Build<TEntity>(
         FilterNodeDto? root,
-        IFilterSchemaProvider _schemaProvider
-    )
+        IFilterSchemaProvider schemaProvider)
     {
         if (root is null)
             return ("", Array.Empty<object>());
 
-        var schema = _schemaProvider.GetSchema<TEntity>();
+        var schema = schemaProvider.GetSchema<TEntity>();
 
         var sb = new StringBuilder();
         var prms = new List<object>();
@@ -31,115 +31,114 @@ public static class DynamicLinqConditionBuilder
         FilterNodeDto node,
         FilterSchema schema,
         StringBuilder sb,
-        List<object> prms
-    )
+        List<object> prms)
     {
-        switch (node.Type)
+        switch (node.Type?.Trim().ToLowerInvariant())
         {
             case "group":
                 BuildGroup(node, schema, sb, prms);
                 break;
+
             case "condition":
                 BuildCondition(node, schema, sb, prms);
                 break;
+
             default:
-                throw new ArgumentException("Unknown filter node type.");
+                throw new ArgumentException($"Unknown filter node type '{node.Type}'.");
         }
     }
 
     private static void BuildGroup(
-        FilterNodeDto g,
+        FilterNodeDto group,
         FilterSchema schema,
         StringBuilder sb,
-        List<object> prms
-    )
+        List<object> prms)
     {
-        if (g.Children is null || g.Children.Count == 0)
-            throw new ArgumentException("Filter group must have children.");
+        if (group.Children is null || group.Children.Count == 0)
+            throw new ArgumentException("Filter group must have at least one child.");
 
-        var op = (g.Op ?? "").Trim().ToLowerInvariant();
-        if (op is not ("and" or "or"))
-            throw new ArgumentException($"Invalid group operator '{g.Op}'.");
+        var op = NormalizeLogicalOperator(group.Op);
+        if (op is null)
+            throw new ArgumentException($"Invalid group operator '{group.Op}'. Allowed values are 'and' and 'or'.");
 
         sb.Append('(');
-        for (int i = 0; i < g.Children.Count; i++)
+
+        for (var i = 0; i < group.Children.Count; i++)
         {
             if (i > 0)
                 sb.Append(op == "and" ? " and " : " or ");
-            BuildNode(g.Children[i], schema, sb, prms);
+
+            BuildNode(group.Children[i], schema, sb, prms);
         }
+
         sb.Append(')');
     }
 
     private static void BuildCondition(
-        FilterNodeDto c,
+        FilterNodeDto condition,
         FilterSchema schema,
         StringBuilder sb,
-        List<object> prms
-    )
+        List<object> prms)
     {
-        if (string.IsNullOrWhiteSpace(c.Field))
+        if (string.IsNullOrWhiteSpace(condition.Field))
             throw new ArgumentException("Condition.Field is required.");
-        if (string.IsNullOrWhiteSpace(c.Operator))
+
+        if (string.IsNullOrWhiteSpace(condition.Operator))
             throw new ArgumentException("Condition.Operator is required.");
 
-        if (!schema.Fields.TryGetValue(c.Field, out var fieldInfo))
-            throw new ArgumentException($"Field '{c.Field}' is not allowed.");
+        if (!schema.Fields.TryGetValue(condition.Field, out var fieldInfo))
+            throw new ArgumentException($"Field '{condition.Field}' is not allowed.");
 
-        var op = c.Operator.Trim();
-        if (!fieldInfo.AllowedOps.Contains(op))
-            throw new ArgumentException($"Operator '{op}' is not allowed for field '{c.Field}'.");
+        var rawOperator = condition.Operator.Trim();
+        if (!fieldInfo.AllowedOps.Contains(rawOperator))
+            throw new ArgumentException($"Operator '{rawOperator}' is not allowed for field '{condition.Field}'.");
 
+        var normalizedOp = NormalizeOperator(rawOperator);
         var paramIndex = prms.Count;
+        var propertyName = fieldInfo.PropertyName;
+        var propertyType = fieldInfo.PropertyType;
+        var nonNullableType = GetNonNullableType(propertyType);
+        var isNullable = IsNullableType(propertyType);
 
-        // Normalize operator for switching:
-        // - lowercase
-        // - remove spaces and underscores (so "not in", "not_in", "notin" all work)
-        var normalizedOp = op.Trim().ToLowerInvariant().Replace(" ", "").Replace("_", "");
-
-        // Special handling for set operators:
-        // Dynamic LINQ works well with: @0.Contains(Field) / !@0.Contains(Field)
         if (normalizedOp is "in" or "notin")
         {
-            var elementType = Nullable.GetUnderlyingType(fieldInfo.PropertyType) ?? fieldInfo.PropertyType;
-            var typedList = ConvertList(c.Value, elementType);
-            prms.Add(typedList);
-
-            var propName = fieldInfo.PropertyName;
-            var isNullable = Nullable.GetUnderlyingType(fieldInfo.PropertyType) is not null;
+            var typedArray = ConvertList(condition.Value, nonNullableType);
+            prms.Add(typedArray);
 
             if (normalizedOp == "in")
             {
-                if (isNullable)
-                    sb.Append($"{propName} != null && @{paramIndex}.Contains({propName}.Value)");
+                if (isNullable && nonNullableType != typeof(string))
+                    sb.Append($"{propertyName} != null && @{paramIndex}.Contains({propertyName}.Value)");
                 else
-                    sb.Append($"@{paramIndex}.Contains({propName})");
+                    sb.Append($"@{paramIndex}.Contains({propertyName})");
             }
-            else // notin
+            else
             {
-                if (isNullable)
-                    sb.Append($"{propName} == null || !@{paramIndex}.Contains({propName}.Value)");
+                if (isNullable && nonNullableType != typeof(string))
+                    sb.Append($"{propertyName} == null || !@{paramIndex}.Contains({propertyName}.Value)");
                 else
-                    sb.Append($"!@{paramIndex}.Contains({propName})");
+                    sb.Append($"!@{paramIndex}.Contains({propertyName})");
             }
 
             return;
         }
 
-        var typedValue = ConvertValue(c.Value, fieldInfo.PropertyType);
+        var typedValue = ConvertValue(condition.Value, propertyType);
 
         if (typedValue is null)
         {
-            if (normalizedOp is "eq")
+            if (normalizedOp == "eq")
             {
-                sb.Append($"{fieldInfo.PropertyName} == null");
+                sb.Append($"{propertyName} == null");
                 return;
             }
-            if (normalizedOp is "ne")
+
+            if (normalizedOp == "ne")
             {
-                sb.Append($"{fieldInfo.PropertyName} != null");
+                sb.Append($"{propertyName} != null");
                 return;
             }
+
             throw new ArgumentException("Only 'eq' and 'ne' are allowed with null values.");
         }
 
@@ -148,145 +147,414 @@ public static class DynamicLinqConditionBuilder
         switch (normalizedOp)
         {
             case "eq":
-                sb.Append($"{fieldInfo.PropertyName} == @{paramIndex}");
+                sb.Append($"{propertyName} == @{paramIndex}");
                 break;
 
             case "ne":
-                sb.Append($"{fieldInfo.PropertyName} != @{paramIndex}");
+                sb.Append($"{propertyName} != @{paramIndex}");
                 break;
 
             case "gt":
-                sb.Append($"{fieldInfo.PropertyName} > @{paramIndex}");
+                sb.Append($"{propertyName} > @{paramIndex}");
                 break;
 
             case "ge":
-                sb.Append($"{fieldInfo.PropertyName} >= @{paramIndex}");
+                sb.Append($"{propertyName} >= @{paramIndex}");
                 break;
 
             case "lt":
-                sb.Append($"{fieldInfo.PropertyName} < @{paramIndex}");
+                sb.Append($"{propertyName} < @{paramIndex}");
                 break;
 
             case "le":
-                sb.Append($"{fieldInfo.PropertyName} <= @{paramIndex}");
+                sb.Append($"{propertyName} <= @{paramIndex}");
                 break;
 
             case "startswith":
                 EnsureString(fieldInfo);
-                sb.Append($"{fieldInfo.PropertyName}.StartsWith(@{paramIndex})");
+                sb.Append($"{propertyName} != null && {propertyName}.StartsWith(@{paramIndex})");
                 break;
 
             case "contains":
                 EnsureString(fieldInfo);
-                sb.Append($"{fieldInfo.PropertyName}.Contains(@{paramIndex})");
+                sb.Append($"{propertyName} != null && {propertyName}.Contains(@{paramIndex})");
                 break;
 
             case "endswith":
                 EnsureString(fieldInfo);
-                sb.Append($"{fieldInfo.PropertyName}.EndsWith(@{paramIndex})");
+                sb.Append($"{propertyName} != null && {propertyName}.EndsWith(@{paramIndex})");
                 break;
 
             default:
-                throw new ArgumentException($"Unsupported operator '{op}'.");
+                throw new ArgumentException($"Unsupported operator '{rawOperator}'.");
         }
     }
+
+    private static string? NormalizeLogicalOperator(string? value)
+    {
+        var normalized = value?.Trim().ToLowerInvariant();
+        return normalized is "and" or "or" ? normalized : null;
+    }
+
+    private static string NormalizeOperator(string value) =>
+        value.Trim().ToLowerInvariant().Replace(" ", "").Replace("_", "");
 
     private static void EnsureString(FilterFieldInfo info)
     {
-        var nn = Nullable.GetUnderlyingType(info.PropertyType) ?? info.PropertyType;
-        if (nn != typeof(string))
+        if (GetNonNullableType(info.PropertyType) != typeof(string))
             throw new ArgumentException($"Operator is only valid for strings: '{info.PropertyName}'.");
     }
 
+    private static Type GetNonNullableType(Type type) =>
+        Nullable.GetUnderlyingType(type) ?? type;
+
+    private static bool IsNullableType(Type type) =>
+        !type.IsValueType || Nullable.GetUnderlyingType(type) is not null;
+
     private static object? ConvertValue(object? raw, Type targetType)
     {
-        if (raw is JsonElement je)
-        {
-            raw = je.ValueKind switch
-            {
-                JsonValueKind.Null => null,
-                JsonValueKind.String => je.GetString(),
-                JsonValueKind.Number => je.TryGetInt64(out var l) ? l : je.GetDouble(),
-                JsonValueKind.True => true,
-                JsonValueKind.False => false,
-                _ => je.ToString()
-            };
-        }
+        if (raw is JsonElement json)
+            raw = ConvertJsonElement(json);
 
         if (raw is null)
             return null;
 
-        var nn = Nullable.GetUnderlyingType(targetType) ?? targetType;
+        var nonNullableType = GetNonNullableType(targetType);
 
-        if (nn == typeof(Guid))
+        if (raw is string s && string.IsNullOrWhiteSpace(s))
         {
-            if (raw is Guid g)
-                return g;
+            if (nonNullableType != typeof(string))
+                return null;
 
-            if (raw is string s && Guid.TryParse(s, out var parsed))
-                return parsed;
-
-            throw new ArgumentException($"Invalid GUID value: '{raw}'");
+            return s;
         }
 
-        if (nn.IsEnum)
-        {
-            if (raw is string s)
-                return Enum.Parse(nn, s, ignoreCase: true);
+        if (nonNullableType == typeof(string))
+            return raw.ToString();
 
-            return Enum.ToObject(nn, Convert.ToInt32(raw, CultureInfo.InvariantCulture));
+        if (nonNullableType == typeof(Guid))
+        {
+            if (raw is Guid guid)
+                return guid;
+
+            if (raw is string guidText && Guid.TryParse(guidText, out var parsedGuid))
+                return parsedGuid;
+
+            throw new ArgumentException($"Invalid GUID value '{raw}'.");
         }
 
-        if (nn.IsInstanceOfType(raw))
+        if (nonNullableType == typeof(DateTime))
+        {
+            if (raw is DateTime dt)
+                return dt;
+
+            if (raw is DateTimeOffset dto)
+                return dto.DateTime;
+
+            if (raw is string dtText &&
+                DateTime.TryParse(
+                    dtText,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind | DateTimeStyles.AllowWhiteSpaces,
+                    out var parsedDateTime))
+            {
+                return parsedDateTime;
+            }
+
+            throw new ArgumentException($"Invalid DateTime value '{raw}'.");
+        }
+
+        if (nonNullableType == typeof(DateTimeOffset))
+        {
+            if (raw is DateTimeOffset dto)
+                return dto;
+
+            if (raw is DateTime dt)
+                return new DateTimeOffset(dt);
+
+            if (raw is string dtoText &&
+                DateTimeOffset.TryParse(
+                    dtoText,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind | DateTimeStyles.AllowWhiteSpaces,
+                    out var parsedDateTimeOffset))
+            {
+                return parsedDateTimeOffset;
+            }
+
+            throw new ArgumentException($"Invalid DateTimeOffset value '{raw}'.");
+        }
+
+        if (nonNullableType == typeof(DateOnly))
+        {
+            if (raw is DateOnly dateOnly)
+                return dateOnly;
+
+            if (raw is DateTime dt)
+                return DateOnly.FromDateTime(dt);
+
+            if (raw is string dateOnlyText)
+            {
+                if (DateOnly.TryParse(
+                        dateOnlyText,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AllowWhiteSpaces,
+                        out var parsedDateOnly))
+                {
+                    return parsedDateOnly;
+                }
+
+                if (DateTime.TryParse(
+                        dateOnlyText,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.RoundtripKind | DateTimeStyles.AllowWhiteSpaces,
+                        out var parsedDateTimeForDateOnly))
+                {
+                    return DateOnly.FromDateTime(parsedDateTimeForDateOnly);
+                }
+            }
+
+            throw new ArgumentException($"Invalid DateOnly value '{raw}'.");
+        }
+
+        if (nonNullableType == typeof(TimeOnly))
+        {
+            if (raw is TimeOnly timeOnly)
+                return timeOnly;
+
+            if (raw is DateTime dt)
+                return TimeOnly.FromDateTime(dt);
+
+            if (raw is string timeOnlyText)
+            {
+                if (TimeOnly.TryParse(
+                        timeOnlyText,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AllowWhiteSpaces,
+                        out var parsedTimeOnly))
+                {
+                    return parsedTimeOnly;
+                }
+
+                if (DateTime.TryParse(
+                        timeOnlyText,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.RoundtripKind | DateTimeStyles.AllowWhiteSpaces,
+                        out var parsedDateTimeForTimeOnly))
+                {
+                    return TimeOnly.FromDateTime(parsedDateTimeForTimeOnly);
+                }
+            }
+
+            throw new ArgumentException($"Invalid TimeOnly value '{raw}'.");
+        }
+
+        if (nonNullableType.IsEnum)
+        {
+            if (raw is string enumText)
+            {
+                if (Enum.TryParse(nonNullableType, enumText, ignoreCase: true, out var enumValue))
+                    return enumValue;
+
+                throw new ArgumentException($"Invalid value '{raw}' for enum type '{nonNullableType.Name}'.");
+            }
+
+            try
+            {
+                var numericValue = Convert.ToInt32(raw, CultureInfo.InvariantCulture);
+                return Enum.ToObject(nonNullableType, numericValue);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException($"Invalid value '{raw}' for enum type '{nonNullableType.Name}'.");
+            }
+        }
+
+        if (nonNullableType == typeof(bool))
+        {
+            if (raw is bool b)
+                return b;
+
+            if (raw is string boolText && bool.TryParse(boolText, out var parsedBool))
+                return parsedBool;
+
+            throw new ArgumentException($"Invalid boolean value '{raw}'.");
+        }
+
+        if (nonNullableType == typeof(decimal))
+        {
+            if (raw is decimal d)
+                return d;
+
+            if (raw is string decimalText &&
+                decimal.TryParse(decimalText, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedDecimal))
+            {
+                return parsedDecimal;
+            }
+        }
+
+        if (nonNullableType == typeof(double))
+        {
+            if (raw is double dbl)
+                return dbl;
+
+            if (raw is string doubleText &&
+                double.TryParse(doubleText, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var parsedDouble))
+            {
+                return parsedDouble;
+            }
+        }
+
+        if (nonNullableType == typeof(float))
+        {
+            if (raw is float fl)
+                return fl;
+
+            if (raw is string floatText &&
+                float.TryParse(floatText, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var parsedFloat))
+            {
+                return parsedFloat;
+            }
+        }
+
+        if (nonNullableType == typeof(long))
+        {
+            if (raw is long l)
+                return l;
+
+            if (raw is string longText &&
+                long.TryParse(longText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedLong))
+            {
+                return parsedLong;
+            }
+        }
+
+        if (nonNullableType == typeof(int))
+        {
+            if (raw is int i)
+                return i;
+
+            if (raw is string intText &&
+                int.TryParse(intText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedInt))
+            {
+                return parsedInt;
+            }
+        }
+
+        if (nonNullableType == typeof(short))
+        {
+            if (raw is short s16)
+                return s16;
+
+            if (raw is string shortText &&
+                short.TryParse(shortText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedShort))
+            {
+                return parsedShort;
+            }
+        }
+
+        if (nonNullableType == typeof(byte))
+        {
+            if (raw is byte b8)
+                return b8;
+
+            if (raw is string byteText &&
+                byte.TryParse(byteText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedByte))
+            {
+                return parsedByte;
+            }
+        }
+
+        if (nonNullableType.IsInstanceOfType(raw))
             return raw;
 
-        return Convert.ChangeType(raw, nn, CultureInfo.InvariantCulture);
+        try
+        {
+            return Convert.ChangeType(raw, nonNullableType, CultureInfo.InvariantCulture);
+        }
+        catch (Exception)
+        {
+            throw new ArgumentException($"Value '{raw}' cannot be converted to type '{nonNullableType.Name}'.");
+        }
     }
 
     private static Array ConvertList(object? raw, Type elementType)
     {
-        if (raw is JsonElement je)
+        if (raw is JsonElement json)
         {
-            if (je.ValueKind == JsonValueKind.Null)
+            if (json.ValueKind == JsonValueKind.Null)
                 return Array.CreateInstance(elementType, 0);
 
-            if (je.ValueKind != JsonValueKind.Array)
+            if (json.ValueKind != JsonValueKind.Array)
                 throw new ArgumentException("For 'in'/'notin', value must be a JSON array.");
 
-            var items = je.EnumerateArray().ToList();
-            var arr = Array.CreateInstance(elementType, items.Count);
+            var count = json.GetArrayLength();
+            var array = Array.CreateInstance(elementType, count);
 
-            for (int i = 0; i < items.Count; i++)
+            var index = 0;
+            foreach (var item in json.EnumerateArray())
             {
-                var converted = ConvertValue(items[i], elementType);
-                if (converted is null)
-                    throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
+                var converted = ConvertValue(item, elementType)
+                    ?? throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
 
-                arr.SetValue(converted, i);
+                array.SetValue(converted, index++);
             }
 
-            return arr;
+            return array;
         }
 
-        // If someone passes a .NET list already
-        if (raw is System.Collections.IEnumerable enumerable && raw is not string)
+        if (raw is IEnumerable enumerable && raw is not string)
         {
-            var list = new List<object?>();
+            var values = new List<object?>();
+
             foreach (var item in enumerable)
-                list.Add(item);
-
-            var arr = Array.CreateInstance(elementType, list.Count);
-            for (int i = 0; i < list.Count; i++)
             {
-                var converted = ConvertValue(list[i], elementType) ?? 
-                    throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
+                var converted = ConvertValue(item, elementType)
+                    ?? throw new ArgumentException("Null elements are not supported in 'in'/'notin' arrays.");
 
-                arr.SetValue(converted, i);
+                values.Add(converted);
             }
 
-            return arr;
+            var array = Array.CreateInstance(elementType, values.Count);
+            for (var i = 0; i < values.Count; i++)
+                array.SetValue(values[i], i);
+
+            return array;
         }
 
-        throw new ArgumentException("For 'in'/'notin', value must be a JSON array.");
+        throw new ArgumentException("For 'in'/'notin', value must be a JSON array or enumerable.");
+    }
+
+    private static object? ConvertJsonElement(JsonElement json)
+    {
+        return json.ValueKind switch
+        {
+            JsonValueKind.Null => null,
+            JsonValueKind.Undefined => null,
+            JsonValueKind.String => json.GetString(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Number => ConvertJsonNumber(json),
+            JsonValueKind.Array => json,
+            JsonValueKind.Object => json,
+            _ => json.ToString()
+        };
+    }
+
+    private static object ConvertJsonNumber(JsonElement json)
+    {
+        if (json.TryGetInt32(out var i))
+            return i;
+
+        if (json.TryGetInt64(out var l))
+            return l;
+
+        if (json.TryGetDecimal(out var d))
+            return d;
+
+        if (json.TryGetDouble(out var dbl))
+            return dbl;
+
+        return json.GetRawText();
     }
 }
