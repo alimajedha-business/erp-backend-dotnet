@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -22,12 +24,14 @@ namespace NGErp.Warehouse.API.Controllers;
 public class WarehouseController(
     IWarehouseService warehouseService,
     IWarehouseTypeService warehouseTypeService,
-    ICompanyUnitService companyUnitService
+    ICompanyUnitService companyUnitService,
+    IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly IWarehouseService _warehouseService = warehouseService;
     private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
     private readonly ICompanyUnitService _companyUnitService = companyUnitService;
+    private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -97,6 +101,46 @@ public class WarehouseController(
         );
 
         return Ok(result);
+    }
+
+    [HttpPost("excel")]
+    [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchExample))]
+    public async Task<IActionResult> ExportToExcel(
+        [FromRoute] Guid companyId,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        [FromQuery] string? columns,
+        CancellationToken ct
+    )
+    {
+        var parameters = new WarehouseParameters
+        {
+            Paginated = false,
+        };
+
+        var result = await _warehouseService.GetAllAsync(
+            companyId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        var columnsList = string.IsNullOrWhiteSpace(columns)
+            ? []
+            : columns
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+        var excludedColumns = new List<string> { "Id" };
+
+        var fileBytes = _excelExportService.ExportToExcel(
+            result.Results,
+            columnsList,
+            excludedColumns
+        );
+
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"warehouse.xlsx\"");
+        return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]

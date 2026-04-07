@@ -3,7 +3,7 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.EntitySchemas;
 
-public class AttributeEnumValueSchema : IFilterSchema<AttributeEnumValue>
+public sealed class AttributeEnumValueSchema : IFilterSchema<AttributeEnumValue>
 {
     public FilterSchema Build()
     {

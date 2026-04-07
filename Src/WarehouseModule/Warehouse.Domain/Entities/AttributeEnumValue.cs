@@ -11,9 +11,9 @@ public class AttributeEnumValue :
 {
     public required int Code { get; set; }
     public required string Label { get; set; }
-    public required Guid AttributeId { get; set; }
+    public Guid AttributeId { get; set; }
 
-    public required Attribute Attribute { get; set; }
+    public Attribute Attribute { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<AttributeEnumValue> builder)
     {

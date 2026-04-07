@@ -12,9 +12,9 @@ public class InventoryLot :
 {
     public required byte[] DimHash { get; set; }
     public required string Serial { get; set; }
-    public required Guid ItemId { get; set; }
+    public Guid ItemId { get; set; }
 
-    public required Item Item { get; set; }
+    public Item Item { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<InventoryLot> builder)
     {

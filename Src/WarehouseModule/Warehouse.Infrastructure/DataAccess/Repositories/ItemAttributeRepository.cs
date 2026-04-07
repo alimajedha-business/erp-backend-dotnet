@@ -5,9 +5,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class ItemAttributeValueRepository :
-    Repository<ItemAttributeValue>,
-    IItemAttributeValueRepository
-{
-    public ItemAttributeValueRepository(MainDbContext context) : base(context) { }
-}
+public class ItemAttributeRepository(MainDbContext context) :
+    Repository<ItemAttribute>(context),
+    IItemAttributeRepository
+{ }

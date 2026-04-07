@@ -31,10 +31,10 @@ public record CategoryAttributeRuleListDto(
 
 public class CreateCategoryAttributeRuleDto
 {
-    public required bool IsItemAttribute { get; set; }
-    public required bool IsStockDimension { get; set; }
-    public required bool IsRequired { get; set; }
-    public required Guid AttributeId { get; set; }
+    public bool IsItemAttribute { get; set; }
+    public bool IsStockDimension { get; set; }
+    public bool IsRequired { get; set; }
+    public Guid AttributeId { get; set; }
     public int? SortOrder { get; set; }
 }
 

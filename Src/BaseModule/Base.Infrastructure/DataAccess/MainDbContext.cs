@@ -78,7 +78,8 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<InventoryMovement> InventoryMovements { get; set; }
         public virtual DbSet<InventoryMovementType> InventoryMovementTypes { get; set; }
         public virtual DbSet<Item> Items { get; set; }
-        public virtual DbSet<ItemAttributeValue> ItemAttributeValues { get; set; }
+        public virtual DbSet<ItemAttribute> ItemAttributes { get; set; }
+        public virtual DbSet<ItemType> ItemTypes { get; set; }
         public virtual DbSet<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; }
         public virtual DbSet<UnitOfMeasurementConversion> UnitOfMeasurementConversions { get; set; }
         public virtual DbSet<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; }

@@ -11,11 +11,11 @@ public class UnitOfMeasurementConversion :
     IBaseEntityTypeConfiguration<UnitOfMeasurementConversion>
 {
     public required decimal Factor { get; set; }
-    public required Guid FromUnitOfMeasurementId { get; set; }
-    public required Guid ToUnitOfMeasurementId { get; set; }
+    public Guid FromUnitOfMeasurementId { get; set; }
+    public Guid ToUnitOfMeasurementId { get; set; }
 
-    public required UnitOfMeasurement FromUnitOfMeasurement { get; set; }
-    public required UnitOfMeasurement ToUnitOfMeasurement { get; set; }
+    public UnitOfMeasurement FromUnitOfMeasurement { get; set; } = default!;
+    public UnitOfMeasurement ToUnitOfMeasurement { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<UnitOfMeasurementConversion> builder)
     {

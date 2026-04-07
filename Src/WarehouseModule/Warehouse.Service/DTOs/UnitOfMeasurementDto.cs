@@ -22,7 +22,7 @@ public class CreateUnitOfMeasurementDto
     public required int Code { get; set; }
     public required string Title { get; set; }
     public required string Symbol { get; set; }
-    public required Guid MeasurementDimensionId { get; set; }
+    public Guid MeasurementDimensionId { get; set; }
 }
 
 public class PatchUnitOfMeasurementDto

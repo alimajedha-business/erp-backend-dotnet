@@ -3,7 +3,7 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.EntitySchemas;
 
-public class ItemTypeSchema : IFilterSchema<ItemType>
+public sealed class ItemTypeSchema : IFilterSchema<ItemType>
 {
     public FilterSchema Build()
     {
