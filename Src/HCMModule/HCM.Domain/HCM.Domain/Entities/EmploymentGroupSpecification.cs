@@ -37,7 +37,7 @@ public class EmploymentGroupSpecification : BaseEntity, IBaseEntityTypeConfigura
             });
 
         builder.HasOne<EmploymentGroup>()     // principal entity
-           .WithMany()
+           .WithMany(e => e.Specifications)
            .HasForeignKey(x => x.EmploymentGroupId)
            .OnDelete(DeleteBehavior.NoAction);
 

@@ -10,6 +10,8 @@ public class EmploymentGroup : BaseEntityWithCompany, IBaseEntityTypeConfigurati
 {
     public required string Name { get; set; }
 
+    public ICollection<EmploymentGroupSpecification>? Specifications { get; set; }
+
     public void Map(EntityTypeBuilder<EmploymentGroup> builder)
     {
         builder.ToTable(nameof(EmploymentGroup), "HCM")

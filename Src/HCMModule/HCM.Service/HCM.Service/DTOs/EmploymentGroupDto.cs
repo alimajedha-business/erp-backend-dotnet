@@ -4,5 +4,9 @@ public class EmploymentGroupDto
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
+}
+
+public class EmploymentGroupWithSpecificationDto : EmploymentGroupDto
+{
     public List<EmploymentGroupSpecificationDto>? Specifications { get; set; }
 }

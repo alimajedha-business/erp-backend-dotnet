@@ -129,4 +129,10 @@
   <data name="Position" xml:space="preserve">
     <value>پست سازمانی</value>
   </data>
+  <data name="EmploymentGroup" xml:space="preserve">
+    <value>گروه استخدامی</value>
+  </data>
+  <data name="EmploymentGroupSpecification" xml:space="preserve">
+    <value>مشخصات گروه استخدامی</value>
+  </data>
 </root>

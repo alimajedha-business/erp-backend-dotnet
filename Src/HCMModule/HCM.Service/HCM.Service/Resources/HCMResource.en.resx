@@ -129,4 +129,10 @@
   <data name="Position" xml:space="preserve">
     <value>Position</value>
   </data>
+  <data name="EmploymentGroup" xml:space="preserve">
+    <value>Employment group</value>
+  </data>
+  <data name="EmploymentGroupSpecification" xml:space="preserve">
+    <value>Employment group specification</value>
+  </data>
 </root>

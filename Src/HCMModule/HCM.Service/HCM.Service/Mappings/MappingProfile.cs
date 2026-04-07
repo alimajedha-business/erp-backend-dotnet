@@ -18,5 +18,8 @@ public class MappingProfile : Profile
         CreateMap<Position, PatchPositionDto>().ReverseMap();
 
         CreateMap<OrganizationalStructure, OrganizationalStructureDto>();
+
+        CreateMap<EmploymentGroup, EmploymentGroupDto>().ReverseMap();
+        CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>().ReverseMap();
     }
 }
