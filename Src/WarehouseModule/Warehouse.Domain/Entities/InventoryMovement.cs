@@ -11,17 +11,17 @@ public class InventoryMovement :
     IBaseEntityTypeConfiguration<InventoryMovement>
 {
     public required DateTime MovementDate { get; set; }
-    public required Guid ReferenceDocId { get; set; }
-    public required decimal QuantityBase { get; set; }
-    public required Guid MovementTypeId { get; set; }
-    public required Guid LotId { get; set; }
-    public required Guid FromLocationId { get; set; }
-    public required Guid ToLocationId { get; set; }
+    public Guid ReferenceDocId { get; set; } = default!;
+    public decimal QuantityBase { get; set; }
+    public Guid MovementTypeId { get; set; } = default!;
+    public Guid LotId { get; set; } = default!;
+    public Guid FromLocationId { get; set; } = default!;
+    public Guid ToLocationId { get; set; } = default!;
 
-    public required InventoryMovementType MovementType { get; set; }
-    public required InventoryLot Lot { get; set; }
-    public required WarehouseLocation FromLocation { get; set; }
-    public required WarehouseLocation ToLocation { get; set; }
+    public InventoryMovementType MovementType { get; set; } = default!;
+    public InventoryLot Lot { get; set; } = default!;
+    public WarehouseLocation FromLocation { get; set; } = default!;
+    public WarehouseLocation ToLocation { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<InventoryMovement> builder)
     {

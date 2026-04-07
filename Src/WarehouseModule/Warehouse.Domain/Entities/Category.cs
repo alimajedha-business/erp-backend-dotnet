@@ -12,8 +12,8 @@ public class Category :
 {
     public required string Code { get; set; }
     public required string Title { get; set; }
-    public required int LevelNo { get; set; }
-    public required bool HasNextLevel { get; set; } = false;
+    public int LevelNo { get; set; }
+    public bool HasNextLevel { get; set; } = false;
     public Guid? ParentCategoryId { get; set; }
 
     public Category? ParentCategory { get; private set; }

@@ -8,7 +8,7 @@ public record InventoryMovementTypeDto(
 
 public class CreateInventoryMovementTypeDto
 {
-    public required int Code { get; set; }
+    public int Code { get; set; }
     public required string Title { get; set; }
 }
 

@@ -12,8 +12,8 @@ public class CreateWarehouseLocationDto
     public required int Code { get; set; }
     public required string Title { get; set; }
     public Guid? ParentLocationId { get; set; }
-    public required Guid WarehouseId { get; set; }
-    public required bool CanStoreItem { get; set; } = true;
+    public Guid WarehouseId { get; set; }
+    public bool CanStoreItem { get; set; } = true;
 }
 
 public class PatchWarehouseLocationDto

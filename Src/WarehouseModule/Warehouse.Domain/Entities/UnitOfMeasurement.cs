@@ -12,9 +12,9 @@ public class UnitOfMeasurement :
     public required int Code { get; set; }
     public required string Title { get; set; }
     public required string Symbol { get; set; }
-    public required Guid MeasurementDimensionId { get; set; }
+    public Guid MeasurementDimensionId { get; set; }
 
-    public required MeasurementDimension MeasurementDimension { get; set; }
+    public MeasurementDimension MeasurementDimension { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {

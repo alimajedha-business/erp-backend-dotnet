@@ -10,8 +10,8 @@ public class InventoryLotAttributeValue :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryLotAttributeValue>
 {
-    public required Guid LotId { get; set; }
-    public required Guid AttributeId { get; set; }
+    public Guid LotId { get; set; }
+    public Guid AttributeId { get; set; }
     public string? ValueText { get; set; }
     public int? ValueInt { get; set; }
     public decimal? ValueDecimal { get; set; }
@@ -19,9 +19,9 @@ public class InventoryLotAttributeValue :
     public bool? ValueBoolean { get; set; }
     public Guid? EnumValueId { get; set; }
 
-    public required AttributeEnumValue? EnumValue { get; set; }
-    public required InventoryLot Lot { get; set; }
-    public required Attribute Attribute { get; set; }
+    public AttributeEnumValue? EnumValue { get; set; }
+    public InventoryLot Lot { get; set; } = default!;
+    public Attribute Attribute { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<InventoryLotAttributeValue> builder)
     {

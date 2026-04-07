@@ -11,7 +11,7 @@ public class WarehouseType :
 {
     public required int Code { get; set;  }
     public required string Title { get; set; }
-    public required bool IsActive { get; set; } = true;
+    public bool IsActive { get; set; } = true;
 
     public virtual List<Warehouse> Warehouses { get; set; } = [];
 

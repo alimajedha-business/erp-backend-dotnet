@@ -16,14 +16,14 @@ public class Item :
     public string TechnicalNumber { get; set; } = default!;
     public string Sku { get; set; } = default!;
     public string Barcode { get; set; } = default!;
-    public required bool IsActive { get; set; } = true;
-    public required Guid PrimaryUnitOfMeasurementId { get; set; }
-    public required Guid ItemTypeId {  get; set; }
-    public required Guid CategoryId { get; set; }
+    public bool IsActive { get; set; } = true;
+    public Guid PrimaryUnitOfMeasurementId { get; set; }
+    public Guid ItemTypeId {  get; set; }
+    public Guid CategoryId { get; set; }
 
-    public required UnitOfMeasurement PrimaryUnitOfMeasurement { get; set; }
-    public required ItemType ItemType { get; set; }
-    public required Category Category { get; set; }
+    public UnitOfMeasurement PrimaryUnitOfMeasurement { get; set; } = default!;
+    public ItemType ItemType { get; set; } = default!;
+    public Category Category { get; set; } = default!;
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
     public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
