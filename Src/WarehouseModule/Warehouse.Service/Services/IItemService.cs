@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.DTOs;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
@@ -14,6 +12,7 @@ namespace NGErp.Warehouse.Service.Services;
 public interface IItemService : IBaseServiceWithCompany<
     Item,
     ItemDto,
+    ItemListDto,
     ItemParameters,
     IItemRepository,
     WarehouseResource
@@ -26,7 +25,7 @@ public interface IItemService : IBaseServiceWithCompany<
         CancellationToken ct
     );
 
-    Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
+    Task<ListResponseModel<ItemListDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
         ItemParameters parameters,
@@ -35,21 +34,6 @@ public interface IItemService : IBaseServiceWithCompany<
     );
 
     Task<ItemDto> GetByIdAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        CancellationToken ct
-    );
-
-    Task<ItemDto> PatchAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        JsonPatchDocument<PatchItemDto> patchDocument,
-        CancellationToken ct
-    );
-
-    Task DeleteAsync(
         Guid companyId,
         Guid categoryId,
         Guid id,
