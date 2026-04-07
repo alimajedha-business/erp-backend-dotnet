@@ -8,7 +8,7 @@ public record ItemTypeDto(
 
 public class CreateItemTypeDto
 {
-    public required int Code { get; set; }
+    public int Code { get; set; }
     public required string Title { get; set; }
 }
 

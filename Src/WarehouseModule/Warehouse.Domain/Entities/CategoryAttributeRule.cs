@@ -9,15 +9,15 @@ public class CategoryAttributeRule :
     BaseEntity,
     IBaseEntityTypeConfiguration<CategoryAttributeRule>
 {
-    public required Guid CategoryId { get; set; }
-    public required Guid AttributeId { get; set; }
-    public required bool IsItemAttribute { get; set; } = false;
-    public required bool IsRequired { get; set; } = false;
-    public required bool IsStockDimension { get; set; } = false;
+    public Guid CategoryId { get; set; }
+    public Guid AttributeId { get; set; }
+    public bool IsItemAttribute { get; set; } = false;
+    public bool IsRequired { get; set; } = false;
+    public bool IsStockDimension { get; set; } = false;
     public int? SortOrder { get; set; }
 
-    public required Category Category { get; set; }
-    public required Attribute Attribute { get; set; }
+    public Category Category { get; set; } = default!;
+    public Attribute Attribute { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<CategoryAttributeRule> builder)
     {

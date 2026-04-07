@@ -18,6 +18,7 @@ public class CreateAttributeEnumValueDto
 {
     public required int Code { get; set; }
     public required string Label { get; set; }
+    public Guid AttributeId { get; set; }
 }
 
 public class PatchAttributeEnumValueDto

@@ -44,8 +44,8 @@ public class CreateAttributeDto
     public required string Title { get; set; }
     public required AttributeDataType DataType { get; set; }
     public required AttributeEntity AttributeEntity { get; set; }
-    public required bool IsRequired { get; set; } = false;
-    public required bool IsStockDimension { get; set; } = false;
+    public bool IsRequired { get; set; } = false;
+    public bool IsStockDimension { get; set; } = false;
 }
 
 public class PatchAttributeDto

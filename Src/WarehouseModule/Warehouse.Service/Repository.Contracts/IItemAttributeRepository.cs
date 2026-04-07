@@ -3,6 +3,4 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IItemAttributeValueRepository : IRepository<ItemAttributeValue>
-{
-}
+public interface IItemAttributeRepository : IRepository<ItemAttribute> { }

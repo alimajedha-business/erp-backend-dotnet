@@ -14,8 +14,19 @@ public class CreateItemExample :
         return new CreateItemDto
         {
             Code = "100500",
-            Title = "Kale Milk",
+            Title = "شیر کاله",
+            TitleInEnglish = "Kale Milk",
+            TechnicalNumber = "11-Aq985-0012",
+            Barcode = "010011447140",
             Sku = "10040-14001-112-2020",
+            PrimaryUnitOfMeasurementId = new Guid("94E9EB2E-AB06-4AC6-92A1-FAFA5C765D37"),
+            ItemTypeId = new Guid("3F148EF5-BF43-4D43-8E3A-B25DECC7D092"),
+            CategoryId = new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72E"),
+            SecondaryUnitOfMeasurementIds = [new Guid("50C174BF-F9D6-4347-B62E-78E97514C1CA")],
+            AttributeIds = [
+                new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
+                new Guid("87D8C665-2D17-44A5-AD91-1543DCEF77C1")
+            ],
             IsActive = true,
         };
     }

@@ -2,22 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class ItemUnitOfMeasurement :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<ItemUnitOfMeasurement>
 {
-    public required Guid ItemId { get; set; }
-    public required Guid UnitOfMeasurementId { get; set; }
-    public required bool IsBase { get; set; } = false;
-    public required bool IsDefaultPurchase { get; set; } = false;
-    public required bool IsDefaultIssue { get; set; } = false;
+    public Guid ItemId { get; set; }
+    public Guid UnitOfMeasurementId { get; set; }
+    public required int UnitOrder { get; set; }
 
-    public required Item Item { get; set; }
-    public required UnitOfMeasurement UnitOfMeasurement { get; set; }
+    public Item Item { get; set; } = default!;
+    public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<ItemUnitOfMeasurement> builder)
     {
@@ -27,20 +24,8 @@ public class ItemUnitOfMeasurement :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany()
+            .WithMany(e => e.ItemUnitOfMeasurements)
             .HasForeignKey(e => e.ItemId);
-
-        builder
-            .Property(e => e.IsBase)
-            .HasDefaultValue(false);
-
-        builder
-            .Property(e => e.IsDefaultPurchase)
-            .HasDefaultValue(false);
-
-        builder
-            .Property(e => e.IsDefaultIssue)
-            .HasDefaultValue(false);
 
         builder
             .HasOne(e => e.UnitOfMeasurement)

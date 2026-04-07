@@ -3,6 +3,6 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IItemUnitOfMeasurementRepository : IRepository<ItemUnitOfMeasurement>
-{
-}
+public interface IItemUnitOfMeasurementRepository :
+    IRepository<ItemUnitOfMeasurement>
+{ }

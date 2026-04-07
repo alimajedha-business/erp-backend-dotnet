@@ -2,7 +2,7 @@
 
 namespace NGErp.Warehouse.Domain.EntitySchemas;
 
-public class AttributeSchema : IFilterSchema<Entities.Attribute>
+public sealed class AttributeSchema : IFilterSchema<Entities.Attribute>
 {
     public FilterSchema Build()
     {

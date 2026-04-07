@@ -58,8 +58,8 @@ public class CreateWarehouseDto
     public required string Title { get; set; }
     public bool IsActive { get; set; } = true;
     public decimal MaxMonetaryValue { get; set; }
-    public required Guid WarehouseTypeId { get; set; }
-    public required Guid CompanyUnitId { get; set; }
+    public Guid WarehouseTypeId { get; set; }
+    public Guid CompanyUnitId { get; set; }
 
     #region Warehouse
     public Guid? WarehouseSlaveAccountCompanyId { get; set; }

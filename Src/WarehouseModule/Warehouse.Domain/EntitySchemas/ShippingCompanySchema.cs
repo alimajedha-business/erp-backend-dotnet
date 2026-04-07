@@ -3,7 +3,7 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.EntitySchemas;
 
-public class ShippingCompanySchema : IFilterSchema<ShippingCompany>
+public sealed class ShippingCompanySchema : IFilterSchema<ShippingCompany>
 {
     public FilterSchema Build()
     {

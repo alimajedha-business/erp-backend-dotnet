@@ -11,7 +11,7 @@ public class MeasurementDimension :
 {
     public required int Code { get; set; }
     public required string Title { get; set; }
-    public required bool IsDiscrete { get; set; } = false;
+    public bool IsDiscrete { get; set; } = false;
 
     public virtual List<UnitOfMeasurement> UnitOfMeasurements { get; set; } = [];
 

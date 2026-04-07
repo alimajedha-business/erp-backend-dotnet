@@ -12,11 +12,12 @@ public class WarehouseLocation :
     public required int Code { get; set; }
     public required string Title { get; set; }
     public Guid? ParentLocationId { get; set; }
-    public required Guid WarehouseId { get; set; }
-    public required bool CanStoreItem { get; set; } = false;
+    public Guid WarehouseId { get; set; }
+    public bool CanStoreItem { get; set; } = false;
 
     public WarehouseLocation? ParentLocation { get; set; }
-    public required Warehouse Warehouse { get; set; }
+    public Warehouse Warehouse { get; set; } = default!;
+
     public virtual List<WarehouseLocation> SubLocations { get; set; } = [];
     public virtual List<InventoryMovement> SrcLocations { get; set; } = [];
     public virtual List<InventoryMovement> DstLocations { get; set; } = [];

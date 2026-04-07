@@ -3,7 +3,7 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.EntitySchemas;
 
-public class WarehouseLocationSchema : IFilterSchema<WarehouseLocation>
+public sealed class WarehouseLocationSchema : IFilterSchema<WarehouseLocation>
 {
     public FilterSchema Build()
     {

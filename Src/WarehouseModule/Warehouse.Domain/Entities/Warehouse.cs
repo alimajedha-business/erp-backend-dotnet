@@ -12,10 +12,10 @@ public class Warehouse :
 {
     public required int Code { get; set; }
     public required string Title { get; set; }
-    public required bool IsActive { get; set; } = true;
+    public bool IsActive { get; set; } = true;
     public decimal MaxMonetaryValue { get; set; }
-    public required Guid WarehouseTypeId { get; set; }
-    public required Guid CompanyUnitId { get; set; }
+    public Guid WarehouseTypeId { get; set; }
+    public Guid CompanyUnitId { get; set; }
 
     #region Warehouse
     public Guid? WarehouseSlaveAccountCompanyId { get; set; }
@@ -57,8 +57,8 @@ public class Warehouse :
     public string? ReturnFromPurchaseAccountDetailed2Value { get; set; }
     #endregion
 
-    public required WarehouseType WarehouseType { get; set; }
-    public required CompanyUnit CompanyUnit { get; set; }
+    public WarehouseType WarehouseType { get; set; } = default!;
+    public CompanyUnit CompanyUnit { get; set; } = default!;
 
     public virtual List<WarehouseLocation> Locations { get; set; } = [];
 
