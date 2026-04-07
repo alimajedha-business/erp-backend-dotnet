@@ -25,6 +25,9 @@ public class Item :
     public required ItemType ItemType { get; set; }
     public required Category Category { get; set; }
 
+    public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
+
     public void Map(EntityTypeBuilder<Item> builder)
     {
         builder.

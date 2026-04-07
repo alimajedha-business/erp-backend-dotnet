@@ -9,12 +9,12 @@ public class ItemUnitOfMeasurement :
     BaseEntity,
     IBaseEntityTypeConfiguration<ItemUnitOfMeasurement>
 {
-    public required Guid ItemId { get; set; }
-    public required Guid UnitOfMeasurementId { get; set; }
+    public Guid ItemId { get; set; }
+    public Guid UnitOfMeasurementId { get; set; }
     public required int UnitOrder { get; set; }
 
-    public required Item Item { get; set; }
-    public required UnitOfMeasurement UnitOfMeasurement { get; set; }
+    public Item Item { get; set; } = default!;
+    public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<ItemUnitOfMeasurement> builder)
     {
@@ -24,7 +24,7 @@ public class ItemUnitOfMeasurement :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany()
+            .WithMany(e => e.ItemUnitOfMeasurements)
             .HasForeignKey(e => e.ItemId);
 
         builder

@@ -9,11 +9,11 @@ public class ItemAttribute :
     BaseEntity,
     IBaseEntityTypeConfiguration<ItemAttribute>
 {
-    public required Guid ItemId { get; set; }
-    public required Guid AttributeId { get; set; }
+    public Guid ItemId { get; set; }
+    public Guid AttributeId { get; set; }
 
-    public required Item Item { get; set; }
-    public required Attribute Attribute { get; set; }
+    public Item Item { get; set; } = default!;
+    public Attribute Attribute { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<ItemAttribute> builder)
     {
@@ -23,8 +23,9 @@ public class ItemAttribute :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany()
-            .HasForeignKey(e => e.ItemId);
+            .WithMany(e => e.ItemAttributes)
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.Attribute)
