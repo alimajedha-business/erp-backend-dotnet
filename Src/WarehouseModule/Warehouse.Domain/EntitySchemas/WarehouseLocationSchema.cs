@@ -13,7 +13,7 @@ public sealed class WarehouseLocationSchema : IFilterSchema<WarehouseLocation>
             PropertyName: nameof(WarehouseLocation.Code),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         filterSchema.Fields["title"] = new FilterFieldInfo(

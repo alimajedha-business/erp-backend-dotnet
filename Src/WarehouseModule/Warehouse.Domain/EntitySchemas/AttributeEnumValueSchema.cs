@@ -13,7 +13,7 @@ public sealed class AttributeEnumValueSchema : IFilterSchema<AttributeEnumValue>
             PropertyName: nameof(AttributeEnumValue.Code),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         return filterSchema;
