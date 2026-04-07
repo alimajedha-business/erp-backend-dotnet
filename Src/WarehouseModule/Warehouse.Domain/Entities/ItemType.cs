@@ -12,6 +12,8 @@ public class ItemType :
     public required int Code { get; set; }
     public required string Title { get; set; }
 
+    public virtual List<Item> Items { get; set; } = [];
+
     public void Map(EntityTypeBuilder<ItemType> builder)
     {
         builder.
