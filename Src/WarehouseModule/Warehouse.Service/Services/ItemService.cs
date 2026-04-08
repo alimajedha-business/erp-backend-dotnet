@@ -2,9 +2,6 @@
 
 using FluentValidation;
 
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -30,6 +27,7 @@ public class ItemService(
 ) : BaseServiceWithCompany<
         Item,
         ItemDto,
+        ItemListDto,
         ItemParameters,
         IItemRepository,
         WarehouseResource
@@ -77,7 +75,7 @@ public class ItemService(
         return _mapper.Map<ItemDto>(createdItem);
     }
 
-    public async Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
+    public async Task<ListResponseModel<ItemListDto>> GetCategoryAllItemsAsync(
         Guid companyId,
         Guid categoryId,
         ItemParameters parameters,
@@ -99,8 +97,8 @@ public class ItemService(
             advancedFilters
         );
 
-        return new ListResponseModel<ItemDto>(
-            results: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
+        return new ListResponseModel<ItemListDto>(
+            results: _mapper.Map<IReadOnlyList<ItemListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -129,66 +127,6 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public virtual async Task<ItemDto> PatchAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        JsonPatchDocument<PatchItemDto> patchDocument,
-        CancellationToken ct
-    )
-    {
-        await EnsureCompanyAsync(companyId, ct);
-
-        var item = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
-            ct,
-            trackChanges: true
-        );
-
-        var patchDto = _mapper.Map<PatchItemDto>(item);
-        var errors = new List<string>();
-
-        patchDocument.ApplyTo(patchDto, error =>
-        {
-            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
-        });
-
-        if (errors.Count != 0)
-            throw new InvalidPatchDocumentException(errors);
-
-        _mapper.Map(patchDto, item);
-
-        await TrySaveMutationAsync(ct);
-        return _mapper.Map<ItemDto>(item);
-    }
-
-    public async Task DeleteAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        CancellationToken ct
-    )
-    {
-        await EnsureCompanyAsync(companyId, ct);
-
-        var entity = await GetByIdOrThrowAsync(companyId, categoryId, id, ct);
-        _repo.Remove(entity);
-
-        try
-        {
-            await _repo.SaveChangesAsync(ct);
-        }
-        catch (DbUpdateException ex)
-        when (ex.InnerException is SqlException { Number: 547 })
-        {
-            throw new ForeignKeyViolationException(_localizer[LocalizerKey].Value);
-        }
-
-        return;
-    }
-
     private async Task<Item> GetByIdOrThrowAsync(
         Guid companyId,
         Guid categoryId,
@@ -198,6 +136,7 @@ public class ItemService(
     )
     {
         var entity = await _repo.GetByIdAsync(companyId, categoryId, id, ct, trackChanges);
+
         return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }

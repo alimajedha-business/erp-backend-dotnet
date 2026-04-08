@@ -29,6 +29,9 @@ public class ItemRepository(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Where(e => e.CategoryId == categoryId)
             .Where(e => e.Id == id)
+            .Include(e => e.ItemType)
+            .Include(e => e.Category)
+            .Include(e => e.PrimaryUnitOfMeasurement)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
@@ -77,6 +80,9 @@ public class ItemRepository(MainDbContext context) :
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Where(i => leafIds.Contains(i.CategoryId))
+            .Include(e => e.ItemType)
+            .Include(e => e.Category)
+            .Include(e => e.PrimaryUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);
