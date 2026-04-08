@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
@@ -7,16 +10,20 @@ namespace NGErp.HCM.Domain.Entities;
 
 public enum MonthTypeEnum
 {
+    [Description("Normal")]
     Normal = 1,
+    [Description("ThirtyDay")]
     ThirtyDay
 }
 
+
+
 public class EmploymentGroupSpecification : BaseEntity, IBaseEntityTypeConfiguration<EmploymentGroupSpecification>
 {
-    public required Guid EmploymentGroupId { get; set; }
-    public required MonthTypeEnum MonthType { get; set; }
-    public required int WorkMinutes { get; set; } = 220;
-    public required DateOnly ValidFrom { get; set; }
+    public Guid EmploymentGroupId { get; set; }
+    public MonthTypeEnum MonthType { get; set; }
+    public int WorkMinutes { get; set; } = 220;
+    public DateOnly ValidFrom { get; set; }
     public DateOnly? ValidTo { get; set; }
 
     public void Map(EntityTypeBuilder<EmploymentGroupSpecification> builder)

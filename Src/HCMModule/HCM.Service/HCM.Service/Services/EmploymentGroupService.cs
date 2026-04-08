@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+
+using DocumentFormat.OpenXml.Vml.Office;
 
 using FluentValidation;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -40,19 +45,19 @@ public class EmploymentGroupService(
 {
     protected override string LocalizerKey => "EmploymentGroup";
 
-    async Task<EmploymentGroupWithSpecificationDto> IEmploymentGroupService.GetByIdAsync(
+    async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(
          Guid companyId,
          Guid id,
          CancellationToken ct
          )
     {
         await EnsureCompanyAsync(companyId, ct);
-        var employmentGroup = await _repo.Find(companyId, e => e.Id == id)
-            .AsNoTracking()
-            .AsSingleQuery()
-            .Include(e => e.Specifications)
-            .FirstOrDefaultAsync();
+        var entity = await _repo
+       .Find(companyId, e => e.Id == id)
+       .AsNoTracking()
+       .ProjectTo<EmploymentGroupDetailDto>(_mapper.ConfigurationProvider)
+       .FirstOrDefaultAsync(ct);
 
-        throw new NotImplementedException();
+        return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
     }
 }

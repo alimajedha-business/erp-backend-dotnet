@@ -4,11 +4,19 @@ using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.DTOs;
 
-public class EmploymentGroupSpecificationDto
+public record EmploymentGroupSpecificationDto
 {
-    public Guid Id { get; set; }
-    public required MonthTypeEnum MonthType { get; set; }
-    public required int WorkMinutes { get; set; }
-    public required DateOnly ValidFrom { get; set; }
-    public DateOnly? ValidTo { get; set; }
+    public Guid Id { get; init; }
+    public MonthTypeEnum MonthType { get; init; }
+    public int WorkMinutes { get; init; }
+    public DateOnly ValidFrom { get; init; }
+    public DateOnly? ValidTo { get; init; }
+}
+
+public record CreateEmploymentGroupSpecificationDto
+{    
+    public MonthTypeEnum MonthType { get; init; }
+    public int WorkMinutes { get; init; }
+    public DateOnly ValidFrom { get; init; }
+    public DateOnly? ValidTo { get; init; }
 }

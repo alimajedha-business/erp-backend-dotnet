@@ -1,12 +1,24 @@
-﻿namespace NGErp.HCM.Service.DTOs;
+﻿using System.Text.Json.Serialization;
 
-public class EmploymentGroupDto
+namespace NGErp.HCM.Service.DTOs;
+
+public record EmploymentGroupDto
 {
-    public Guid Id { get; set; }
-    public required string Name { get; set; }
+    public Guid Id { get; init; }
+    public required string Name { get; init; }
 }
 
-public class EmploymentGroupWithSpecificationDto : EmploymentGroupDto
+public record EmploymentGroupDetailDto
 {
-    public List<EmploymentGroupSpecificationDto>? Specifications { get; set; }
+    public Guid Id { get; init; }
+    public required string Name { get; init; }
+    public IReadOnlyList<EmploymentGroupSpecificationDto> Specifications { get; init; } = new
+        List<EmploymentGroupSpecificationDto>();
+}
+
+public record CreateEmploymentGroupDto
+{
+    public Guid Id { get; init; }
+    public required string Name { get; init; }
+    public IReadOnlyList<CreateEmploymentGroupSpecificationDto> ;
 }

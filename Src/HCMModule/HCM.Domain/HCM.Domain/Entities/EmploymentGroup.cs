@@ -10,7 +10,7 @@ public class EmploymentGroup : BaseEntityWithCompany, IBaseEntityTypeConfigurati
 {
     public required string Name { get; set; }
 
-    public ICollection<EmploymentGroupSpecification>? Specifications { get; set; }
+    public ICollection<EmploymentGroupSpecification> Specifications { get; set; } = new List<EmploymentGroupSpecification>();
 
     public void Map(EntityTypeBuilder<EmploymentGroup> builder)
     {

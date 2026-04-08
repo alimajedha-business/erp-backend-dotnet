@@ -19,7 +19,7 @@ public interface IEmploymentGroupService : IBaseServiceWithCompany<
    HCMResource
     >
 {
-    new Task<EmploymentGroupWithSpecificationDto> GetByIdAsync(
+    new Task<EmploymentGroupDetailDto?> GetByIdAsync(
       Guid companyId,
       Guid id,
       CancellationToken ct

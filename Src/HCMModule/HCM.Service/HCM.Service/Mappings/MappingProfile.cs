@@ -19,7 +19,12 @@ public class MappingProfile : Profile
 
         CreateMap<OrganizationalStructure, OrganizationalStructureDto>();
 
-        CreateMap<EmploymentGroup, EmploymentGroupDto>().ReverseMap();
-        CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>().ReverseMap();
+        CreateMap<EmploymentGroup, EmploymentGroupDto>();
+        CreateMap<EmploymentGroup, EmploymentGroupDetailDto>()
+            .ForMember(
+            d => d.Specifications,
+            opt => opt.MapFrom(s => s.Specifications.OrderBy(x => x.ValidFrom))
+            );
+        CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>();
     }
 }
