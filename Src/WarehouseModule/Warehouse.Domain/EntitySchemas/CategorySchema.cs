@@ -30,11 +30,25 @@ public sealed class CategorySchema : IFilterSchema<Category>
             { "eq", "ne", "startsWith", "contains", "endsWith" }
         );
 
-        filterSchema.Fields["hasNextLevel"] = new FilterFieldInfo(
-            PropertyName: nameof(Category.HasNextLevel),
+        filterSchema.Fields["levelNo"] = new FilterFieldInfo(
+            PropertyName: nameof(Category.LevelNo),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "ge", "lt", "le", "in", "notin" }
+            { "eq", "ne", "gt", "ge", "lt", "le", "in", "notIn" }
+        );
+
+        filterSchema.Fields["hasNextLevel"] = new FilterFieldInfo(
+            PropertyName: nameof(Category.HasNextLevel),
+            PropertyType: typeof(bool),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["createdAt"] = new FilterFieldInfo(
+            PropertyName: nameof(Category.CreatedAt),
+            PropertyType: typeof(DateTime),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         return filterSchema;
