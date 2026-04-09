@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 
+using NGErp.Warehouse.Service.DTOs;
+
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class WarehouseValidator : AbstractValidator<Domain.Entities.Warehouse>
+public class CreteWarehouseValidator : AbstractValidator<CreateWarehouseDto>
 {
-    public WarehouseValidator()
+    public CreteWarehouseValidator()
     {
 
     }
