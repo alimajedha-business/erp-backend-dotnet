@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,7 +15,6 @@ public class ItemTypeService(
     IAdvancedFilterBuilder filterBuilder,
     IItemTypeRepository itemTypeRepository,
     IMapper mapper,
-    IValidator<ItemType> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         ItemType,
@@ -29,7 +26,6 @@ public class ItemTypeService(
         filterBuilder,
         itemTypeRepository,
         mapper,
-        validator,
         localizer
     ),
     IItemTypeService

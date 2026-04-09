@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
@@ -20,7 +18,6 @@ public class AttributeEnumValueService(
     IAdvancedFilterBuilder filterBuilder,
     IAttributeEnumValueRepository attributeEnumValueRepository,
     IMapper mapper,
-    IValidator<AttributeEnumValue> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         AttributeEnumValue,
@@ -33,7 +30,6 @@ public class AttributeEnumValueService(
         filterBuilder,
         attributeEnumValueRepository,
         mapper,
-        validator,
         localizer
     ),
     IAttributeEnumValueService
