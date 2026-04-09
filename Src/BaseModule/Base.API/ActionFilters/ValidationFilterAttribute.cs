@@ -134,29 +134,11 @@ public class ValidationFilterAttribute(
             return;
         }
 
-        // Build ValidationContext<T> dynamically for the body object.
         var validationContextType = typeof(ValidationContext<>).MakeGenericType(body.GetType());
-        var validationContext = Activator.CreateInstance(validationContextType, body);
+        var validationContext = (IValidationContext)Activator.CreateInstance(validationContextType, body)!;
 
-        // Resolve ValidateAsync(IValidationContext, CancellationToken) via reflection.
-        var validateAsyncMethod = validatorType.GetMethod(
-            nameof(IValidator.ValidateAsync),
-            [typeof(IValidationContext), typeof(CancellationToken)]
-        );
-
-        if (validateAsyncMethod is null)
-        {
-            await next();
-            return;
-        }
-
-        // Execute FluentValidation asynchronously.
-        var task = (Task<ValidationResult>)validateAsyncMethod.Invoke(
-            validator,
-            [validationContext!, context.HttpContext.RequestAborted]
-        )!;
-
-        var validationResult = await task;
+        var validationResult = await ((IValidator)validator)
+            .ValidateAsync(validationContext, context.HttpContext.RequestAborted);
 
         if (!validationResult.IsValid)
         {
