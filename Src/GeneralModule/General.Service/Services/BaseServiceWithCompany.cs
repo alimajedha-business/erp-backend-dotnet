@@ -31,7 +31,6 @@ public abstract class BaseServiceWithCompany<
     IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
-    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : IBaseServiceWithCompany<
         TEntity,
@@ -49,7 +48,6 @@ public abstract class BaseServiceWithCompany<
     protected readonly IRepo _repo = repo;
     protected readonly ICompanyService _companyService = companyService;
     protected readonly IMapper _mapper = mapper;
-    protected readonly IValidator<TEntity> _validator = validator;
     protected readonly IStringLocalizer<TResource> _localizer = localizer;
 
     protected abstract string LocalizerKey { get; }
@@ -68,17 +66,6 @@ public abstract class BaseServiceWithCompany<
 
         var entity = _mapper.Map<TEntity>(createDto);
         entity.CompanyId = companyId;
-
-        var validationResult = await _validator.ValidateAsync(entity);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult
-                .Errors
-                .Select(e => e.ErrorMessage);
-
-            throw new ValidationException(string.Join("; ", errors));
-        }
 
         configureEntity?.Invoke(entity);
 
@@ -404,7 +391,6 @@ public abstract class BaseServiceWithCompany<
     IRepo repo,
     ICompanyService companyService,
     IMapper mapper,
-    IValidator<TEntity> validator,
     IStringLocalizer<TResource> localizer
 ) : BaseServiceWithCompany<
         TEntity,
@@ -418,7 +404,6 @@ public abstract class BaseServiceWithCompany<
         repo,
         companyService,
         mapper,
-        validator,
         localizer
     ),
     IBaseServiceWithCompany<
