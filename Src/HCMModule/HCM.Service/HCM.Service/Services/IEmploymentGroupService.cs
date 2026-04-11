@@ -24,4 +24,10 @@ public interface IEmploymentGroupService : IBaseServiceWithCompany<
       Guid id,
       CancellationToken ct
   );
+
+    Task<EmploymentGroupDetailDto> CreateAsync(
+        Guid companyId,
+        CreateEmploymentGroupDto createDto,
+        CancellationToken ct
+        );
 }

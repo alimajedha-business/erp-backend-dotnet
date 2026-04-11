@@ -43,6 +43,14 @@ public class EmploymentGroupService(
 {
     protected override string LocalizerKey => "EmploymentGroup";
 
+    public Task<EmploymentGroupDetailDto> CreateAsync(Guid companyId,
+        CreateEmploymentGroupDto createDto,
+        CancellationToken ct
+        )
+    {
+        throw new NotImplementedException();
+    }
+
     async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(
          Guid companyId,
          Guid id,

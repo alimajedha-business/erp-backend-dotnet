@@ -19,5 +19,5 @@ public record EmploymentGroupDetailDto
 public record CreateEmploymentGroupDto
 {
     public required string Name { get; init; }
-    public IReadOnlyList<CreateEmploymentGroupSpecificationDto> Specifications { get; init; } = new List<CreateEmploymentGroupSpecificationDto>();
+    public CreateEmploymentGroupSpecificationDto Specification { get; init; } = default!;
 }

@@ -135,4 +135,7 @@
   <data name="EmploymentGroupSpecification" xml:space="preserve">
     <value>مشخصات گروه استخدامی</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
 </root>

@@ -16,6 +16,7 @@ public class CreateEmploymentGroupValidator : AbstractValidator<CreateEmployment
         _localizer = localizer;
 
         RuleFor(x => x.Name)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("sdfsdf");
     }
 }

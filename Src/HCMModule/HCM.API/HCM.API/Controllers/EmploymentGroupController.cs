@@ -24,6 +24,28 @@ public class EmploymentGroupController(
 {
     private readonly IEmploymentGroupService _employmentGroupService = employmentGroupService;
 
+    [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Create(
+    [FromRoute] Guid companyId,
+    [FromBody] CreateEmploymentGroupDto createDto,
+    CancellationToken ct
+    )
+    {
+        var dto = await _employmentGroupService.CreateAsync(
+            companyId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = dto.Id },
+            dto
+        );
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
