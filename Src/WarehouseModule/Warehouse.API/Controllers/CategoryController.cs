@@ -333,7 +333,6 @@ public class CategoryController(
     {
         var dto = await _itemService.PatchAsync(
             companyId,
-            categoryId,
             id,
             patchDocument,
             ct
@@ -350,7 +349,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _itemService.DeleteAsync(companyId, categoryId, id, ct);
+        await _itemService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 

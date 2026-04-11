@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 
-using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class CategoryLevelConstraintValidator : AbstractValidator<CategoryLevelConstraint>
+public class CreateCategoryLevelConstraintValidator : 
+    AbstractValidator<CreateCategoryLevelConstraintDto>
 {
-    public CategoryLevelConstraintValidator()
+    public CreateCategoryLevelConstraintValidator()
     {
         
     }

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
@@ -21,7 +19,6 @@ public class WarehouseService(
     IWarehouseRepository warehouseRepository,
     ICompanyService companyService,
     IMapper mapper,
-    IValidator<Domain.Entities.Warehouse> validator,
     IStringLocalizer<WarehouseResource> localizer
 
 ) : BaseServiceWithCompany<
@@ -36,7 +33,6 @@ public class WarehouseService(
         warehouseRepository,
         companyService,
         mapper,
-        validator,
         localizer
     ),
     IWarehouseService

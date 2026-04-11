@@ -19,21 +19,12 @@ public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdva
             };
         }
 
-        try
-        {
-            (string? search, object[] searchPrms) =
-                DynamicLinqConditionBuilder.Build<T>(filterNodeDto, _schemaProvider);
+        var (predicate, args) = DynamicLinqConditionBuilder.Build<T>(filterNodeDto, _schemaProvider);
 
-            return new RequestAdvancedFilters
-            {
-                Predicate = search,
-                Args = searchPrms
-            };
-        }
-        catch (Exception ex)
+        return new RequestAdvancedFilters
         {
-            throw new Exception(ex.Message, ex);
-        }
+            Predicate = string.IsNullOrWhiteSpace(predicate) ? null : predicate,
+            Args = args
+        };
     }
 }
-
