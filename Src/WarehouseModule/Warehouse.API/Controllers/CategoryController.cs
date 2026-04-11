@@ -226,7 +226,7 @@ public class CategoryController(
     [HttpPost("{categoryId:guid}/items/list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
-    public async Task<IActionResult> GetItems(
+    public async Task<IActionResult> GetItemsAdvancedSearch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromQuery] ItemParameters parameters,

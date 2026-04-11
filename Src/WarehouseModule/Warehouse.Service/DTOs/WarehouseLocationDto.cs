@@ -4,7 +4,16 @@ public record WarehouseLocationDto(
     Guid Id,
     int Code,
     string Title,
-    bool CanStoreItem
+    bool CanStoreItem,
+    WarehouseDto Warehouse
+);
+
+public record WarehouseLocationListDto(
+    Guid Id,
+    int Code,
+    string Title,
+    bool CanStoreItem,
+    string WarehouseTitle
 );
 
 public class CreateWarehouseLocationDto
@@ -12,7 +21,6 @@ public class CreateWarehouseLocationDto
     public required int Code { get; set; }
     public required string Title { get; set; }
     public Guid? ParentLocationId { get; set; }
-    public Guid WarehouseId { get; set; }
     public bool CanStoreItem { get; set; } = true;
 }
 

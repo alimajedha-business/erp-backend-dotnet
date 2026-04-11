@@ -24,12 +24,14 @@ namespace NGErp.Warehouse.API.Controllers;
 public class WarehouseController(
     IWarehouseService warehouseService,
     IWarehouseTypeService warehouseTypeService,
+    IWarehouseLocationService locationService,
     ICompanyUnitService companyUnitService,
     IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly IWarehouseService _warehouseService = warehouseService;
     private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
+    private readonly IWarehouseLocationService _locationService = locationService;
     private readonly ICompanyUnitService _companyUnitService = companyUnitService;
     private readonly IExcelExportService _excelExportService = excelExportService;
 
@@ -202,4 +204,101 @@ public class WarehouseController(
         await _warehouseService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
+
+    #region Warehouse Location
+
+    [HttpPost("{warehouseId:guid}/locations")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateLocation(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid warehouseId,
+        [FromBody] CreateWarehouseLocationDto createDto,
+        CancellationToken ct
+    )
+    {
+        var dto = await _locationService.CreateAsync(
+            warehouseId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, warehouseId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpGet("{warehouseId:guid}/locations/filter-by-q")]
+    public async Task<IActionResult> GetLocations(
+        [FromRoute] Guid warehouseId,
+        [FromQuery] WarehouseLocationParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _locationService.GetAllAsync(
+            warehouseId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("{warehouseId:guid}/locations/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetLocationsAdvancedSearch(
+        [FromRoute] Guid warehouseId,
+        [FromQuery] WarehouseLocationParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var result = await _locationService.GetAllAsync(
+            warehouseId,
+            parameters,
+            ct,
+            filterNodeDto
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{warehouseId:guid}/locations/{id:guid}")]
+    public async Task<IActionResult> GetLocationById(
+        [FromRoute] Guid warehouseId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _locationService.GetByIdAsync(warehouseId, id, ct);
+        return Ok(dto);
+    }
+
+    [HttpPatch("{warehouseId:guid}/locations/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchLocation(
+        [FromRoute] Guid warehouseId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchWarehouseLocationDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _locationService.PatchAsync(id, patchDocument, ct);
+        return Ok(dto);
+    }
+
+    [HttpDelete("{warehouseId:guid}/locations/{id:guid}")]
+    public async Task<IActionResult> DeleteLocation(
+        [FromRoute] Guid warehouseId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _locationService.DeleteAsync(id, ct);
+        return NoContent();
+    }
+
+    #endregion
 }
