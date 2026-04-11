@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,7 +15,6 @@ public class MeasurementDimensionService(
     IAdvancedFilterBuilder filterBuilder,
     IMeasurementDimensionRepository measurementDimensionRepository,
     IMapper mapper,
-    IValidator<MeasurementDimension> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         MeasurementDimension,
@@ -29,7 +26,6 @@ public class MeasurementDimensionService(
         filterBuilder,
         measurementDimensionRepository,
         mapper,
-        validator,
         localizer
     ),
     IMeasurementDimensionService

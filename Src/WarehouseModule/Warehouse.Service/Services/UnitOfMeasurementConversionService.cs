@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,7 +15,6 @@ public class UnitOfMeasurementConversionService(
     IAdvancedFilterBuilder filterBuilder,
     IUnitOfMeasurementConversionRepository unitOfMeasurementConversionRepository,
     IMapper mapper,
-    IValidator<UnitOfMeasurementConversion> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         UnitOfMeasurementConversion,
@@ -30,7 +27,6 @@ public class UnitOfMeasurementConversionService(
         filterBuilder,
         unitOfMeasurementConversionRepository,
         mapper,
-        validator,
         localizer
     ),
     IUnitOfMeasurementConversionService

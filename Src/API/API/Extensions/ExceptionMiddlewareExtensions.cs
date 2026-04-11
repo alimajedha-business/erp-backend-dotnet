@@ -32,7 +32,7 @@ namespace NGErp.API.Extensions
                         NotFoundException or ForeignKeyConstraintException => StatusCodes.Status404NotFound,
                         BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-                        ForeignKeyViolationException 
+                        ForeignKeyViolationException
                             or DuplicateInsertException
                             or CheckConstraintException => StatusCodes.Status409Conflict,
                         _ => StatusCodes.Status500InternalServerError
@@ -55,9 +55,13 @@ namespace NGErp.API.Extensions
                     {
                         Title = localizedMessage,
                         TraceId = context.TraceIdentifier,
-                        Details = new Dictionary<string, string[]?>
+                        Details = new Dictionary<string, string[]>
                         {
-                            { "exception", isDevelopment ? new[] {ex.InnerException != null ? ex.InnerException.Message : ex.Message.ToString() } : null }
+                            {
+                                "exception", isDevelopment
+                                    ? new[] { ex.InnerException != null ? ex.InnerException.Message : ex.Message.ToString() }
+                                    : []
+                            }
                         }
                     };
 

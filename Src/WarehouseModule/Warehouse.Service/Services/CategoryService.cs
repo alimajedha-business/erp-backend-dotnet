@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -19,7 +17,6 @@ public class CategoryService(
     ICategoryRepository categoryRepository,
     ICompanyService companyService,
     IMapper mapper,
-    IValidator<Category> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseServiceWithCompany<
         Category,
@@ -32,7 +29,6 @@ public class CategoryService(
         categoryRepository,
         companyService,
         mapper,
-        validator,
         localizer
     ),
     ICategoryService

@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.AddAutoMapper(typeof(MappingProfile));
 
-        services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
 
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();

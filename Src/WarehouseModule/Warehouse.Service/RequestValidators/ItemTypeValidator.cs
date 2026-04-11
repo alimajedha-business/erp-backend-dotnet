@@ -2,14 +2,14 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class ItemTypeValidator(
+public class CreateItemTypeValidator(
     IStringLocalizer<WarehouseResource> localizer
-) : AbstractValidator<ItemType>
+) : AbstractValidator<CreateItemTypeDto>
 {
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 }

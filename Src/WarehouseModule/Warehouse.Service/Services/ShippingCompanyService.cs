@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,7 +15,6 @@ public class ShippingCompanyService(
     IAdvancedFilterBuilder filterBuilder,
     IShippingCompanyRepository shippingCompanyRepository,
     IMapper mapper,
-    IValidator<ShippingCompany> validator,
     IStringLocalizer<WarehouseResource> localizer
 ) : BaseService<
         ShippingCompany,
@@ -30,7 +27,6 @@ public class ShippingCompanyService(
         filterBuilder,
         shippingCompanyRepository,
         mapper,
-        validator,
         localizer
     ),
     IShippingCompanyService

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Services;
@@ -17,7 +15,6 @@ namespace NGErp.HCM.Service.Services;
 public class DepartmentService(
     IDepartmentRepository departmentRepository,
     IMapper mapper,
-    IValidator<Department> validator,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder,
     ICompanyService companyService
@@ -32,7 +29,6 @@ public class DepartmentService(
         departmentRepository,
         companyService,
         mapper,
-        validator,
         localizer
         ),
     IDepartmentService
