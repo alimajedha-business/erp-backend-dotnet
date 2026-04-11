@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
@@ -38,7 +39,7 @@ public class WarehouseController(
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [SwaggerRequestExample(typeof(object), typeof(CreateWarehouseExample))]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseCreateRequestExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
         [FromBody] CreateWarehouseDto createDto,
@@ -87,7 +88,9 @@ public class WarehouseController(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchExample))]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
+    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK,typeof(WarehouseGetListResponseExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] WarehouseParameters parameters,
@@ -107,7 +110,9 @@ public class WarehouseController(
 
     [HttpPost("excel")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchExample))]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
+    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseGetListResponseExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,
         [FromBody] FilterNodeDto? filterNodeDto,
@@ -175,7 +180,7 @@ public class WarehouseController(
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
         typeof(JsonPatchDocument<PatchWarehouseDto>),
-        typeof(WarehousePatchExample)
+        typeof(WarehousePatchRequestExample)
     )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
@@ -210,6 +215,10 @@ public class WarehouseController(
     [HttpPost("{warehouseId:guid}/locations")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [SwaggerRequestExample(
+        typeof(CreateWarehouseLocationDto),
+        typeof(WarehouseLocationCreateRequestExample))
+    ]
     public async Task<IActionResult> CreateLocation(
         [FromRoute] Guid companyId,
         [FromRoute] Guid warehouseId,
@@ -248,6 +257,9 @@ public class WarehouseController(
 
     [HttpPost("{warehouseId:guid}/locations/list")]
     [SkipModelValidation]
+    [SwaggerRequestExample(typeof(object), typeof(WarehouseLocationAdvancedSearchRequestExample))]
+    [ProducesResponseType(typeof(ListResponseModel<WarehouseLocationListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseLocationGetListResponseExample))]
     public async Task<IActionResult> GetLocationsAdvancedSearch(
         [FromRoute] Guid warehouseId,
         [FromQuery] WarehouseLocationParameters parameters,
@@ -278,6 +290,10 @@ public class WarehouseController(
 
     [HttpPatch("{warehouseId:guid}/locations/{id:guid}")]
     [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchWarehouseLocationDto>),
+        typeof(WarehouseLocationPatchRequestExample)
+    )]
     public async Task<IActionResult> PatchLocation(
         [FromRoute] Guid warehouseId,
         [FromRoute] Guid id,
