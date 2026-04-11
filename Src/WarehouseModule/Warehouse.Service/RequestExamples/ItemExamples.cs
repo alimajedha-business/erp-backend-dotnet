@@ -1,6 +1,13 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 
+using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -73,6 +80,32 @@ public class ItemAdvancedSearchExample : IExamplesProvider<object>
                 }
             }
         };
+    }
+}
+
+public class GetItemsListExample : IExamplesProvider<ListResponseModel<ItemListDto>>
+{
+    public ListResponseModel<ItemListDto> GetExamples()
+    {
+        return new ListResponseModel<ItemListDto>(
+            results: [
+                new ItemListDto(
+                    Id: new Guid("11111111-2222-3333-4444-555555555555"),
+                    Code: "100500",
+                    Title: "شیر کاله",
+                    TitleInEnglish: "Kale Milk",
+                    TechnicalNumber: "11-Aq985-0012",
+                    Sku: "10040-14001-112-2020",
+                    Barcode: "010011447140",
+                    PrimaryUnitOfMeasurementTitle: "بطری",
+                    CategoryTitle: "شیر فرادما",
+                    ItemTypeTitle: "مصرفی",
+                    IsActive: true
+                )
+            ],
+            totalCount: 1,
+            requestParameters: new ItemParameters { Paginated = false }
+        );
     }
 }
 
