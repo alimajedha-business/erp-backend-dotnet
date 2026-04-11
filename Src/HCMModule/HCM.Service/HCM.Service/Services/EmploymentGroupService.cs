@@ -23,7 +23,6 @@ namespace NGErp.HCM.Service.Services;
 public class EmploymentGroupService(
     IEmploymentGroupRepository employmentGroupRepository,
     IMapper mapper,
-    IValidator<EmploymentGroup> validator,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder,
     ICompanyService companyService
@@ -38,7 +37,6 @@ public class EmploymentGroupService(
         employmentGroupRepository,
         companyService,
         mapper,
-        validator,
         localizer
         ),
     IEmploymentGroupService

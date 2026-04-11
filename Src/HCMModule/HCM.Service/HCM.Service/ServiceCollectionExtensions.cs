@@ -14,7 +14,7 @@ namespace NGErp.HCM.Service
         {
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddValidatorsFromAssemblyContaining<DepartmentValidator>();
+            services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
 
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IPositionService, PositionService>();
