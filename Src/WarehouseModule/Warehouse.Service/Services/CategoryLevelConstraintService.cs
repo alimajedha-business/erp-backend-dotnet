@@ -35,13 +35,21 @@ public class CategoryLevelConstraintService(
 {
     protected override string LocalizerKey => "CategoryLevelConstraint";
 
-    public async Task<CategoryLevelConstraintDto> GetByLevelNo(
+    public async Task<CategoryLevelConstraintDto> GetByLevelNoAsync(
         Guid companyId,
         int levelNo,
         CancellationToken ct
     )
     {
-        var constraint = await _repo.GetByLevelNo(companyId, levelNo, ct);
+        var constraint = await _repo.GetByLevelNoAsync(companyId, levelNo, ct);
         return _mapper.Map<CategoryLevelConstraintDto>(constraint);
+    }
+
+    public async Task<int> GetNextLevelAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        return await _repo.GetNextLevelAsync(companyId, ct);
     }
 }
