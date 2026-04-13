@@ -25,8 +25,11 @@ public class CategoryLevelConstraintRepository(MainDbContext context) :
         CancellationToken ct
     )
     {
-        return await _dbSet
+        var maxCode = await _dbSet
+            .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .MaxAsync(e => e.LevelNo, ct) + 1;
+            .MaxAsync(e => (int?)e.LevelNo, ct);
+
+        return (maxCode ?? 0) + 1;
     }
 }
