@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.Service.RequestExamples;
 
-public class CreateWarehouseExample : IExamplesProvider<object>
+public class WarehouseCreateRequestExample : IExamplesProvider<object>
 {
     public object GetExamples()
     {
@@ -27,7 +29,30 @@ public class CreateWarehouseExample : IExamplesProvider<object>
     }
 }
 
-public class WarehouseAdvancedSearchExample : IExamplesProvider<object>
+public class WarehouseGetListResponseExample :
+    IExamplesProvider<ListResponseModel<WarehouseListDto>>
+{
+    public ListResponseModel<WarehouseListDto> GetExamples()
+    {
+        return new ListResponseModel<WarehouseListDto>(
+            results: [
+                new WarehouseListDto(
+                    Id: new Guid("11111111-2222-3333-4444-555555555555"),
+                    Code: 10040,
+                    Title: "انبار مواد اولیه",
+                    IsActive: true,
+                    MaxMonetaryValue: 125000,
+                    WarehouseTypeTitle: "مصرفی",
+                    CompanyUnitTitle: "واحد تولید و بهره‌وری"
+                )
+            ],
+            totalCount: 1,
+            requestParameters: new ItemParameters { Paginated = false }
+        );
+    }
+}
+
+public class WarehouseAdvancedSearchRequestExample : IExamplesProvider<object>
 {
     public object GetExamples()
     {
@@ -71,7 +96,7 @@ public class WarehouseAdvancedSearchExample : IExamplesProvider<object>
     }
 }
 
-public class WarehousePatchExample :
+public class WarehousePatchRequestExample :
     IExamplesProvider<JsonPatchDocument<PatchWarehouseDto>>
 {
     public JsonPatchDocument<PatchWarehouseDto> GetExamples()

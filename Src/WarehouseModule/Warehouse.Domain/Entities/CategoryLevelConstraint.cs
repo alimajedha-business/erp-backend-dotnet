@@ -16,7 +16,11 @@ public class CategoryLevelConstraint :
     public void Map(EntityTypeBuilder<CategoryLevelConstraint> builder)
     {
         builder
-            .ToTable(nameof(CategoryLevelConstraint), "Warehouse");
+            .ToTable(nameof(CategoryLevelConstraint), "Warehouse")
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_CategoryLevelConstraint_CodeLength",
+                "CodeLength BETWEEN 1 AND 5"
+            ));
 
         builder
             .HasIndex(i => new { i.CompanyId, i.LevelNo })

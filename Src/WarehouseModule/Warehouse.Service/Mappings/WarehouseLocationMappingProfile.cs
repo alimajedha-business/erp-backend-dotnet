@@ -10,6 +10,11 @@ public class WarehouseLocationMappingProfile : Profile
     public WarehouseLocationMappingProfile()
     {
         CreateMap<WarehouseLocation, WarehouseLocationDto>();
+        CreateMap<WarehouseLocation, WarehouseLocationListDto>()
+            .ForCtorParam(
+                nameof(WarehouseLocationListDto.WarehouseTitle),
+                opt => opt.MapFrom(src => src.Warehouse.Title)
+            );
         CreateMap<CreateWarehouseLocationDto, WarehouseLocation>();
         CreateMap<PatchWarehouseLocationDto, WarehouseLocation>().ReverseMap();
     }
