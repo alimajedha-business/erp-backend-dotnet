@@ -5,14 +5,13 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 
-namespace NGErp.Warehouse.Service.Services;
+namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IShippingCompanyService : IBaseService<
-    ShippingCompany,
-    ShippingCompanyDto,
-    ShippingCompanyListDto,
-    ShippingCompanyParameters,
-    IShippingCompanyRepository,
+public interface IItemAttributeService : IBaseService<
+    ItemAttribute,
+    ItemAttributeDto,
+    ItemAttributeParameters,
+    IItemAttributeRepository,
     WarehouseResource
 >
 { }

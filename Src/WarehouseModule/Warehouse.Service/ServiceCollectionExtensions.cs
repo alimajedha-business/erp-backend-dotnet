@@ -9,6 +9,7 @@ using NGErp.Warehouse.Domain.EntitySchemas;
 using NGErp.Warehouse.Service.Mappings;
 using NGErp.Warehouse.Service.RequestValidators;
 using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.Service.Contracts;
 using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.Service;
