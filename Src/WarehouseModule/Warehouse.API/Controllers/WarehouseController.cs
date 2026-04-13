@@ -247,7 +247,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetAllAsync(
+        var result = await _locationService.GetFilterByQAsync(
             warehouseId,
             parameters,
             ct
@@ -268,7 +268,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetAllAsync(
+        var result = await _locationService.GetListAsync(
             warehouseId,
             parameters,
             ct,

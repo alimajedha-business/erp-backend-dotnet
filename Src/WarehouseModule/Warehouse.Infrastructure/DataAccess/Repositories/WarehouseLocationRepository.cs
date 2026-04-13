@@ -47,32 +47,32 @@ public class WarehouseLocationRepository(MainDbContext context) :
         return (maxCode ?? 0) + 1;
     }
 
-    public Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+    public Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
     Guid warehouseId,
     RequestParameters requestParameters,
     CancellationToken ct)
     {
-        return GetWarehouseAllAsync(
+        return GetWarehouseLocationsAsync(
             warehouseId,
             q => q.Filter(requestParameters),
             ct
         );
     }
 
-    public Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+    public Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
         Guid warehouseId,
         RequestParameters requestParameters,
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null)
     {
-        return GetWarehouseAllAsync(
+        return GetWarehouseLocationsAsync(
             warehouseId,
             q => q.Filter(requestAdvancedFilters),
             ct
         );
     }
 
-    private async Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+    private async Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
     Guid warehouseId,
     Func<IQueryable<WarehouseLocation>, IQueryable<WarehouseLocation>> applyFilter,
     CancellationToken ct)

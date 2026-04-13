@@ -19,13 +19,13 @@ public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
         CancellationToken ct
     );
 
-    Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+    Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
         Guid warehouseId,
         RequestParameters requestParameters,
         CancellationToken ct
     );
 
-    Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+    Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
         Guid warehouseId,
         RequestParameters requestParameters,
         CancellationToken ct,

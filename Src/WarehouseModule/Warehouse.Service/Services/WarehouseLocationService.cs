@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
@@ -54,13 +52,13 @@ public class WarehouseLocationService(
         return _mapper.Map<WarehouseLocationDto>(createdLocation);
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     )
     {
-        var listQueryResult = await _repo.GetWarehouseAllAsync(
+        var listQueryResult = await _repo.GetWarehouseLocationsAsync(
             warehouseId,
             parameters,
             ct
@@ -73,7 +71,7 @@ public class WarehouseLocationService(
         );
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct,
@@ -81,7 +79,7 @@ public class WarehouseLocationService(
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
-        var listQueryResult = await _repo.GetWarehouseAllAsync(
+        var listQueryResult = await _repo.GetWarehouseLocationsAsync(
             warehouseId,
             parameters,
             ct,

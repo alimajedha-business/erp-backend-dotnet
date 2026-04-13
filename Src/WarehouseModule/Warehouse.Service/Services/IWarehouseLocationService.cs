@@ -25,13 +25,13 @@ public interface IWarehouseLocationService : IBaseService<
         CancellationToken ct
     );
 
-    Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     );
 
-    Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct,
