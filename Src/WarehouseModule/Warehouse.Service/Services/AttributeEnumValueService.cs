@@ -58,6 +58,14 @@ public class AttributeEnumValueService(
         CancellationToken ct
     ) => GetByIdAsync(id, includeQuery, ct);
 
+    public Task<int> GetNextCode(
+        Guid attributeId,
+        CancellationToken ct
+    )
+    {
+        return _repo.GetNextCodeAsync(attributeId, ct);
+    }
+
     private static IQueryable<AttributeEnumValue> includeQuery(
         IQueryable<AttributeEnumValue> q
     ) => q.Include(c => c.Attribute);

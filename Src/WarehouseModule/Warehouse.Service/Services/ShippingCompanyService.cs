@@ -33,4 +33,9 @@ public class ShippingCompanyService(
     IShippingCompanyService
 {
     protected override string LocalizerKey => "ShippingCompany";
+
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _repo.GetNextCodeAsync(ct);
+    }
 }

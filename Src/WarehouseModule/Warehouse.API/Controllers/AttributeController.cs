@@ -223,7 +223,7 @@ public class AttributeController(
     {
         await _attributeService.GetByIdAsync(companyId, attributeId, ct);
 
-        var code = await _attributeEnumValueService.GetNextCode(ct);
+        var code = await _attributeEnumValueService.GetNextCode(attributeId, ct);
         return Ok(code);
     }
 

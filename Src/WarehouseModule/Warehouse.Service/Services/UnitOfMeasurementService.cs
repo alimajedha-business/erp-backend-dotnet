@@ -40,6 +40,11 @@ public class UnitOfMeasurementService(
         CancellationToken ct
     ) => GetByIdAsync(id, includeQuery, ct);
 
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _repo.GetNextCodeAsync(ct);
+    }
+
     private static IQueryable<UnitOfMeasurement> includeQuery(
         IQueryable<UnitOfMeasurement> q
     ) => q.Include(c => c.MeasurementDimension);

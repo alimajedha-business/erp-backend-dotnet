@@ -32,4 +32,9 @@ public class ItemTypeService(
     IItemTypeService
 {
     protected override string LocalizerKey => "ItemType";
+
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _repo.GetNextCodeAsync(ct);
+    }
 }

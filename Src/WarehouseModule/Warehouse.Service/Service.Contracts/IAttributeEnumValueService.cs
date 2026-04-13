@@ -24,4 +24,9 @@ public interface IAttributeEnumValueService : IBaseService<
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
+
+    Task<int> GetNextCode(
+        Guid attributeId,
+        CancellationToken ct
+    );
 }

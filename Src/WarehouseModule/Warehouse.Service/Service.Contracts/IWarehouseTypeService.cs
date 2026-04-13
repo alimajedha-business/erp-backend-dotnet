@@ -14,4 +14,6 @@ public interface IWarehouseTypeService : IBaseService<
     IWarehouseTypeRepository,
     WarehouseResource
 >
-{ }
+{
+    Task<int> GetNextCode(CancellationToken ct);
+}

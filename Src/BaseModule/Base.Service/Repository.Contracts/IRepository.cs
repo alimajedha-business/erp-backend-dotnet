@@ -67,8 +67,6 @@ public interface IRepository<T> where T : class
 
     IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
-    Task<int> GetNextCode(CancellationToken ct);
-
     Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
 
     Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);

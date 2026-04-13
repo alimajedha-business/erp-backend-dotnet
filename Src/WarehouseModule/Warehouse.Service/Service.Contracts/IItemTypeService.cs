@@ -14,4 +14,6 @@ public interface IItemTypeService : IBaseService<
     IItemTypeRepository,
     WarehouseService
 >
-{ }
+{
+    Task<int> GetNextCode(CancellationToken ct);
+}

@@ -32,4 +32,9 @@ public class WarehouseTypeService(
     IWarehouseTypeService
 {
     protected override string LocalizerKey => "WarehouseType";
+
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _repo.GetNextCodeAsync(ct);
+    }
 }

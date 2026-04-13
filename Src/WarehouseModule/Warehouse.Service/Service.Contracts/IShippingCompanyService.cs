@@ -15,4 +15,6 @@ public interface IShippingCompanyService : IBaseService<
     IShippingCompanyRepository,
     WarehouseResource
 >
-{ }
+{
+    Task<int> GetNextCode(CancellationToken ct);
+}

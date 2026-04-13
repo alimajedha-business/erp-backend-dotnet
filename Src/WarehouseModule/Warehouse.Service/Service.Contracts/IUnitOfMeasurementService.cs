@@ -15,4 +15,6 @@ public interface IUnitOfMeasurementService : IBaseService<
     IUnitOfMeasurementRepository,
     WarehouseResource
 >
-{ }
+{
+    Task<int> GetNextCode(CancellationToken ct);
+}

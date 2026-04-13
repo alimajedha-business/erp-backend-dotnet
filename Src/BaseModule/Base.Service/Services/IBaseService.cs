@@ -70,8 +70,6 @@ public interface IBaseService<
         CancellationToken ct
     );
 
-    Task<int> GetNextCode(CancellationToken ct);
-
     Task<TDto> PatchAsync<TPatchDto>(
         Guid id,
         JsonPatchDocument<TPatchDto> patchDocument,
