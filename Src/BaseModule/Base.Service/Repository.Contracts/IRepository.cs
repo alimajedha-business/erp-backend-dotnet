@@ -38,12 +38,6 @@ public interface IRepository<T> where T : class
     );
 
     Task<ListQueryResult<T>> GetAllAsync(
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
         Func<IQueryable<T>, IQueryable<T>> include,
         CancellationToken ct,

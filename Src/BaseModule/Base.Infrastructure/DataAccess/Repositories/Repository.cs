@@ -89,25 +89,6 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     }
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        IQueryable<T> query = _context
-            .Set<T>()
-            .AsNoTracking()
-            .Filter(requestAdvancedFilters);
-
-        query = include(query);
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query.ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
-    }
-
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
         Func<IQueryable<T>, IQueryable<T>> include,
         CancellationToken ct,
