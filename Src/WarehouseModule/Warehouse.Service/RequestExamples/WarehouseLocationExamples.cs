@@ -18,7 +18,8 @@ public class WarehouseLocationCreateRequestExample :
             Code = 10040,
             Title = "راهرو اصلی",
             CanStoreItem = false,
-            ParentLocationId = null
+            ParentLocationId = null,
+            LevelNo = 0,
         };
     }
 }
@@ -35,6 +36,7 @@ public class WarehouseLocationGetListResponseExample :
                     Code: 10040,
                     Title: "راهرو اصلی",
                     CanStoreItem: true,
+                    LevelNo: 2,
                     WarehouseTitle: "انبار مواد اولیه"
                 )
             ],

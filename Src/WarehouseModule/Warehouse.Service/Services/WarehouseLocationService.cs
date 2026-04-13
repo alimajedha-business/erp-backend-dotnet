@@ -57,6 +57,25 @@ public class WarehouseLocationService(
     public async Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var listQueryResult = await _repo.GetWarehouseAllAsync(
+            warehouseId,
+            parameters,
+            ct
+        );
+
+        return new ListResponseModel<WarehouseLocationListDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(listQueryResult.items),
+            totalCount: listQueryResult.count,
+            parameters
+        );
+    }
+
+    public async Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+        Guid warehouseId,
+        WarehouseLocationParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     )
@@ -84,6 +103,14 @@ public class WarehouseLocationService(
     {
         var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
         return _mapper.Map<WarehouseLocationDto>(entity);
+    }
+
+    public async Task<int> GetNextCodeAsync(
+        Guid warehouseId,
+        CancellationToken ct
+    )
+    {
+        return await _repo.GetNextCodeAsync(warehouseId, ct);
     }
 
     public async Task<WarehouseLocationDto> PatchAsync(

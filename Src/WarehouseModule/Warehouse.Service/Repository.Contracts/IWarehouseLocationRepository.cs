@@ -14,6 +14,17 @@ public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
         bool trackChanges = false
     );
 
+    Task<int> GetNextCodeAsync(
+        Guid warehouseId,
+        CancellationToken ct
+    );
+
+    Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
+        Guid warehouseId,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    );
+
     Task<ListQueryResult<WarehouseLocation>> GetWarehouseAllAsync(
         Guid warehouseId,
         RequestParameters requestParameters,

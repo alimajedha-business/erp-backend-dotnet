@@ -232,8 +232,9 @@ public class WarehouseController(
             ct
         );
 
+        // FIX: warehouse is null in response (not in db)
         return CreatedAtAction(
-            nameof(GetById),
+            nameof(GetLocationById),
             new { companyId, warehouseId, id = dto.Id },
             dto
         );
@@ -288,6 +289,16 @@ public class WarehouseController(
         return Ok(dto);
     }
 
+    [HttpGet("{warehouseId:guid}/locations/new-code")]
+    public async Task<IActionResult> GetLocationNextCode(
+        [FromRoute] Guid warehouseId,
+        CancellationToken ct
+    )
+    {
+        var code = await _locationService.GetNextCodeAsync(warehouseId, ct);
+        return Ok(code);
+    }
+
     [HttpPatch("{warehouseId:guid}/locations/{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
@@ -301,6 +312,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
+        // TODO: check if the location with the given warehouse exists.
         var dto = await _locationService.PatchAsync(id, patchDocument, ct);
         return Ok(dto);
     }

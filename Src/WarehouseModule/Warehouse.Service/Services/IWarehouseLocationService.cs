@@ -28,6 +28,12 @@ public interface IWarehouseLocationService : IBaseService<
     Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<WarehouseLocationListDto>> GetAllAsync(
+        Guid warehouseId,
+        WarehouseLocationParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
     );
@@ -35,6 +41,11 @@ public interface IWarehouseLocationService : IBaseService<
     Task<WarehouseLocationDto> GetByIdAsync(
         Guid warehouseId,
         Guid id,
+        CancellationToken ct
+    );
+
+    Task<int> GetNextCodeAsync(
+        Guid warehouseId,
         CancellationToken ct
     );
 
