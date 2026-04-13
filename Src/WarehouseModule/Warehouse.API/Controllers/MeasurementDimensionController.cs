@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 

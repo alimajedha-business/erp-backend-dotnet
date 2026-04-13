@@ -5,14 +5,13 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 
-namespace NGErp.Warehouse.Service.Services;
+namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IUnitOfMeasurementService : IBaseService<
-    UnitOfMeasurement,
-    UnitOfMeasurementDto,
-    UnitOfMeasurementListDto,
-    UnitOfMeasurementParameters,
-    IUnitOfMeasurementRepository,
+public interface IWarehouseTypeService : IBaseService<
+    WarehouseType,
+    WarehouseTypeDto,
+    WarehouseTypeParameters,
+    IWarehouseTypeRepository,
     WarehouseResource
 >
 { }
