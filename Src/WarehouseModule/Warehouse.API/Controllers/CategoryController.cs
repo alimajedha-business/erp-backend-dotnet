@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -226,7 +227,9 @@ public class CategoryController(
     [HttpPost("{categoryId:guid}/items/list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
-    public async Task<IActionResult> GetItemsAdvancedSearch(
+    [ProducesResponseType(typeof(ListResponseModel<ItemListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetItemsListExample))]
+    public async Task<IActionResult> GetItems(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromQuery] ItemParameters parameters,
