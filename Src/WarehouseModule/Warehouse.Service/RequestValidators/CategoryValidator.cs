@@ -40,7 +40,7 @@ public class CreateCategoryValidator : AbstractValidator<CreateCategoryDto>
         RuleFor(x => x.Code)
             .MustAsync(async (dto, code, ct) =>
             {
-                var categoryLevel = await _constraintService.GetByLevelNo(
+                var categoryLevel = await _constraintService.GetByLevelNoAsync(
                     new Guid(), // TODO: get the company id
                     dto.LevelNo,
                     ct
