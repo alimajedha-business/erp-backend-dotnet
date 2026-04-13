@@ -14,6 +14,7 @@ public class WarehouseLocation :
     public Guid? ParentLocationId { get; set; }
     public Guid WarehouseId { get; set; }
     public bool CanStoreItem { get; set; } = false;
+    public int LevelNo { get; set; }
 
     public WarehouseLocation? ParentLocation { get; set; }
     public Warehouse Warehouse { get; set; } = default!;

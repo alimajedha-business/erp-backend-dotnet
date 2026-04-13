@@ -42,6 +42,12 @@ public record WarehouseDto(
     string ReturnFromPurchaseAccountDetailed2Value
 );
 
+public record WarehouseSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public record WarehouseListDto(
     Guid Id,
     int Code,
