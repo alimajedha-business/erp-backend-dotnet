@@ -65,10 +65,7 @@ public interface IRepository<T> where T : class
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
 
-    IQueryable<T> Find(
-        Expression<Func<T, bool>> predicate,
-        IQueryable<T>? baseQuery = null
-    );
+    IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
     Task<int> GetNextCode(CancellationToken ct);
 

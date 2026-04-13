@@ -178,11 +178,10 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     }
 
     public virtual IQueryable<T> Find(
-        Expression<Func<T, bool>> predicate,
-        IQueryable<T>? baseQuery = null
+        Expression<Func<T, bool>> predicate
     )
     {
-        return (baseQuery ?? _dbSet).Where(predicate);
+        return _dbSet.Where(predicate);
     }
 
     public virtual async Task<int> GetNextCode(CancellationToken ct)
