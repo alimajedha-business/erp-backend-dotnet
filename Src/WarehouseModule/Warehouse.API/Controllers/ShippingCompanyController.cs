@@ -64,13 +64,13 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var attributes = await _shippingCompanyService.GetAllAsync(
+        var shippingCompanies = await _shippingCompanyService.GetAllAsync(
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
-        return Ok(attributes);
+        return Ok(shippingCompanies);
     }
 
     [HttpGet("{id:guid}")]
@@ -79,7 +79,7 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var dto = await _shippingCompanyService.GetByIdAsync(id, ct);
+        var dto = await _shippingCompanyService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 

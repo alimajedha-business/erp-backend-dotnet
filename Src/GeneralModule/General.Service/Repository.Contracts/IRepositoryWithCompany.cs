@@ -13,78 +13,28 @@ public interface IRepositoryWithCompany<T>
     Task<T?> GetByIdAsync(
         Guid companyId,
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-    );
-
-    Task<T?> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        bool trackChanges = false
-    );
-
-    IQueryable<T> GetAll(
-        Guid companyId,
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        bool trackChanges = false,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
-        CancellationToken ct
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        Guid companyId,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        Guid companyId,
-        RequestParameters requestParameters,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        Guid companyId,
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        Guid companyId,
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters requestAdvancedFilters,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     IQueryable<T> Find(
         Guid companyId,
-        Expression<Func<T, bool>> predicate,
-        IQueryable<T>? baseQuery = null
-    );
-
-    Task<int> GetNextCode(
-        Guid companyId,
-        CancellationToken ct
+        Expression<Func<T, bool>> predicate
     );
 }

@@ -56,7 +56,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemUnitOfMeasurementService, ItemUnitOfMeasurementService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
-        services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();

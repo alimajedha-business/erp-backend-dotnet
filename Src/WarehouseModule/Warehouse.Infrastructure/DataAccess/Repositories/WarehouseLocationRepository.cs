@@ -16,8 +16,8 @@ public class WarehouseLocationRepository(MainDbContext context) :
     public async Task<WarehouseLocation?> GetByIdAsync(
         Guid warehouseId,
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        CancellationToken ct = default
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
@@ -48,9 +48,10 @@ public class WarehouseLocationRepository(MainDbContext context) :
     }
 
     public Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
-    Guid warehouseId,
-    RequestParameters requestParameters,
-    CancellationToken ct)
+        Guid warehouseId,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    )
     {
         return GetWarehouseLocationsAsync(
             warehouseId,
@@ -62,8 +63,9 @@ public class WarehouseLocationRepository(MainDbContext context) :
     public Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
         Guid warehouseId,
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null)
+        RequestAdvancedFilters requestAdvancedFilters,
+        CancellationToken ct
+    )
     {
         return GetWarehouseLocationsAsync(
             warehouseId,
@@ -73,9 +75,10 @@ public class WarehouseLocationRepository(MainDbContext context) :
     }
 
     private async Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
-    Guid warehouseId,
-    Func<IQueryable<WarehouseLocation>, IQueryable<WarehouseLocation>> applyFilter,
-    CancellationToken ct)
+        Guid warehouseId,
+        Func<IQueryable<WarehouseLocation>, IQueryable<WarehouseLocation>> applyFilter,
+        CancellationToken ct
+    )
     {
         IQueryable<WarehouseLocation> query = _dbSet
             .AsNoTracking()

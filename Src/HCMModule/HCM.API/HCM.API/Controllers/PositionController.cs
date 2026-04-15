@@ -53,6 +53,7 @@ public class PositionController(
         var dto = await _positionService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -71,8 +72,8 @@ public class PositionController(
         var result = await _positionService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);

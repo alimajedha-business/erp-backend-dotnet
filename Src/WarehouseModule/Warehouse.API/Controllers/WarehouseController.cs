@@ -46,17 +46,6 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        await _warehouseTypeService.GetByIdAsync(
-            createDto.WarehouseTypeId,
-            ct
-        );
-
-        await _companyUnitService.GetByIdAsync(
-            companyId,
-            createDto.CompanyUnitId,
-            ct
-        );
-
         var dto = await _warehouseService.CreateAsync(
             companyId,
             createDto,
@@ -101,8 +90,8 @@ public class WarehouseController(
         var result = await _warehouseService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -128,8 +117,8 @@ public class WarehouseController(
         var result = await _warehouseService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -160,6 +149,7 @@ public class WarehouseController(
         var warehouse = await _warehouseService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -312,8 +302,8 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        // TODO: check if the location with the given warehouse exists.
-        var dto = await _locationService.PatchAsync(id, patchDocument, ct);
+        // TODO: check if the location with the given warehouse does exist.
+        var dto = await _locationService.PatchAsync(warehouseId, id, patchDocument, ct);
         return Ok(dto);
     }
 
@@ -324,7 +314,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        await _locationService.DeleteAsync(id, ct);
+        await _locationService.DeleteAsync(warehouseId, id, ct);
         return NoContent();
     }
 

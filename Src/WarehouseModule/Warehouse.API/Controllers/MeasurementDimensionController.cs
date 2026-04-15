@@ -33,7 +33,7 @@ public class MeasurementDimensionController(
         CancellationToken ct
     )
     {
-        var dto = await _dimensionService.GetByIdAsync(id, ct);
+        var dto = await _dimensionService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 }

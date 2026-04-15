@@ -56,6 +56,7 @@ public class DepartmentController(
         var dto = await _departmentService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: true,
             ct
         );
 
@@ -74,8 +75,8 @@ public class DepartmentController(
         var result = await _departmentService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);

@@ -1,20 +1,46 @@
-﻿using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Domain.Entities;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IUnitOfMeasurementService : IBaseService<
-    UnitOfMeasurement,
-    UnitOfMeasurementDto,
-    UnitOfMeasurementListDto,
-    UnitOfMeasurementParameters,
-    IUnitOfMeasurementRepository,
-    WarehouseResource
->
+public interface IUnitOfMeasurementService
 {
+    Task<UnitOfMeasurementDto> CreateAsync(
+        CreateUnitOfMeasurementDto createDto,
+        CancellationToken ct
+    );
+
+    Task<UnitOfMeasurementDto> GetByIdAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<UnitOfMeasurementDto>> GetAllAsync(
+        UnitOfMeasurementParameters parameters,
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<UnitOfMeasurementDto>> GetAllAsync(
+        UnitOfMeasurementParameters parameters,
+        FilterNodeDto filterNodeDto,
+        CancellationToken ct = default
+    );
+
+    Task<UnitOfMeasurementDto> PatchAsync(
+        Guid id,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
+        CancellationToken ct
+    );
+
+    Task DeleteAsync(
+        Guid id,
+        CancellationToken ct
+    );
+
     Task<int> GetNextCode(CancellationToken ct);
 }

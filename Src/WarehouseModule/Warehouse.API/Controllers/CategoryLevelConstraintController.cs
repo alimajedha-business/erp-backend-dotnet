@@ -78,8 +78,8 @@ public class CategoryLevelConstraintController(
         var result = await _constraintService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -95,6 +95,7 @@ public class CategoryLevelConstraintController(
         var dto = await _constraintService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 

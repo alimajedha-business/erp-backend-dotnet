@@ -9,54 +9,22 @@ public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
-    );
-
-    Task<T?> GetByIdAsync(
-        Guid id,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        bool trackChanges = false
-    );
-
-    IQueryable<T> GetAll(
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        bool trackChanges = false,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        CancellationToken ct
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters requestAdvancedFilters,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     );
 
     IQueryable<T> Find(Expression<Func<T, bool>> predicate);

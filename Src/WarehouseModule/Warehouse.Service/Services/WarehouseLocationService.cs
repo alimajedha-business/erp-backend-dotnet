@@ -21,22 +21,14 @@ public class WarehouseLocationService(
     IWarehouseLocationRepository locationRepository,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : BaseService<
-        WarehouseLocation,
-        WarehouseLocationDto,
-        WarehouseLocationListDto,
-        WarehouseLocationParameters,
-        IWarehouseLocationRepository,
-        WarehouseResource
-    >(
-        filterBuilder,
-        locationRepository,
-        mapper,
-        localizer
-    ),
-    IWarehouseLocationService
+) : IWarehouseLocationService
 {
-    protected override string LocalizerKey => "WarehouseLocation";
+    private readonly string _key = "WarehouseLocation";
+
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer _localizer = localizer;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IWarehouseLocationRepository _locationRepository = locationRepository;
 
     public async Task<WarehouseLocationDto> CreateAsync(
         Guid warehouseId,
@@ -47,8 +39,8 @@ public class WarehouseLocationService(
         var location = _mapper.Map<WarehouseLocation>(createLocationDto);
         location.WarehouseId = warehouseId;
 
-        var createdLocation = await _repo.AddAsync(location, ct);
-        await _repo.SaveChangesAsync(ct);
+        var createdLocation = await _locationRepository.AddAsync(location, ct);
+        await _locationRepository.SaveChangesAsync(ct);
 
         return _mapper.Map<WarehouseLocationDto>(createdLocation);
     }
@@ -59,7 +51,7 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var listQueryResult = await _repo.GetWarehouseLocationsAsync(
+        var listQueryResult = await _locationRepository.GetWarehouseLocationsAsync(
             warehouseId,
             parameters,
             ct
@@ -80,11 +72,11 @@ public class WarehouseLocationService(
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
-        var listQueryResult = await _repo.GetWarehouseLocationsAsync(
+        var listQueryResult = await _locationRepository.GetWarehouseLocationsAsync(
             warehouseId,
             parameters,
-            ct,
-            advancedFilters
+            advancedFilters,
+            ct
         );
 
         return new ListResponseModel<WarehouseLocationListDto>(
@@ -109,7 +101,7 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        return await _repo.GetNextCodeAsync(warehouseId, ct);
+        return await _locationRepository.GetNextCodeAsync(warehouseId, ct);
     }
 
     public async Task<WarehouseLocationDto> PatchAsync(
@@ -139,7 +131,7 @@ public class WarehouseLocationService(
 
         _mapper.Map(patchDto, entity);
 
-        await _repo.SaveChangesAsync(ct);
+        await _locationRepository.SaveChangesAsync(ct);
         return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
@@ -150,9 +142,9 @@ public class WarehouseLocationService(
     )
     {
         var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
-        _repo.Remove(entity);
+        _locationRepository.Remove(entity);
 
-        await _repo.SaveChangesAsync(ct);
+        await _locationRepository.SaveChangesAsync(ct);
     }
 
     private async Task<WarehouseLocation> GetByIdOrThrowAsync(
@@ -162,7 +154,13 @@ public class WarehouseLocationService(
         bool trackChanges = false
     )
     {
-        var entity = await _repo.GetByIdAsync(warehouseId, id, ct, trackChanges);
-        return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
+        var entity = await _locationRepository.GetByIdAsync(
+            warehouseId,
+            id,
+            trackChanges,
+            ct
+        );
+
+        return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

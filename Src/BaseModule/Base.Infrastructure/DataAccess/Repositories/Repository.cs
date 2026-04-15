@@ -16,42 +16,25 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
 
     public virtual Task<T?> GetByIdAsync(
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-        return query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id, ct);
-    }
 
-    public virtual Task<T?> GetByIdAsync(
-        Guid id,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        bool trackChanges = false
-    )
-    {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-        query = include(query);
+        if (spec != null)
+        {
+            query = spec.Query(query);
+        }
 
         return query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id, ct);
-    }
-
-    public virtual IQueryable<T> GetAll(
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        return _context
-            .Set<T>()
-            .AsNoTracking()
-            .Filter(requestAdvancedFilters);
     }
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        CancellationToken ct
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     )
     {
         IQueryable<T> query = _context
@@ -59,25 +42,10 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
             .AsNoTracking()
             .Filter(requestParameters);
 
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
-    }
-
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        IQueryable<T> query = _context
-            .Set<T>()
-            .AsNoTracking()
-            .Filter(requestAdvancedFilters);
+        if (spec != null)
+        {
+            query = spec.Query(query);
+        }
 
         var totalCount = await query.CountAsync(ct);
         var items = await query
@@ -90,9 +58,9 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters requestAdvancedFilters,
+        ISpecification<T>? spec = null,
+        CancellationToken ct = default
     )
     {
         IQueryable<T> query = _context
@@ -100,54 +68,10 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
             .AsNoTracking()
             .Filter(requestAdvancedFilters);
 
-        query = include(query);
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
-    }
-
-    public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        IQueryable<T> query = _context
-            .Set<T>()
-            .AsNoTracking()
-            .Where(conditionExpression)
-            .Filter(requestAdvancedFilters);
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
-    }
-
-    public virtual async Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    )
-    {
-        IQueryable<T> query = _context
-            .Set<T>()
-            .AsNoTracking()
-            .Where(conditionExpression)
-            .Filter(requestAdvancedFilters);
-
-        query = include(query);
+        if (spec != null)
+        {
+            query = spec.Query(query);
+        }
 
         var totalCount = await query.CountAsync(ct);
         var items = await query
@@ -165,23 +89,32 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return _dbSet.Where(predicate);
     }
 
-    public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>> predicate
+    )
     {
         return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 
-    public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+    public virtual async Task<bool> AnyAsync(
+        Expression<Func<T, bool>> predicate
+    )
     {
         return await _dbSet.AnyAsync(predicate);
     }
 
-    public virtual async Task<T> AddAsync(T entity, CancellationToken ct)
+    public virtual async Task<T> AddAsync(
+        T entity,
+        CancellationToken ct
+    )
     {
         await _dbSet.AddAsync(entity, ct);
         return entity;
     }
 
-    public virtual async Task AddRangeAsync(IEnumerable<T> entities)
+    public virtual async Task AddRangeAsync(
+        IEnumerable<T> entities
+    )
     {
         await _dbSet.AddRangeAsync(entities);
     }
@@ -191,7 +124,9 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         _dbSet.Update(entity);
     }
 
-    public virtual void UpdateRange(IEnumerable<T> entities)
+    public virtual void UpdateRange(
+        IEnumerable<T> entities
+    )
     {
         _dbSet.UpdateRange(entities);
     }
@@ -201,12 +136,16 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         _dbSet.Remove(entity);
     }
 
-    public virtual void RemoveRange(IEnumerable<T> entities)
+    public virtual void RemoveRange(
+        IEnumerable<T> entities
+    )
     {
         _dbSet.RemoveRange(entities);
     }
 
-    public virtual async Task<int> SaveChangesAsync(CancellationToken ct)
+    public virtual async Task<int> SaveChangesAsync(
+        CancellationToken ct
+    )
     {
         return await _context.SaveChangesAsync(ct);
     }

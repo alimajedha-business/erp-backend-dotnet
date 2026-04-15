@@ -2,4 +2,8 @@
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IWarehouseRepository : IRepositoryWithCompany<Domain.Entities.Warehouse> { }
+public interface IWarehouseRepository :
+    IRepositoryWithCompany<Domain.Entities.Warehouse>
+{
+    Task<int> GetNextCodeAsync(Guid companyId, CancellationToken ct);
+}

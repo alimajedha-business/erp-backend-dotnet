@@ -1,13 +1,11 @@
 ﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
@@ -41,8 +39,8 @@ public class ItemController(
         var result = await _itemService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -66,8 +64,8 @@ public class ItemController(
         var result = await _itemService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -97,39 +95,5 @@ public class ItemController(
     {
         var dto = await _itemService.GetByIdAsync(companyId, id, ct);
         return Ok(dto);
-    }
-
-    [HttpPatch("{id:guid}")]
-    [Consumes("application/json-patch+json")]
-    [SwaggerRequestExample(
-        typeof(JsonPatchDocument<PatchItemDto>),
-        typeof(ItemPatchExample)
-    )]
-    public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchItemDto> patchDocument,
-        CancellationToken ct
-    )
-    {
-        var dto = await _itemService.PatchAsync(
-            companyId,
-            id,
-            patchDocument,
-            ct
-        );
-
-        return Ok(dto);
-    }
-
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        await _itemService.DeleteAsync(companyId, id, ct);
-        return NoContent();
     }
 }

@@ -2,22 +2,12 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IWarehouseLocationService : IBaseService<
-    WarehouseLocation,
-    WarehouseLocationDto,
-    WarehouseLocationListDto,
-    WarehouseLocationParameters,
-    IWarehouseLocationRepository,
-    IWarehouseRepository
->
+public interface IWarehouseLocationService
 {
     Task<WarehouseLocationDto> CreateAsync(
         Guid warehouseId,

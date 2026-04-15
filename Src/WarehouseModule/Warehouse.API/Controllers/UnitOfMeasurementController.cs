@@ -59,8 +59,8 @@ public class UnitOfMeasurementController(
     {
         var result = await _unitOfMeasurementService.GetAllAsync(
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -72,7 +72,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var dto = await _unitOfMeasurementService.GetByIdAsync(id, ct);
+        var dto = await _unitOfMeasurementService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 

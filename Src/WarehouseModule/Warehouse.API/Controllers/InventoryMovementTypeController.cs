@@ -71,8 +71,8 @@ public class InventoryMovementTypeController(
         var result = await _inventoryMovementTypeService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -88,6 +88,7 @@ public class InventoryMovementTypeController(
         var warehouse = await _inventoryMovementTypeService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: true,
             ct
         );
 

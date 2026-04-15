@@ -67,8 +67,8 @@ public class WarehouseTypeController(
     {
         var result = await _warehouseTypeService.GetAllAsync(
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -90,8 +90,8 @@ public class WarehouseTypeController(
 
         var result = await _warehouseTypeService.GetAllAsync(
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -118,7 +118,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var dto = await _warehouseTypeService.GetByIdAsync(id, ct);
+        var dto = await _warehouseTypeService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 

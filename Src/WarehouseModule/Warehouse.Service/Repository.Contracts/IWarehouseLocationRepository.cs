@@ -10,8 +10,8 @@ public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
     Task<WarehouseLocation?> GetByIdAsync(
         Guid warehouseId,
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        CancellationToken ct = default
     );
 
     Task<int> GetNextCodeAsync(
@@ -28,7 +28,7 @@ public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
     Task<ListQueryResult<WarehouseLocation>> GetWarehouseLocationsAsync(
         Guid warehouseId,
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters requestAdvancedFilters,
+        CancellationToken ct
     );
 }

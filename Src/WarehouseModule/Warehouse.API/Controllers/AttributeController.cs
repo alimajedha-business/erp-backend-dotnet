@@ -73,8 +73,8 @@ public class AttributeController(
         var attributes = await _attributeService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(attributes);
@@ -90,6 +90,7 @@ public class AttributeController(
         var dto = await _attributeService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -146,11 +147,10 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
         var dto = await _attributeEnumValueService.CreateAsync(
+            attributeId,
             createDto,
-            ct,
-            e => e.AttributeId = attributeId
+            ct
         );
 
         return CreatedAtAction(
@@ -168,14 +168,8 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-        var result = await _attributeEnumValueService.GetAllAsync(
-            attributeId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
+        // IMPLEMENT
+        return Ok();
     }
 
     [HttpPost("{attributeId:guid}/enums/list")]
@@ -188,41 +182,33 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
-        var enumsDto = await _attributeEnumValueService.GetAllAsync(
-            attributeId,
-            parameters,
-            ct,
-            filterNodeDto
-        );
-
-        return Ok(enumsDto);
+        // IMPLEMENT
+        return Ok();
     }
 
     [HttpGet("{attributeId:guid}/enums/{id:guid}")]
     public async Task<IActionResult> GetAttributeEnumValueById(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var enumsDto = await _attributeEnumValueService.GetByIdAsync(
+            attributeId,
+            id,
+            trackChanges: false,
+            ct
+        );
 
-        var enumsDto = await _attributeEnumValueService.GetByIdAsync(id, ct);
         return Ok(enumsDto);
     }
 
     [HttpGet("{attributeId:guid}/enums/new-code")]
     public async Task<IActionResult> GetEnumNextCode(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
         var code = await _attributeEnumValueService.GetNextCode(attributeId, ct);
         return Ok(code);
     }
@@ -230,30 +216,30 @@ public class AttributeController(
     [HttpPatch("{attributeId:guid}/enums/{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> PatchCategoryAttributeRule(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var dto = await _attributeEnumValueService.PatchAsync(
+            attributeId,
+            id,
+            patchDocument,
+            ct
+        );
 
-        var dto = await _attributeEnumValueService.PatchAsync(id, patchDocument, ct);
         return Ok(dto);
     }
 
     [HttpDelete("{attributeId:guid}/enums/{id:guid}")]
     public async Task<IActionResult> DeleteCategoryAttributeRule(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
-        await _attributeEnumValueService.DeleteAsync(id, ct);
+        await _attributeEnumValueService.DeleteAsync(attributeId, id, ct);
         return NoContent();
     }
 

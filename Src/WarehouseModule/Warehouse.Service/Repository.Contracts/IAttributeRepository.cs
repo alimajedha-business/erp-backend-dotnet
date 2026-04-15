@@ -4,4 +4,6 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IAttributeRepository : 
     IRepositoryWithCompany<Domain.Entities.Attribute>
-{ }
+{
+    Task<int> GetNextCodeAsync(Guid companyId, CancellationToken ct);
+}

@@ -48,6 +48,7 @@ public class CategoryController(
             await _categoryService.GetByIdAsync(
                 companyId,
                 createDto.ParentCategoryId.Value,
+                trackChanges: false,
                 ct
             );
         }
@@ -94,8 +95,8 @@ public class CategoryController(
         var result = await _categoryService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -119,8 +120,8 @@ public class CategoryController(
         var result = await _categoryService.GetAllAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -151,6 +152,7 @@ public class CategoryController(
         var dto = await _categoryService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -204,12 +206,6 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(
-            companyId,
-            categoryId,
-            ct
-        );
-
         var dto = await _itemService.CreateAsync(
             companyId,
             categoryId,
@@ -237,18 +233,12 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(
-            companyId,
-            categoryId,
-            ct
-        );
-
         var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
             categoryId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         return Ok(result);
@@ -265,12 +255,6 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(
-           companyId,
-           categoryId,
-           ct
-       );
-
         var parameters = new ItemParameters
         {
             Paginated = false,
@@ -280,8 +264,8 @@ public class CategoryController(
             companyId,
             categoryId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto ?? new FilterNodeDto(),
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -336,6 +320,7 @@ public class CategoryController(
     {
         var dto = await _itemService.PatchAsync(
             companyId,
+            categoryId,
             id,
             patchDocument,
             ct
@@ -352,7 +337,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _itemService.DeleteAsync(companyId, id, ct);
+        await _itemService.DeleteAsync(companyId, categoryId, id, ct);
         return NoContent();
     }
 
@@ -368,11 +353,10 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
         var dto = await _attributeRuleService.CreateAsync(
+            categoryId,
             createDto,
-            ct,
-            e => e.CategoryId = categoryId
+            ct
         );
 
         return CreatedAtAction(
@@ -390,14 +374,8 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var result = await _attributeRuleService.GetAllAsync(
-            categoryId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
+        // IMPLEMENT
+        return Ok();
     }
 
     [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
@@ -408,8 +386,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
-        var dto = await _attributeRuleService.GetByIdAsync(id, ct);
+        var dto = await _attributeRuleService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 
@@ -423,7 +400,6 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
         var dto = await _attributeRuleService.PatchAsync(
             id,
             patchDocument,
@@ -441,7 +417,6 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _categoryService.GetByIdAsync(companyId, categoryId, ct);
         await _attributeRuleService.DeleteAsync(id, ct);
         return NoContent();
     }
