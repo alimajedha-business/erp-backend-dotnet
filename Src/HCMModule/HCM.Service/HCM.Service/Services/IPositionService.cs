@@ -31,7 +31,7 @@ public interface IPositionService
     Task<ListResponseModel<PositionDto>> GetAllAsync(
         Guid companyId,
         PositionParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

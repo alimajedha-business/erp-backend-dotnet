@@ -73,7 +73,7 @@ public class AttributeController(
         var attributes = await _attributeService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

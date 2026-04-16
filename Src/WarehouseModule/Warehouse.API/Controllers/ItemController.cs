@@ -39,7 +39,7 @@ public class ItemController(
         var result = await _itemService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -64,7 +64,7 @@ public class ItemController(
         var result = await _itemService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

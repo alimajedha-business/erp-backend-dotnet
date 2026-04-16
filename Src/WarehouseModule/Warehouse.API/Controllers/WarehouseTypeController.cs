@@ -67,7 +67,7 @@ public class WarehouseTypeController(
     {
         var result = await _warehouseTypeService.GetAllAsync(
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -90,7 +90,7 @@ public class WarehouseTypeController(
 
         var result = await _warehouseTypeService.GetAllAsync(
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

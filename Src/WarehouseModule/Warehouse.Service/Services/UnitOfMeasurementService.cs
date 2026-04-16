@@ -72,7 +72,7 @@ public class UnitOfMeasurementService(
 
     public async Task<ListResponseModel<UnitOfMeasurementDto>> GetAllAsync(
         UnitOfMeasurementParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

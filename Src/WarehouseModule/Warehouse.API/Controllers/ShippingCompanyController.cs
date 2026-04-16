@@ -66,7 +66,7 @@ public class ShippingCompanyController(
     {
         var shippingCompanies = await _shippingCompanyService.GetAllAsync(
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

@@ -31,7 +31,7 @@ public interface IInventoryMovementTypeService
     Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

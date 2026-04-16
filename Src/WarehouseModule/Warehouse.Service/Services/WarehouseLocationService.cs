@@ -85,8 +85,8 @@ public class WarehouseLocationService(
     public async Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);

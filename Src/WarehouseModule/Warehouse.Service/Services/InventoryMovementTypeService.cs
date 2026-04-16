@@ -79,7 +79,7 @@ public class InventoryMovementTypeService(
     public async Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

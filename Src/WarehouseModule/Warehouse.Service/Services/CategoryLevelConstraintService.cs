@@ -79,7 +79,7 @@ public class CategoryLevelConstraintService(
     public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetAllAsync(
         Guid companyId,
         CategoryLevelConstraintParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

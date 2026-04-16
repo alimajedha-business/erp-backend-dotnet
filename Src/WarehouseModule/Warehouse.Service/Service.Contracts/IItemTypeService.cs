@@ -27,7 +27,7 @@ public interface IItemTypeService
 
     Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
         ItemTypeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

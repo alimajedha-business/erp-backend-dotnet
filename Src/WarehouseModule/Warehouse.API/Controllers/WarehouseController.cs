@@ -90,7 +90,7 @@ public class WarehouseController(
         var result = await _warehouseService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -117,7 +117,7 @@ public class WarehouseController(
         var result = await _warehouseService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -261,8 +261,8 @@ public class WarehouseController(
         var result = await _locationService.GetListAsync(
             warehouseId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);

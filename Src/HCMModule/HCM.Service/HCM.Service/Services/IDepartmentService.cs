@@ -31,7 +31,7 @@ public interface IDepartmentService
     Task<ListResponseModel<DepartmentDto>> GetAllAsync(
         Guid companyId,
         DepartmentParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

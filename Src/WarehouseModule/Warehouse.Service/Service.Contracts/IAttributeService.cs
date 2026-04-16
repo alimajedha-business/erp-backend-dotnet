@@ -31,7 +31,7 @@ public interface IAttributeService
     Task<ListResponseModel<AttributeDto>> GetAllAsync(
         Guid companyId,
         AttributeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

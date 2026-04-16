@@ -59,7 +59,7 @@ public class UnitOfMeasurementController(
     {
         var result = await _unitOfMeasurementService.GetAllAsync(
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

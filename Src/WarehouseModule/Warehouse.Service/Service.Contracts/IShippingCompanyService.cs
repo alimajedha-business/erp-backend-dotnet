@@ -27,7 +27,7 @@ public interface IShippingCompanyService
 
     Task<ListResponseModel<ShippingCompanyDto>> GetAllAsync(
         ShippingCompanyParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

@@ -18,6 +18,7 @@ public interface IAttributeEnumValueService
         bool trackChanges = false,
         CancellationToken ct = default
     );
+
     Task<AttributeEnumValueDto> PatchAsync(
         Guid attributeId,
         Guid id,

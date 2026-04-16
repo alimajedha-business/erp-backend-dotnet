@@ -28,7 +28,7 @@ public interface ICategoryAttributeRuleService
 
     Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllAsync(
         CategoryAttributeRuleParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 

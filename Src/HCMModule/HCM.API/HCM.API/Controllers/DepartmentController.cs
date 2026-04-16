@@ -75,7 +75,7 @@ public class DepartmentController(
         var result = await _departmentService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

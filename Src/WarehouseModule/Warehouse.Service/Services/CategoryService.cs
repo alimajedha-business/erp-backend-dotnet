@@ -79,7 +79,7 @@ public class CategoryService(
     public async Task<ListResponseModel<CategoryDto>> GetAllAsync(
         Guid companyId,
         CategoryParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

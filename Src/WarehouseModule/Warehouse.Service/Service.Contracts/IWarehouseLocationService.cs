@@ -29,8 +29,8 @@ public interface IWarehouseLocationService
     Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
     );
 
     Task<int> GetNextCodeAsync(

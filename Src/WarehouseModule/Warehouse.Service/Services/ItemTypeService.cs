@@ -72,7 +72,7 @@ public class ItemTypeService(
 
     public async Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
         ItemTypeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

@@ -95,7 +95,7 @@ public class CategoryController(
         var result = await _categoryService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -120,7 +120,7 @@ public class CategoryController(
         var result = await _categoryService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -237,7 +237,7 @@ public class CategoryController(
             companyId,
             categoryId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 
@@ -264,7 +264,7 @@ public class CategoryController(
             companyId,
             categoryId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

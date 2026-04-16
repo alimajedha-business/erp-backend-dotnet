@@ -87,7 +87,7 @@ public class WarehouseService(
     public async Task<ListResponseModel<WarehouseListDto>> GetAllAsync(
         Guid companyId,
         WarehouseParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {

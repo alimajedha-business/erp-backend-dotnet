@@ -66,7 +66,7 @@ public class ItemTypeController(
     {
         var attributes = await _itemTypeService.GetAllAsync(
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

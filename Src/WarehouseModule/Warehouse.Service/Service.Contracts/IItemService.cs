@@ -32,7 +32,7 @@ public interface IItemService
     Task<ListResponseModel<ItemDto>> GetAllAsync(
         Guid companyId,
         ItemParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
@@ -40,8 +40,8 @@ public interface IItemService
         Guid companyId,
         Guid categoryId,
         ItemParameters parameters,
-        FilterNodeDto filterNodeDto,
-        CancellationToken ct    
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
     );
 
     Task<ItemDto> PatchAsync(

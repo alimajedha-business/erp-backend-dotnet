@@ -72,7 +72,7 @@ public class PositionController(
         var result = await _positionService.GetAllAsync(
             companyId,
             parameters,
-            filterNodeDto ?? new FilterNodeDto(),
+            filterNodeDto,
             ct
         );
 

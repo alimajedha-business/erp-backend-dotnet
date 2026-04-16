@@ -72,7 +72,7 @@ public class WarehouseTypeService(
 
     public async Task<ListResponseModel<WarehouseTypeDto>> GetAllAsync(
         WarehouseTypeParameters parameters,
-        FilterNodeDto filterNodeDto,
+        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
