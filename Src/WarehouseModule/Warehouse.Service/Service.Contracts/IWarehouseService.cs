@@ -22,13 +22,13 @@ public interface IWarehouseService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<WarehouseDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseListDto>> GetAllAsync(
         Guid companyId,
         WarehouseParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<WarehouseDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseListDto>> GetAllAsync(
         Guid companyId,
         WarehouseParameters parameters,
         FilterNodeDto filterNodeDto,

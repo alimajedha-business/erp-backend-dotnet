@@ -14,6 +14,11 @@ public interface IWarehouseLocationService
         CreateWarehouseLocationDto createDto,
         CancellationToken ct
     );
+    Task<WarehouseLocationDto> GetByIdAsync(
+        Guid warehouseId,
+        Guid id,
+        CancellationToken ct
+    );
 
     Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
         Guid warehouseId,
@@ -26,12 +31,6 @@ public interface IWarehouseLocationService
         WarehouseLocationParameters parameters,
         CancellationToken ct,
         FilterNodeDto? filterNodeDto = null
-    );
-
-    Task<WarehouseLocationDto> GetByIdAsync(
-        Guid warehouseId,
-        Guid id,
-        CancellationToken ct
     );
 
     Task<int> GetNextCodeAsync(

@@ -45,6 +45,16 @@ public class WarehouseLocationService(
         return _mapper.Map<WarehouseLocationDto>(createdLocation);
     }
 
+    public async Task<WarehouseLocationDto> GetByIdAsync(
+        Guid warehouseId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
+        return _mapper.Map<WarehouseLocationDto>(entity);
+    }
+
     public async Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
@@ -84,16 +94,6 @@ public class WarehouseLocationService(
             totalCount: listQueryResult.count,
             parameters
         );
-    }
-
-    public async Task<WarehouseLocationDto> GetByIdAsync(
-        Guid warehouseId,
-        Guid id,
-        CancellationToken ct
-    )
-    {
-        var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
-        return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
     public async Task<int> GetNextCodeAsync(

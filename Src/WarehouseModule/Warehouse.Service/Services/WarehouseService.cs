@@ -5,6 +5,7 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
@@ -12,6 +13,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Specifications;
 
 namespace NGErp.Warehouse.Service.Services;
 
@@ -51,11 +53,18 @@ public class WarehouseService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            trackChanges: false,
+            spec: new WarehouseSpecification(),
+            ct
+        );
+
         return _mapper.Map<WarehouseDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseListDto>> GetAllAsync(
         Guid companyId,
         WarehouseParameters parameters,
         CancellationToken ct = default
@@ -64,18 +73,18 @@ public class WarehouseService(
         var listQueryResult = await _warehouseRepository.GetAllAsync(
             companyId,
             parameters,
-            spec: null,
+            spec: new WarehouseListSpecification(),
             ct
         );
 
-        return new ListResponseModel<WarehouseDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseDto>>(listQueryResult.items),
+        return new ListResponseModel<WarehouseListDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<WarehouseDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseListDto>> GetAllAsync(
         Guid companyId,
         WarehouseParameters parameters,
         FilterNodeDto filterNodeDto,
@@ -86,12 +95,12 @@ public class WarehouseService(
         var listQueryResult = await _warehouseRepository.GetAllAsync(
             parameters,
             advancedFilters,
-            spec: null,
+            spec: new WarehouseListSpecification(),
             ct
         );
 
-        return new ListResponseModel<WarehouseDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseDto>>(listQueryResult.items),
+        return new ListResponseModel<WarehouseListDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseListDto>>(listQueryResult.items),
             totalCount: listQueryResult.count,
             parameters
         );
@@ -108,6 +117,7 @@ public class WarehouseService(
             companyId,
             id,
             trackChanges: false,
+            spec: new WarehouseSpecification(),
             ct
         );
 
@@ -140,6 +150,7 @@ public class WarehouseService(
             companyId,
             id,
             trackChanges: true,
+            spec: null,
             ct
         );
 
@@ -159,6 +170,7 @@ public class WarehouseService(
         Guid companyId,
         Guid id,
         bool trackChanges = false,
+        ISpecification<Domain.Entities.Warehouse>? spec = null,
         CancellationToken ct = default
     )
     {
@@ -166,7 +178,7 @@ public class WarehouseService(
             companyId,
             id,
             trackChanges,
-            spec: null,
+            spec,
             ct
         );
 
