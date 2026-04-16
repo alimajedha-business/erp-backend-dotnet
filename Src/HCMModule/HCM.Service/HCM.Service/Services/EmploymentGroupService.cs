@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml.Office;
 
 using FluentValidation;
@@ -43,12 +44,43 @@ public class EmploymentGroupService(
 {
     protected override string LocalizerKey => "EmploymentGroup";
 
-    public Task<EmploymentGroupDetailDto> CreateAsync(Guid companyId,
+    public async Task<EmploymentGroupDetailDto> CreateAsync(Guid companyId,
         CreateEmploymentGroupDto createDto,
         CancellationToken ct
         )
     {
-        throw new NotImplementedException();
+        await EnsureCompanyAsync(companyId, ct);
+        var existing = await _repo.FirstOrDefaultAsync(
+            e => e.CompanyId == companyId && e.Name == createDto.Name);
+        if (existing != null)
+        {
+            throw new InvalidOperationException("نام گروه استخدامی در شرکت باید یکتا باشد");
+        }
+
+        var employmentGroup = _mapper.Map<EmploymentGroup>(createDto);
+        employmentGroup.CompanyId = companyId;
+
+        var specDto = createDto.Specification;
+
+        var specification = new EmploymentGroupSpecification
+        {
+            MonthType = specDto.MonthType,
+            WorkMinutes = specDto.WorkMinutes,
+            ValidFrom = specDto.ValidFrom
+        };
+
+        employmentGroup.Specifications.Add(specification);
+
+        await _repo.AddAsync(employmentGroup, ct);
+        await _repo.SaveChangesAsync(ct);
+
+        return new EmploymentGroupDetailDto
+        {
+            Name = employmentGroup.Name,
+            Specifications = employmentGroup.Specifications
+            .Select(s => _mapper.Map<EmploymentGroupSpecificationDto>(s))
+            .ToList()
+        };
     }
 
     async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(

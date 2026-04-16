@@ -14,9 +14,8 @@ public record EmploymentGroupSpecificationDto
 }
 
 public record CreateEmploymentGroupSpecificationDto
-{    
-    public MonthTypeEnum MonthType { get; init; }
+{
+    public required MonthTypeEnum MonthType { get; init; }
     public int WorkMinutes { get; init; }
     public DateOnly ValidFrom { get; init; }
-    public DateOnly? ValidTo { get; init; }
 }

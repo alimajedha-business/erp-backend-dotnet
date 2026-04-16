@@ -20,5 +20,9 @@ public class EmploymentGroup : BaseEntityWithCompany, IBaseEntityTypeConfigurati
                 "LEN(Name) >= 2"
                 ));
         builder.Property<string>(e => e.Name).HasMaxLength(500);
+
+        builder.HasIndex(i => new { i.CompanyId, i.Name })
+            .IsUnique()
+            .HasDatabaseName("UX_EmploymentGroup_CompanyId_Name");
     }
 }

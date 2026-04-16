@@ -138,4 +138,13 @@
   <data name="Name" xml:space="preserve">
     <value>عنوان</value>
   </data>
+  <data name="Specification" xml:space="preserve">
+    <value>وِیژگی</value>
+  </data>
+  <data name="EmploymentGroupSpecification.WorkMinutes" xml:space="preserve">
+    <value>زمان کارکرد باید بزرگتر از صفر و کوچکتر از 720 دقیقه باشد</value>
+  </data>
+  <data name="EmploymentGroupSpecification.MonthType" xml:space="preserve">
+    <value>نوع تقویم میتواند یکی از مقادیر 1 یا 2 باشد</value>
+  </data>
 </root>

@@ -19,5 +19,5 @@ public record EmploymentGroupDetailDto
 public record CreateEmploymentGroupDto
 {
     public required string Name { get; init; }
-    public CreateEmploymentGroupSpecificationDto Specification { get; init; } = default!;
+    public required CreateEmploymentGroupSpecificationDto Specification { get; init; }
 }

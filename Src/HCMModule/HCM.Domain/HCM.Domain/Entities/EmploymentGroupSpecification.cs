@@ -12,11 +12,10 @@ public enum MonthTypeEnum
 {
     [Description("Normal")]
     Normal = 1,
+
     [Description("ThirtyDay")]
     ThirtyDay
 }
-
-
 
 public class EmploymentGroupSpecification : BaseEntity, IBaseEntityTypeConfiguration<EmploymentGroupSpecification>
 {

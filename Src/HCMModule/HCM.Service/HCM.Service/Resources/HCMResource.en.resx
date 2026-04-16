@@ -138,4 +138,13 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Specification" xml:space="preserve">
+    <value>Specification</value>
+  </data>
+  <data name="EmploymentGroupSpecification.WorkMinutes" xml:space="preserve">
+    <value>Worktime should be between 0 and 720</value>
+  </data>
+  <data name="EmploymentGroupSpecification.MonthType" xml:space="preserve">
+    <value>Month type should be 1 or 2</value>
+  </data>
 </root>
