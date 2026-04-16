@@ -58,7 +58,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
 
     public virtual async Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        RequestAdvancedFilters requestAdvancedFilters,
+        RequestAdvancedFilters? requestAdvancedFilters = null,
         ISpecification<T>? spec = null,
         CancellationToken ct = default
     )

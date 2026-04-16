@@ -22,7 +22,7 @@ public interface IRepository<T> where T : class
 
     Task<ListQueryResult<T>> GetAllAsync(
         RequestParameters requestParameters,
-        RequestAdvancedFilters requestAdvancedFilters,
+        RequestAdvancedFilters? requestAdvancedFilters = null,
         ISpecification<T>? spec = null,
         CancellationToken ct = default
     );
