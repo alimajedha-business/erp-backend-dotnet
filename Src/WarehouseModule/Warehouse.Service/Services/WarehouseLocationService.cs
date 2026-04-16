@@ -5,6 +5,7 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
@@ -13,6 +14,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Specifications;
 
 namespace NGErp.Warehouse.Service.Services;
 
@@ -51,7 +53,13 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
+        var entity = await GetByIdOrThrowAsync(
+            id,
+            trackChanges: true,
+            spec: new WarehouseLocationSpecification(warehouseId),
+            ct
+        );
+
         return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
@@ -61,9 +69,9 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var listQueryResult = await _locationRepository.GetWarehouseLocationsAsync(
-            warehouseId,
+        var listQueryResult = await _locationRepository.GetAllAsync(
             parameters,
+            spec: new WarehouseLocationListSpecification(warehouseId),
             ct
         );
 
@@ -82,10 +90,10 @@ public class WarehouseLocationService(
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
-        var listQueryResult = await _locationRepository.GetWarehouseLocationsAsync(
-            warehouseId,
+        var listQueryResult = await _locationRepository.GetAllAsync(
             parameters,
             advancedFilters,
+            spec: new WarehouseLocationListSpecification(warehouseId),
             ct
         );
 
@@ -112,10 +120,10 @@ public class WarehouseLocationService(
     )
     {
         var entity = await GetByIdOrThrowAsync(
-            warehouseId,
             id,
-            ct,
-            trackChanges: true
+            trackChanges: true,
+            spec: new WarehouseLocationSpecification(warehouseId),
+            ct
         );
 
         var patchDto = _mapper.Map<PatchWarehouseLocationDto>(entity);
@@ -141,23 +149,23 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(warehouseId, id, ct);
-        _locationRepository.Remove(entity);
-
+        // TODO: check permissions, and
+        // check if the warehouse location belongs to this warehouse
+        _locationRepository.Remove(id, ct);
         await _locationRepository.SaveChangesAsync(ct);
     }
 
     private async Task<WarehouseLocation> GetByIdOrThrowAsync(
-        Guid warehouseId,
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        ISpecification<WarehouseLocation>? spec = null,
+        CancellationToken ct = default
     )
     {
         var entity = await _locationRepository.GetByIdAsync(
-            warehouseId,
             id,
             trackChanges,
+            spec,
             ct
         );
 

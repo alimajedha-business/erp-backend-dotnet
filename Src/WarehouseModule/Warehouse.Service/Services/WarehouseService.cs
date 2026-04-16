@@ -146,15 +146,9 @@ public class WarehouseService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
-            spec: null,
-            ct
-        );
-
-        _warehouseRepository.Remove(entity);
+        // TODO: check permissions, and
+        // check if the warehouse belongs to this company
+        _warehouseRepository.Remove(id, ct);
         await _warehouseRepository.SaveChangesAsync(ct);
     }
 
@@ -169,7 +163,7 @@ public class WarehouseService(
     private async Task<Domain.Entities.Warehouse> GetByIdOrThrowAsync(
         Guid companyId,
         Guid id,
-        bool trackChanges = false,
+        bool trackChanges,
         ISpecification<Domain.Entities.Warehouse>? spec = null,
         CancellationToken ct = default
     )
