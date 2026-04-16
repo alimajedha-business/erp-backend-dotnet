@@ -131,6 +131,13 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         _dbSet.UpdateRange(entities);
     }
 
+    public virtual void Remove(Guid id, CancellationToken ct)
+    {
+        _dbSet
+            .Where(e => EF.Property<Guid>(e, "Id") == id)
+            .ExecuteDeleteAsync(ct);
+    }
+
     public virtual void Remove(T entity)
     {
         _dbSet.Remove(entity);
