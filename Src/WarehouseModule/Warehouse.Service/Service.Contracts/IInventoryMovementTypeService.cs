@@ -22,13 +22,13 @@ public interface IInventoryMovementTypeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
+    Task<ListResponseModel<InventoryMovementTypeDto>> FilterByQAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
+    Task<ListResponseModel<InventoryMovementTypeDto>> GetFilteredAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,

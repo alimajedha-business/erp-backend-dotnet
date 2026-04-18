@@ -22,13 +22,7 @@ public interface IPositionService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<PositionDto>> GetAllAsync(
-        Guid companyId,
-        PositionParameters parameters,
-        CancellationToken ct = default
-    );
-
-    Task<ListResponseModel<PositionDto>> GetAllAsync(
+    Task<ListResponseModel<PositionDto>> GetFilteredAsync(
         Guid companyId,
         PositionParameters parameters,
         FilterNodeDto? filterNodeDto = null,

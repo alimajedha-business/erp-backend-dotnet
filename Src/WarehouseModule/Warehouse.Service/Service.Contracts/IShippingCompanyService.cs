@@ -20,12 +20,12 @@ public interface IShippingCompanyService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ShippingCompanyDto>> GetAllAsync(
+    Task<ListResponseModel<ShippingCompanyDto>> FilterByQAsync(
         ShippingCompanyParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ShippingCompanyDto>> GetAllAsync(
+    Task<ListResponseModel<ShippingCompanyDto>> GetFilteredAsync(
         ShippingCompanyParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default

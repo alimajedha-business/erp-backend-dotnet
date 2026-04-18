@@ -55,46 +55,20 @@ public class DepartmentService(
         return _mapper.Map<DepartmentDto>(entity);
     }
 
-    public async Task<ListResponseModel<DepartmentDto>> GetAllAsync(
-        Guid companyId,
-        DepartmentParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        // TODO: add specification if needed
-        var listQueryResult = await _departmentRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
-
-        return new ListResponseModel<DepartmentDto>(
-            results: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            parameters
-        );
-    }
-
-    public async Task<ListResponseModel<DepartmentDto>> GetAllAsync(
+    public async Task<ListResponseModel<DepartmentDto>> GetFilteredAsync(
         Guid companyId,
         DepartmentParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
         var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
-        var listQueryResult = await _departmentRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _departmentRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _departmentRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<DepartmentDto>(
-            results: _mapper.Map<IReadOnlyList<DepartmentDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<DepartmentDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

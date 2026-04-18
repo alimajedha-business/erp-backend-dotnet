@@ -52,41 +52,34 @@ public class ShippingCompanyService(
         return _mapper.Map<ShippingCompanyDto>(entity);
     }
 
-    public async Task<ListResponseModel<ShippingCompanyDto>> GetAllAsync(
+    public async Task<ListResponseModel<ShippingCompanyDto>> FilterByQAsync(
         ShippingCompanyParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _shippingCompanyRepository.GetAllAsync(
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _shippingCompanyRepository.FilterByQ(parameters);
+        var res = await _shippingCompanyRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ShippingCompanyDto>(
-            results: _mapper.Map<IReadOnlyList<ShippingCompanyDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<ShippingCompanyDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<ShippingCompanyDto>> GetAllAsync(
+    public async Task<ListResponseModel<ShippingCompanyDto>> GetFilteredAsync(
         ShippingCompanyParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<ShippingCompany>(filterNodeDto);
-        var listQueryResult = await _shippingCompanyRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _shippingCompanyRepository.GetFiltered(advancedFilters);
+        var res = await _shippingCompanyRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ShippingCompanyDto>(
-            results: _mapper.Map<IReadOnlyList<ShippingCompanyDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<ShippingCompanyDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

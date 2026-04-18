@@ -52,41 +52,34 @@ public class WarehouseTypeService(
         return _mapper.Map<WarehouseTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseTypeDto>> FilterByQAsync(
         WarehouseTypeParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _warehouseTypeRepository.GetAllAsync(
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _warehouseTypeRepository.FilterByQ(parameters);
+        var res = await _warehouseTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<WarehouseTypeDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<WarehouseTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<WarehouseTypeDto>> GetFilteredAsync(
         WarehouseTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseType>(filterNodeDto);
-        var listQueryResult = await _warehouseTypeRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _warehouseTypeRepository.GetFiltered(advancedFilters);
+        var res = await _warehouseTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<WarehouseTypeDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

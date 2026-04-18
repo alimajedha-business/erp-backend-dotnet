@@ -96,26 +96,20 @@ public class ItemService(
         return _mapper.Map<ItemDto>(item);
     }
 
-    public async Task<ListResponseModel<ItemDto>> GetAllAsync(
+    public async Task<ListResponseModel<ItemDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
-        var listQueryResult = await _itemRepository.GetAllAsync(
-            companyId,
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _itemRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _itemRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ItemDto>(
-            results: _mapper.Map<IReadOnlyList<ItemDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<ItemDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

@@ -52,41 +52,34 @@ public class ItemTypeService(
         return _mapper.Map<ItemTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<ItemTypeDto>> FilterByQAsync(
         ItemTypeParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _itemTypeRepository.GetAllAsync(
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _itemTypeRepository.FilterByQ(parameters);
+        var res = await _itemTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ItemTypeDto>(
-            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<ItemTypeDto>> GetFilteredAsync(
         ItemTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<ItemType>(filterNodeDto);
-        var listQueryResult = await _itemTypeRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _itemTypeRepository.GetFiltered(advancedFilters);
+        var res = await _itemTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ItemTypeDto>(
-            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

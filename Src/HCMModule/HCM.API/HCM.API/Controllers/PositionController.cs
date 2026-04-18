@@ -69,7 +69,7 @@ public class PositionController(
         CancellationToken ct
         )
     {
-        var result = await _positionService.GetAllAsync(
+        var result = await _positionService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,

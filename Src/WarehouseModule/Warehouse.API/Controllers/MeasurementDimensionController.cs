@@ -23,7 +23,7 @@ public class MeasurementDimensionController(
         CancellationToken ct
     )
     {
-        var result = await _dimensionService.GetAllAsync(parameters, ct);
+        var result = await _dimensionService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 

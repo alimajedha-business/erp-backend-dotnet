@@ -20,12 +20,12 @@ public interface IItemTypeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
+    Task<ListResponseModel<ItemTypeDto>> FilterByQAsync(
         ItemTypeParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ItemTypeDto>> GetAllAsync(
+    Task<ListResponseModel<ItemTypeDto>> GetFilteredAsync(
         ItemTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default

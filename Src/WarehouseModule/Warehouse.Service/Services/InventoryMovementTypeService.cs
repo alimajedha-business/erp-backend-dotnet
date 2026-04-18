@@ -56,27 +56,23 @@ public class InventoryMovementTypeService(
         return _mapper.Map<InventoryMovementTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<InventoryMovementTypeDto>> FilterByQAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _movementTypeRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _movementTypeRepository.FilterByQ(companyId, parameters);
+        var res = await _movementTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<InventoryMovementTypeDto>(
-            results: _mapper.Map<IReadOnlyList<InventoryMovementTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<InventoryMovementTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<InventoryMovementTypeDto>> GetAllAsync(
+    public async Task<ListResponseModel<InventoryMovementTypeDto>> GetFilteredAsync(
         Guid companyId,
         InventoryMovementTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -84,16 +80,12 @@ public class InventoryMovementTypeService(
     )
     {
         var advancedFilters = _filterBuilder.Build<InventoryMovementType>(filterNodeDto);
-        var listQueryResult = await _movementTypeRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _movementTypeRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _movementTypeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<InventoryMovementTypeDto>(
-            results: _mapper.Map<IReadOnlyList<InventoryMovementTypeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<InventoryMovementTypeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

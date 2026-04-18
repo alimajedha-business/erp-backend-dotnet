@@ -20,12 +20,12 @@ public interface IWarehouseTypeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<WarehouseTypeDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseTypeDto>> FilterByQAsync(
         WarehouseTypeParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<WarehouseTypeDto>> GetAllAsync(
+    Task<ListResponseModel<WarehouseTypeDto>> GetFilteredAsync(
         WarehouseTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default

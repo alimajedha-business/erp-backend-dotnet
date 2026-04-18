@@ -73,7 +73,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var result = await _categoryService.GetAllAsync(
+        var result = await _categoryService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -92,7 +92,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        var result = await _categoryService.GetAllAsync(
+        var result = await _categoryService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,
@@ -117,7 +117,7 @@ public class CategoryController(
             Paginated = false,
         };
 
-        var result = await _categoryService.GetAllAsync(
+        var result = await _categoryService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,

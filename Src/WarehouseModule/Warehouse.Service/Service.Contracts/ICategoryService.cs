@@ -22,13 +22,13 @@ public interface ICategoryService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryDto>> GetAllAsync(
+    Task<ListResponseModel<CategoryDto>> FilterByQAsync(
         Guid companyId,
         CategoryParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryDto>> GetAllAsync(
+    Task<ListResponseModel<CategoryDto>> GetFilteredAsync(
         Guid companyId,
         CategoryParameters parameters,
         FilterNodeDto? filterNodeDto = null,

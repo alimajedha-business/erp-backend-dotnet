@@ -66,7 +66,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -87,7 +87,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,
@@ -114,7 +114,7 @@ public class WarehouseController(
             Paginated = false,
         };
 
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,
@@ -237,7 +237,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetFilterByQAsync(
+        var result = await _locationService.FilterByQAsync(
             warehouseId,
             parameters,
             ct
@@ -258,7 +258,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetListAsync(
+        var result = await _locationService.GetFilteredAsync(
             warehouseId,
             parameters,
             filterNodeDto,

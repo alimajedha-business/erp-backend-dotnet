@@ -55,46 +55,36 @@ public class AttributeService(
         return _mapper.Map<AttributeDto>(entity);
     }
 
-    public async Task<ListResponseModel<AttributeDto>> GetAllAsync(
+    public async Task<ListResponseModel<AttributeDto>> FilterByQAsync(
         Guid companyId,
         AttributeParameters parameters,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        var listQueryResult = await _attributeRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _attributeRepository.FilterByQ(companyId, parameters);
+        var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<AttributeDto>(
-            results: _mapper.Map<IReadOnlyList<AttributeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<AttributeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<AttributeDto>> GetAllAsync(
+    public async Task<ListResponseModel<AttributeDto>> GetFilteredAsync(
         Guid companyId,
         AttributeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
         var advancedFilters = _filterBuilder.Build<Domain.Entities.Attribute>(filterNodeDto);
-        var listQueryResult = await _attributeRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _attributeRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<AttributeDto>(
-            results: _mapper.Map<IReadOnlyList<AttributeDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<AttributeDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

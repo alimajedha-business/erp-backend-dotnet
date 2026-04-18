@@ -20,13 +20,13 @@ public interface IWarehouseLocationService
         CancellationToken ct
     );
 
-    Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
+    Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     );
 
-    Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
+    Task<ListResponseModel<WarehouseLocationListDto>> GetFilteredAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         FilterNodeDto? filterNodeDto = null,

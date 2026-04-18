@@ -56,27 +56,23 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(entity);
     }
 
-    public async Task<ListResponseModel<CategoryDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryDto>> FilterByQAsync(
         Guid companyId,
         CategoryParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _categoryRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _categoryRepository.FilterByQ(companyId, parameters);
+        var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<CategoryDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryDto>> GetFilteredAsync(
         Guid companyId,
         CategoryParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -84,16 +80,12 @@ public class CategoryService(
     )
     {
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
-        var listQueryResult = await _categoryRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _categoryRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

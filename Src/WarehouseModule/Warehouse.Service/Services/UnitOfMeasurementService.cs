@@ -52,41 +52,34 @@ public class UnitOfMeasurementService(
         return _mapper.Map<UnitOfMeasurementDto>(entity);
     }
 
-    public async Task<ListResponseModel<UnitOfMeasurementDto>> GetAllAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementDto>> FilterByQAsync(
         UnitOfMeasurementParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _uomRepository.GetAllAsync(
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _uomRepository.FilterByQ(parameters);
+        var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<UnitOfMeasurementDto>(
-            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<UnitOfMeasurementDto>> GetAllAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementDto>> GetFilteredAsync(
         UnitOfMeasurementParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<UnitOfMeasurement>(filterNodeDto);
-        var listQueryResult = await _uomRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _uomRepository.GetFiltered(advancedFilters);
+        var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<UnitOfMeasurementDto>(
-            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

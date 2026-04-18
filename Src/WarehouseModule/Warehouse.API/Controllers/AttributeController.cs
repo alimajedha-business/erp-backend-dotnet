@@ -52,7 +52,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var result = await _attributeService.GetAllAsync(
+        var result = await _attributeService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -70,7 +70,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var attributes = await _attributeService.GetAllAsync(
+        var attributes = await _attributeService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,

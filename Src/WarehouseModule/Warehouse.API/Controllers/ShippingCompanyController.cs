@@ -51,7 +51,7 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var result = await _shippingCompanyService.GetAllAsync(parameters, ct);
+        var result = await _shippingCompanyService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -64,7 +64,7 @@ public class ShippingCompanyController(
         CancellationToken ct
     )
     {
-        var shippingCompanies = await _shippingCompanyService.GetAllAsync(
+        var shippingCompanies = await _shippingCompanyService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct

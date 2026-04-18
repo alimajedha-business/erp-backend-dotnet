@@ -45,7 +45,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var result = await _unitOfMeasurementService.GetAllAsync(parameters, ct);
+        var result = await _unitOfMeasurementService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -57,7 +57,7 @@ public class UnitOfMeasurementController(
         CancellationToken ct
     )
     {
-        var result = await _unitOfMeasurementService.GetAllAsync(
+        var result = await _unitOfMeasurementService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct

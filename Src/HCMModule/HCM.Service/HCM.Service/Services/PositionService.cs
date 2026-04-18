@@ -55,46 +55,20 @@ public class PositionService(
         return _mapper.Map<PositionDto>(entity);
     }
 
-    public async Task<ListResponseModel<PositionDto>> GetAllAsync(
-        Guid companyId,
-        PositionParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        // TODO: add specification if needed
-        var listQueryResult = await _positionRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
-
-        return new ListResponseModel<PositionDto>(
-            results: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
-            parameters
-        );
-    }
-
-    public async Task<ListResponseModel<PositionDto>> GetAllAsync(
+    public async Task<ListResponseModel<PositionDto>> GetFilteredAsync(
         Guid companyId,
         PositionParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
         var advancedFilters = _filterBuilder.Build<Position>(filterNodeDto);
-        var listQueryResult = await _positionRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _positionRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _positionRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<PositionDto>(
-            results: _mapper.Map<IReadOnlyList<PositionDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<PositionDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

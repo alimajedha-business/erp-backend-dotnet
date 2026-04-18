@@ -36,7 +36,7 @@ public class ItemController(
         CancellationToken ct
     )
     {
-        var result = await _itemService.GetAllAsync(
+        var result = await _itemService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,
@@ -61,7 +61,7 @@ public class ItemController(
             Paginated = false,
         };
 
-        var result = await _itemService.GetAllAsync(
+        var result = await _itemService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,

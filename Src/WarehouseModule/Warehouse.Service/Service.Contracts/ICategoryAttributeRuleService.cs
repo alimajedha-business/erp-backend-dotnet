@@ -21,12 +21,12 @@ public interface ICategoryAttributeRuleService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllAsync(
+    Task<ListResponseModel<CategoryAttributeRuleDto>> FilterByQAsync(
         CategoryAttributeRuleParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllAsync(
+    Task<ListResponseModel<CategoryAttributeRuleDto>> GetFilteredAsync(
         CategoryAttributeRuleParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default

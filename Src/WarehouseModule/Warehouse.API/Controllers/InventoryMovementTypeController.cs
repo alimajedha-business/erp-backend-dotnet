@@ -50,7 +50,7 @@ public class InventoryMovementTypeController(
     CancellationToken ct
 )
     {
-        var result = await _inventoryMovementTypeService.GetAllAsync(
+        var result = await _inventoryMovementTypeService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -68,7 +68,7 @@ public class InventoryMovementTypeController(
         CancellationToken ct
     )
     {
-        var result = await _inventoryMovementTypeService.GetAllAsync(
+        var result = await _inventoryMovementTypeService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,

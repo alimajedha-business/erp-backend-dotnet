@@ -56,27 +56,23 @@ public class CategoryLevelConstraintService(
         return _mapper.Map<CategoryLevelConstraintDto>(entity);
     }
 
-    public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryLevelConstraintDto>> FilterByQAsync(
         Guid companyId,
         CategoryLevelConstraintParameters parameters,
         CancellationToken ct = default
     )
     {
-        var listQueryResult = await _constraintRepository.GetAllAsync(
-            companyId,
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _constraintRepository.FilterByQ(companyId, parameters);
+        var res = await _constraintRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryLevelConstraintDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetFilteredAsync(
         Guid companyId,
         CategoryLevelConstraintParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -84,16 +80,12 @@ public class CategoryLevelConstraintService(
     )
     {
         var advancedFilters = _filterBuilder.Build<CategoryLevelConstraint>(filterNodeDto);
-        var listQueryResult = await _constraintRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _constraintRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _constraintRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryLevelConstraintDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

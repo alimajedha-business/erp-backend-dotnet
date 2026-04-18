@@ -29,7 +29,7 @@ public interface IItemService
         CancellationToken ct
     );
 
-    Task<ListResponseModel<ItemDto>> GetAllAsync(
+    Task<ListResponseModel<ItemDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,
         FilterNodeDto? filterNodeDto = null,

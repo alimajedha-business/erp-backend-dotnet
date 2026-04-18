@@ -22,13 +22,7 @@ public interface IDepartmentService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<DepartmentDto>> GetAllAsync(
-        Guid companyId,
-        DepartmentParameters parameters,
-        CancellationToken ct = default
-    );
-
-    Task<ListResponseModel<DepartmentDto>> GetAllAsync(
+    Task<ListResponseModel<DepartmentDto>> GetFilteredAsync(
         Guid companyId,
         DepartmentParameters parameters,
         FilterNodeDto? filterNodeDto = null,

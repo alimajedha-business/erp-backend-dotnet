@@ -22,13 +22,13 @@ public interface IAttributeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<AttributeDto>> GetAllAsync(
+    Task<ListResponseModel<AttributeDto>> FilterByQAsync(
         Guid companyId,
         AttributeParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<AttributeDto>> GetAllAsync(
+    Task<ListResponseModel<AttributeDto>> GetFilteredAsync(
         Guid companyId,
         AttributeParameters parameters,
         FilterNodeDto? filterNodeDto = null,

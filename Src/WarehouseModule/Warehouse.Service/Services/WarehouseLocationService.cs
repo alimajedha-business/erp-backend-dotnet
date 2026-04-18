@@ -63,26 +63,23 @@ public class WarehouseLocationService(
         return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
+    public async Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     )
     {
-        var listQueryResult = await _locationRepository.GetAllAsync(
-            parameters,
-            spec: new WarehouseLocationListSpecification(warehouseId),
-            ct
-        );
+        var query = _locationRepository.FilterByQ(parameters);
+        var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<WarehouseLocationListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
+    public async Task<ListResponseModel<WarehouseLocationListDto>> GetFilteredAsync(
         Guid warehouseId,
         WarehouseLocationParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -90,16 +87,12 @@ public class WarehouseLocationService(
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
-        var listQueryResult = await _locationRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: new WarehouseLocationListSpecification(warehouseId),
-            ct
-        );
+        var query = _locationRepository.GetFiltered(advancedFilters);
+        var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<WarehouseLocationListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

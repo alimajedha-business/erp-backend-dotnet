@@ -55,43 +55,34 @@ public class CategoryAttributeRuleService(
         return _mapper.Map<CategoryAttributeRuleDto>(entity);
     }
 
-    public async Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryAttributeRuleDto>> FilterByQAsync(
         CategoryAttributeRuleParameters parameters,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        var listQueryResult = await _attributeRuleRepository.GetAllAsync(
-            parameters,
-            spec: null,
-            ct
-        );
+        var query = _attributeRuleRepository.FilterByQ(parameters);
+        var res = await _attributeRuleRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryAttributeRuleDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryAttributeRuleDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryAttributeRuleDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<CategoryAttributeRuleDto>> GetAllAsync(
+    public async Task<ListResponseModel<CategoryAttributeRuleDto>> GetFilteredAsync(
         CategoryAttributeRuleParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
         var advancedFilters = _filterBuilder.Build<CategoryAttributeRule>(filterNodeDto);
-        var listQueryResult = await _attributeRuleRepository.GetAllAsync(
-            parameters,
-            advancedFilters,
-            spec: null,
-            ct
-        );
+        var query = _attributeRuleRepository.GetFiltered(advancedFilters);
+        var res = await _attributeRuleRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<CategoryAttributeRuleDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryAttributeRuleDto>>(listQueryResult.items),
-            totalCount: listQueryResult.count,
+            results: _mapper.Map<IReadOnlyList<CategoryAttributeRuleDto>>(res.items),
+            totalCount: res.count,
             parameters
         );
     }

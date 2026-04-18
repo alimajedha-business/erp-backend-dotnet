@@ -52,7 +52,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseTypeService.GetAllAsync(parameters, ct);
+        var result = await _warehouseTypeService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -65,7 +65,7 @@ public class WarehouseTypeController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseTypeService.GetAllAsync(
+        var result = await _warehouseTypeService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct
@@ -88,7 +88,7 @@ public class WarehouseTypeController(
             Paginated = false,
         };
 
-        var result = await _warehouseTypeService.GetAllAsync(
+        var result = await _warehouseTypeService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct
