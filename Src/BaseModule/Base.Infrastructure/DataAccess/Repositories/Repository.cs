@@ -31,7 +31,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id, ct);
     }
 
-    public IQueryable<T> FilterByQ(
+    public virtual IQueryable<T> FilterByQ(
         RequestParameters requestParameters
     )
     {
@@ -41,7 +41,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
             .Filter(requestParameters);
     }
 
-    public IQueryable<T> GetFiltered(
+    public virtual IQueryable<T> GetFiltered(
         RequestAdvancedFilters requestAdvancedFilters
     )
     {

@@ -7,7 +7,6 @@ using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.RequestFeatures;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Domain.Entities;
 using NGErp.General.Service.Repository.Contracts;
 
@@ -37,7 +36,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             ct);
     }
 
-    public IQueryable<T> FilterByQ(
+    public virtual IQueryable<T> FilterByQ(
         Guid companyId,
         RequestParameters requestParameters
     )
@@ -49,7 +48,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             .Filter(requestParameters);
     }
 
-    public IQueryable<T> GetFiltered(
+    public virtual IQueryable<T> GetFiltered(
         Guid companyId,
         RequestAdvancedFilters requestAdvancedFilters
     )
