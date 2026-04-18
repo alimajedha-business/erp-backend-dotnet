@@ -13,10 +13,10 @@ public class OrganizationalStructureItem : BaseEntityWithCompany, IBaseEntityTyp
     public Guid? ParentItemId { get; set; }
 
     public required OrganizationalStructure OrganizationalStructure { get; set; }
-    public required OrganizationNode Node { get; set; }
+    public  OrganizationNode? Node { get; set; }
     public OrganizationalStructureItem? ParentItem { get; set; }
 
-    public required ICollection<OrganizationalStructureItem> Children { get; set; }
+    public ICollection<OrganizationalStructureItem> Children { get; set; } = [];
 
     public void Map(EntityTypeBuilder<OrganizationalStructureItem> builder)
     {

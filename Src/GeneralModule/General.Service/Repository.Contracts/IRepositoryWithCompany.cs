@@ -48,7 +48,7 @@ public interface IRepositoryWithCompany<T>
     Task<ListQueryResult<T>> GetAllAsync(
         Guid companyId,
         Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
+        CancellationToken ct,   
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
 
