@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 
 using AutoMapper.Execution;
 
+using DocumentFormat.OpenXml.Office2010.Excel;
+
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.RequestFeatures;
@@ -39,6 +41,19 @@ public static class QueryableExtensions
         if (requestParameters is null)
             return query;
 
+        var excludeIds = requestParameters.ExcludeIds;
+
+        if (!string.IsNullOrWhiteSpace(excludeIds))
+        {
+            var guidList = excludeIds.Split(',')
+                .Select(id => Guid.Parse(id))
+                .ToList();
+
+            query = query.Where(e => e != null && !guidList.Contains(
+                EF.Property<Guid>(e, "Id")
+            ));
+        }
+
         var q = requestParameters.Q;
 
         if (string.IsNullOrWhiteSpace(q))
@@ -59,15 +74,15 @@ public static class QueryableExtensions
         {
             if (codeField.PropertyType == typeof(int))
             {
-                conditions.Add(w => w != null && searchTerms.All(term =>
-                    EF.Property<int>(w, "Code").ToString().StartsWith(term))
+                conditions.Add(e => e != null && searchTerms.All(term =>
+                    EF.Property<int>(e, "Code").ToString().StartsWith(term))
                 );
             }
 
             if (codeField.PropertyType == typeof(string))
             {
-                conditions.Add(w => w != null && searchTerms.All(term =>
-                    EF.Property<string>(w, "Code").Contains(term))
+                conditions.Add(e => e != null && searchTerms.All(term =>
+                    EF.Property<string>(e, "Code").Contains(term))
                 );
             }
         }
@@ -75,16 +90,16 @@ public static class QueryableExtensions
         var titleField = typeof(T).GetProperty("Title");
         if (titleField is not null)
         {
-            conditions.Add(w => w != null && searchTerms.All(term =>
-                EF.Property<string>(w, "Title").Contains(term))
+            conditions.Add(e => e != null && searchTerms.All(term =>
+                EF.Property<string>(e, "Title").Contains(term))
             );
         }
 
         var nameField = typeof(T).GetProperty("Name");
         if (nameField is not null)
         {
-            conditions.Add(w => w != null && searchTerms.All(term =>
-                EF.Property<string>(w, "Name").Contains(term))
+            conditions.Add(e => e != null && searchTerms.All(term =>
+                EF.Property<string>(e, "Name").Contains(term))
             );
         }
 
