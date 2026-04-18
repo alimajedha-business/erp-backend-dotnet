@@ -766,7 +766,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UX_CategoryLevelConst_Company_No");
 
-                    b.ToTable("CategoryLevelConstraint", "Warehouse");
+                    b.ToTable("CategoryLevelConstraint", "Warehouse", t =>
+                        {
+                            t.HasCheckConstraint("CK_CategoryLevelConstraint_CodeLength", "CodeLength BETWEEN 1 AND 5");
+                        });
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLot", b =>
@@ -1758,6 +1761,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LevelNo")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");

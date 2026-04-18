@@ -17,10 +17,28 @@ public class ItemRepository(MainDbContext context) :
 {
     public async Task<Item?> GetByIdAsync(
         Guid companyId,
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+
+        return await query
+            .Where(e => e.CompanyId == companyId)
+            .Where(e => e.Id == id)
+            .Include(e => e.ItemType)
+            .Include(e => e.Category)
+            .Include(e => e.PrimaryUnitOfMeasurement)
+            .SingleOrDefaultAsync(cancellationToken: ct);
+    }
+
+    public async Task<Item?> GetByIdAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        CancellationToken ct = default
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
@@ -29,6 +47,9 @@ public class ItemRepository(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Where(e => e.CategoryId == categoryId)
             .Where(e => e.Id == id)
+            .Include(e => e.ItemType)
+            .Include(e => e.Category)
+            .Include(e => e.PrimaryUnitOfMeasurement)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
@@ -36,8 +57,8 @@ public class ItemRepository(MainDbContext context) :
         Guid companyId,
         Guid categoryId,
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters? requestAdvancedFilters,
+        CancellationToken ct
     )
     {
         var leafIds = new List<Guid>();
@@ -51,7 +72,7 @@ public class ItemRepository(MainDbContext context) :
             var children = await _context.Categories
                 .Where(c => c.ParentCategoryId == current)
                 .Select(c => new { c.Id, c.HasNextLevel })
-                .ToListAsync();
+                .ToListAsync(cancellationToken: ct);
 
             foreach (var ch in children)
             {
@@ -64,7 +85,7 @@ public class ItemRepository(MainDbContext context) :
             var isCurrentLeaf = await _context.Categories
                 .Where(c => c.Id == current)
                 .Select(c => !c.HasNextLevel)
-                .SingleAsync();
+                .SingleAsync(cancellationToken: ct);
 
             if (isCurrentLeaf)
                 leafIds.Add(current);
@@ -77,6 +98,9 @@ public class ItemRepository(MainDbContext context) :
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Where(i => leafIds.Contains(i.CategoryId))
+            .Include(e => e.ItemType)
+            .Include(e => e.Category)
+            .Include(e => e.PrimaryUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);

@@ -2,14 +2,14 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class CategoryAttributeRuleValidator(
+public class CreateCategoryAttributeRuleValidator(
     IStringLocalizer<WarehouseResource> localizer
-) : AbstractValidator<CategoryAttributeRule>
+) : AbstractValidator<CreateCategoryAttributeRuleDto>
 {
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 }

@@ -13,7 +13,7 @@ public sealed class WarehouseSchema : IFilterSchema<Entities.Warehouse>
             PropertyName: nameof(Entities.Warehouse.Code),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         filterSchema.Fields["title"] = new FilterFieldInfo(
@@ -27,7 +27,7 @@ public sealed class WarehouseSchema : IFilterSchema<Entities.Warehouse>
             PropertyName: nameof(Entities.Warehouse.MaxMonetaryValue),
             PropertyType: typeof(decimal),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         filterSchema.Fields["warehouseTypeId"] = new FilterFieldInfo(

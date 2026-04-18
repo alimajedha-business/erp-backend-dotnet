@@ -9,11 +9,18 @@ public sealed class WarehouseLocationSchema : IFilterSchema<WarehouseLocation>
     {
         var filterSchema = new FilterSchema();
 
+        filterSchema.Fields["parentLocationId"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.ParentLocationId),
+            PropertyType: typeof(Guid?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         filterSchema.Fields["code"] = new FilterFieldInfo(
             PropertyName: nameof(WarehouseLocation.Code),
             PropertyType: typeof(int),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "gt", "gte", "lt", "lte" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         filterSchema.Fields["title"] = new FilterFieldInfo(

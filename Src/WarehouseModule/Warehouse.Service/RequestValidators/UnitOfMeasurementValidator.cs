@@ -2,14 +2,14 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class UnitOfMeasurementValidator(
+public class CreateUnitOfMeasurementValidator(
     IStringLocalizer<WarehouseResource> localizer
-) : AbstractValidator<UnitOfMeasurement>
+) : AbstractValidator<CreateUnitOfMeasurementDto>
 {
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 }

@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 
+using NGErp.Warehouse.Service.DTOs;
+
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class AttributeValidator : AbstractValidator<Domain.Entities.Attribute>
+public class CreateAttributeValidator : AbstractValidator<CreateAttributeDto>
 {
-    public AttributeValidator()
+    public CreateAttributeValidator()
     {
 
     }

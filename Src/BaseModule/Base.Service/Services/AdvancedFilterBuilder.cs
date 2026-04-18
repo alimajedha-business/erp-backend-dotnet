@@ -10,7 +10,7 @@ public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdva
 
     public RequestAdvancedFilters Build<T>(FilterNodeDto? filterNodeDto)
     {
-        if (filterNodeDto is null)
+        if (filterNodeDto is null || IsEmpty(filterNodeDto))
         {
             return new RequestAdvancedFilters
             {
@@ -19,21 +19,21 @@ public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdva
             };
         }
 
-        try
-        {
-            (string? search, object[] searchPrms) =
-                DynamicLinqConditionBuilder.Build<T>(filterNodeDto, _schemaProvider);
+        var (predicate, args) = DynamicLinqConditionBuilder.Build<T>(filterNodeDto, _schemaProvider);
 
-            return new RequestAdvancedFilters
-            {
-                Predicate = search,
-                Args = searchPrms
-            };
-        }
-        catch (Exception ex)
+        return new RequestAdvancedFilters
         {
-            throw new Exception(ex.Message, ex);
-        }
+            Predicate = string.IsNullOrWhiteSpace(predicate) ? null : predicate,
+            Args = args
+        };
+    }
+
+    private static bool IsEmpty(FilterNodeDto node)
+    {
+        return node is not null &&
+               node.Field == null &&
+               node.Operator == null &&
+               node.Value == null &&
+               (node.Children == null || node.Children.Count == 0);
     }
 }
-

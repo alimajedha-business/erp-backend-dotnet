@@ -7,7 +7,7 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -50,7 +50,7 @@ public class InventoryMovementTypeController(
     CancellationToken ct
 )
     {
-        var result = await _inventoryMovementTypeService.GetAllAsync(
+        var result = await _inventoryMovementTypeService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -68,11 +68,11 @@ public class InventoryMovementTypeController(
         CancellationToken ct
     )
     {
-        var result = await _inventoryMovementTypeService.GetAllAsync(
+        var result = await _inventoryMovementTypeService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -88,6 +88,7 @@ public class InventoryMovementTypeController(
         var warehouse = await _inventoryMovementTypeService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: true,
             ct
         );
 

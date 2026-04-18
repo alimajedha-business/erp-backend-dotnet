@@ -46,6 +46,10 @@ public abstract class RequestParameters
     [FromQuery(Name = "ordering")]
     public string? OrderBy { get; set; }
 
+    [FromQuery(Name = "excludeIds")]
+    [Description("This parameter is used in list APIs with GET method.")]
+    public string? ExcludeIds { get; set; }
+
     [FromQuery(Name = "q")]
     [Description("This parameter is used in list APIs with GET method.")]
     public string? Q { get; set; }

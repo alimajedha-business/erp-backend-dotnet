@@ -9,6 +9,7 @@ public class WarehouseMappingProfile : Profile
     public WarehouseMappingProfile()
     {
         CreateMap<Domain.Entities.Warehouse, WarehouseDto>();
+        CreateMap<Domain.Entities.Warehouse, WarehouseSlimDto>();
         CreateMap<Domain.Entities.Warehouse, WarehouseListDto>()
             .ForCtorParam(
                 nameof(WarehouseListDto.WarehouseTypeTitle),

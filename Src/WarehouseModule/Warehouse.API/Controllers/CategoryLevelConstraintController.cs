@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
+
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -24,6 +27,10 @@ public class CategoryLevelConstraintController(
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [SwaggerRequestExample(
+        typeof(CreateCategoryLevelConstraintDto),
+        typeof(CategoryLevelConstraintCreateRequestExample))
+    ]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
         [FromBody] CreateCategoryLevelConstraintDto createDto,
@@ -50,7 +57,7 @@ public class CategoryLevelConstraintController(
         CancellationToken ct
     )
     {
-        var result = await _constraintService.GetAllAsync(
+        var result = await _constraintService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -68,11 +75,11 @@ public class CategoryLevelConstraintController(
         CancellationToken ct
     )
     {
-        var result = await _constraintService.GetAllAsync(
+        var result = await _constraintService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -88,6 +95,7 @@ public class CategoryLevelConstraintController(
         var dto = await _constraintService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -96,6 +104,10 @@ public class CategoryLevelConstraintController(
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
+    [SwaggerRequestExample(
+        typeof(JsonPatchDocument<PatchCategoryLevelConstraintDto>),
+        typeof(CategoryLevelConstraintPatchRequestExample)
+    )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
@@ -122,5 +134,15 @@ public class CategoryLevelConstraintController(
     {
         await _constraintService.DeleteAsync(companyId, id, ct);
         return NoContent();
+    }
+
+    [HttpGet("next-level")]
+    public async Task<IActionResult> GetNextLevel(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var nextLevel = await _constraintService.GetNextLevelAsync(companyId, ct);
+        return Ok(nextLevel);
     }
 }

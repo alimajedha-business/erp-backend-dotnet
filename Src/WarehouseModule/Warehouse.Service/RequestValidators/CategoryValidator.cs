@@ -2,18 +2,18 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 
-public class CategoryValidator : AbstractValidator<Category>
+public class CreateCategoryValidator : AbstractValidator<CreateCategoryDto>
 {
     private readonly IStringLocalizer<WarehouseResource> _localizer;
     private readonly ICategoryLevelConstraintService _constraintService;
 
-    public CategoryValidator(
+    public CreateCategoryValidator(
         IStringLocalizer<WarehouseResource> localizer,
         ICategoryLevelConstraintService constraintService
     )
@@ -40,8 +40,8 @@ public class CategoryValidator : AbstractValidator<Category>
         RuleFor(x => x.Code)
             .MustAsync(async (dto, code, ct) =>
             {
-                var categoryLevel = await _constraintService.GetByLevelNo(
-                    dto.CompanyId,
+                var categoryLevel = await _constraintService.GetByLevelNoAsync(
+                    new Guid(), // TODO: get the company id
                     dto.LevelNo,
                     ct
                 );

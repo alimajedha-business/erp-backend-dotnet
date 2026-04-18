@@ -9,6 +9,7 @@ using NGErp.Warehouse.Domain.EntitySchemas;
 using NGErp.Warehouse.Service.Mappings;
 using NGErp.Warehouse.Service.RequestValidators;
 using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.Service.Contracts;
 using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.Service;
@@ -25,7 +26,7 @@ public static class ServiceCollectionExtensions
 
         services.AddAutoMapper(typeof(MappingProfile));
 
-        services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
 
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
@@ -55,7 +56,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemUnitOfMeasurementService, ItemUnitOfMeasurementService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
-        services.AddScoped<IUnitOfMeasurementConversionService, UnitOfMeasurementConversionService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();

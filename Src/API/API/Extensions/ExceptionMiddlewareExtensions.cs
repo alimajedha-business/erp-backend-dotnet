@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 using Microsoft.AspNetCore.Diagnostics;
 
@@ -32,7 +32,7 @@ namespace NGErp.API.Extensions
                         NotFoundException or ForeignKeyConstraintException => StatusCodes.Status404NotFound,
                         BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-                        ForeignKeyViolationException 
+                        ForeignKeyViolationException
                             or DuplicateInsertException
                             or CheckConstraintException => StatusCodes.Status409Conflict,
                         _ => StatusCodes.Status500InternalServerError
@@ -55,15 +55,49 @@ namespace NGErp.API.Extensions
                     {
                         Title = localizedMessage,
                         TraceId = context.TraceIdentifier,
-                        Details = new Dictionary<string, string[]?>
-                        {
-                            { "exception", isDevelopment ? new[] {ex.InnerException != null ? ex.InnerException.Message : ex.Message.ToString() } : null }
-                        }
+                        Details = BuildErrorDetails(ex, isDevelopment)
                     };
 
                     await context.Response.WriteAsJsonAsync(errorResponse);
                 });
             });
+        }
+
+        private static Dictionary<string, string[]> BuildErrorDetails(Exception ex, bool isDevelopment)
+        {
+            if (ex is ValidationException validationException)
+            {
+                var errors = validationException.Errors
+                    .GroupBy(e => string.IsNullOrWhiteSpace(e.PropertyName) ? "model" : e.PropertyName)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(e => e.ErrorMessage).Distinct().ToArray()
+                    );
+
+                return errors.Count > 0
+                    ? errors
+                    : new Dictionary<string, string[]>
+                    {
+                        { "model", [validationException.Message] }
+                    };
+            }
+
+            if (ex is InvalidPatchDocumentException invalidPatchException)
+            {
+                return new Dictionary<string, string[]>
+                {
+                    { "patch", invalidPatchException.Errors.ToArray() }
+                };
+            }
+
+            return new Dictionary<string, string[]>
+            {
+                {
+                    "exception", isDevelopment
+                        ? [ex.InnerException != null ? ex.InnerException.Message : ex.Message]
+                        : []
+                }
+            };
         }
     }
 }

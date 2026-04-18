@@ -2,22 +2,12 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.General.Service.Services;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
 
-namespace NGErp.Warehouse.Service.Services;
+namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IItemService : IBaseServiceWithCompany<
-    Item,
-    ItemDto,
-    ItemParameters,
-    IItemRepository,
-    WarehouseResource
->
+public interface IItemService
 {
     Task<ItemDto> CreateAsync(
         Guid companyId,
@@ -26,12 +16,10 @@ public interface IItemService : IBaseServiceWithCompany<
         CancellationToken ct
     );
 
-    Task<ListResponseModel<ItemDto>> GetCategoryAllItemsAsync(
+    Task<ItemDto> GetByIdAsync(
         Guid companyId,
-        Guid categoryId,
-        ItemParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
+        Guid id,
+        CancellationToken ct
     );
 
     Task<ItemDto> GetByIdAsync(
@@ -39,6 +27,21 @@ public interface IItemService : IBaseServiceWithCompany<
         Guid categoryId,
         Guid id,
         CancellationToken ct
+    );
+
+    Task<ListResponseModel<ItemDto>> GetFilteredAsync(
+        Guid companyId,
+        ItemParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<ItemListDto>> GetCategoryAllItemsAsync(
+        Guid companyId,
+        Guid categoryId,
+        ItemParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
     );
 
     Task<ItemDto> PatchAsync(
