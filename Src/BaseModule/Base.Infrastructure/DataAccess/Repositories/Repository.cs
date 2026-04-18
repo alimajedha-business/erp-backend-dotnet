@@ -35,8 +35,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         RequestParameters requestParameters
     )
     {
-        return _context
-            .Set<T>()
+        return _dbSet
             .AsNoTracking()
             .Filter(requestParameters);
     }
@@ -45,8 +44,7 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         RequestAdvancedFilters requestAdvancedFilters
     )
     {
-        return _context
-            .Set<T>()
+        return _dbSet
             .AsNoTracking()
             .Filter(requestAdvancedFilters);
     }

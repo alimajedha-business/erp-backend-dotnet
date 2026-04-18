@@ -41,8 +41,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
         RequestParameters requestParameters
     )
     {
-        return _context
-            .Set<T>()
+        return _dbSet
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Filter(requestParameters);
@@ -53,8 +52,7 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
         RequestAdvancedFilters requestAdvancedFilters
     )
     {
-        return _context
-            .Set<T>()
+        return _dbSet
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Filter(requestAdvancedFilters);
