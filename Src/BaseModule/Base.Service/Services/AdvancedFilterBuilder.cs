@@ -10,7 +10,7 @@ public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdva
 
     public RequestAdvancedFilters Build<T>(FilterNodeDto? filterNodeDto)
     {
-        if (filterNodeDto is null)
+        if (filterNodeDto is null || IsEmpty(filterNodeDto))
         {
             return new RequestAdvancedFilters
             {
@@ -26,5 +26,14 @@ public class AdvancedFilterBuilder(IFilterSchemaProvider schemaProvider) : IAdva
             Predicate = string.IsNullOrWhiteSpace(predicate) ? null : predicate,
             Args = args
         };
+    }
+
+    private static bool IsEmpty(FilterNodeDto node)
+    {
+        return node is not null &&
+               node.Field == null &&
+               node.Operator == null &&
+               node.Value == null &&
+               (node.Children == null || node.Children.Count == 0);
     }
 }

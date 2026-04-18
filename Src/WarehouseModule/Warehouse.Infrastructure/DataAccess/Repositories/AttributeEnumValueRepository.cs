@@ -35,4 +35,17 @@ public class AttributeEnumValueRepository(MainDbContext context) :
 
         return new ListQueryResult<AttributeEnumValue>(items, totalCount);
     }
+
+    public async Task<int> GetNextCodeAsync(
+        Guid attributeId,
+        CancellationToken ct
+    )
+    {
+        var maxCode = await _dbSet
+            .AsNoTracking()
+            .Where(e => e.AttributeId == attributeId)
+            .MaxAsync(e => (int?)e.Code, ct);
+
+        return (maxCode ?? 0) + 1;
+    }
 }

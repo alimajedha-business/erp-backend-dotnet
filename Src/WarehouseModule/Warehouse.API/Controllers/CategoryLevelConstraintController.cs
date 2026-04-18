@@ -57,7 +57,7 @@ public class CategoryLevelConstraintController(
         CancellationToken ct
     )
     {
-        var result = await _constraintService.GetAllAsync(
+        var result = await _constraintService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -75,11 +75,11 @@ public class CategoryLevelConstraintController(
         CancellationToken ct
     )
     {
-        var result = await _constraintService.GetAllAsync(
+        var result = await _constraintService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -95,6 +95,7 @@ public class CategoryLevelConstraintController(
         var dto = await _constraintService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 

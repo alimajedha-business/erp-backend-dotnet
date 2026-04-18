@@ -1,27 +1,45 @@
-﻿using NGErp.Base.Service.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
 
 namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface ICategoryAttributeRuleService : IBaseService<
-    CategoryAttributeRule,
-    CategoryAttributeRuleDto,
-    CategoryAttributeRuleSlimDto,
-    CategoryAttributeRuleParameters,
-    ICategoryAttributeRuleRepository,
-    WarehouseResource
->
+public interface ICategoryAttributeRuleService
 {
-    Task<ListResponseModel<CategoryAttributeRuleSlimDto>> GetAllAsync(
+    Task<CategoryAttributeRuleDto> CreateAsync(
         Guid categoryId,
+        CreateCategoryAttributeRuleDto createDto,
+        CancellationToken ct
+    );
+
+    Task<CategoryAttributeRuleDto> GetByIdAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<CategoryAttributeRuleDto>> FilterByQAsync(
         CategoryAttributeRuleParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<CategoryAttributeRuleDto>> GetFilteredAsync(
+        CategoryAttributeRuleParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
+    );
+
+    Task<CategoryAttributeRuleDto> PatchAsync(
+        Guid id,
+        JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
+        CancellationToken ct
+    );
+
+    Task DeleteAsync(
+        Guid id,
+        CancellationToken ct
     );
 }

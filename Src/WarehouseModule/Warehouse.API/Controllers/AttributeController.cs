@@ -52,7 +52,7 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var result = await _attributeService.GetAllAsync(
+        var result = await _attributeService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -70,11 +70,11 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        var attributes = await _attributeService.GetAllAsync(
+        var attributes = await _attributeService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(attributes);
@@ -90,6 +90,7 @@ public class AttributeController(
         var dto = await _attributeService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -146,11 +147,10 @@ public class AttributeController(
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
         var dto = await _attributeEnumValueService.CreateAsync(
+            attributeId,
             createDto,
-            ct,
-            e => e.AttributeId = attributeId
+            ct
         );
 
         return CreatedAtAction(
@@ -160,100 +160,60 @@ public class AttributeController(
         );
     }
 
-    [HttpGet("{attributeId:guid}/enums/filter-by-q")]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid attributeId,
-        [FromQuery] AttributeEnumValueParameters parameters,
-        CancellationToken ct
-    )
-    {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-        var result = await _attributeEnumValueService.GetAllAsync(
-            attributeId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
-    [HttpPost("{attributeId:guid}/enums/list")]
-    [SkipModelValidation]
-    public async Task<IActionResult> GetAttributeEnumValues(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid attributeId,
-        [FromQuery] AttributeEnumValueParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
-        var enumsDto = await _attributeEnumValueService.GetAllAsync(
-            attributeId,
-            parameters,
-            ct,
-            filterNodeDto
-        );
-
-        return Ok(enumsDto);
-    }
-
     [HttpGet("{attributeId:guid}/enums/{id:guid}")]
     public async Task<IActionResult> GetAttributeEnumValueById(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var enumsDto = await _attributeEnumValueService.GetByIdAsync(
+            attributeId,
+            id,
+            trackChanges: false,
+            ct
+        );
 
-        var enumsDto = await _attributeEnumValueService.GetByIdAsync(id, ct);
         return Ok(enumsDto);
     }
 
     [HttpGet("{attributeId:guid}/enums/new-code")]
     public async Task<IActionResult> GetEnumNextCode(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
-        var code = await _attributeEnumValueService.GetNextCode(ct);
+        var code = await _attributeEnumValueService.GetNextCode(attributeId, ct);
         return Ok(code);
     }
 
     [HttpPatch("{attributeId:guid}/enums/{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> PatchCategoryAttributeRule(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
+        var dto = await _attributeEnumValueService.PatchAsync(
+            attributeId,
+            id,
+            patchDocument,
+            ct
+        );
 
-        var dto = await _attributeEnumValueService.PatchAsync(id, patchDocument, ct);
         return Ok(dto);
     }
 
     [HttpDelete("{attributeId:guid}/enums/{id:guid}")]
     public async Task<IActionResult> DeleteCategoryAttributeRule(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _attributeService.GetByIdAsync(companyId, attributeId, ct);
-
-        await _attributeEnumValueService.DeleteAsync(id, ct);
+        await _attributeEnumValueService.DeleteAsync(attributeId, id, ct);
         return NoContent();
     }
 

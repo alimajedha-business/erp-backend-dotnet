@@ -5,4 +5,6 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IInventoryMovementTypeRepository :
     IRepositoryWithCompany<InventoryMovementType>
-{ }
+{
+    Task<int> GetNextCodeAsync(Guid companyId, CancellationToken ct);
+}

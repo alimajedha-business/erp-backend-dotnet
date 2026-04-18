@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -15,32 +18,130 @@ namespace NGErp.Warehouse.Service.Services;
 
 public class UnitOfMeasurementService(
     IAdvancedFilterBuilder filterBuilder,
-    IUnitOfMeasurementRepository unitOfMeasurementRepository,
+    IUnitOfMeasurementRepository uomRepository,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : BaseService<
-        UnitOfMeasurement,
-        UnitOfMeasurementDto,
-        UnitOfMeasurementListDto,
-        UnitOfMeasurementParameters,
-        IUnitOfMeasurementRepository,
-        WarehouseResource
-    >(
-        filterBuilder,
-        unitOfMeasurementRepository,
-        mapper,
-        localizer
-    ),
-    IUnitOfMeasurementService
+) : IUnitOfMeasurementService
 {
-    protected override string LocalizerKey => "UnitOfMeasurement";
+    private readonly string _key = "UnitOfMeasurement";
 
-    public override Task<UnitOfMeasurementDto> GetByIdAsync(
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer _localizer = localizer;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IUnitOfMeasurementRepository _uomRepository = uomRepository;
+
+    public async Task<UnitOfMeasurementDto> CreateAsync(
+        CreateUnitOfMeasurementDto createDto,
+        CancellationToken ct
+    )
+    {
+        var entity = _mapper.Map<UnitOfMeasurement>(createDto);
+        var created = await _uomRepository.AddAsync(entity, ct);
+
+        await _uomRepository.SaveChangesAsync(ct);
+        return _mapper.Map<UnitOfMeasurementDto>(created);
+    }
+
+    public async Task<UnitOfMeasurementDto> GetByIdAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
+        return _mapper.Map<UnitOfMeasurementDto>(entity);
+    }
+
+    public async Task<ListResponseModel<UnitOfMeasurementDto>> FilterByQAsync(
+        UnitOfMeasurementParameters parameters,
+        CancellationToken ct = default
+    )
+    {
+        var query = _uomRepository.FilterByQ(parameters);
+        var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<UnitOfMeasurementDto>(
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    public async Task<ListResponseModel<UnitOfMeasurementDto>> GetFilteredAsync(
+        UnitOfMeasurementParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
+    )
+    {
+        var advancedFilters = _filterBuilder.Build<UnitOfMeasurement>(filterNodeDto);
+        var query = _uomRepository.GetFiltered(advancedFilters);
+        var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<UnitOfMeasurementDto>(
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    public virtual async Task<UnitOfMeasurementDto> PatchAsync(
+        Guid id,
+        JsonPatchDocument<PatchUnitOfMeasurementDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(
+            id,
+            trackChanges: false,
+            ct
+        );
+
+        var patchDto = _mapper.Map<PatchUnitOfMeasurementDto>(entity);
+        var errors = new List<string>();
+
+        patchDocument.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, entity);
+
+        await _uomRepository.SaveChangesAsync(ct);
+        return _mapper.Map<UnitOfMeasurementDto>(entity);
+    }
+
+    public virtual async Task DeleteAsync(
         Guid id,
         CancellationToken ct
-    ) => GetByIdAsync(id, includeQuery, ct);
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(
+            id,
+            trackChanges: true,
+            ct
+        );
 
-    private static IQueryable<UnitOfMeasurement> includeQuery(
-        IQueryable<UnitOfMeasurement> q
-    ) => q.Include(c => c.MeasurementDimension);
+        _uomRepository.Remove(entity);
+        await _uomRepository.SaveChangesAsync(ct);
+    }
+
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _uomRepository.GetNextCodeAsync(ct);
+    }
+
+    private async Task<UnitOfMeasurement> GetByIdOrThrowAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var entity = await _uomRepository.GetByIdAsync(id, trackChanges, ct);
+        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+    }
 }

@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -17,19 +21,127 @@ public class WarehouseTypeService(
     IWarehouseTypeRepository warehouseTypeRepository,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : BaseService<
-        WarehouseType,
-        WarehouseTypeDto,
-        WarehouseTypeParameters,
-        IWarehouseTypeRepository,
-        WarehouseResource
-    >(
-        filterBuilder,
-        warehouseTypeRepository,
-        mapper,
-        localizer
-    ),
-    IWarehouseTypeService
+) : IWarehouseTypeService
 {
-    protected override string LocalizerKey => "WarehouseType";
+    private readonly string _key = "WarehouseType";
+
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer _localizer = localizer;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IWarehouseTypeRepository _warehouseTypeRepository = warehouseTypeRepository;
+
+    public async Task<WarehouseTypeDto> CreateAsync(
+        CreateWarehouseTypeDto createDto,
+        CancellationToken ct
+    )
+    {
+        var entity = _mapper.Map<WarehouseType>(createDto);
+        var created = await _warehouseTypeRepository.AddAsync(entity, ct);
+
+        await _warehouseTypeRepository.SaveChangesAsync(ct);
+        return _mapper.Map<WarehouseTypeDto>(created);
+    }
+
+    public async Task<WarehouseTypeDto> GetByIdAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
+        return _mapper.Map<WarehouseTypeDto>(entity);
+    }
+
+    public async Task<ListResponseModel<WarehouseTypeDto>> FilterByQAsync(
+        WarehouseTypeParameters parameters,
+        CancellationToken ct = default
+    )
+    {
+        var query = _warehouseTypeRepository.FilterByQ(parameters);
+        var res = await _warehouseTypeRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<WarehouseTypeDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    public async Task<ListResponseModel<WarehouseTypeDto>> GetFilteredAsync(
+        WarehouseTypeParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
+    )
+    {
+        var advancedFilters = _filterBuilder.Build<WarehouseType>(filterNodeDto);
+        var query = _warehouseTypeRepository.GetFiltered(advancedFilters);
+        var res = await _warehouseTypeRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<WarehouseTypeDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    public virtual async Task<WarehouseTypeDto> PatchAsync(
+        Guid id,
+        JsonPatchDocument<PatchWarehouseTypeDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(
+            id,
+            trackChanges: false,
+            ct
+        );
+
+        var patchDto = _mapper.Map<PatchWarehouseTypeDto>(entity);
+        var errors = new List<string>();
+
+        patchDocument.ApplyTo(patchDto, error =>
+        {
+            errors.Add($"Path: {error.Operation.path}, Error: {error.ErrorMessage}");
+        });
+
+        if (errors.Count != 0)
+        {
+            throw new InvalidPatchDocumentException(errors);
+        }
+
+        _mapper.Map(patchDto, entity);
+
+        await _warehouseTypeRepository.SaveChangesAsync(ct);
+        return _mapper.Map<WarehouseTypeDto>(entity);
+    }
+
+    public virtual async Task DeleteAsync(
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        _warehouseTypeRepository.Remove(entity);
+        await _warehouseTypeRepository.SaveChangesAsync(ct);
+    }
+
+    public Task<int> GetNextCode(CancellationToken ct)
+    {
+        return _warehouseTypeRepository.GetNextCodeAsync(ct);
+    }
+
+    private async Task<WarehouseType> GetByIdOrThrowAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var entity = await _warehouseTypeRepository.GetByIdAsync(id, trackChanges, ct);
+        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+    }
 }

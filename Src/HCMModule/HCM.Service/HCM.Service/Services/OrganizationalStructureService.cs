@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
+using NGErp.Base.Service.Repository.Contracts;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -10,6 +14,7 @@ using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
+using NGErp.HCM.Service.Specifications;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -32,11 +37,12 @@ public class OrganizationalStructureService(
         )
     {
         await _companyService.GetByIdAsync(companyId, ct);
-        var listQueryResult = await _organizationalStructureRepository.GetAllAsync(companyId, parameters, ct);
+        var query = _organizationalStructureRepository.FilterByQ(companyId, parameters);
+        var res = await _organizationalStructureRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<OrganizationalStructureDto>(
-           results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(listQueryResult.items),
-           totalCount: listQueryResult.count,
+           results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(res.items),
+           totalCount: res.count,
            parameters
        );
     }
@@ -122,8 +128,13 @@ public class OrganizationalStructureService(
         var company = await _companyService.GetByIdAsync(companyId, ct);
 
         // 2️ Load all nodes (for validation)
-        var allNodes = await _organizationalStructureRepository
-            .GetAllAsync(companyId, includeQuery, ct);
+        var parameters = new OrganizationalStructureParameters();
+        var query = _organizationalStructureRepository.FilterByQ(companyId, parameters);
+        query = query
+            .Include(s => s.Items!).ThenInclude(i => i.Node).ThenInclude(n => n.Department)
+            .Include(s => s.Items!).ThenInclude(i => i.Node).ThenInclude(n => n.Position);
+
+        var allNodes = await _organizationalStructureRepository.GetResponseListAsync(query, parameters, ct);
 
         // 3️ Validate Tree
         //ValidateTree(incomingTree, allNodes.items, effectiveFrom);

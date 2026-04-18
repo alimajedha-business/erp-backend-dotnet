@@ -51,7 +51,7 @@ public class ItemTypeController(
         CancellationToken ct
     )
     {
-        var result = await _itemTypeService.GetAllAsync(parameters, ct);
+        var result = await _itemTypeService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -64,10 +64,10 @@ public class ItemTypeController(
         CancellationToken ct
     )
     {
-        var attributes = await _itemTypeService.GetAllAsync(
+        var attributes = await _itemTypeService.GetFilteredAsync(
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(attributes);
@@ -79,7 +79,7 @@ public class ItemTypeController(
         CancellationToken ct
     )
     {
-        var dto = await _itemTypeService.GetByIdAsync(id, ct);
+        var dto = await _itemTypeService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 
