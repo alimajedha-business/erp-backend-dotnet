@@ -19,16 +19,3 @@ public class WarehouseLocationSpecification(
         .Include(i => i.Warehouse);
 }
 
-public class WarehouseLocationListSpecification(
-    Guid warehouseId
-) : ISpecification<WarehouseLocation>
-{
-    private readonly Guid _warehouseId = warehouseId;
-
-    public Func<
-        IQueryable<WarehouseLocation>,
-        IQueryable<WarehouseLocation>
-    > Query => query => query
-        .Where(e => e.WarehouseId == _warehouseId)
-        .Include(i => i.Warehouse);
-}

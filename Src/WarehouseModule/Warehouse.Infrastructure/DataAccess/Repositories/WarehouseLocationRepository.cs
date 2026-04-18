@@ -2,6 +2,7 @@
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -11,6 +12,17 @@ public class WarehouseLocationRepository(MainDbContext context) :
     Repository<WarehouseLocation>(context),
     IWarehouseLocationRepository
 {
+    public IQueryable<WarehouseLocation> GetFiltered(
+        Guid warehouseId,
+        RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        var query = base.GetFiltered(requestAdvancedFilters);
+        return query
+            .Where(e => e.WarehouseId == warehouseId)
+            .Include(i => i.Warehouse);
+    }
+
     public async Task<int> GetNextCodeAsync(
         Guid warehouseId,
         CancellationToken ct

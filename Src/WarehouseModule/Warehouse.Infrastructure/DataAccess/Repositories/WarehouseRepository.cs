@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -10,6 +11,17 @@ public class WarehouseRepository(MainDbContext context) :
     RepositoryWithCompany<Domain.Entities.Warehouse>(context),
     IWarehouseRepository
 {
+    public override IQueryable<Domain.Entities.Warehouse> GetFiltered(
+        Guid companyId,
+        RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        var query = base.GetFiltered(companyId, requestAdvancedFilters);
+        return query
+            .Include(i => i.CompanyUnit)
+            .Include(i => i.WarehouseType);
+    }
+
     public async Task<int> GetNextCodeAsync(
         Guid companyId,
         CancellationToken ct

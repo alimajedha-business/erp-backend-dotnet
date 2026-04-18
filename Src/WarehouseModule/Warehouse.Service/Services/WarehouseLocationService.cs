@@ -87,7 +87,7 @@ public class WarehouseLocationService(
     )
     {
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
-        var query = _locationRepository.GetFiltered(advancedFilters);
+        var query = _locationRepository.GetFiltered(warehouseId, advancedFilters);
         var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<WarehouseLocationListDto>(

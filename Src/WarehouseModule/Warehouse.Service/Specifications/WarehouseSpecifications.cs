@@ -15,13 +15,3 @@ public class WarehouseSpecification :
         .Include(i => i.CompanyUnit);
 }
 
-public class WarehouseListSpecification :
-    ISpecification<Domain.Entities.Warehouse>
-{
-    public Func<
-        IQueryable<Domain.Entities.Warehouse>,
-        IQueryable<Domain.Entities.Warehouse>
-    > Query => query => query
-        .Include(i => i.WarehouseType)
-        .Include(i => i.CompanyUnit);
-}
