@@ -17,17 +17,10 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     public virtual Task<T?> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
-        ISpecification<T>? spec = null,
         CancellationToken ct = default
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
-        if (spec != null)
-        {
-            query = spec.Query(query);
-        }
-
         return query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id, ct);
     }
 

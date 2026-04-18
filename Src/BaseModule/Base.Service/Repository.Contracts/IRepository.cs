@@ -10,7 +10,6 @@ public interface IRepository<T> where T : class
     Task<T?> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
-        ISpecification<T>? spec = null,
         CancellationToken ct = default
     );
 
