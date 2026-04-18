@@ -366,18 +366,6 @@ public class CategoryController(
         );
     }
 
-    [HttpGet("{categoryId:guid}/attribute-rules/list")]
-    public async Task<IActionResult> GetCategoryAttributeRules(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid categoryId,
-        [FromQuery] CategoryAttributeRuleParameters parameters,
-        CancellationToken ct
-    )
-    {
-        // IMPLEMENT
-        return Ok();
-    }
-
     [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
     public async Task<IActionResult> GetCategoryAttributeRuleById(
         [FromRoute] Guid companyId,
