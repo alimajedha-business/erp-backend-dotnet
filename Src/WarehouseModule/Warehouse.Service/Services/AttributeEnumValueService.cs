@@ -117,13 +117,7 @@ public class AttributeEnumValueService(
     {
         // TODO: add specification if needed
         // TODO: check if this attribute enum value belongs to the attribute
-        var entity = await _enumValueRepository.GetByIdAsync(
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _enumValueRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

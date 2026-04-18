@@ -53,13 +53,7 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            spec: new WarehouseLocationSpecification(warehouseId),
-            ct
-        );
-
+        var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
@@ -112,13 +106,7 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            spec: new WarehouseLocationSpecification(warehouseId),
-            ct
-        );
-
+        var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         var patchDto = _mapper.Map<PatchWarehouseLocationDto>(entity);
         var errors = new List<string>();
 
@@ -142,8 +130,8 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        // TODO: check permissions, and
-        // check if the warehouse location belongs to this warehouse
+        // TODO: check permissions
+        // TODO: check if the warehouse location belongs to this warehouse
         _locationRepository.Remove(id, ct);
         await _locationRepository.SaveChangesAsync(ct);
     }
@@ -151,17 +139,10 @@ public class WarehouseLocationService(
     private async Task<WarehouseLocation> GetByIdOrThrowAsync(
         Guid id,
         bool trackChanges = false,
-        ISpecification<WarehouseLocation>? spec = null,
         CancellationToken ct = default
     )
     {
-        var entity = await _locationRepository.GetByIdAsync(
-            id,
-            trackChanges,
-            spec,
-            ct
-        );
-
+        var entity = await _locationRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

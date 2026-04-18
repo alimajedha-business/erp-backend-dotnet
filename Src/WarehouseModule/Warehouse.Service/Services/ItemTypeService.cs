@@ -141,13 +141,7 @@ public class ItemTypeService(
         CancellationToken ct = default
     )
     {
-        var entity = await _itemTypeRepository.GetByIdAsync(
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _itemTypeRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

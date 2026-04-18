@@ -12,6 +12,18 @@ public class WarehouseLocationRepository(MainDbContext context) :
     Repository<WarehouseLocation>(context),
     IWarehouseLocationRepository
 {
+    public override Task<WarehouseLocation?> GetByIdAsync(
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return query
+            .Include(i => i.Warehouse)
+            .FirstOrDefaultAsync(e => e.Id == id, ct);
+    }
+
     public IQueryable<WarehouseLocation> GetFiltered(
         Guid warehouseId,
         RequestAdvancedFilters requestAdvancedFilters

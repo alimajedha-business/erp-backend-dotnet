@@ -148,14 +148,7 @@ public class PositionService(
     )
     {
         // TODO: add specification if needed
-        var entity = await _positionRepository.GetByIdAsync(
-            companyId,
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _positionRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

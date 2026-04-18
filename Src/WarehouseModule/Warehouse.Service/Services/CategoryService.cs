@@ -147,14 +147,7 @@ public class CategoryService(
         CancellationToken ct = default
     )
     {
-        var entity = await _categoryRepository.GetByIdAsync(
-            companyId,
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _categoryRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

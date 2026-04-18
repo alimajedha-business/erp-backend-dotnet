@@ -160,14 +160,7 @@ public class WarehouseService(
         CancellationToken ct = default
     )
     {
-        var entity = await _warehouseRepository.GetByIdAsync(
-            companyId,
-            id,
-            trackChanges,
-            spec,
-            ct
-        );
-
+        var entity = await _warehouseRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

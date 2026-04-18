@@ -141,13 +141,7 @@ public class UnitOfMeasurementService(
         CancellationToken ct = default
     )
     {
-        var entity = await _uomRepository.GetByIdAsync(
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _uomRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

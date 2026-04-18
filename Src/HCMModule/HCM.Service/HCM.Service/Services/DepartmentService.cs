@@ -146,7 +146,7 @@ public class DepartmentService(
     )
     {
         // TODO: add specification if needed
-        var entity = await _departmentRepository.GetByIdAsync(companyId, id, trackChanges, spec: null, ct);
+        var entity = await _departmentRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

@@ -165,14 +165,7 @@ public class CategoryLevelConstraintService(
         CancellationToken ct = default
     )
     {
-        var entity = await _constraintRepository.GetByIdAsync(
-            companyId,
-            id,
-            trackChanges,
-            spec: null,
-            ct
-        );
-
+        var entity = await _constraintRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
