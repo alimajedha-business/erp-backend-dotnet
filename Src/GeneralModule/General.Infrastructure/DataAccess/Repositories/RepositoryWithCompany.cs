@@ -37,59 +37,28 @@ public class RepositoryWithCompany<T>(MainDbContext context) :
             ct);
     }
 
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+    public IQueryable<T> FilterByQ(
         Guid companyId,
-        RequestParameters requestParameters,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+        RequestParameters requestParameters
     )
     {
-        IQueryable<T> query = _context
+        return _context
             .Set<T>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Filter(requestParameters);
-
-        if (spec != null)
-        {
-            query = spec.Query(query);
-        }
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
     }
 
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
+    public IQueryable<T> GetFiltered(
         Guid companyId,
-        RequestParameters requestParameters,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+        RequestAdvancedFilters requestAdvancedFilters
     )
     {
-        IQueryable<T> query = _context
+        return _context
             .Set<T>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
             .Filter(requestAdvancedFilters);
-
-        if (spec != null)
-        {
-            query = spec.Query(query);
-        }
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
     }
 
     public virtual IQueryable<T> Find(

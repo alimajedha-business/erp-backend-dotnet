@@ -14,18 +14,9 @@ public interface IRepository<T> where T : class
         CancellationToken ct = default
     );
 
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
-    );
+    IQueryable<T> FilterByQ(RequestParameters requestParameters);
 
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
-    );
+    IQueryable<T> GetFiltered(RequestAdvancedFilters requestAdvancedFilters);
 
     IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
@@ -46,6 +37,12 @@ public interface IRepository<T> where T : class
     void Remove(T entity);
 
     void RemoveRange(IEnumerable<T> entities);
+
+    Task<ListQueryResult<T>> GetResponseListAsync(
+        IQueryable<T> query,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    );
 
     Task<int> SaveChangesAsync(CancellationToken ct);
 }

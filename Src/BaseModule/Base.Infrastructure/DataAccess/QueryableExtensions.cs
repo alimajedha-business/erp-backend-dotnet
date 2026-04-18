@@ -6,6 +6,7 @@ using AutoMapper.Execution;
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.RequestFeatures;
+using NGErp.Base.Service.ResponseModels;
 
 namespace NGErp.Base.Infrastructure.DataAccess;
 
@@ -32,9 +33,9 @@ public static class QueryableExtensions
     }
 
     public static IQueryable<T> Filter<T>(
-    this IQueryable<T> query,
-    RequestParameters? requestParameters = null
-)
+        this IQueryable<T> query,
+        RequestParameters? requestParameters = null
+    )
     {
         if (requestParameters is null)
             return query;
@@ -125,9 +126,9 @@ public static class QueryableExtensions
     }
 
     public static IQueryable<T> Paginate<T>(
-            this IQueryable<T> query,
-            RequestParameters requestParameters
-        )
+        this IQueryable<T> query,
+        RequestParameters requestParameters
+    )
     {
         if (!requestParameters.Paginated)
             return query;
@@ -137,10 +138,26 @@ public static class QueryableExtensions
             .Take(requestParameters.PageSize);
     }
 
+    public static async Task<ListQueryResult<T>> ToResponseListAsync<T>(
+        this IQueryable<T> query,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    )
+    {
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<T>(items, totalCount);
+    }
+
     private static Expression<Func<T, bool>> CombineExpressions<T>(
-    Expression<Func<T, bool>> expr1,
-    Expression<Func<T, bool>> expr2,
-    ExpressionType expressionType)
+        Expression<Func<T, bool>> expr1,
+        Expression<Func<T, bool>> expr2,
+        ExpressionType expressionType
+    )
     {
         var parameter = Expression.Parameter(typeof(T));
 

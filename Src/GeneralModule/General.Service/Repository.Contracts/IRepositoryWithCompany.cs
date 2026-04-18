@@ -18,19 +18,14 @@ public interface IRepositoryWithCompany<T>
         CancellationToken ct = default
     );
 
-    Task<ListQueryResult<T>> GetAllAsync(
+    IQueryable<T> FilterByQ(
         Guid companyId,
-        RequestParameters requestParameters,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+        RequestParameters requestParameters
     );
 
-    Task<ListQueryResult<T>> GetAllAsync(
+    IQueryable<T> GetFiltered(
         Guid companyId,
-        RequestParameters requestParameters,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+        RequestAdvancedFilters requestAdvancedFilters
     );
 
     IQueryable<T> Find(

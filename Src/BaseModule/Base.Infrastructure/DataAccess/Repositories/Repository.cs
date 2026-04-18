@@ -31,55 +31,24 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id, ct);
     }
 
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+    public IQueryable<T> FilterByQ(
+        RequestParameters requestParameters
     )
     {
-        IQueryable<T> query = _context
+        return _context
             .Set<T>()
             .AsNoTracking()
             .Filter(requestParameters);
-
-        if (spec != null)
-        {
-            query = spec.Query(query);
-        }
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
     }
 
-    public virtual async Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        RequestAdvancedFilters? requestAdvancedFilters = null,
-        ISpecification<T>? spec = null,
-        CancellationToken ct = default
+    public IQueryable<T> GetFiltered(
+        RequestAdvancedFilters requestAdvancedFilters
     )
     {
-        IQueryable<T> query = _context
+        return _context
             .Set<T>()
             .AsNoTracking()
             .Filter(requestAdvancedFilters);
-
-        if (spec != null)
-        {
-            query = spec.Query(query);
-        }
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<T>(items, totalCount);
     }
 
     public virtual IQueryable<T> Find(
@@ -148,6 +117,15 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     )
     {
         _dbSet.RemoveRange(entities);
+    }
+
+    public async Task<ListQueryResult<T>> GetResponseListAsync(
+        IQueryable<T> query,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    )
+    {
+        return await query.ToResponseListAsync(requestParameters, ct);
     }
 
     public virtual async Task<int> SaveChangesAsync(
