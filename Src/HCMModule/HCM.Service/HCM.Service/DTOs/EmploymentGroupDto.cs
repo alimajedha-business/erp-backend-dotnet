@@ -21,3 +21,10 @@ public record CreateEmploymentGroupDto
     public required string Name { get; init; }
     public required CreateEmploymentGroupSpecificationDto Specification { get; init; }
 }
+
+public record UpdateEmploymentGroupDto
+{
+    public required string Name { get; init; }
+    public required IReadOnlyList<UpdateEmploymentGroupSpecificationDto> Specifications { get; init; }
+        = new List<UpdateEmploymentGroupSpecificationDto>();
+}

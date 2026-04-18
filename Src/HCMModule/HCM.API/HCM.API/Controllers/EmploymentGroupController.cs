@@ -92,19 +92,19 @@ public class EmploymentGroupController(
         return Ok();
     }
 
-    [HttpPatch("{id:guid}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> Patch(
+    [HttpPut("{id:guid}")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Put(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
+        [FromBody] UpdateEmploymentGroupDto updateDto,
         CancellationToken ct
         )
     {
-        var dto = await _employmentGroupService.PatchAsync(
+        var dto = await _employmentGroupService.UpdateAsync(
             companyId,
             id,
-            patchDocument,
+            updateDto,
             ct
         );
 
