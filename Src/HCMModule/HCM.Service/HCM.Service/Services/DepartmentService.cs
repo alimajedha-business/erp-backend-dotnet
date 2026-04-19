@@ -131,8 +131,12 @@ public class DepartmentService(
     {
         // TODO: ensure company
         var department = await GetByIdOrThrowAsync(companyId, id, trackChanges: true, ct);
-        department.ChangeStatus(changeStatusDto.Status,
-            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
+        if (changeStatusDto.Date is null)
+            throw new ArgumentException("Date is required.");
+
+        department.ChangeStatus(
+            changeStatusDto.Status,
+            new DateTime(changeStatusDto.Date.Value, TimeOnly.MinValue)
         );
         _departmentRepository.Update(department);
         await _departmentRepository.SaveChangesAsync(ct);

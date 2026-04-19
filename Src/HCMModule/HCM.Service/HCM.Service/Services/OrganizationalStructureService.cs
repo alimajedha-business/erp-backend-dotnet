@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
-using NGErp.HCM.Service.Specifications;
+
 
 namespace NGErp.HCM.Service.Services;
 
@@ -19,15 +20,21 @@ public class OrganizationalStructureService(
     IOrganizationalStructureRepository organizationalStructureServiceRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
+    IAdvancedFilterBuilder filterBuilder,
+
     ICompanyService companyService,
     IDepartmentService departmentService,
     IPositionService positiontService,
     IOrganizationNodeService organizationNodeService
     ) : IOrganizationalStructureService
 {
-    private readonly IOrganizationalStructureRepository _organizationalStructureRepository = organizationalStructureServiceRepository;
+    //private readonly string _key = "OrganizationaLStructure";
+
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IOrganizationalStructureRepository _organizationalStructureRepository = organizationalStructureServiceRepository;
+
     private readonly ICompanyService _companyService = companyService;
     private readonly IDepartmentService _departmentService= departmentService;
     private readonly IPositionService _positionService= positiontService;
@@ -298,8 +305,8 @@ public class OrganizationalStructureService(
         {
             var department = await _departmentService.GetByIdAsync(
                 companyId,
-                item.DepartmentId.Value,
-                ct);
+                item.DepartmentId.Value
+                );
 
             ValidateEffectiveDateAgainstStatus(
                 entityType: "Department",
@@ -313,8 +320,8 @@ public class OrganizationalStructureService(
         {
             var position = await _positionService.GetByIdAsync(
                 companyId,
-                item.PositionId.Value,
-                ct);
+                item.PositionId.Value
+                );
 
             ValidateEffectiveDateAgainstStatus(
                 entityType: "Position",
@@ -359,14 +366,6 @@ public class OrganizationalStructureService(
 
         var company = await _companyService.GetByIdAsync(companyId, ct);
 
-        // 2️ Load all nodes (for validation)
-        var allNodes = await _organizationalStructureRepository
-            .GetAllAsync(companyId, includeQuery, ct);
-
-        // 3️ Validate Tree
-        //ValidateTree(incomingTree, allNodes.items, effectiveFrom);
-
-        // 4️⃣ Create new structure (history preservation)
         var structure = new OrganizationalStructure
         {
             Id = Guid.NewGuid(),

@@ -11,17 +11,46 @@ using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IEmploymentGroupService : IBaseServiceWithCompany<
-   EmploymentGroup,
-   EmploymentGroupDto,
-   EmploymentGroupParameters,
-   IEmploymentGroupRepository,
-   HCMResource
-    >
+public interface IEmploymentGroupService
 {
-    new Task<EmploymentGroupDetailDto?> GetByIdAsync(
-      Guid companyId,
-      Guid id,
-      CancellationToken ct
-  );
+
+    Task<EmploymentGroupDto> CreateAsync(
+    Guid companyId,
+    CreateEmploymentGroupDto createDto,
+    CancellationToken ct
+);
+
+    Task<EmploymentGroupDto> GetByIdAsync(
+        Guid companyId,
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    );
+
+    Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
+        Guid companyId,
+        EmploymentGroupParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
+    );
+
+    //Task<EmploymentGroupDto> PatchAsync(
+    //    Guid companyId,
+    //    Guid id,
+    //    JsonPatchDocument<PatchPositionDto> patchDocument,
+    //    CancellationToken ct
+    //);
+
+    Task DeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
+
+    Task ChangeStatusAsync(
+        Guid companyId,
+        Guid id,
+        PositionChangeStatusDto changeStatusDto,
+        CancellationToken ct
+    );
 }

@@ -19,7 +19,7 @@ namespace NGErp.HCM.Service
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
-            services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
+            //services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
             services.AddScoped<IOrganizationNodeService, OrganizationNodeService>();
             return services;
         }

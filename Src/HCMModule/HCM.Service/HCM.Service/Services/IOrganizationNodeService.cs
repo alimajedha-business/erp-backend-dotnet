@@ -7,13 +7,8 @@ using NGErp.HCM.Service.DTOs;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IOrganizationNodeService : IBaseServiceWithCompany<
-    OrganizationNode,
-    OrganizationNodeTreeDto,
-    OrganizationNodeParameters,
-    IOrganizationNodeRepository,
-    HCMResource
-    >
+public interface IOrganizationNodeService 
+
 {
     Task<OrganizationNodeTreeDto> GetOrCreateAsync(
     Guid companyId,

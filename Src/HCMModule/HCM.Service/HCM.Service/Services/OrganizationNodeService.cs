@@ -17,30 +17,28 @@ using NGErp.HCM.Service.Resources;
 namespace NGErp.HCM.Service.Services
 {
     public class OrganizationNodeService(
-    IAdvancedFilterBuilder advancedFilterBuilder,
     IOrganizationNodeRepository organizationNodeRepository,
-    IValidator<OrganizationNode> OrganizationNodeValidator,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
+    IAdvancedFilterBuilder filterBuilder,
 
     ICompanyService companyService,
     IDepartmentService departmentService,
     IPositionService positiontService
 
-        ) : BaseServiceWithCompany<
-        OrganizationNode,
-        OrganizationNodeTreeDto,
-        OrganizationNodeParameters,
-        IOrganizationNodeRepository,
-        HCMResource
-            >(advancedFilterBuilder, organizationNodeRepository, companyService, mapper, OrganizationNodeValidator, localizer),
+        ) :
         IOrganizationNodeService
     {
-        protected override string LocalizerKey => "OrganizationNode";
+        //private readonly string _key = "OrganizationNode";
+
+        private readonly IMapper _mapper = mapper;
+        private readonly IStringLocalizer _localizer = localizer;
+        private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+        private readonly IOrganizationNodeRepository _organizationNodeRepository = organizationNodeRepository;
+        private readonly ICompanyService _companyService = companyService;
 
         private readonly IDepartmentService _departmentService = departmentService;
         private readonly IPositionService _positionService = positiontService;
-        private readonly IOrganizationNodeRepository _organizationNodeRepository = organizationNodeRepository;
 
         public async Task<OrganizationNodeTreeDto?> GetByDepartmentIdAsync(
             Guid companyId,
@@ -103,7 +101,7 @@ namespace NGErp.HCM.Service.Services
                 }
 
 
-                var department = await _departmentService.GetByIdAsync(companyId, departmentId.Value, ct);
+                var department = await _departmentService.GetByIdAsync(companyId, departmentId.Value);
 
                 var newDepartmentNode = new OrganizationNode
                 {
@@ -128,7 +126,7 @@ namespace NGErp.HCM.Service.Services
                 return existedPositionNode;
             }
 
-            var position = await _positionService.GetByIdAsync(companyId, positionId.Value, ct);
+            var position = await _positionService.GetByIdAsync(companyId, positionId.Value);
 
             var newPositionNode = new OrganizationNode
             {

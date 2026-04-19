@@ -33,8 +33,7 @@ public class EmploymentGroupController(
     {
         var dto = await _employmentGroupService.GetByIdAsync(
             companyId,
-            id,
-            ct
+            id
         );
 
         return Ok(dto);
@@ -49,11 +48,11 @@ public class EmploymentGroupController(
         CancellationToken ct
         )
     {
-        var result = await _employmentGroupService.GetAllAsync(
+        var result = await _employmentGroupService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -70,22 +69,23 @@ public class EmploymentGroupController(
         return Ok();
     }
 
-    [HttpPatch("{id:guid}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
-        CancellationToken ct
-        )
-    {
-        var dto = await _employmentGroupService.PatchAsync(
-            companyId,
-            id,
-            patchDocument,
-            ct
-        );
+    //[HttpPatch("{id:guid}")]
+    //[Consumes("application/json-patch+json")]
+    ////public async Task<IActionResult> Patch(
+    //public Task<IActionResult> Patch(
+    //    [FromRoute] Guid companyId,
+    //    [FromRoute] Guid id,
+    //    [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
+    //    CancellationToken ct
+    //    )
+    //{
+    //    //var dto = await _employmentGroupService.PatchAsync(
+    //    //    companyId,
+    //    //    id,
+    //    //    patchDocument,
+    //    //    ct
+    //    //);
 
-        return Ok(dto);
-    }
+    //    return Ok();
+    //}
 }
