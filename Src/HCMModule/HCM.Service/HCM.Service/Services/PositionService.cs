@@ -132,11 +132,11 @@ public class PositionService(
         // TODO: ensure company
         var position = await GetByIdOrThrowAsync(companyId, id, trackChanges: true, ct);
 
-        if (changeStatusDto.Date is null)
-            throw new ArgumentException("Date is required.");
-
-        position.ChangeStatus(changeStatusDto.Status,
-            new DateTime((DateOnly)changeStatusDto.Date, TimeOnly.MinValue)
+        position.ChangeStatus(
+            changeStatusDto.Status,
+            changeStatusDto.Date is null
+                ? null
+                : new DateTime(changeStatusDto.Date.Value, TimeOnly.MinValue)
         );
 
         _positionRepository.Update(position);
