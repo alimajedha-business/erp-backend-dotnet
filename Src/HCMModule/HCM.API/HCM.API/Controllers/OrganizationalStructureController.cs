@@ -43,6 +43,8 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
     }
 
     [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public async Task<ActionResult> Create(
         [FromRoute] Guid companyId,
         [FromQuery] string? description,
