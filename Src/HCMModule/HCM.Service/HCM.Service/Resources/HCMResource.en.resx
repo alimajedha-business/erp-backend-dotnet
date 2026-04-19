@@ -120,10 +120,19 @@
   <data name="Department" xml:space="preserve">
     <value>Department</value>
   </data>
+  <data name="StatusChangeDate.IsRequired" xml:space="preserve">
+    <value>Date is required when Status is false.</value>
+  </data>
   <data name="OrganizationalStructure" xml:space="preserve">
     <value>Organizational Strcuture</value>
   </data>
   <data name="Position" xml:space="preserve">
     <value>Position</value>
+  </data>
+  <data name="EmploymentGroup" xml:space="preserve">
+    <value>Employment group</value>
+  </data>
+  <data name="EmploymentGroupSpecification" xml:space="preserve">
+    <value>Employment group specification</value>
   </data>
 </root>

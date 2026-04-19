@@ -11,7 +11,7 @@ public class OrganizationalStructure : BaseEntityWithCompany, IBaseEntityTypeCon
     public DateOnly EffectiveFrom { get; set; }
     public string? Description { get; set; }
 
-    public ICollection<OrganizationalStructureItem>? Items { get; set; }
+    public ICollection<OrganizationalStructureItem> Items { get; set; } = [];
 
     public void Map(EntityTypeBuilder<OrganizationalStructure> builder)
     {

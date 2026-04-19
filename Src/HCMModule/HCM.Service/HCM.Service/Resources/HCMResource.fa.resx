@@ -120,10 +120,19 @@
   <data name="Department" xml:space="preserve">
     <value>واحد سازمانی</value>
   </data>
+  <data name="StatusChangeDate.IsRequired" xml:space="preserve">
+    <value>ارسال تاریخ برای وضعیت غیرفعال الزامی است</value>
+  </data>
   <data name="OrganizationalStructure" xml:space="preserve">
     <value>ساختار سازمانی</value>
   </data>
   <data name="Position" xml:space="preserve">
     <value>پست سازمانی</value>
+  </data>
+  <data name="EmploymentGroup" xml:space="preserve">
+    <value>گروه استخدامی</value>
+  </data>
+  <data name="EmploymentGroupSpecification" xml:space="preserve">
+    <value>مشخصات گروه استخدامی</value>
   </data>
 </root>

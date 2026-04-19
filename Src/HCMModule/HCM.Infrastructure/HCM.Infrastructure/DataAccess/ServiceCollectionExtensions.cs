@@ -13,6 +13,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IOrganizationalStructureRepository, OrganizationalStructureRepository>();
+        services.AddScoped<IEmploymentGroupRepository, EmploymentGroupRepository>();
+        services.AddScoped<IEmploymentGroupSpecificationRepository, EmploymentGroupSpecificationRepository>();
+        services.AddScoped<IOrganizationNodeRepository, OrganizationNodeRepository>();
         return services;
     }
 }

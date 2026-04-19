@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260405080238_AddEmploymentGroupSpecification")]
+    partial class AddEmploymentGroupSpecification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,24 +279,15 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("PositionId");
 
-                    b.HasIndex("CompanyId", "DepartmentId")
-                        .IsUnique()
-                        .HasFilter("[DepartmentId] IS NOT NULL");
-
-                    b.HasIndex("CompanyId", "PositionId")
-                        .IsUnique()
-                        .HasFilter("[PositionId] IS NOT NULL");
-
-                    b.ToTable("OrganizationNode", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_OrganizationNode_OnlyOneReference", "(\r\n                ([DepartmentId] IS NOT NULL AND [PositionId] IS NULL AND [NodeType] = 1)\r\n                OR\r\n                ([DepartmentId] IS NULL AND [PositionId] IS NOT NULL AND [NodeType] = 2)\r\n            )");
-                        });
+                    b.ToTable("OrganizationNode", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationalStructure", b =>
@@ -606,13 +600,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("HasNextLevel")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLastLevel")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<int>("LevelNo")
                         .HasColumnType("int");
@@ -648,9 +642,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.ToTable("Category", "Warehouse", t =>
                         {
-                            t.HasCheckConstraint("CK_Category_LevelNo", "LevelNo BETWEEN 1 AND 6");
+                            t.HasCheckConstraint("CK_Category_LevelNo", "LevelNo BETWEEN 1 AND 7");
 
-                            t.HasCheckConstraint("CK_Category_LevelNo_HasNextLevel", "(LevelNo = 1 AND HasNextLevel = 1) OR (LevelNo = 6 AND HasNextLevel = 0) OR (LevelNo > 1 AND LevelNo < 6 AND HasNextLevel IN (0, 1))");
+                            t.HasCheckConstraint("CK_Category_LevelNo_LastLevel", "(LevelNo = 1 AND IsLastLevel = 0) OR LevelNo <> 1");
                         });
                 });
 
@@ -766,10 +760,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UX_CategoryLevelConst_Company_No");
 
-                    b.ToTable("CategoryLevelConstraint", "Warehouse", t =>
-                        {
-                            t.HasCheckConstraint("CK_CategoryLevelConstraint_CodeLength", "CodeLength BETWEEN 1 AND 5");
-                        });
+                    b.ToTable("CategoryLevelConstraint", "Warehouse");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLot", b =>
@@ -1063,11 +1054,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Barcode")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1095,21 +1081,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ItemTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PrimaryUnitOfMeasurementId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Sku")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<string>("TechnicalNumber")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
@@ -1118,11 +1093,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("TitleInEnglish")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -1139,14 +1109,6 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("ItemTypeId");
-
-                    b.HasIndex("PrimaryUnitOfMeasurementId");
-
-                    b.HasIndex("CompanyId", "Code")
-                        .IsUnique()
-                        .HasDatabaseName("UX_Item_Company_Code");
-
                     b.HasIndex("CompanyId", "Sku")
                         .IsUnique()
                         .HasDatabaseName("UX_Item_Company_Sku");
@@ -1154,7 +1116,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("Item", "Warehouse");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttribute", b =>
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttributeValue", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1164,12 +1126,18 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("AttributeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("EnumValueId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -1189,15 +1157,35 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<bool?>("ValueBoolean")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ValueDate")
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<decimal?>("ValueDecimal")
+                        .HasColumnType("decimal(23, 8)");
+
+                    b.Property<int?>("ValueInt")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ValueText")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AttributeId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("EnumValueId");
 
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemAttribute", "Warehouse");
+                    b.ToTable("ItemAttributeValue", "Warehouse");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemType", b =>
@@ -1255,6 +1243,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1262,6 +1253,21 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsBase")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDefaultIssue")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDefaultPurchase")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1278,15 +1284,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("UnitOfMeasurementId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UnitOrder")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("IsDeleted");
 
@@ -1762,9 +1767,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LevelNo")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1877,7 +1879,7 @@ namespace NGErp.Base.Infrastructure.Migrations
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroupSpecification", b =>
                 {
                     b.HasOne("NGErp.HCM.Domain.Entities.EmploymentGroup", null)
-                        .WithMany("Specifications")
+                        .WithMany()
                         .HasForeignKey("EmploymentGroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2132,26 +2134,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.ItemType", "ItemType")
-                        .WithMany("Items")
-                        .HasForeignKey("ItemTypeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "PrimaryUnitOfMeasurement")
-                        .WithMany()
-                        .HasForeignKey("PrimaryUnitOfMeasurementId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("ItemType");
-
-                    b.Navigation("PrimaryUnitOfMeasurement");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttribute", b =>
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttributeValue", b =>
                 {
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany()
@@ -2159,21 +2145,39 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.AttributeEnumValue", "EnumValue")
+                        .WithMany()
+                        .HasForeignKey("EnumValueId");
+
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
-                        .WithMany("ItemAttributes")
+                        .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
 
+                    b.Navigation("EnumValue");
+
                     b.Navigation("Item");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemUnitOfMeasurement", b =>
                 {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
-                        .WithMany("ItemUnitOfMeasurements")
+                        .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2289,11 +2293,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("Warehouse");
                 });
 
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroup", b =>
-                {
-                    b.Navigation("Specifications");
-                });
-
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationalStructure", b =>
                 {
                     b.Navigation("Items");
@@ -2309,18 +2308,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("SubCategories");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Item", b =>
-                {
-                    b.Navigation("ItemAttributes");
-
-                    b.Navigation("ItemUnitOfMeasurements");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemType", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.MeasurementDimension", b =>

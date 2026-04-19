@@ -28,10 +28,19 @@ namespace NGErp.HCM.Domain.Entities
 
         public void Map(EntityTypeBuilder<Department> builder)
         {
-            builder.ToTable("Department", "HCM");
+            builder.ToTable("Department", "HCM")
+                .ToTable(t => t.HasCheckConstraint(
+                "CK_Department_StatusChangeDate",
+                "([Status] = 0 AND [StatusChangeDate] IS NOT NULL) OR ([Status] = 1 AND [StatusChangeDate] IS NULL)"
+            ));
             builder.Property(e => e.Name).HasMaxLength(200);
             builder.Property(e => e.Description).HasMaxLength(500);
             builder.Property(e => e.Code).HasMaxLength(100);
+
+            builder
+                .HasIndex(i => new { i.CompanyId, i.Code })
+                .IsUnique()
+                .HasDatabaseName("UX_Department_CompanyId_Code");
         }
     }
 }
