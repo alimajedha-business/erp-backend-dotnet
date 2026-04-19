@@ -4,16 +4,16 @@ using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.DTOs;
 
-public enum OperationEnum
+public enum OperationType
 {
-    Create,
-    Delete
+    Create = 1,
+    Delete = 2
 }
 
 public record EmploymentGroupSpecificationDto
 {
     public Guid Id { get; init; }
-    public MonthTypeEnum MonthType { get; init; }
+    public MonthType MonthType { get; init; }
     public int WorkMinutes { get; init; }
     public DateOnly ValidFrom { get; init; }
     public DateOnly? ValidTo { get; init; }
@@ -21,16 +21,16 @@ public record EmploymentGroupSpecificationDto
 
 public record CreateEmploymentGroupSpecificationDto
 {
-    public required MonthTypeEnum MonthType { get; init; }
+    public required MonthType MonthType { get; init; }
     public int WorkMinutes { get; init; }
     public DateOnly ValidFrom { get; init; }
 }
 
 public record UpdateEmploymentGroupSpecificationDto
 {
-    Guid? Id { get; init; }
-    public required MonthTypeEnum MonthType { get; init; }
+    public Guid? Id { get; init; }
+    public required MonthType MonthType { get; init; }
     public int WorkMinutes { get; init; }
     public DateOnly ValidFrom { get; init; }
-    public OperationEnum? Operation { get; init; }
+    public OperationType? OperationType { get; init; }
 }

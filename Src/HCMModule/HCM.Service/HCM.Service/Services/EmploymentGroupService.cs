@@ -10,6 +10,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -114,12 +115,12 @@ public class EmploymentGroupService(
         entity.Name = updateDto.Name;
 
         // 4. Process specifications based on OperationEnum
-        foreach (var specDto in updateDto.Specifications.Where(s => s.Operation == OperationEnum.Delete))
+        foreach (var specDto in updateDto.Specifications.Where(s => s.OperationType == OperationType.Delete))
         {
             HandleDeleteSpecification(entity, specDto);
         }
 
-        foreach (var specDto in updateDto.Specifications.Where(s => s.Operation == OperationEnum.Create))
+        foreach (var specDto in updateDto.Specifications.Where(s => s.OperationType == OperationType.Create))
         {
             HandleCreateSpecification(entity, specDto);
         }
@@ -132,6 +133,7 @@ public class EmploymentGroupService(
 
         return new EmploymentGroupDetailDto
         {
+            Id = entity.Id,
             Name = entity.Name,
             Specifications = entity.Specifications
             .Select(s => _mapper.Map<EmploymentGroupSpecificationDto>(s))
@@ -146,13 +148,11 @@ public class EmploymentGroupService(
          )
     {
         await EnsureCompanyAsync(companyId, ct);
-        // var entity = await _repo
-        //.Find(companyId, e => e.Id == id)
-        //.AsNoTracking()
-        //.ProjectTo<EmploymentGroupDetailDto>(_mapper.ConfigurationProvider)
-        //.FirstOrDefaultAsync(ct);
+        var entity = await _repo.GetWithSpecificationsAsync(companyId, id, ct);
 
-        return entity ?? throw new NotFoundException(_localizer[LocalizerKey].Value);
+        return entity is null
+            ? null
+            : _mapper.Map<EmploymentGroupDetailDto>(entity);
     }
 
     private void HandleCreateSpecification(
@@ -193,9 +193,8 @@ public class EmploymentGroupService(
         )
     {
         // TODO:check EmploymentGroup in detail entities and if has duration overlap prevent to delete
-        var existing = entity.Specifications.FirstOrDefault(x =>
-        x.MonthType == dto.MonthType &&
-        x.ValidFrom == dto.ValidFrom);
+        var existing = entity.Specifications.FirstOrDefault(
+            x => x.Id == dto.Id && x.EmploymentGroupId == entity.Id);
         if (existing == null)
             throw new NotFoundException("Specification to delete not found.");
         entity.Specifications.Remove(existing);
