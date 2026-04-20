@@ -37,30 +37,47 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = _mapper.Map<Item>(createItemDto);
-        item.CompanyId = companyId;
-        item.CategoryId = categoryId;
+		var item = _mapper.Map<Item>(createItemDto);
+		item.CompanyId = companyId;
+		item.CategoryId = categoryId;
 
-        var createdItem = await _itemRepository.AddAsync(item, ct);
+		item.Attributes = [.. createItemDto.AttributeIds
+			.Select(attributeId => new ItemAttribute
+			{
+				AttributeId = attributeId,
+				Item = item
+			})];
 
-        item.ItemAttributes = [.. createItemDto.AttributeIds
-            .Select(attributeId => new ItemAttribute
-            {
-                AttributeId = attributeId,
-                Item = item
-            })];
+		item.UnitOfMeasurements = [.. createItemDto.SecondaryUnitOfMeasurementIds
+			.Select((uomId, index) => new ItemUnitOfMeasurement
+			{
+				UnitOfMeasurementId = uomId,
+				Item = item,
+				UnitOrder = index + 2
+			})];
 
-        item.ItemUnitOfMeasurements = [.. createItemDto.SecondaryUnitOfMeasurementIds
-            .Select((uomId, index) => new ItemUnitOfMeasurement
-            {
-                UnitOfMeasurementId = uomId,
-                Item = item,
-                UnitOrder = index + 2
-            })];
+		item.Warehouses = [.. createItemDto.Warehouses
+			.Select(warehouseDto => new ItemWarehouse
+			{
+				WarehouseId = warehouseDto.WarehouseId,
+				ReorderPoint = warehouseDto.ReorderPoint,
+				CriticalPoint = warehouseDto.CriticalPoint,
+				ReorderQuantity = warehouseDto.ReorderQuantity,
+				MaxStockLevel = warehouseDto.MaxStockLevel,
+				Item = item,
 
-        await _itemRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemDto>(createdItem);
-    }
+				Locations = [.. warehouseDto.LocationIds
+					.Select(locationId => new ItemWarehouseLocation
+					{
+						LocationId = locationId
+					})]
+			})];
+
+		var createdItem = await _itemRepository.AddAsync(item, ct);
+		await _itemRepository.SaveChangesAsync(ct);
+
+		return _mapper.Map<ItemDto>(createdItem);
+	}
 
     public async Task<ItemDto> GetByIdAsync(
         Guid companyId,

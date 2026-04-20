@@ -1,10 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
+﻿using Microsoft.AspNetCore.JsonPatch;
 
-using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -33,6 +28,20 @@ public class CreateItemExample :
             AttributeIds = [
                 new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
                 new Guid("87D8C665-2D17-44A5-AD91-1543DCEF77C1")
+            ],
+            Warehouses = [
+                new CreateItemWarehouseDto {
+                    WarehouseId = new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
+                    ReorderPoint = 1000,
+                    CriticalPoint = 500,
+                    ReorderQuantity = 3000,
+                    MaxStockLevel = 10000,
+                    LocationIds = [
+                        new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72E"),
+                        new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72F"),
+                        new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72A"),
+                    ]
+                }
             ],
             IsActive = true,
         };
