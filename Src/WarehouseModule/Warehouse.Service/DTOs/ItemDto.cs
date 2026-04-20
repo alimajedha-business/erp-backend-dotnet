@@ -43,6 +43,7 @@ public class CreateItemDto
 
     public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
+    public List<CreateItemWarehouseDto> Warehouses { get; set; } = [];
 }
 
 public class PatchItemDto
