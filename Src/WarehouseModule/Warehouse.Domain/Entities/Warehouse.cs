@@ -60,6 +60,8 @@ public class Warehouse :
     public WarehouseType WarehouseType { get; set; } = default!;
     public CompanyUnit CompanyUnit { get; set; } = default!;
 
+    public ICollection<ItemWarehouse> Items { get; set; } = [];
+
     public virtual List<WarehouseLocation> Locations { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Warehouse> builder)

@@ -23,7 +23,7 @@ public class ItemAttribute :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany(e => e.ItemAttributes)
+            .WithMany(e => e.Attributes)
             .HasForeignKey(e => e.ItemId)
             .OnDelete(DeleteBehavior.NoAction);
 

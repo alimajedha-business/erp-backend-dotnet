@@ -25,8 +25,9 @@ public class Item :
     public ItemType ItemType { get; set; } = default!;
     public Category Category { get; set; } = default!;
 
-    public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
-    public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
+    public ICollection<ItemAttribute> Attributes { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurement> UnitOfMeasurements { get; set; } = [];
+    public ICollection<ItemWarehouse> Warehouses { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Item> builder)
     {

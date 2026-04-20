@@ -24,7 +24,7 @@ public class ItemUnitOfMeasurement :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany(e => e.ItemUnitOfMeasurements)
+            .WithMany(e => e.UnitOfMeasurements)
             .HasForeignKey(e => e.ItemId);
 
         builder
