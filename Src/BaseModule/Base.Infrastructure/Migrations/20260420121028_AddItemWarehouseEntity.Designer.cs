@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420121028_AddItemWarehouseEntity")]
+    partial class AddItemWarehouseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1450,13 +1453,16 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<Guid>("WarehouseLocationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("ItemWarehouseId");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("WarehouseLocationId");
 
                     b.ToTable("ItemWarehouseLocation", "Warehouse");
                 });
@@ -2347,15 +2353,15 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "Location")
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "WarehouseLocation")
                         .WithMany()
-                        .HasForeignKey("LocationId")
+                        .HasForeignKey("WarehouseLocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ItemWarehouse");
 
-                    b.Navigation("Location");
+                    b.Navigation("WarehouseLocation");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
