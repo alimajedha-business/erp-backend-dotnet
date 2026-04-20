@@ -3,7 +3,6 @@
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -13,27 +12,18 @@ public class AttributeEnumValueRepository(MainDbContext context) :
     Repository<AttributeEnumValue>(context),
     IAttributeEnumValueRepository
 {
-    public async Task<ListQueryResult<AttributeEnumValue>> GetAllAsync(
+    public IQueryable<AttributeEnumValue> GetFiltered(
         Guid attributeId,
         RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+        RequestAdvancedFilters requestAdvancedFilters,
+        CancellationToken ct
     )
     {
-        var query = _context
-            .Set<AttributeEnumValue>()
-            .AsNoTracking()
+        var query = base.GetFiltered(requestAdvancedFilters)
             .Where(e => e.AttributeId == attributeId)
-            .Include(i => i.Attribute)
-            .Filter(requestAdvancedFilters);
+            .Include(i => i.Attribute);
 
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<AttributeEnumValue>(items, totalCount);
+        return query;
     }
 
     public async Task<int> GetNextCodeAsync(
