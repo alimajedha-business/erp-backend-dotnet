@@ -84,87 +84,87 @@ public class Warehouse :
 
         builder
             .Property(e => e.MaxMonetaryValue)
-            .HasColumnType("decimal(22, 4)");
+            .HasPrecision(22, 4);
 
         builder
             .Property(e => e.WarehouseAccountMasterValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.WarehouseAccountSlaveValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.WarehouseAccountDetailed1Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.WarehouseAccountDetailed2Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.SaleAccountMasterValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.SaleAccountSlaveValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.SaleAccountDetailed1Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.SaleAccountDetailed2Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ExportSaleAccountMasterValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ExportSaleAccountSlaveValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ExportSaleAccountDetailed1Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ExportSaleAccountDetailed2Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromSaleAccountMasterValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromSaleAccountSlaveValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromSaleAccountDetailed1Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromSaleAccountDetailed2Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromPurchaseAccountMasterValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromPurchaseAccountSlaveValue)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromPurchaseAccountDetailed1Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .Property(e => e.ReturnFromSaleAccountDetailed2Value)
-            .HasColumnType("nvarchar(20)");
+            .HasMaxLength(20);
 
         builder
             .HasOne(e => e.WarehouseType)

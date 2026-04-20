@@ -29,19 +29,19 @@ public class ItemWarehouse :
 
         builder
             .Property(e => e.ReorderPoint)
-            .HasColumnType("decimal(22, 4)");
+            .HasPrecision(22, 4);
 
         builder
             .Property(e => e.CriticalPoint)
-            .HasColumnType("decimal(22, 4)");
+            .HasPrecision(22, 4);
 
         builder
             .Property(e => e.ReorderQuantity)
-            .HasColumnType("decimal(22, 4)");
+            .HasPrecision(22, 4);
 
         builder
             .Property(e => e.MaxStockLevel)
-            .HasColumnType("decimal(22, 4)");
+            .HasPrecision(22, 4);
 
         builder
             .HasOne(e => e.Item)

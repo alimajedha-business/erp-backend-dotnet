@@ -32,7 +32,6 @@ public class InventoryLot :
 
         builder
             .Property(e => e.DimHash)
-            .HasColumnType("varbinary(32)")
             .HasMaxLength(32);
 
         builder

@@ -52,11 +52,11 @@ public class InventoryMovement :
 
         builder
             .Property(e => e.MovementDate)
-            .HasColumnType("datetime2(3)");
+            .HasPrecision(3);
 
         builder
             .Property(e => e.QuantityBase)
-            .HasColumnType("decimal(23, 8)");
+            .HasPrecision(23, 8);
 
         builder
             .HasOne(e => e.MovementType)
