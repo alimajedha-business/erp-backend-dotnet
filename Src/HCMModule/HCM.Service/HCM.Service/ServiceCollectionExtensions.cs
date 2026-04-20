@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NGErp.HCM.Service.Mappings;
 using NGErp.HCM.Service.RequestValidators;
 using NGErp.HCM.Service.Services;
+using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Domain.EntitySchemas;
+using NGErp.Base.Domain.EntitySchemas;
 
 namespace NGErp.HCM.Service
 {
@@ -21,6 +24,9 @@ namespace NGErp.HCM.Service
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
             //services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
             services.AddScoped<IOrganizationNodeService, OrganizationNodeService>();
+
+            services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
+            services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
             return services;
         }
     }
