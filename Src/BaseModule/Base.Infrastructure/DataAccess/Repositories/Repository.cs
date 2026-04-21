@@ -104,19 +104,22 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         _dbSet.UpdateRange(entities);
     }
 
-    public virtual void Remove(
+    public virtual async Task Remove(
         Expression<Func<T, bool>> predicate,
         CancellationToken ct
     )
     {
-        _dbSet
+        await _dbSet
             .Where(predicate)
             .ExecuteDeleteAsync(ct);
     }
 
-    public virtual void Remove(Guid id, CancellationToken ct)
+    public virtual async Task Remove(
+        Guid id,
+        CancellationToken ct
+    )
     {
-        _dbSet
+        await _dbSet
             .Where(e => EF.Property<Guid>(e, "Id") == id)
             .ExecuteDeleteAsync(ct);
     }
