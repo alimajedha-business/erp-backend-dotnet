@@ -1,4 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
+
+using DocumentFormat.OpenXml.Vml.Office;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -41,22 +46,25 @@ public class ItemService(
 		item.CompanyId = companyId;
 		item.CategoryId = categoryId;
 
-		item.Attributes = [.. createItemDto.AttributeIds
-			.Select(attributeId => new ItemAttribute
+        item.ItemAttributes = [.. createItemDto
+            .AttributeIds
+            .Distinct()
+            .Select(attributeId => new ItemAttribute
 			{
 				AttributeId = attributeId,
-				Item = item
 			})];
 
-		item.UnitOfMeasurements = [.. createItemDto.SecondaryUnitOfMeasurementIds
+		item.ItemUnitOfMeasurements = [.. createItemDto
+            .SecondaryUnitOfMeasurementIds
+            .Distinct()
 			.Select((uomId, index) => new ItemUnitOfMeasurement
 			{
 				UnitOfMeasurementId = uomId,
-				Item = item,
 				UnitOrder = index + 2
 			})];
 
-		item.Warehouses = [.. createItemDto.Warehouses
+		item.ItemWarehouses = [.. createItemDto
+            .Warehouses
 			.Select(warehouseDto => new ItemWarehouse
 			{
 				WarehouseId = warehouseDto.WarehouseId,
@@ -64,7 +72,6 @@ public class ItemService(
 				CriticalPoint = warehouseDto.CriticalPoint,
 				ReorderQuantity = warehouseDto.ReorderQuantity,
 				MaxStockLevel = warehouseDto.MaxStockLevel,
-				Item = item,
 
 				Locations = [.. warehouseDto.LocationIds
 					.Select(locationId => new ItemWarehouseLocation
@@ -86,9 +93,8 @@ public class ItemService(
     )
     {
         var item = await GetByIdOrThrowAsync(
-            companyId,
-            id,
             trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
 
@@ -103,10 +109,11 @@ public class ItemService(
     )
     {
         var item = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
             trackChanges: true,
+            predicate: p => 
+                p.CompanyId == companyId &&
+                p.CategoryId == categoryId &&
+                p.Id == id,
             ct
         );
 
@@ -163,15 +170,16 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
-            trackChanges: false,
-            ct
-        );
+        var item = await GetByIdOrThrowAsync(
+           trackChanges: true,
+           predicate: p =>
+               p.CompanyId == companyId &&
+               p.CategoryId == categoryId &&
+               p.Id == id,
+           ct
+       );
 
-        var patchDto = _mapper.Map<PatchItemDto>(entity);
+        var patchDto = _mapper.Map<PatchItemDto>(item);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -184,10 +192,10 @@ public class ItemService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, item);
 
         await _itemRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemDto>(entity);
+        return _mapper.Map<ItemDto>(item);
     }
 
     public virtual async Task DeleteAsync(
@@ -197,42 +205,22 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
-            trackChanges: true,
+        await _itemRepository.Remove(e =>
+            e.CompanyId == companyId && 
+            e.CategoryId == categoryId &&
+            e.Id == id,
             ct
         );
-
-        _itemRepository.Remove(entity);
-        await _itemRepository.SaveChangesAsync(ct);
     }
 
     private async Task<Item> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+        bool trackChanges,
+        Expression<Func<Item, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _itemRepository.GetByIdAsync(companyId, id, trackChanges, ct);
-
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    }
-
-    private async Task<Item> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _itemRepository.GetByIdAsync(
-            companyId,
-            categoryId,
-            id,
+        var entity = await _itemRepository.SingleOrDefaultAsync(
+            predicate,
             trackChanges,
             ct
         );

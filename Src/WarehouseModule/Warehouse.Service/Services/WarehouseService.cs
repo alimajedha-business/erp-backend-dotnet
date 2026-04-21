@@ -138,10 +138,11 @@ public class WarehouseService(
         CancellationToken ct
     )
     {
-        // TODO: check permissions, and
-        // check if the warehouse belongs to this company
-        _warehouseRepository.Remove(id, ct);
-        await _warehouseRepository.SaveChangesAsync(ct);
+        await _warehouseRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
+            ct
+        );
     }
 
     public Task<int> GetNextCode(

@@ -60,9 +60,7 @@ public class Warehouse :
     public WarehouseType WarehouseType { get; set; } = default!;
     public CompanyUnit CompanyUnit { get; set; } = default!;
 
-    public ICollection<ItemWarehouse> Items { get; set; } = [];
-
-    public virtual List<WarehouseLocation> Locations { get; set; } = [];
+    public ICollection<ItemWarehouse> ItemWarehouses { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Warehouse> builder)
     {
@@ -168,7 +166,7 @@ public class Warehouse :
 
         builder
             .HasOne(e => e.WarehouseType)
-            .WithMany(e => e.Warehouses)
+            .WithMany()
             .HasForeignKey(e => e.WarehouseTypeId)
             .OnDelete(DeleteBehavior.NoAction);
 

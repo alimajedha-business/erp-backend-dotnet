@@ -22,6 +22,8 @@ public class Attribute :
     public bool IsRequired { get; set; } = false;
     public bool IsStockDimension {  get; set; } = false;
 
+    public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
+
     public void Map(EntityTypeBuilder<Attribute> builder)
     {
         builder

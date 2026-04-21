@@ -25,9 +25,10 @@ public class Item :
     public ItemType ItemType { get; set; } = default!;
     public Category Category { get; set; } = default!;
 
-    public ICollection<ItemAttribute> Attributes { get; set; } = [];
-    public ICollection<ItemUnitOfMeasurement> UnitOfMeasurements { get; set; } = [];
-    public ICollection<ItemWarehouse> Warehouses { get; set; } = [];
+    public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; } = [];
+    public ICollection<ItemWarehouse> ItemWarehouses { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Item> builder)
     {
@@ -78,13 +79,13 @@ public class Item :
 
         builder
             .HasOne(e => e.Category)
-            .WithMany(e => e.Items)
+            .WithMany()
             .HasForeignKey(e => e.CategoryId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ItemType)
-            .WithMany(e => e.Items)
+            .WithMany()
             .HasForeignKey(e => e.ItemTypeId)
             .OnDelete(DeleteBehavior.NoAction);
 

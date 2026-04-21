@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+
+using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
-using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -12,18 +13,16 @@ public class AttributeEnumValueRepository(MainDbContext context) :
     Repository<AttributeEnumValue>(context),
     IAttributeEnumValueRepository
 {
-    public IQueryable<AttributeEnumValue> GetFiltered(
-        Guid attributeId,
-        RequestParameters requestParameters,
-        RequestAdvancedFilters requestAdvancedFilters,
-        CancellationToken ct
+    public override async Task<AttributeEnumValue?> SingleOrDefaultAsync(
+        Expression<Func<AttributeEnumValue, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
     )
     {
-        var query = base.GetFiltered(requestAdvancedFilters)
-            .Where(e => e.AttributeId == attributeId)
-            .Include(i => i.Attribute);
-
-        return query;
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return await query
+            .Include(e => e.Attribute)
+            .SingleOrDefaultAsync(predicate, ct);
     }
 
     public async Task<int> GetNextCodeAsync(

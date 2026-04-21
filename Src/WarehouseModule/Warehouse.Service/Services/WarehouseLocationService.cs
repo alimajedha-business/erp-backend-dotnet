@@ -130,10 +130,11 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        // TODO: check permissions
-        // TODO: check if the warehouse location belongs to this warehouse
-        _locationRepository.Remove(id, ct);
-        await _locationRepository.SaveChangesAsync(ct);
+        await _locationRepository.Remove(e =>
+            e.WarehouseId == warehouseId &&
+            e.Id == id,
+            ct
+        );
     }
 
     private async Task<WarehouseLocation> GetByIdOrThrowAsync(

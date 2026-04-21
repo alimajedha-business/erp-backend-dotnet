@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -46,8 +48,13 @@ public class AttributeEnumValueService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(attributeId, id, trackChanges, ct);
-        return _mapper.Map<AttributeEnumValueDto>(entity);
+        var enumValue = await GetByIdOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.AttributeId == attributeId && p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<AttributeEnumValueDto>(enumValue);
     }
 
     public virtual async Task<AttributeEnumValueDto> PatchAsync(
@@ -57,14 +64,13 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            attributeId,
-            id,
-            trackChanges: false,
+        var enumValue = await GetByIdOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.AttributeId == attributeId && p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchAttributeEnumValueDto>(entity);
+        var patchDto = _mapper.Map<PatchAttributeEnumValueDto>(enumValue);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -77,10 +83,10 @@ public class AttributeEnumValueService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, enumValue);
 
         await _enumValueRepository.SaveChangesAsync(ct);
-        return _mapper.Map<AttributeEnumValueDto>(entity);
+        return _mapper.Map<AttributeEnumValueDto>(enumValue);
     }
 
     public virtual async Task DeleteAsync(
@@ -89,15 +95,11 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            attributeId,
-            id,
-            trackChanges: true,
+        await _enumValueRepository.Remove(e =>
+            e.AttributeId == attributeId &&
+            e.Id == id,
             ct
         );
-
-        _enumValueRepository.Remove(entity);
-        await _enumValueRepository.SaveChangesAsync(ct);
     }
 
     public Task<int> GetNextCode(
@@ -109,15 +111,17 @@ public class AttributeEnumValueService(
     }
 
     private async Task<AttributeEnumValue> GetByIdOrThrowAsync(
-        Guid attributeId,
-        Guid id,
-        bool trackChanges = false,
+        bool trackChanges,
+        Expression<Func<AttributeEnumValue, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        // TODO: check if this attribute enum value belongs to the attribute
-        var entity = await _enumValueRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _enumValueRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

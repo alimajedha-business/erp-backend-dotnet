@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -51,8 +53,13 @@ public class AttributeService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<AttributeDto>(entity);
+        var attribute = await GetByIdOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<AttributeDto>(attribute);
     }
 
     public async Task<ListResponseModel<AttributeDto>> FilterByQAsync(
@@ -96,14 +103,13 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
+        var attribute = await GetByIdOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchAttributeDto>(entity);
+        var patchDto = _mapper.Map<PatchAttributeDto>(attribute);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -116,10 +122,10 @@ public class AttributeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, attribute);
 
         await _attributeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<AttributeDto>(entity);
+        return _mapper.Map<AttributeDto>(attribute);
     }
 
     public virtual async Task DeleteAsync(
@@ -128,15 +134,11 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
+        await _attributeRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
             ct
         );
-
-        _attributeRepository.Remove(entity);
-        await _attributeRepository.SaveChangesAsync(ct);
     }
 
     public Task<int> GetNextCode(
@@ -148,14 +150,17 @@ public class AttributeService(
     }
 
     private async Task<Domain.Entities.Attribute> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+        bool trackChanges,
+        Expression<Func<Domain.Entities.Attribute, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        var entity = await _attributeRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _attributeRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

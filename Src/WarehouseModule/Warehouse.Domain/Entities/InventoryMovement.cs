@@ -71,13 +71,13 @@ public class InventoryMovement :
 
         builder
             .HasOne(e => e.FromLocation)
-            .WithMany(e => e.SrcLocations)
+            .WithMany()
             .HasForeignKey(e => e.FromLocationId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ToLocation)
-            .WithMany(e => e.DstLocations)
+            .WithMany()
             .HasForeignKey(e => e.ToLocationId)
             .OnDelete(DeleteBehavior.NoAction);
     }

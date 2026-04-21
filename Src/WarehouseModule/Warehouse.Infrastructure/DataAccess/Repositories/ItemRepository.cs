@@ -1,4 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,42 +16,19 @@ public class ItemRepository(MainDbContext context) :
     RepositoryWithCompany<Item>(context),
     IItemRepository
 {
-    public async Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    public override async Task<Item?> SingleOrDefaultAsync(
+        Expression<Func<Item, bool>> predicate,
+        bool trackChanges = true,
         CancellationToken ct = default
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
         return await query
-            .Where(e => e.CompanyId == companyId)
-            .Where(e => e.Id == id)
             .Include(e => e.ItemType)
             .Include(e => e.Category)
             .Include(e => e.PrimaryUnitOfMeasurement)
-            .SingleOrDefaultAsync(cancellationToken: ct);
-    }
-
-    public async Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
-        return await query
-            .Where(e => e.CompanyId == companyId)
-            .Where(e => e.CategoryId == categoryId)
-            .Where(e => e.Id == id)
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
-            .SingleOrDefaultAsync(cancellationToken: ct);
+            .Include(e => e.ItemAttributes)
+            .SingleOrDefaultAsync(predicate, ct);
     }
 
     public async Task<ListQueryResult<Item>> GetCategoryAllAsync(
