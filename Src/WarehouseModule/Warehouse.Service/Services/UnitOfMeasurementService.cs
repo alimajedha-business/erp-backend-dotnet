@@ -52,7 +52,7 @@ public class UnitOfMeasurementService(
         return _mapper.Map<UnitOfMeasurementDto>(entity);
     }
 
-    public async Task<ListResponseModel<UnitOfMeasurementDto>> FilterByQAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementSlimDto>> FilterByQAsync(
         UnitOfMeasurementParameters parameters,
         CancellationToken ct = default
     )
@@ -60,8 +60,8 @@ public class UnitOfMeasurementService(
         var query = _uomRepository.FilterByQ(parameters);
         var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<UnitOfMeasurementDto>(
-            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
+        return new ListResponseModel<UnitOfMeasurementSlimDto>(
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

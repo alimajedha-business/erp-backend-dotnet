@@ -56,22 +56,6 @@ public class CategoryLevelConstraintService(
         return _mapper.Map<CategoryLevelConstraintDto>(entity);
     }
 
-    public async Task<ListResponseModel<CategoryLevelConstraintDto>> FilterByQAsync(
-        Guid companyId,
-        CategoryLevelConstraintParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        var query = _constraintRepository.FilterByQ(companyId, parameters);
-        var res = await _constraintRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<CategoryLevelConstraintDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(res.items),
-            totalCount: res.count,
-            parameters
-        );
-    }
-
     public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetFilteredAsync(
         Guid companyId,
         CategoryLevelConstraintParameters parameters,

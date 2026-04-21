@@ -35,7 +35,7 @@ public class MeasurementDimensionService(
         return _mapper.Map<MeasurementDimensionDto>(entity);
     }
 
-    public async Task<ListResponseModel<MeasurementDimensionDto>> FilterByQAsync(
+    public async Task<ListResponseModel<MeasurementDimensionSlimDto>> FilterByQAsync(
         MeasurementDimensionParameters parameters,
         CancellationToken ct = default
     )
@@ -43,8 +43,8 @@ public class MeasurementDimensionService(
         var query = _dimensionRepository.FilterByQ(parameters);
         var res = await _dimensionRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<MeasurementDimensionDto>(
-            results: _mapper.Map<IReadOnlyList<MeasurementDimensionDto>>(res.items),
+        return new ListResponseModel<MeasurementDimensionSlimDto>(
+            results: _mapper.Map<IReadOnlyList<MeasurementDimensionSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

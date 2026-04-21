@@ -20,7 +20,7 @@ public interface IShippingCompanyService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ShippingCompanyDto>> FilterByQAsync(
+    Task<ListResponseModel<ShippingCompanySlimDto>> FilterByQAsync(
         ShippingCompanyParameters parameters,
         CancellationToken ct = default
     );

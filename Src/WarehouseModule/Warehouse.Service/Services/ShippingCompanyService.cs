@@ -52,7 +52,7 @@ public class ShippingCompanyService(
         return _mapper.Map<ShippingCompanyDto>(entity);
     }
 
-    public async Task<ListResponseModel<ShippingCompanyDto>> FilterByQAsync(
+    public async Task<ListResponseModel<ShippingCompanySlimDto>> FilterByQAsync(
         ShippingCompanyParameters parameters,
         CancellationToken ct = default
     )
@@ -60,8 +60,8 @@ public class ShippingCompanyService(
         var query = _shippingCompanyRepository.FilterByQ(parameters);
         var res = await _shippingCompanyRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<ShippingCompanyDto>(
-            results: _mapper.Map<IReadOnlyList<ShippingCompanyDto>>(res.items),
+        return new ListResponseModel<ShippingCompanySlimDto>(
+            results: _mapper.Map<IReadOnlyList<ShippingCompanySlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

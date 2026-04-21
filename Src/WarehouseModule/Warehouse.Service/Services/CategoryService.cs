@@ -56,7 +56,7 @@ public class CategoryService(
         return _mapper.Map<CategoryDto>(entity);
     }
 
-    public async Task<ListResponseModel<CategoryDto>> FilterByQAsync(
+    public async Task<ListResponseModel<CategorySlimDto>> FilterByQAsync(
         Guid companyId,
         CategoryParameters parameters,
         CancellationToken ct = default
@@ -65,8 +65,8 @@ public class CategoryService(
         var query = _categoryRepository.FilterByQ(companyId, parameters);
         var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<CategoryDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryDto>>(res.items),
+        return new ListResponseModel<CategorySlimDto>(
+            results: _mapper.Map<IReadOnlyList<CategorySlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

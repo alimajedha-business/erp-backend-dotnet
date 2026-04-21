@@ -52,7 +52,7 @@ public class ItemTypeService(
         return _mapper.Map<ItemTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<ItemTypeDto>> FilterByQAsync(
+    public async Task<ListResponseModel<ItemTypeSlimDto>> FilterByQAsync(
         ItemTypeParameters parameters,
         CancellationToken ct = default
     )
@@ -60,8 +60,8 @@ public class ItemTypeService(
         var query = _itemTypeRepository.FilterByQ(parameters);
         var res = await _itemTypeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<ItemTypeDto>(
-            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(res.items),
+        return new ListResponseModel<ItemTypeSlimDto>(
+            results: _mapper.Map<IReadOnlyList<ItemTypeSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

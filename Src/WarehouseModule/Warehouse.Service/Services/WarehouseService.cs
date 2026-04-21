@@ -64,7 +64,7 @@ public class WarehouseService(
         return _mapper.Map<WarehouseDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseListDto>> FilterByQAsync(
+    public async Task<ListResponseModel<WarehouseSlimDto>> FilterByQAsync(
         Guid companyId,
         WarehouseParameters parameters,
         CancellationToken ct = default
@@ -73,8 +73,8 @@ public class WarehouseService(
         var query = _warehouseRepository.FilterByQ(companyId, parameters);
         var res = await _warehouseRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<WarehouseListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseListDto>>(res.items),
+        return new ListResponseModel<WarehouseSlimDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

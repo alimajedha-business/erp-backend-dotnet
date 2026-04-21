@@ -11,6 +11,13 @@ public record ShippingCompanyDto(
     string Address
 );
 
+public record ShippingCompanySlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
+
 public record ShippingCompanyListDto(
     Guid Id,
     int Code,

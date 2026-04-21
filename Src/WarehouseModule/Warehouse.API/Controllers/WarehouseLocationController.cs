@@ -19,17 +19,11 @@ public class WarehouseLocationController(
 
     [HttpGet("filter-by-q")]
     public async Task<IActionResult> GetLocations(
-        [FromRoute] Guid warehouseId,
         [FromQuery] WarehouseLocationParameters parameters,
         CancellationToken ct
     )
     {
-        var result = await _locationService.FilterByQAsync(
-            warehouseId,
-            parameters,
-            ct
-        );
-
+        var result = await _locationService.FilterByQAsync(parameters, ct;
         return Ok(result);
     }
 }

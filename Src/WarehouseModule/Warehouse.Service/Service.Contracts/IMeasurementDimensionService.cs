@@ -12,7 +12,7 @@ public interface IMeasurementDimensionService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<MeasurementDimensionDto>> FilterByQAsync(
+    Task<ListResponseModel<MeasurementDimensionSlimDto>> FilterByQAsync(
         MeasurementDimensionParameters parameters,
         CancellationToken ct = default
     );

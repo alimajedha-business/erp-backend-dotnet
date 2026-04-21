@@ -62,7 +62,7 @@ public class AttributeService(
         return _mapper.Map<AttributeDto>(attribute);
     }
 
-    public async Task<ListResponseModel<AttributeDto>> FilterByQAsync(
+    public async Task<ListResponseModel<AttributeSlimDto>> FilterByQAsync(
         Guid companyId,
         AttributeParameters parameters,
         CancellationToken ct = default
@@ -71,8 +71,8 @@ public class AttributeService(
         var query = _attributeRepository.FilterByQ(companyId, parameters);
         var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<AttributeDto>(
-            results: _mapper.Map<IReadOnlyList<AttributeDto>>(res.items),
+        return new ListResponseModel<AttributeSlimDto>(
+            results: _mapper.Map<IReadOnlyList<AttributeSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

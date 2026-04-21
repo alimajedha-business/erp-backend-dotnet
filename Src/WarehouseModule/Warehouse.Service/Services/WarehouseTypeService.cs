@@ -52,7 +52,7 @@ public class WarehouseTypeService(
         return _mapper.Map<WarehouseTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseTypeDto>> FilterByQAsync(
+    public async Task<ListResponseModel<WarehouseTypeSlimDto>> FilterByQAsync(
         WarehouseTypeParameters parameters,
         CancellationToken ct = default
     )
@@ -60,8 +60,8 @@ public class WarehouseTypeService(
         var query = _warehouseTypeRepository.FilterByQ(parameters);
         var res = await _warehouseTypeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<WarehouseTypeDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseTypeDto>>(res.items),
+        return new ListResponseModel<WarehouseTypeSlimDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseTypeSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );

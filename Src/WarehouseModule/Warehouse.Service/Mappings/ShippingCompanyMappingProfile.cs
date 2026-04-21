@@ -10,6 +10,7 @@ public class ShippingCompanyMappingProfile : Profile
     public ShippingCompanyMappingProfile()
     {
         CreateMap<ShippingCompany, ShippingCompanyDto>();
+        CreateMap<ShippingCompany, ShippingCompanySlimDto>();
         CreateMap<ShippingCompany, ShippingCompanyListDto>()
             .ForCtorParam(
                 nameof(ShippingCompanyListDto.ManagerFullName),

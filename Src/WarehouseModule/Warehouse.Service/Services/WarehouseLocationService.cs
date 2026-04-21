@@ -55,8 +55,7 @@ public class WarehouseLocationService(
         return _mapper.Map<WarehouseLocationDto>(entity);
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
-        Guid warehouseId,
+    public async Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
         WarehouseLocationParameters parameters,
         CancellationToken ct
     )
@@ -64,8 +63,8 @@ public class WarehouseLocationService(
         var query = _locationRepository.FilterByQ(parameters);
         var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<WarehouseLocationListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(res.items),
+        return new ListResponseModel<WarehouseLocationSlimDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );
