@@ -5,6 +5,7 @@ using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
@@ -22,6 +23,18 @@ public class WarehouseLocationRepository(MainDbContext context) :
         return query
             .Include(i => i.Warehouse)
             .FirstOrDefaultAsync(e => e.Id == id, ct);
+    }
+
+    public IQueryable<WarehouseLocation> FilterByQ(
+        WarehouseLocationParameters requestParameters
+    )
+    {
+        var warehouseId = requestParameters.WarehouseId;
+
+        return _dbSet
+            .AsNoTracking()
+            .Where(e => e.WarehouseId == warehouseId)
+            .Filter(requestParameters);
     }
 
     public IQueryable<WarehouseLocation> GetFiltered(
