@@ -2,6 +2,7 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -17,6 +18,11 @@ public interface IWarehouseLocationService
     Task<WarehouseLocationDto> GetByIdAsync(
         Guid warehouseId,
         Guid id,
+        CancellationToken ct
+    );
+
+    Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
+        Item item,
         CancellationToken ct
     );
 

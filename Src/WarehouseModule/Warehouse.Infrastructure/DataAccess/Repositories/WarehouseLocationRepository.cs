@@ -4,6 +4,7 @@ using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -25,6 +26,29 @@ public class WarehouseLocationRepository(MainDbContext context) :
             .FirstOrDefaultAsync(e => e.Id == id, ct);
     }
 
+    public async Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
+        Item item,
+        CancellationToken ct
+    )
+    {
+        var warehouseIds = item.ItemWarehouses
+        .Select(iw => iw.Warehouse.Id)
+        .Distinct()
+        .ToList();
+
+        return await _dbSet
+            .AsNoTracking()
+            .Where(x => warehouseIds.Contains(x.WarehouseId))
+            .Select(x => new WarehouseLocationNode(
+                x.Id,
+                x.Code,
+                x.Title,
+                x.ParentLocationId,
+                x.WarehouseId
+            ))
+            .ToListAsync(ct);
+    }
+
     public async Task<List<WarehouseLocation>> FilterByQ(
         WarehouseLocationParameters requestParameters
     )
@@ -37,13 +61,21 @@ public class WarehouseLocationRepository(MainDbContext context) :
                 s.Id,
                 s.Code,
                 s.Title,
-                s.ParentLocationId
+                s.ParentLocationId,
+                s.WarehouseId
             })
             .ToListAsync();
 
         var byId = locations.ToDictionary(
             x => x.Id,
-            x => new Node(x.Id, x.Code, x.Title, x.ParentLocationId));
+            x => new WarehouseLocationNode(
+                x.Id,
+                x.Code,
+                x.Title,
+                x.ParentLocationId,
+                x.WarehouseId
+            )
+        );
 
         var cache = new Dictionary<Guid, string>();
 
@@ -101,11 +133,4 @@ public class WarehouseLocationRepository(MainDbContext context) :
 
         return (maxCode ?? 0) + 1;
     }
-
-    private sealed record Node(
-        Guid Id,
-        int Code,
-        string Title,
-        Guid? ParentLocationId
-    );
 }

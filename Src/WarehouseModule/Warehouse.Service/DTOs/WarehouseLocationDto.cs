@@ -39,3 +39,11 @@ public class PatchWarehouseLocationDto
     public string? Title { get; set; }
     public bool? CanStoreItem { get; set; }
 }
+
+public sealed record WarehouseLocationNode(
+    Guid Id,
+    int Code,
+    string Title,
+    Guid? ParentLocationId,
+    Guid WarehouseId
+);

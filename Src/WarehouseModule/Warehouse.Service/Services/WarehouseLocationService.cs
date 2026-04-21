@@ -62,6 +62,14 @@ public class WarehouseLocationService(
         return _mapper.Map<WarehouseLocationDto>(location);
     }
 
+    public async Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
+        Item item,
+        CancellationToken ct
+    )
+    {
+         return await _locationRepository.GetItemLocationsAsync(item, ct);
+    }
+
     public async Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
         WarehouseLocationParameters parameters,
         CancellationToken ct

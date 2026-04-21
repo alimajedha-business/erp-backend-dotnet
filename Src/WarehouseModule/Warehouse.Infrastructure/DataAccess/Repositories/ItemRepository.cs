@@ -8,6 +8,7 @@ using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
@@ -27,10 +28,15 @@ public class ItemRepository(MainDbContext context) :
             .Include(i => i.ItemType)
             .Include(i => i.Category)
             .Include(i => i.PrimaryUnitOfMeasurement)
-            .Include(i => i.ItemAttributes).ThenInclude(i => i.Attribute)
-            .Include(i => i.ItemUnitOfMeasurements).ThenInclude(i => i.UnitOfMeasurement)
-            .Include(i => i.ItemWarehouses).ThenInclude(i => i.Warehouse)
-            .Include(i => i.ItemWarehouses).ThenInclude(i => i.ItemWarehouseLocations).ThenInclude(i => i.WarehouseLocation)
+            .Include(i => i.ItemAttributes)
+                .ThenInclude(i => i.Attribute)
+            .Include(i => i.ItemUnitOfMeasurements)
+                .ThenInclude(i => i.UnitOfMeasurement)
+            .Include(i => i.ItemWarehouses)
+                .ThenInclude(i => i.Warehouse)
+            .Include(i => i.ItemWarehouses)
+                .ThenInclude(i => i.ItemWarehouseLocations)
+                .ThenInclude(i => i.WarehouseLocation)
             .SingleOrDefaultAsync(predicate, ct);
     }
 
