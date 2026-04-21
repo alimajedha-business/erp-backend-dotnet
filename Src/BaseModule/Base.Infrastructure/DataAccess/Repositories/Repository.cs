@@ -91,6 +91,16 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         _dbSet.UpdateRange(entities);
     }
 
+    public virtual void Remove(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken ct
+    )
+    {
+        _dbSet
+            .Where(predicate)
+            .ExecuteDeleteAsync(ct);
+    }
+
     public virtual void Remove(Guid id, CancellationToken ct)
     {
         _dbSet

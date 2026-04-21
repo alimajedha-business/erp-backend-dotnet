@@ -31,6 +31,11 @@ public interface IRepository<T> where T : class
 
     void UpdateRange(IEnumerable<T> entities);
 
+    void Remove(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken ct
+    );
+
     void Remove(Guid id, CancellationToken ct);
 
     void Remove(T entity);
