@@ -49,11 +49,24 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
         return _dbSet.Where(predicate);
     }
 
-    public virtual async Task<T?> FirstOrDefaultAsync(
-        Expression<Func<T, bool>> predicate
+    public virtual async Task<T?> SingleOrDefaultAsync(
+        Expression<Func<T, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
     )
     {
-        return await _dbSet.FirstOrDefaultAsync(predicate);
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return await query.SingleOrDefaultAsync(predicate, ct);
+    }
+
+    public virtual async Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return await query.FirstOrDefaultAsync(predicate, ct);
     }
 
     public virtual async Task<bool> AnyAsync(
