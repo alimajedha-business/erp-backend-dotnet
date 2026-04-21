@@ -25,16 +25,57 @@ public class WarehouseLocationRepository(MainDbContext context) :
             .FirstOrDefaultAsync(e => e.Id == id, ct);
     }
 
-    public IQueryable<WarehouseLocation> FilterByQ(
+    public async Task<List<WarehouseLocation>> FilterByQ(
         WarehouseLocationParameters requestParameters
     )
     {
         var warehouseId = requestParameters.WarehouseId;
-
-        return _dbSet
-            .AsNoTracking()
+        var locations = await _dbSet
             .Where(e => e.WarehouseId == warehouseId)
-            .Filter(requestParameters);
+            .Select(s => new
+            {
+                s.Id,
+                s.Code,
+                s.Title,
+                s.ParentLocationId
+            })
+            .ToListAsync();
+
+        var byId = locations.ToDictionary(
+            x => x.Id,
+            x => new Node(x.Id, x.Code, x.Title, x.ParentLocationId));
+
+        var cache = new Dictionary<Guid, string>();
+
+        string BuildPath(Guid id, HashSet<Guid>? visited = null)
+        {
+            visited ??= [];
+
+            if (!visited.Add(id))
+                throw new InvalidOperationException("Cycle detected.");
+
+            if (cache.TryGetValue(id, out var cached))
+                return cached;
+
+            var node = byId[id];
+
+            var path = node.ParentLocationId is null
+                ? node.Title
+                : $"{BuildPath(node.ParentLocationId.Value, visited)}-{node.Title}";
+
+            cache[id] = path;
+            visited.Remove(id);
+            return path;
+        }
+
+        return [.. locations
+            .Select(s => new WarehouseLocation
+            {
+                Id = s.Id,
+                Code = s.Code,
+                Title = BuildPath(s.Id)
+            })
+            .OrderBy(x => x.Code)];
     }
 
     public IQueryable<WarehouseLocation> GetFiltered(
@@ -60,4 +101,11 @@ public class WarehouseLocationRepository(MainDbContext context) :
 
         return (maxCode ?? 0) + 1;
     }
+
+    private sealed record Node(
+        Guid Id,
+        int Code,
+        string Title,
+        Guid? ParentLocationId
+    );
 }

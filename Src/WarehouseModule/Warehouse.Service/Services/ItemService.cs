@@ -89,7 +89,7 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdOrThrowAsync(
+        var item = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
@@ -105,7 +105,7 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdOrThrowAsync(
+        var item = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => 
                 p.CompanyId == companyId &&
@@ -167,7 +167,7 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdOrThrowAsync(
+        var item = await GetSingleOrThrowAsync(
            trackChanges: true,
            predicate: p =>
                p.CompanyId == companyId &&
@@ -210,7 +210,7 @@ public class ItemService(
         );
     }
 
-    private async Task<Item> GetByIdOrThrowAsync(
+    private async Task<Item> GetSingleOrThrowAsync(
         bool trackChanges,
         Expression<Func<Item, bool>> predicate,
         CancellationToken ct = default

@@ -7,7 +7,7 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
 {
-    IQueryable<WarehouseLocation> FilterByQ(
+    Task<List<WarehouseLocation>> FilterByQ(
         WarehouseLocationParameters requestParameters
     );
 

@@ -23,7 +23,7 @@ public class WarehouseLocationController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.FilterByQAsync(parameters, ct;
+        var result = await _locationService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 }

@@ -53,7 +53,7 @@ public class AttributeService(
         CancellationToken ct = default
     )
     {
-        var attribute = await GetByIdOrThrowAsync(
+        var attribute = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
@@ -103,7 +103,7 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var attribute = await GetByIdOrThrowAsync(
+        var attribute = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
@@ -149,7 +149,7 @@ public class AttributeService(
         return _attributeRepository.GetNextCodeAsync(companyId, ct);
     }
 
-    private async Task<Domain.Entities.Attribute> GetByIdOrThrowAsync(
+    private async Task<Domain.Entities.Attribute> GetSingleOrThrowAsync(
         bool trackChanges,
         Expression<Func<Domain.Entities.Attribute, bool>> predicate,
         CancellationToken ct = default

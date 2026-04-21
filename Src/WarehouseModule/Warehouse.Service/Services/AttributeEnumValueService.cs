@@ -48,7 +48,7 @@ public class AttributeEnumValueService(
         CancellationToken ct = default
     )
     {
-        var enumValue = await GetByIdOrThrowAsync(
+        var enumValue = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.AttributeId == attributeId && p.Id == id,
             ct
@@ -64,7 +64,7 @@ public class AttributeEnumValueService(
         CancellationToken ct
     )
     {
-        var enumValue = await GetByIdOrThrowAsync(
+        var enumValue = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.AttributeId == attributeId && p.Id == id,
             ct
@@ -110,7 +110,7 @@ public class AttributeEnumValueService(
         return _enumValueRepository.GetNextCodeAsync(attributeId, ct);
     }
 
-    private async Task<AttributeEnumValue> GetByIdOrThrowAsync(
+    private async Task<AttributeEnumValue> GetSingleOrThrowAsync(
         bool trackChanges,
         Expression<Func<AttributeEnumValue, bool>> predicate,
         CancellationToken ct = default
