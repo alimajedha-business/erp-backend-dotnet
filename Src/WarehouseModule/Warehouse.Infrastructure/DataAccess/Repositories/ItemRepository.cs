@@ -24,10 +24,10 @@ public class ItemRepository(MainDbContext context) :
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
         return await query
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
-            .Include(e => e.ItemAttributes)
+            .Include(i => i.ItemType)
+            .Include(i => i.Category)
+            .Include(i => i.PrimaryUnitOfMeasurement)
+            .Include(i => i.ItemAttributes).ThenInclude(i => i.Attribute)
             .SingleOrDefaultAsync(predicate, ct);
     }
 
@@ -75,10 +75,10 @@ public class ItemRepository(MainDbContext context) :
             .Set<Item>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .Where(i => leafIds.Contains(i.CategoryId))
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
+            .Where(e => leafIds.Contains(e.CategoryId))
+            .Include(i => i.ItemType)
+            .Include(i => i.Category)
+            .Include(i => i.PrimaryUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);

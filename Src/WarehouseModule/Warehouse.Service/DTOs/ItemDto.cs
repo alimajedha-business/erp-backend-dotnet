@@ -11,6 +11,7 @@ public record ItemDto(
     UnitOfMeasurementDto PrimaryUnitOfMeasurement,
     ItemTypeDto ItemType,
     CategoryDto Category,
+    List<AttributeSlimDto> ItemAttributes,
     bool IsActive
 );
 

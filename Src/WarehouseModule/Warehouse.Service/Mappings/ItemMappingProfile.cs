@@ -9,7 +9,11 @@ public class ItemMappingProfile : Profile
 {
     public ItemMappingProfile()
     {
-        CreateMap<Item, ItemDto>();
+        CreateMap<Item, ItemDto>()
+            .ForCtorParam(
+                nameof(ItemDto.ItemAttributes),
+                opt => opt.MapFrom(src => src.ItemAttributes.Select(s => s.Attribute))
+            );
         CreateMap<Item, ItemListDto>()
             .ForCtorParam(
                 nameof(ItemListDto.ItemTypeTitle),
