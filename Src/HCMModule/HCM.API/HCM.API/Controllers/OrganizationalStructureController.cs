@@ -42,21 +42,21 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
         return Ok(result);
     }
 
-    [HttpPost()]
-    public ActionResult Save(
+    [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<ActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromQuery, Required] DateOnly effectiveDate,
         [FromQuery] string? description,
         [FromBody] CreateOrganizationStructureDto dto,
         CancellationToken ct
-        )
+    )
     {
-        _organizationalStructureService.SaveTreeAsync(
+        var result = await _organizationalStructureService.CreateAsync(
             companyId,
             dto,
-            effectiveDate,
-            description,
             ct);
-        return Ok(dto);
+
+        return Ok(result);
     }
 }

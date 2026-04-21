@@ -14,4 +14,9 @@ public interface IAttributeEnumValueRepository :
         CancellationToken ct,
         RequestAdvancedFilters? requestAdvancedFilters = null
     );
+
+    Task<int> GetNextCodeAsync(
+        Guid attributeId,
+        CancellationToken ct
+    );
 }

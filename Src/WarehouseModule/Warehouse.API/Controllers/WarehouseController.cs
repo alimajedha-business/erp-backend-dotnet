@@ -12,7 +12,7 @@ using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -46,17 +46,6 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        await _warehouseTypeService.GetByIdAsync(
-            createDto.WarehouseTypeId,
-            ct
-        );
-
-        await _companyUnitService.GetByIdAsync(
-            companyId,
-            createDto.CompanyUnitId,
-            ct
-        );
-
         var dto = await _warehouseService.CreateAsync(
             companyId,
             createDto,
@@ -77,7 +66,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.FilterByQAsync(
             companyId,
             parameters,
             ct
@@ -98,11 +87,11 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -125,11 +114,11 @@ public class WarehouseController(
             Paginated = false,
         };
 
-        var result = await _warehouseService.GetAllAsync(
+        var result = await _warehouseService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         var columnsList = string.IsNullOrWhiteSpace(columns)
@@ -160,6 +149,7 @@ public class WarehouseController(
         var warehouse = await _warehouseService.GetByIdAsync(
             companyId,
             id,
+            trackChanges: false,
             ct
         );
 
@@ -247,7 +237,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetFilterByQAsync(
+        var result = await _locationService.FilterByQAsync(
             warehouseId,
             parameters,
             ct
@@ -268,11 +258,11 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        var result = await _locationService.GetListAsync(
+        var result = await _locationService.GetFilteredAsync(
             warehouseId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
@@ -312,8 +302,8 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        // TODO: check if the location with the given warehouse exists.
-        var dto = await _locationService.PatchAsync(id, patchDocument, ct);
+        // TODO: check if the location with the given warehouse does exist.
+        var dto = await _locationService.PatchAsync(warehouseId, id, patchDocument, ct);
         return Ok(dto);
     }
 
@@ -324,7 +314,7 @@ public class WarehouseController(
         CancellationToken ct
     )
     {
-        await _locationService.DeleteAsync(id, ct);
+        await _locationService.DeleteAsync(warehouseId, id, ct);
         return NoContent();
     }
 

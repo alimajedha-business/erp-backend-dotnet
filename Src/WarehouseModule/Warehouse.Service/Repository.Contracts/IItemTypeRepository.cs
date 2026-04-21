@@ -3,4 +3,7 @@ using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.Repository.Contracts;
 
-public interface IItemTypeRepository : IRepository<ItemType> { }
+public interface IItemTypeRepository : IRepository<ItemType>
+{
+    Task<int> GetNextCodeAsync(CancellationToken ct);
+}

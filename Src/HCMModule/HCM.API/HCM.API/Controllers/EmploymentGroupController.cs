@@ -71,24 +71,24 @@ public class EmploymentGroupController(
         CancellationToken ct
         )
     {
-        var result = await _employmentGroupService.GetAllAsync(
+        var result = await _employmentGroupService.GetFilteredAsync(
             companyId,
             parameters,
-            ct,
-            filterNodeDto
+            filterNodeDto,
+            ct
         );
 
         return Ok(result);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
+    public Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
         )
     {
-        await _employmentGroupService.DeleteAsync(companyId, id, ct);
+        // await _employmentGroupService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
@@ -108,6 +108,6 @@ public class EmploymentGroupController(
             ct
         );
 
-        return Ok(dto);
+        return Ok();
     }
 }

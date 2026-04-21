@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.RequestValidators;
 

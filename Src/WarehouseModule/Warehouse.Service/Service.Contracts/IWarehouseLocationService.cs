@@ -2,46 +2,35 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
-using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 
-namespace NGErp.Warehouse.Service.Services;
+namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IWarehouseLocationService : IBaseService<
-    WarehouseLocation,
-    WarehouseLocationDto,
-    WarehouseLocationListDto,
-    WarehouseLocationParameters,
-    IWarehouseLocationRepository,
-    IWarehouseRepository
->
+public interface IWarehouseLocationService
 {
     Task<WarehouseLocationDto> CreateAsync(
         Guid warehouseId,
         CreateWarehouseLocationDto createDto,
         CancellationToken ct
     );
-
-    Task<ListResponseModel<WarehouseLocationListDto>> GetFilterByQAsync(
-        Guid warehouseId,
-        WarehouseLocationParameters parameters,
-        CancellationToken ct
-    );
-
-    Task<ListResponseModel<WarehouseLocationListDto>> GetListAsync(
-        Guid warehouseId,
-        WarehouseLocationParameters parameters,
-        CancellationToken ct,
-        FilterNodeDto? filterNodeDto = null
-    );
-
     Task<WarehouseLocationDto> GetByIdAsync(
         Guid warehouseId,
         Guid id,
         CancellationToken ct
+    );
+
+    Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
+        Guid warehouseId,
+        WarehouseLocationParameters parameters,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<WarehouseLocationListDto>> GetFilteredAsync(
+        Guid warehouseId,
+        WarehouseLocationParameters parameters,
+        FilterNodeDto? filterNodeDto = null,
+        CancellationToken ct = default
     );
 
     Task<int> GetNextCodeAsync(

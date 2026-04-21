@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
-
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
@@ -11,20 +14,35 @@ using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Resources;
 
+
 namespace NGErp.HCM.Service.Services;
 
 public class OrganizationalStructureService(
     IOrganizationalStructureRepository organizationalStructureServiceRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
-    ICompanyService companyService
+    IAdvancedFilterBuilder filterBuilder,
+
+    ICompanyService companyService,
+    IDepartmentService departmentService,
+    IPositionService positiontService,
+    IOrganizationNodeService organizationNodeService
     ) : IOrganizationalStructureService
 {
-    private readonly IOrganizationalStructureRepository _organizationalStructureRepository = organizationalStructureServiceRepository;
+    //private readonly string _key = "OrganizationaLStructure";
+
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<HCMResource> _localizer = localizer;
-    private readonly ICompanyService _companyService = companyService;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IOrganizationalStructureRepository _organizationalStructureRepository = organizationalStructureServiceRepository;
 
+    private readonly ICompanyService _companyService = companyService;
+    private readonly IDepartmentService _departmentService= departmentService;
+    private readonly IPositionService _positionService= positiontService;
+    private readonly IOrganizationNodeService _organizationNodeService = organizationNodeService;
+
+
+//correct
     public async Task<ListResponseModel<OrganizationalStructureDto>> GetAll(
         Guid companyId,
         OrganizationalStructureParameters parameters,
@@ -32,20 +50,39 @@ public class OrganizationalStructureService(
         )
     {
         await _companyService.GetByIdAsync(companyId, ct);
-        var listQueryResult = await _organizationalStructureRepository.GetAllAsync(companyId, parameters, ct);
+        var query = _organizationalStructureRepository.FilterByQ(companyId, parameters);
+        var res = await _organizationalStructureRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<OrganizationalStructureDto>(
-           results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(listQueryResult.items),
-           totalCount: listQueryResult.count,
+           results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(res.items),
+           totalCount: res.count,
            parameters
        );
     }
 
+    public async Task<ListResponseModel<OrganizationalStructureDto>> GetFilteredAsync(
+    Guid companyId,
+    DepartmentParameters parameters,
+    FilterNodeDto? filterNodeDto = null,
+    CancellationToken ct = default
+)
+    {
+        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
+        var query = _organizationalStructureRepository.GetFiltered(companyId, advancedFilters);
+        var res = await _organizationalStructureRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<OrganizationalStructureDto>(
+            results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    //correct
     public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(
         Guid companyId,
         DateOnly date,
-        CancellationToken ct
-        )
+        CancellationToken ct)
     {
         var company = await _companyService.GetByIdAsync(companyId, ct);
 
@@ -54,16 +91,17 @@ public class OrganizationalStructureService(
             .AsNoTracking()
             .AsSingleQuery()
             .Include(s => s.Items!)
-                .ThenInclude(i => i.Node)
+                .ThenInclude(i => i.Node!)
                     .ThenInclude(n => n.Department)
             .Include(s => s.Items!)
-                .ThenInclude(i => i.Node)
+                .ThenInclude(i => i.Node!)
                     .ThenInclude(n => n.Position)
             .OrderByDescending(s => s.EffectiveFrom)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(ct);
+
         var companyNode = new OrganizationalStructureTreeItemDto
         {
-            Id = Guid.Empty, // virtual
+            Id = Guid.Empty,
             ParentItemId = null,
             Node = new OrganizationNodeTreeDto
             {
@@ -89,19 +127,21 @@ public class OrganizationalStructureService(
             };
         }
 
-        var items = structure.Items!.Select(MapToTreeNodeDto).ToList();
+        var items = structure.Items?
+            .Where(x => x.Node != null)
+            .Select(MapToTreeNodeDto)
+            .ToList() ?? [];
 
-        // Build tree hierarchy
         var rootItems = items.Where(x => x.ParentItemId == null).ToList();
         var childItems = items.Where(x => x.ParentItemId.HasValue).ToList();
 
-        // Add children to parents
         foreach (var item in rootItems.Concat(childItems))
         {
             item.Children = childItems.Where(c => c.ParentItemId == item.Id).ToList();
         }
 
         companyNode.Children = rootItems;
+
         return new OrganizationalStructureTreeDto
         {
             Id = structure.Id,
@@ -110,74 +150,288 @@ public class OrganizationalStructureService(
             Items = [companyNode]
         };
     }
-
-    public async Task<OrganizationalStructureTreeDto> SaveTreeAsync(
-        Guid companyId,
-        CreateOrganizationStructureDto incomingTree,
-        DateOnly effectiveFrom,
-        string? description = null,
+    public async Task CreateOrganizationalStructureItemsAsync(
+        OrganizationalStructure organizationalStructure,
+        List<CreateOrganizationalStructureItemDto> items,
         CancellationToken ct = default)
     {
-        // 1️ Validate company exists
+        ArgumentNullException.ThrowIfNull(organizationalStructure);
+        ArgumentNullException.ThrowIfNull(items);
+
+        var usedDepartmentIds = new HashSet<Guid>();
+
+        await ProcessStructureItemsAsync(
+            organizationalStructure,
+            items,
+            parentItemId: null,
+            parentNodeType: null,
+            usedDepartmentIds,
+            ct);
+    }
+
+    private async Task ProcessStructureItemsAsync(
+        OrganizationalStructure organizationalStructure,
+        List<CreateOrganizationalStructureItemDto> items,
+        Guid? parentItemId,
+        NodeType? parentNodeType,
+        HashSet<Guid> usedDepartmentIds,
+        CancellationToken ct)
+    {
+        if (items == null || items.Count == 0)
+            return;
+
+        var siblingPositionIds = new HashSet<Guid>();
+        var positionChildrenCount = 0;
+
+        foreach (var item in items)
+        {
+            ValidateNodeIdentity(item);
+
+            switch (item.NodeType)
+            {
+                case NodeType.Department:
+                    ValidateDepartmentNode(
+                        item,
+                        parentNodeType,
+                        usedDepartmentIds);
+                    break;
+
+                case NodeType.Position:
+                    ValidatePositionNode(
+                        item,
+                        parentNodeType,
+                        siblingPositionIds,
+                        ref positionChildrenCount);
+                    break;
+
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported node type '{item.NodeType}'.");
+            }
+
+            await ValidateNodeStatusAsync(
+                organizationalStructure.CompanyId,
+                organizationalStructure.EffectiveFrom,
+                item,
+                ct);
+
+            var node = await _organizationNodeService.GetOrCreateAsync(
+                organizationalStructure.CompanyId,
+                new CreateOrganizationNodeDto
+                {
+                    NodeType = item.NodeType,
+                    DepartmentId = item.DepartmentId,
+                    PositionId = item.PositionId
+                },
+                ct);
+
+            var structureItem = new OrganizationalStructureItem
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = organizationalStructure.CompanyId,
+                OrganizationalStructureId = organizationalStructure.Id,
+                OrganizationalStructure = organizationalStructure,
+                NodeId = node.Id,
+                ParentItemId = parentItemId
+            };
+
+            organizationalStructure.Items.Add(structureItem);
+
+            if (item.Children is { Count: > 0 })
+            {
+                await ProcessStructureItemsAsync(
+                    organizationalStructure,
+                    item.Children,
+                    structureItem.Id,
+                    item.NodeType,
+                    usedDepartmentIds,
+                    ct);
+            }
+        }
+    }
+
+    private static void ValidateNodeIdentity(CreateOrganizationalStructureItemDto item)
+    {
+        var hasDepartment = item.DepartmentId.HasValue;
+        var hasPosition = item.PositionId.HasValue;
+
+        if (hasDepartment == hasPosition)
+        {
+            throw new InvalidOperationException(
+                "Each structure item must have exactly one of DepartmentId or PositionId.");
+        }
+    }
+
+    private static void ValidateDepartmentNode(
+        CreateOrganizationalStructureItemDto item,
+        NodeType? parentNodeType,
+        HashSet<Guid> usedDepartmentIds)
+    {
+        if (!item.DepartmentId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "A department node must have DepartmentId.");
+        }
+
+        if (parentNodeType == NodeType.Position)
+        {
+            throw new InvalidOperationException(
+                "A department node cannot have a parent of type position.");
+        }
+
+        if (!usedDepartmentIds.Add(item.DepartmentId.Value))
+        {
+            throw new InvalidOperationException(
+                $"DepartmentId '{item.DepartmentId}' is duplicated in the tree.");
+        }
+    }
+
+    private static void ValidatePositionNode(
+        CreateOrganizationalStructureItemDto item,
+        NodeType? parentNodeType,
+        HashSet<Guid> siblingPositionIds,
+        ref int positionChildrenCount)
+    {
+        if (!item.PositionId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "A position node must have PositionId.");
+        }
+
+        if (!siblingPositionIds.Add(item.PositionId.Value))
+        {
+            throw new InvalidOperationException(
+                $"PositionId '{item.PositionId}' is duplicated among sibling nodes.");
+        }
+
+        if (parentNodeType == NodeType.Department)
+        {
+            positionChildrenCount++;
+
+            if (positionChildrenCount > 1)
+            {
+                throw new InvalidOperationException(
+                    "A department node can have at most one position child.");
+            }
+        }
+    }
+
+    private async Task ValidateNodeStatusAsync(
+        Guid companyId,
+        DateOnly effectiveFrom,
+        CreateOrganizationalStructureItemDto item,
+        CancellationToken ct)
+    {
+        if (item.DepartmentId.HasValue)
+        {
+            var department = await _departmentService.GetByIdAsync(
+                companyId,
+                item.DepartmentId.Value
+                );
+
+            ValidateEffectiveDateAgainstStatus(
+                entityType: "Department",
+                entityName: department.Name,
+                status: department.Status,
+                statusChangeDate: department.StatusChangeDate,
+                effectiveFrom: effectiveFrom);
+        }
+
+        if (item.PositionId.HasValue)
+        {
+            var position = await _positionService.GetByIdAsync(
+                companyId,
+                item.PositionId.Value
+                );
+
+            ValidateEffectiveDateAgainstStatus(
+                entityType: "Position",
+                entityName: position.Name,
+                status: position.Status,
+                statusChangeDate: position.StatusChangeDate,
+                effectiveFrom: effectiveFrom);
+        }
+    }
+
+    private static void ValidateEffectiveDateAgainstStatus(
+        string entityType,
+        string? entityName,
+        bool status,
+        DateTime? statusChangeDate,
+        DateOnly effectiveFrom)
+    {
+        if (status)
+            return;
+
+        if (!statusChangeDate.HasValue)
+        {
+            throw new InvalidOperationException(
+                $"{entityType} '{entityName}' is inactive and has no StatusChangeDate.");
+        }
+
+        var deactivationDate = DateOnly.FromDateTime(statusChangeDate.Value);
+
+        if (effectiveFrom > deactivationDate)
+        {
+            throw new InvalidOperationException(
+                $"{entityType} '{entityName}' is inactive from {deactivationDate:yyyy-MM-dd} and cannot be used for structure effective date {effectiveFrom:yyyy-MM-dd}.");
+        }
+    }
+    public async Task<OrganizationalStructureTreeDto> CreateAsync(
+        Guid companyId,
+        CreateOrganizationStructureDto incomingTree,
+        CancellationToken ct = default)
+    {
+        DateOnly effectiveFrom = incomingTree.EffectiveFrom;
+        List<CreateOrganizationalStructureItemDto> items = incomingTree.Items ?? [];
+
         var company = await _companyService.GetByIdAsync(companyId, ct);
-
-        // 2️ Load all nodes (for validation)
-        var allNodes = await _organizationalStructureRepository
-            .GetAllAsync(companyId, includeQuery, ct);
-
-        // 3️ Validate Tree
-        //ValidateTree(incomingTree, allNodes.items, effectiveFrom);
-
-        // 4️⃣ Create new structure (history preservation)
+        //var structures await 
         var structure = new OrganizationalStructure
         {
             Id = Guid.NewGuid(),
             CompanyId = companyId,
             EffectiveFrom = effectiveFrom,
-            Description = incomingTree.Description,
-            Items = new List<OrganizationalStructureItem>()
+            Description = incomingTree.Description
         };
 
-        // 5️⃣ Flatten tree and build items
-        foreach (var root in incomingTree.Items)
-        {
-            foreach (var child in root.Children)
-            {
-                //  BuildItemsRecursive(child, null, structure);
-            }
-        }
+        await CreateOrganizationalStructureItemsAsync(structure, items, ct);
 
         await _organizationalStructureRepository.AddAsync(structure, ct);
-        //await _unitOfWork.SaveChangesAsync(ct);
+        await _organizationalStructureRepository.SaveChangesAsync(ct);
 
         return await GetTreeAtDateAsync(companyId, effectiveFrom, ct);
     }
 
     private OrganizationalStructureTreeItemDto MapToTreeNodeDto(OrganizationalStructureItem item)
     {
+        var node = item.Node ?? throw new InvalidOperationException(
+            $"OrganizationalStructureItem '{item.Id}' has no Node.");
+
         return new OrganizationalStructureTreeItemDto
         {
             Id = item.Id,
-            //NodeId = item.NodeId,
             ParentItemId = item.ParentItemId,
             Node = new OrganizationNodeTreeDto
             {
-                Id = item.Node.Id,
-                NodeType = item.Node.NodeType,
-                //DepartmentId = item.Node.DepartmentId,
-                //PositionId = item.Node.PositionId,
-                Department = item.Node.Department != null ? new DepartmentDto
-                {
-                    Id = item.Node.Department.Id,
-                    Name = item.Node.Department.Name,
-                    Code = item.Node.Department.Code,
-                } : null,
-                Position = item.Node.Position != null ? new PositionDto
-                {
-                    Id = item.Node.Position.Id,
-                    Name = item.Node.Position.Name,
-                    Code = item.Node.Position.Code,
-                } : null
+                Id = node.Id,
+                NodeType = node.NodeType,
+                Department = node.Department != null
+                    ? new DepartmentDto
+                    {
+                        Id = node.Department.Id,
+                        Name = node.Department.Name,
+                        Code = node.Department.Code,
+                    }
+                    : null,
+                Position = node.Position != null
+                    ? new PositionDto
+                    {
+                        Id = node.Position.Id,
+                        Name = node.Position.Name,
+                        Code = node.Position.Code,
+                    }
+                    : null
             },
             Children = []
         };
@@ -313,12 +567,12 @@ public class OrganizationalStructureService(
             DFS(root, new HashSet<Guid>());
     }
 
-    private static IQueryable<OrganizationalStructure> includeQuery(
-    IQueryable<OrganizationalStructure> q
-) => q.Include(s => s.Items!)
-                .ThenInclude(i => i.Node)
-                    .ThenInclude(n => n.Department)
-            .Include(s => s.Items!)
-                .ThenInclude(i => i.Node)
-                    .ThenInclude(n => n.Position);
+//    private static IQueryable<OrganizationalStructure> includeQuery(
+//    IQueryable<OrganizationalStructure> q
+//) => q.Include(s => s.Items!)
+//                .ThenInclude(i => i.Node)
+//                    .ThenInclude(n => n.Department)
+//            .Include(s => s.Items!)
+//                .ThenInclude(i => i.Node)
+//                    .ThenInclude(n => n.Position);
 }

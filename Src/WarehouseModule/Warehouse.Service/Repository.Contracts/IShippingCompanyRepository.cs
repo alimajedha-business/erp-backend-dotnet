@@ -5,4 +5,6 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IShippingCompanyRepository :
     IRepository<ShippingCompany>
-{ }
+{
+    Task<int> GetNextCodeAsync(CancellationToken ct);
+}

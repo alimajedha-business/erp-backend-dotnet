@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Services;
+using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -23,7 +23,7 @@ public class MeasurementDimensionController(
         CancellationToken ct
     )
     {
-        var result = await _dimensionService.GetAllAsync(parameters, ct);
+        var result = await _dimensionService.FilterByQAsync(parameters, ct);
         return Ok(result);
     }
 
@@ -33,7 +33,7 @@ public class MeasurementDimensionController(
         CancellationToken ct
     )
     {
-        var dto = await _dimensionService.GetByIdAsync(id, ct);
+        var dto = await _dimensionService.GetByIdAsync(id, trackChanges: false, ct);
         return Ok(dto);
     }
 }

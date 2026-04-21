@@ -22,11 +22,19 @@ public class OrganizationNode : BaseEntityWithCompany, IBaseEntityTypeConfigurat
     public Position? Position { get; set; }
 
     // public ICollection<OrganizationalStructureItem>? StructureItems { get; set; }
-
+    
     public void Map(EntityTypeBuilder<OrganizationNode> builder)
     {
-        builder
-           .ToTable(nameof(OrganizationNode), "HCM");
+        builder.ToTable(nameof(OrganizationNode), "HCM", t =>
+        {
+            t.HasCheckConstraint(
+                "CK_OrganizationNode_OnlyOneReference",
+                @"(
+                ([DepartmentId] IS NOT NULL AND [PositionId] IS NULL AND [NodeType] = 1)
+                OR
+                ([DepartmentId] IS NULL AND [PositionId] IS NOT NULL AND [NodeType] = 2)
+            )");
+        });
 
         builder.HasOne(e => e.Department)
             .WithMany()
@@ -37,5 +45,13 @@ public class OrganizationNode : BaseEntityWithCompany, IBaseEntityTypeConfigurat
             .WithMany()
             .HasForeignKey(e => e.PositionId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasIndex(e => new { e.CompanyId, e.DepartmentId })
+            .IsUnique()
+            .HasFilter("[DepartmentId] IS NOT NULL");
+
+        builder.HasIndex(e => new { e.CompanyId, e.PositionId })
+            .IsUnique()
+            .HasFilter("[PositionId] IS NOT NULL");
     }
 }

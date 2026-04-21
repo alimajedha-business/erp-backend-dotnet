@@ -9,68 +9,15 @@ public interface IRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(
         Guid id,
-        CancellationToken ct,
-        bool trackChanges = false
+        bool trackChanges = false,
+        CancellationToken ct = default
     );
 
-    Task<T?> GetByIdAsync(
-        Guid id,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        bool trackChanges = false
-    );
+    IQueryable<T> FilterByQ(RequestParameters requestParameters);
 
-    IQueryable<T> GetAll(
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
+    IQueryable<T> GetFiltered(RequestAdvancedFilters requestAdvancedFilters);
 
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        CancellationToken ct
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetAllAsync(
-        RequestParameters requestParameters,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    Task<ListQueryResult<T>> GetByConditionAsync(
-        RequestParameters requestParameters,
-        Expression<Func<T, bool>> conditionExpression,
-        Func<IQueryable<T>, IQueryable<T>> include,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
-    );
-
-    IQueryable<T> Find(
-        Expression<Func<T, bool>> predicate,
-        IQueryable<T>? baseQuery = null
-    );
-
-    Task<int> GetNextCode(CancellationToken ct);
+    IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
     Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
 
@@ -84,9 +31,17 @@ public interface IRepository<T> where T : class
 
     void UpdateRange(IEnumerable<T> entities);
 
+    void Remove(Guid id, CancellationToken ct);
+
     void Remove(T entity);
 
     void RemoveRange(IEnumerable<T> entities);
+
+    Task<ListQueryResult<T>> GetResponseListAsync(
+        IQueryable<T> query,
+        RequestParameters requestParameters,
+        CancellationToken ct
+    );
 
     Task<int> SaveChangesAsync(CancellationToken ct);
 }

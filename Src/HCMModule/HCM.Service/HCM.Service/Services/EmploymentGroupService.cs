@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.General.Service.Services;
 using NGErp.HCM.Domain.Entities;
@@ -30,22 +32,15 @@ public class EmploymentGroupService(
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder,
     ICompanyService companyService
-    ) : BaseServiceWithCompany<
-        EmploymentGroup,
-        EmploymentGroupDto,
-        EmploymentGroupParameters,
-        IEmploymentGroupRepository,
-        HCMResource>
-    (
-        filterBuilder,
-        employmentGroupRepository,
-        companyService,
-        mapper,
-        localizer
-        ),
-    IEmploymentGroupService
+    ) : IEmploymentGroupService
 {
-    protected override string LocalizerKey => "EmploymentGroup";
+    private readonly string _key = "EmploymentGroup";
+    private readonly IMapper _mapper = mapper;
+
+    private readonly IStringLocalizer _localizer = localizer;
+    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
+    private readonly IEmploymentGroupRepository _repo = employmentGroupRepository;
+    private readonly ICompanyService _companyService = companyService;
 
     public async Task<EmploymentGroupDetailDto> CreateAsync(
         Guid companyId,
@@ -53,7 +48,7 @@ public class EmploymentGroupService(
         CancellationToken ct
         )
     {
-        await EnsureCompanyAsync(companyId, ct);
+        // await EnsureCompanyAsync(companyId, ct);
         var existing = await _repo.FirstOrDefaultAsync(
             e => e.CompanyId == companyId && e.Name == createDto.Name);
         if (existing != null)
@@ -93,7 +88,7 @@ public class EmploymentGroupService(
         UpdateEmploymentGroupDto updateDto,
         CancellationToken ct)
     {
-        await EnsureCompanyAsync(companyId, ct);
+        //await EnsureCompanyAsync(companyId, ct);
 
         // 1. Load group with all specifications (aggregate root)
 
@@ -147,7 +142,7 @@ public class EmploymentGroupService(
          CancellationToken ct
          )
     {
-        await EnsureCompanyAsync(companyId, ct);
+        // await EnsureCompanyAsync(companyId, ct);
         var entity = await _repo.GetWithSpecificationsAsync(companyId, id, ct);
 
         return entity is null
@@ -198,5 +193,68 @@ public class EmploymentGroupService(
         if (existing == null)
             throw new NotFoundException("Specification to delete not found.");
         entity.Specifications.Remove(existing);
+    }
+
+    //async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(
+    //     Guid companyId,
+    //     Guid id,
+    //     CancellationToken ct
+    //     )
+    //{
+    //    await EnsureCompanyAsync(companyId, ct);
+    //    var entity = await _employmentGroupRepository
+    //   .Find(companyId, e => e.Id == id)
+    //   .AsNoTracking()
+    //   .ProjectTo<EmploymentGroupDetailDto>(_mapper.ConfigurationProvider)
+    //   .FirstOrDefaultAsync(ct);
+
+    //    return entity ?? throw new NotFoundException(_localizer[_key].Value);
+    //}
+
+    public async Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
+      Guid companyId,
+      EmploymentGroupParameters parameters,
+      FilterNodeDto? filterNodeDto = null,
+      CancellationToken ct = default
+  )
+    {
+        var advancedFilters = _filterBuilder.Build<EmploymentGroupDto>(filterNodeDto);
+        var query = _repo.GetFiltered(companyId, advancedFilters);
+        var res = await _repo.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<EmploymentGroupDto>(
+            results: _mapper.Map<IReadOnlyList<EmploymentGroupDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
+    public async Task DeleteAsync(
+    Guid companyId,
+    Guid id,
+    CancellationToken ct
+)
+    {
+        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        _repo.Remove(entity);
+        await _repo.SaveChangesAsync(ct);
+    }
+
+    private async Task<EmploymentGroup> GetByIdOrThrowAsync(
+    Guid companyId,
+    Guid id,
+    bool trackChanges = false,
+    CancellationToken ct = default
+)
+    {
+        // TODO: add specification if needed
+        var entity = await _repo.GetByIdAsync(id, trackChanges, ct);
+        return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

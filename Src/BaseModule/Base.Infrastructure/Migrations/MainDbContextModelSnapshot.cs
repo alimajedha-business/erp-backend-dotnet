@@ -276,15 +276,24 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("PositionId");
 
-                    b.ToTable("OrganizationNode", "HCM");
+                    b.HasIndex("CompanyId", "DepartmentId")
+                        .IsUnique()
+                        .HasFilter("[DepartmentId] IS NOT NULL");
+
+                    b.HasIndex("CompanyId", "PositionId")
+                        .IsUnique()
+                        .HasFilter("[PositionId] IS NOT NULL");
+
+                    b.ToTable("OrganizationNode", "HCM", t =>
+                        {
+                            t.HasCheckConstraint("CK_OrganizationNode_OnlyOneReference", "(\r\n                ([DepartmentId] IS NOT NULL AND [PositionId] IS NULL AND [NodeType] = 1)\r\n                OR\r\n                ([DepartmentId] IS NULL AND [PositionId] IS NOT NULL AND [NodeType] = 2)\r\n            )");
+                        });
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationalStructure", b =>
@@ -1868,7 +1877,7 @@ namespace NGErp.Base.Infrastructure.Migrations
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroupSpecification", b =>
                 {
                     b.HasOne("NGErp.HCM.Domain.Entities.EmploymentGroup", null)
-                        .WithMany()
+                        .WithMany("Specifications")
                         .HasForeignKey("EmploymentGroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2278,6 +2287,11 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("ParentLocation");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroup", b =>
+                {
+                    b.Navigation("Specifications");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationalStructure", b =>
