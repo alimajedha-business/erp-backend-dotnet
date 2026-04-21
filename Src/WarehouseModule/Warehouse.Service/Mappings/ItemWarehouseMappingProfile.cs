@@ -9,7 +9,11 @@ public class ItemWarehouseMappingProfile : Profile
 {
     public ItemWarehouseMappingProfile()
     {
-        CreateMap<ItemWarehouse, ItemWarehouseDto>();
+        CreateMap<ItemWarehouse, ItemWarehouseDto>()
+            .ForCtorParam(
+                nameof(ItemWarehouseDto.Locations),
+                opt => opt.MapFrom(src => src.ItemWarehouseLocations.Select(s => s.WarehouseLocation))
+            );
         CreateMap<CreateItemWarehouseDto, ItemWarehouse>();
     }
 }

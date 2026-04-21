@@ -9,6 +9,12 @@ public record WarehouseLocationDto(
     WarehouseSlimDto Warehouse
 );
 
+public record WarehouseLocationSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public record WarehouseLocationListDto(
     Guid Id,
     int Code,

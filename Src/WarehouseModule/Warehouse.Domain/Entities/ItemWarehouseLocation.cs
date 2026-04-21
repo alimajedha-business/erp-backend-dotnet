@@ -10,10 +10,10 @@ public class ItemWarehouseLocation :
     IBaseEntityTypeConfiguration<ItemWarehouseLocation>
 {
     public Guid ItemWarehouseId { get; set; }
-    public Guid LocationId { get; set; }
+    public Guid WarehouseLocationId { get; set; }
 
     public ItemWarehouse ItemWarehouse { get; set; } = default!;
-    public WarehouseLocation Location { get; set; } = default!;
+    public WarehouseLocation WarehouseLocation { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<ItemWarehouseLocation> builder)
     {
@@ -22,7 +22,7 @@ public class ItemWarehouseLocation :
 
         builder
             .HasOne(e => e.ItemWarehouse)
-            .WithMany(e => e.Locations)
+            .WithMany()
             .HasForeignKey(e => e.ItemWarehouseId)
             .OnDelete(DeleteBehavior.NoAction);
     }

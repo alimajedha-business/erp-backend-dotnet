@@ -30,6 +30,7 @@ public class ItemRepository(MainDbContext context) :
             .Include(i => i.ItemAttributes).ThenInclude(i => i.Attribute)
             .Include(i => i.ItemUnitOfMeasurements).ThenInclude(i => i.UnitOfMeasurement)
             .Include(i => i.ItemWarehouses).ThenInclude(i => i.Warehouse)
+            .Include(i => i.ItemWarehouses).ThenInclude(i => i.ItemWarehouseLocations).ThenInclude(i => i.WarehouseLocation)
             .SingleOrDefaultAsync(predicate, ct);
     }
 

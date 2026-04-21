@@ -70,10 +70,10 @@ public class ItemService(
 				ReorderQuantity = warehouseDto.ReorderQuantity,
 				MaxStockLevel = warehouseDto.MaxStockLevel,
 
-				Locations = [.. warehouseDto.LocationIds
+                ItemWarehouseLocations = [.. warehouseDto.LocationIds
 					.Select(locationId => new ItemWarehouseLocation
 					{
-						LocationId = locationId
+                        WarehouseLocationId = locationId
 					})]
 			})];
 

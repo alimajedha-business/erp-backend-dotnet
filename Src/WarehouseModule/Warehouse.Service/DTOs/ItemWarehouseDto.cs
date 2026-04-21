@@ -1,11 +1,14 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+﻿using NGErp.Warehouse.Domain.Entities;
+
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record ItemWarehouseDto(
     WarehouseSlimDto Warehouse,
     decimal ReorderPoint,
     decimal CriticalPoint,
     decimal ReorderQuantity,
-    decimal MaxStockLevel
+    decimal MaxStockLevel,
+    List<WarehouseLocationSlimDto> Locations
 );
 
 public class CreateItemWarehouseDto

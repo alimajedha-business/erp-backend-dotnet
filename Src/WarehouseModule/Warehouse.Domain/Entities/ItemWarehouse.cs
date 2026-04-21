@@ -19,7 +19,7 @@ public class ItemWarehouse :
     public Item Item { get; set; } = default!;
     public Warehouse Warehouse { get; set; } = default!;
 
-    public ICollection<ItemWarehouseLocation> Locations { get; set; } = [];
+    public ICollection<ItemWarehouseLocation> ItemWarehouseLocations { get; set; } = [];
 
     public void Map(EntityTypeBuilder<ItemWarehouse> builder)
     {
