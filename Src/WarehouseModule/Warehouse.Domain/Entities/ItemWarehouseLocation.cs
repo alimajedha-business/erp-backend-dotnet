@@ -22,7 +22,7 @@ public class ItemWarehouseLocation :
 
         builder
             .HasOne(e => e.ItemWarehouse)
-            .WithMany()
+            .WithMany(e => e.ItemWarehouseLocations)
             .HasForeignKey(e => e.ItemWarehouseId)
             .OnDelete(DeleteBehavior.NoAction);
     }

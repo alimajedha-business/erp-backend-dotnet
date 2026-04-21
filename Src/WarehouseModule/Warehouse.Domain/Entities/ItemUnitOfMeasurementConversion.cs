@@ -22,13 +22,13 @@ public class ItemUnitOfMeasurementConversion :
 
         builder
             .HasOne(e => e.Item)
-            .WithMany()
+            .WithMany(e => e.ItemUnitOfMeasurementConversions)
             .HasForeignKey(e => e.ItemId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.UnitOfMeasurement)
-            .WithMany()
+            .WithMany(e => e.ItemUnitOfMeasurementConversions)
             .HasForeignKey(e => e.UnitOfMeasurementId)
             .OnDelete(DeleteBehavior.NoAction);
     }
