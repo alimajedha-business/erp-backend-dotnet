@@ -8,10 +8,11 @@ public record ItemDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    UnitOfMeasurementDto PrimaryUnitOfMeasurement,
-    ItemTypeDto ItemType,
-    CategoryDto Category,
+    UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
+    ItemTypeSlimDto ItemType,
+    CategorySlimDto Category,
     List<AttributeSlimDto> ItemAttributes,
+    List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
     bool IsActive
 );
 

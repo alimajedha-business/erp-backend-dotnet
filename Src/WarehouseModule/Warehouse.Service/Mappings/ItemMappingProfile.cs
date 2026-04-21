@@ -13,6 +13,10 @@ public class ItemMappingProfile : Profile
             .ForCtorParam(
                 nameof(ItemDto.ItemAttributes),
                 opt => opt.MapFrom(src => src.ItemAttributes.Select(s => s.Attribute))
+            )
+            .ForCtorParam(
+                nameof(ItemDto.ItemUnitOfMeasurements),
+                opt => opt.MapFrom(src => src.ItemUnitOfMeasurements.Select(s => s.UnitOfMeasurement))
             );
         CreateMap<Item, ItemListDto>()
             .ForCtorParam(

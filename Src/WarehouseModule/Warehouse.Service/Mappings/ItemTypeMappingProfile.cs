@@ -10,6 +10,7 @@ internal class ItemTypeMappingProfile : Profile
     public ItemTypeMappingProfile()
     {
         CreateMap<ItemType, ItemTypeDto>();
+        CreateMap<ItemType, ItemTypeSlimDto>();
         CreateMap<CreateItemTypeDto, ItemType>();
         CreateMap<PatchItemTypeDto, ItemType>().ReverseMap();
     }
