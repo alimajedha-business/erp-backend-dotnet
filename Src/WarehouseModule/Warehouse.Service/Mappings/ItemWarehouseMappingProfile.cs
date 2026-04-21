@@ -9,6 +9,7 @@ public class ItemWarehouseMappingProfile : Profile
 {
     public ItemWarehouseMappingProfile()
     {
+        CreateMap<ItemWarehouse, ItemWarehouseDto>();
         CreateMap<CreateItemWarehouseDto, ItemWarehouse>();
     }
 }

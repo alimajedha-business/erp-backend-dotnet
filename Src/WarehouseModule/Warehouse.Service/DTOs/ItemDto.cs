@@ -13,6 +13,7 @@ public record ItemDto(
     CategorySlimDto Category,
     List<AttributeSlimDto> ItemAttributes,
     List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
+    List<ItemWarehouseDto> ItemWarehouses,
     bool IsActive
 );
 

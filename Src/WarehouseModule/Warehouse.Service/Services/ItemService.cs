@@ -2,9 +2,6 @@
 
 using AutoMapper;
 
-using DocumentFormat.OpenXml.Vml.Office;
-using DocumentFormat.OpenXml.Wordprocessing;
-
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 

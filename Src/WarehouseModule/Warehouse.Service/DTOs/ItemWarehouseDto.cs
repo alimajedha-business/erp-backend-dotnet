@@ -1,5 +1,13 @@
 ﻿namespace NGErp.Warehouse.Service.DTOs;
 
+public record ItemWarehouseDto(
+    WarehouseSlimDto Warehouse,
+    decimal ReorderPoint,
+    decimal CriticalPoint,
+    decimal ReorderQuantity,
+    decimal MaxStockLevel
+);
+
 public class CreateItemWarehouseDto
 {
     public Guid ItemId { get; set; }
