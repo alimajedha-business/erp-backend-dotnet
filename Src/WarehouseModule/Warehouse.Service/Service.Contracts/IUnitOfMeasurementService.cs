@@ -20,7 +20,7 @@ public interface IUnitOfMeasurementService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<UnitOfMeasurementDto>> FilterByQAsync(
+    Task<ListResponseModel<UnitOfMeasurementSlimDto>> FilterByQAsync(
         UnitOfMeasurementParameters parameters,
         CancellationToken ct = default
     );

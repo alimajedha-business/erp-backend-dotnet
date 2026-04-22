@@ -22,7 +22,7 @@ public interface IAttributeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<AttributeDto>> FilterByQAsync(
+    Task<ListResponseModel<AttributeSlimDto>> FilterByQAsync(
         Guid companyId,
         AttributeParameters parameters,
         CancellationToken ct = default

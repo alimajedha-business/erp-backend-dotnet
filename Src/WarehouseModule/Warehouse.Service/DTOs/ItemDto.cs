@@ -8,9 +8,12 @@ public record ItemDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    UnitOfMeasurementDto PrimaryUnitOfMeasurement,
-    ItemTypeDto ItemType,
-    CategoryDto Category,
+    UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
+    ItemTypeSlimDto ItemType,
+    CategorySlimDto Category,
+    List<AttributeSlimDto> ItemAttributes,
+    List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
+    List<ItemWarehouseDto> ItemWarehouses,
     bool IsActive
 );
 
@@ -43,6 +46,8 @@ public class CreateItemDto
 
     public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
+    public List<CreateItemWarehouseDto> Warehouses { get; set; } = [];
+    public List<CreateItemUnitOfMeasurementConversionDto> UnitOfMeasurementConversions { get; set; } = [];
 }
 
 public class PatchItemDto

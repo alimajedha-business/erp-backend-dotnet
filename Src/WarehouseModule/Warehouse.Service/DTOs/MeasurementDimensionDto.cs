@@ -7,6 +7,12 @@ public record MeasurementDimensionDto(
     bool IsDiscrete
 );
 
+public record MeasurementDimensionSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public class CreateMeasurementDimensionDto
 {
     public required int Code { get; set; }

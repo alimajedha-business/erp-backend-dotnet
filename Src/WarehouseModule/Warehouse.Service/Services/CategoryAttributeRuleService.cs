@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -51,8 +53,13 @@ public class CategoryAttributeRuleService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<CategoryAttributeRuleDto>(entity);
+        var categoryAttributeRule = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<CategoryAttributeRuleDto>(categoryAttributeRule);
     }
 
     public async Task<ListResponseModel<CategoryAttributeRuleDto>> FilterByQAsync(
@@ -92,13 +99,13 @@ public class CategoryAttributeRuleService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: false,
+        var categoryAttributeRule = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchCategoryAttributeRuleDto>(entity);
+        var patchDto = _mapper.Map<PatchCategoryAttributeRuleDto>(categoryAttributeRule);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -111,10 +118,10 @@ public class CategoryAttributeRuleService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, categoryAttributeRule);
 
         await _attributeRuleRepository.SaveChangesAsync(ct);
-        return _mapper.Map<CategoryAttributeRuleDto>(entity);
+        return _mapper.Map<CategoryAttributeRuleDto>(categoryAttributeRule);
     }
 
     public virtual async Task DeleteAsync(
@@ -122,24 +129,21 @@ public class CategoryAttributeRuleService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _attributeRuleRepository.Remove(entity);
-        await _attributeRuleRepository.SaveChangesAsync(ct);
+        await _attributeRuleRepository.Remove(e => e.Id == id, ct);
     }
 
-    private async Task<CategoryAttributeRule> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<CategoryAttributeRule> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<CategoryAttributeRule, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        var entity = await _attributeRuleRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _attributeRuleRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

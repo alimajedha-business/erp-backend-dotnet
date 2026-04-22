@@ -1,4 +1,6 @@
-﻿using NGErp.Base.Service.RequestFeatures;
+﻿using System.Linq.Expressions;
+
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
@@ -7,21 +9,6 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 
 public interface IItemRepository : IRepositoryWithCompany<Item>
 {
-    Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    );
-
-    Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    );
-
     Task<ListQueryResult<Item>> GetCategoryAllAsync(
         Guid companyId,
         Guid categoryId,

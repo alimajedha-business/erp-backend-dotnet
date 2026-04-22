@@ -1,4 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,42 +16,29 @@ public class ItemRepository(MainDbContext context) :
     RepositoryWithCompany<Item>(context),
     IItemRepository
 {
-    public async Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    public override async Task<Item?> SingleOrDefaultAsync(
+        Expression<Func<Item, bool>> predicate,
+        bool trackChanges = true,
         CancellationToken ct = default
     )
     {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        var query = (trackChanges ? _dbSet : _dbSet.AsNoTracking())
+            .AsSplitQuery();
 
         return await query
-            .Where(e => e.CompanyId == companyId)
-            .Where(e => e.Id == id)
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
-            .SingleOrDefaultAsync(cancellationToken: ct);
-    }
-
-    public async Task<Item?> GetByIdAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
-        return await query
-            .Where(e => e.CompanyId == companyId)
-            .Where(e => e.CategoryId == categoryId)
-            .Where(e => e.Id == id)
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
-            .SingleOrDefaultAsync(cancellationToken: ct);
+            .Include(i => i.ItemType)
+            .Include(i => i.Category)
+            .Include(i => i.PrimaryUnitOfMeasurement)
+            .Include(i => i.ItemAttributes)
+                .ThenInclude(i => i.Attribute)
+            .Include(i => i.ItemUnitOfMeasurements)
+                .ThenInclude(i => i.UnitOfMeasurement)
+            .Include(i => i.ItemWarehouses)
+                .ThenInclude(i => i.Warehouse)
+            .Include(i => i.ItemWarehouses)
+                .ThenInclude(i => i.ItemWarehouseLocations)
+                .ThenInclude(i => i.WarehouseLocation)
+            .SingleOrDefaultAsync(predicate, ct);
     }
 
     public async Task<ListQueryResult<Item>> GetCategoryAllAsync(
@@ -61,46 +49,61 @@ public class ItemRepository(MainDbContext context) :
         CancellationToken ct
     )
     {
-        var leafIds = new List<Guid>();
+        var categories = await _context.Categories
+            .AsNoTracking()
+            .Where(c => c.CompanyId == companyId)
+            .Select(c => new
+            {
+                c.Id,
+                c.ParentCategoryId,
+                c.HasNextLevel
+            })
+            .ToListAsync(ct);
+
+        var byId = categories.ToDictionary(c => c.Id);
+        if (!byId.TryGetValue(categoryId, out _))
+            return new ListQueryResult<Item>([], 0);
+
+        var childrenByParent = categories
+            .Where(c => c.ParentCategoryId.HasValue)
+            .GroupBy(c => c.ParentCategoryId!.Value)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Id).ToList());
+
+        var leafIds = new HashSet<Guid>();
+        var visited = new HashSet<Guid>();
         var queue = new Queue<Guid>();
         queue.Enqueue(categoryId);
 
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
+            if (!visited.Add(current))
+                continue;
 
-            var children = await _context.Categories
-                .Where(c => c.ParentCategoryId == current)
-                .Select(c => new { c.Id, c.HasNextLevel })
-                .ToListAsync(cancellationToken: ct);
-
-            foreach (var ch in children)
+            var node = byId[current];
+            if (!node.HasNextLevel || !childrenByParent.TryGetValue(current, out var children))
             {
-                if (!ch.HasNextLevel)
-                    leafIds.Add(ch.Id);
-                else
-                    queue.Enqueue(ch.Id);
+                leafIds.Add(current);
+                continue;
             }
 
-            var isCurrentLeaf = await _context.Categories
-                .Where(c => c.Id == current)
-                .Select(c => !c.HasNextLevel)
-                .SingleAsync(cancellationToken: ct);
-
-            if (isCurrentLeaf)
-                leafIds.Add(current);
+            foreach (var childId in children)
+            {
+                queue.Enqueue(childId);
+            }
         }
 
-        leafIds = [.. leafIds.Distinct()];
+        if (leafIds.Count == 0)
+            return new ListQueryResult<Item>([], 0);
 
         IQueryable<Item> query = _context
             .Set<Item>()
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .Where(i => leafIds.Contains(i.CategoryId))
-            .Include(e => e.ItemType)
-            .Include(e => e.Category)
-            .Include(e => e.PrimaryUnitOfMeasurement)
+            .Where(e => leafIds.Contains(e.CategoryId))
+            .Include(i => i.ItemType)
+            .Include(i => i.Category)
+            .Include(i => i.PrimaryUnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);

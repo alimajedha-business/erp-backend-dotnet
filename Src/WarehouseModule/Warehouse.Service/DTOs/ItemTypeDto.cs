@@ -6,6 +6,12 @@ public record ItemTypeDto(
     string Title
 );
 
+public record ItemTypeSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public class CreateItemTypeDto
 {
     public int Code { get; set; }

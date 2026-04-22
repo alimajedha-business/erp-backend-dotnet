@@ -10,6 +10,7 @@ public class UnitOfMeasurementMappingProfile : Profile
     public UnitOfMeasurementMappingProfile()
     {
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementSlimDto>();
         CreateMap<UnitOfMeasurement, UnitOfMeasurementListDto>();
         CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
         CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();

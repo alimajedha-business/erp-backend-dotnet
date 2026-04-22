@@ -50,22 +50,6 @@ public class CategoryLevelConstraintController(
         );
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] CategoryLevelConstraintParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _constraintService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> GetAdvancedSearch(

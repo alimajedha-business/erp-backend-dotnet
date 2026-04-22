@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -52,11 +54,18 @@ public class CategoryService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<CategoryDto>(entity);
+        var category = await GetSingleOrThrowAsync(
+             trackChanges: true,
+             predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == id,
+             ct
+         );
+
+        return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<ListResponseModel<CategoryDto>> FilterByQAsync(
+    public async Task<ListResponseModel<CategorySlimDto>> FilterByQAsync(
         Guid companyId,
         CategoryParameters parameters,
         CancellationToken ct = default
@@ -65,8 +74,8 @@ public class CategoryService(
         var query = _categoryRepository.FilterByQ(companyId, parameters);
         var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<CategoryDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryDto>>(res.items),
+        return new ListResponseModel<CategorySlimDto>(
+            results: _mapper.Map<IReadOnlyList<CategorySlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );
@@ -97,14 +106,15 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
-            ct
-        );
+        var category = await GetSingleOrThrowAsync(
+             trackChanges: true,
+             predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == id,
+             ct
+         );
 
-        var patchDto = _mapper.Map<PatchCategoryDto>(entity);
+        var patchDto = _mapper.Map<PatchCategoryDto>(category);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -117,10 +127,10 @@ public class CategoryService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, category);
 
         await _categoryRepository.SaveChangesAsync(ct);
-        return _mapper.Map<CategoryDto>(entity);
+        return _mapper.Map<CategoryDto>(category);
     }
 
     public virtual async Task DeleteAsync(
@@ -129,25 +139,25 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
+        await _categoryRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
             ct
         );
-
-        _categoryRepository.Remove(entity);
-        await _categoryRepository.SaveChangesAsync(ct);
     }
 
-    private async Task<Category> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<Category> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<Category, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _categoryRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _categoryRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

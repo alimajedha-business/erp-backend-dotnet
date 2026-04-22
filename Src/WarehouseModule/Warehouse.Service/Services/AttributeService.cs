@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
+
+using DocumentFormat.OpenXml.Vml.Office;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -51,11 +55,16 @@ public class AttributeService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<AttributeDto>(entity);
+        var attribute = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<AttributeDto>(attribute);
     }
 
-    public async Task<ListResponseModel<AttributeDto>> FilterByQAsync(
+    public async Task<ListResponseModel<AttributeSlimDto>> FilterByQAsync(
         Guid companyId,
         AttributeParameters parameters,
         CancellationToken ct = default
@@ -64,8 +73,8 @@ public class AttributeService(
         var query = _attributeRepository.FilterByQ(companyId, parameters);
         var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<AttributeDto>(
-            results: _mapper.Map<IReadOnlyList<AttributeDto>>(res.items),
+        return new ListResponseModel<AttributeSlimDto>(
+            results: _mapper.Map<IReadOnlyList<AttributeSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );
@@ -96,14 +105,13 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
+        var attribute = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchAttributeDto>(entity);
+        var patchDto = _mapper.Map<PatchAttributeDto>(attribute);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -116,10 +124,10 @@ public class AttributeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, attribute);
 
         await _attributeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<AttributeDto>(entity);
+        return _mapper.Map<AttributeDto>(attribute);
     }
 
     public virtual async Task DeleteAsync(
@@ -128,14 +136,18 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+        var attribute = await GetSingleOrThrowAsync(
             trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
 
-        _attributeRepository.Remove(entity);
+        if (attribute.IsStatic)
+            throw new DbUpdateBadRequestException(
+                _localizer["Attribute.IsStatic.Delete"].Value
+            );
+
+        _attributeRepository.Remove(attribute);
         await _attributeRepository.SaveChangesAsync(ct);
     }
 
@@ -147,15 +159,18 @@ public class AttributeService(
         return _attributeRepository.GetNextCodeAsync(companyId, ct);
     }
 
-    private async Task<Domain.Entities.Attribute> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<Domain.Entities.Attribute> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<Domain.Entities.Attribute, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        // TODO: add specification if needed
-        var entity = await _attributeRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _attributeRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

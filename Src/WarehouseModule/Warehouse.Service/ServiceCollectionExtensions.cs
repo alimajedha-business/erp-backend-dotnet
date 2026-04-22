@@ -51,9 +51,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
         services.AddScoped<IInventoryMovementTypeService, InventoryMovementTypeService>();
         services.AddScoped<IItemService, ItemService>();
-        services.AddScoped<IItemAttributeService, ItemAttributeService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
-        services.AddScoped<IItemUnitOfMeasurementService, ItemUnitOfMeasurementService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();

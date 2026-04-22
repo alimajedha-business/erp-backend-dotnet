@@ -7,6 +7,12 @@ public record WarehouseTypeDto(
     bool IsActive
 );
 
+public record WarehouseTypeSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public class CreateWarehouseTypeDto
 {
     public required int Code { get; set; }

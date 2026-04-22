@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.Extensions.Localization;
 
@@ -31,11 +33,16 @@ public class MeasurementDimensionService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<MeasurementDimensionDto>(entity);
+        var measurementDimension = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<MeasurementDimensionDto>(measurementDimension);
     }
 
-    public async Task<ListResponseModel<MeasurementDimensionDto>> FilterByQAsync(
+    public async Task<ListResponseModel<MeasurementDimensionSlimDto>> FilterByQAsync(
         MeasurementDimensionParameters parameters,
         CancellationToken ct = default
     )
@@ -43,20 +50,25 @@ public class MeasurementDimensionService(
         var query = _dimensionRepository.FilterByQ(parameters);
         var res = await _dimensionRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<MeasurementDimensionDto>(
-            results: _mapper.Map<IReadOnlyList<MeasurementDimensionDto>>(res.items),
+        return new ListResponseModel<MeasurementDimensionSlimDto>(
+            results: _mapper.Map<IReadOnlyList<MeasurementDimensionSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );
     }
 
-    private async Task<MeasurementDimension> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<MeasurementDimension> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<MeasurementDimension, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _dimensionRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _dimensionRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

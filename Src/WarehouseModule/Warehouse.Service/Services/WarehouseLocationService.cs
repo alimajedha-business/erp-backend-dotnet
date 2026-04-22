@@ -1,11 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
@@ -14,7 +15,6 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
-using NGErp.Warehouse.Service.Specifications;
 
 namespace NGErp.Warehouse.Service.Services;
 
@@ -53,22 +53,33 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        return _mapper.Map<WarehouseLocationDto>(entity);
+        var location = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<WarehouseLocationDto>(location);
     }
 
-    public async Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
-        Guid warehouseId,
+    public async Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
+        Item item,
+        CancellationToken ct
+    )
+    {
+         return await _locationRepository.GetItemLocationsAsync(item, ct);
+    }
+
+    public async Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
         WarehouseLocationParameters parameters,
         CancellationToken ct
     )
     {
-        var query = _locationRepository.FilterByQ(parameters);
-        var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
+        var res = await _locationRepository.FilterByQ(parameters);
 
-        return new ListResponseModel<WarehouseLocationListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseLocationListDto>>(res.items),
-            totalCount: res.count,
+        return new ListResponseModel<WarehouseLocationSlimDto>(
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationSlimDto>>(res),
+            totalCount: res.Count,
             parameters
         );
     }
@@ -106,8 +117,13 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        var patchDto = _mapper.Map<PatchWarehouseLocationDto>(entity);
+        var location = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        var patchDto = _mapper.Map<PatchWarehouseLocationDto>(location);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -118,10 +134,10 @@ public class WarehouseLocationService(
         if (errors.Count != 0)
             throw new InvalidPatchDocumentException(errors);
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, location);
 
         await _locationRepository.SaveChangesAsync(ct);
-        return _mapper.Map<WarehouseLocationDto>(entity);
+        return _mapper.Map<WarehouseLocationDto>(location);
     }
 
     public async Task DeleteAsync(
@@ -130,19 +146,25 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        // TODO: check permissions
-        // TODO: check if the warehouse location belongs to this warehouse
-        _locationRepository.Remove(id, ct);
-        await _locationRepository.SaveChangesAsync(ct);
+        await _locationRepository.Remove(e =>
+            e.WarehouseId == warehouseId &&
+            e.Id == id,
+            ct
+        );
     }
 
-    private async Task<WarehouseLocation> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<WarehouseLocation> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<WarehouseLocation, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _locationRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _locationRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
