@@ -23,7 +23,9 @@ public class ItemRepository(MainDbContext context) :
         CancellationToken ct = default
     )
     {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        var query = (trackChanges ? _dbSet : _dbSet.AsNoTracking())
+            .AsSplitQuery();
+
         return await query
             .Include(i => i.ItemType)
             .Include(i => i.Category)
@@ -48,37 +50,52 @@ public class ItemRepository(MainDbContext context) :
         CancellationToken ct
     )
     {
-        var leafIds = new List<Guid>();
+        var categories = await _context.Categories
+            .AsNoTracking()
+            .Where(c => c.CompanyId == companyId)
+            .Select(c => new
+            {
+                c.Id,
+                c.ParentCategoryId,
+                c.HasNextLevel
+            })
+            .ToListAsync(ct);
+
+        var byId = categories.ToDictionary(c => c.Id);
+        if (!byId.TryGetValue(categoryId, out _))
+            return new ListQueryResult<Item>([], 0);
+
+        var childrenByParent = categories
+            .Where(c => c.ParentCategoryId.HasValue)
+            .GroupBy(c => c.ParentCategoryId!.Value)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Id).ToList());
+
+        var leafIds = new HashSet<Guid>();
+        var visited = new HashSet<Guid>();
         var queue = new Queue<Guid>();
         queue.Enqueue(categoryId);
 
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
+            if (!visited.Add(current))
+                continue;
 
-            var children = await _context.Categories
-                .Where(c => c.ParentCategoryId == current)
-                .Select(c => new { c.Id, c.HasNextLevel })
-                .ToListAsync(cancellationToken: ct);
-
-            foreach (var ch in children)
+            var node = byId[current];
+            if (!node.HasNextLevel || !childrenByParent.TryGetValue(current, out var children))
             {
-                if (!ch.HasNextLevel)
-                    leafIds.Add(ch.Id);
-                else
-                    queue.Enqueue(ch.Id);
+                leafIds.Add(current);
+                continue;
             }
 
-            var isCurrentLeaf = await _context.Categories
-                .Where(c => c.Id == current)
-                .Select(c => !c.HasNextLevel)
-                .SingleAsync(cancellationToken: ct);
-
-            if (isCurrentLeaf)
-                leafIds.Add(current);
+            foreach (var childId in children)
+            {
+                queue.Enqueue(childId);
+            }
         }
 
-        leafIds = [.. leafIds.Distinct()];
+        if (leafIds.Count == 0)
+            return new ListQueryResult<Item>([], 0);
 
         IQueryable<Item> query = _context
             .Set<Item>()

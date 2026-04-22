@@ -55,6 +55,7 @@ public class ItemService(
 
         item.ItemUnitOfMeasurements = [.. createItemDto
             .SecondaryUnitOfMeasurementIds
+            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
             .Distinct()
             .Select((uomId, index) => new ItemUnitOfMeasurement
             {
@@ -64,19 +65,27 @@ public class ItemService(
 
         item.ItemWarehouses = [.. createItemDto
             .Warehouses
-            .Select(warehouseDto => new ItemWarehouse
+            .GroupBy(warehouseDto => warehouseDto.WarehouseId)
+            .Select(group =>
             {
-                WarehouseId = warehouseDto.WarehouseId,
-                ReorderPoint = warehouseDto.ReorderPoint,
-                CriticalPoint = warehouseDto.CriticalPoint,
-                ReorderQuantity = warehouseDto.ReorderQuantity,
-                MaxStockLevel = warehouseDto.MaxStockLevel,
+                var warehouseDto = group.First();
 
-                ItemWarehouseLocations = [.. warehouseDto.LocationIds
-                    .Select(locationId => new ItemWarehouseLocation
-                    {
-                        WarehouseLocationId = locationId
-                    })]
+                return new ItemWarehouse
+                {
+                    WarehouseId = warehouseDto.WarehouseId,
+                    ReorderPoint = warehouseDto.ReorderPoint,
+                    CriticalPoint = warehouseDto.CriticalPoint,
+                    ReorderQuantity = warehouseDto.ReorderQuantity,
+                    MaxStockLevel = warehouseDto.MaxStockLevel,
+
+                    ItemWarehouseLocations = [.. group
+                        .SelectMany(w => w.LocationIds)
+                        .Distinct()
+                        .Select(locationId => new ItemWarehouseLocation
+                        {
+                            WarehouseLocationId = locationId
+                        })]
+                };
             })];
 
         var createdItem = await _itemRepository.AddAsync(item, ct);
@@ -92,7 +101,7 @@ public class ItemService(
     )
     {
         var item = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: false,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
@@ -108,7 +117,7 @@ public class ItemService(
     )
     {
         var item = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: false,
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.CategoryId == categoryId &&
@@ -288,19 +297,26 @@ public class ItemService(
     private static string BuildLocationPath(
         Guid locationId,
         IReadOnlyDictionary<Guid, WarehouseLocationNode> byId,
-        Dictionary<Guid, string> cache
+        Dictionary<Guid, string> cache,
+        HashSet<Guid>? visiting = null
     )
     {
         if (cache.TryGetValue(locationId, out var cached))
             return cached;
 
-        var node = byId[locationId];
+        visiting ??= [];
+        if (!visiting.Add(locationId))
+            throw new InvalidOperationException($"Cycle detected while building location path for '{locationId}'.");
+
+        if (!byId.TryGetValue(locationId, out var node))
+            throw new InvalidOperationException($"Location '{locationId}' not found while building location path.");
 
         var path = node.ParentLocationId is null
             ? node.Title
-            : $"{BuildLocationPath(node.ParentLocationId.Value, byId, cache)}-{node.Title}";
+            : $"{BuildLocationPath(node.ParentLocationId.Value, byId, cache, visiting)}-{node.Title}";
 
         cache[locationId] = path;
+        visiting.Remove(locationId);
         return path;
     }
 }
