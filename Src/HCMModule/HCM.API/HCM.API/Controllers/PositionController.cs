@@ -87,7 +87,7 @@ public class PositionController(
         )
     {
         await _positionService.DeleteAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 
     [HttpPatch("{id:guid}/status")]

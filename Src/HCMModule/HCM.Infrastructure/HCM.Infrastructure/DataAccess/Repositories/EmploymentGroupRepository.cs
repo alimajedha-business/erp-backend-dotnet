@@ -1,11 +1,6 @@
-﻿using System.Linq.Expressions;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
-using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.Repository.Contracts;
@@ -16,6 +11,17 @@ public class EmploymentGroupRepository(MainDbContext context) :
     RepositoryWithCompany<EmploymentGroup>(context),
     IEmploymentGroupRepository
 {
+    public async Task DeleteAsync(
+        EmploymentGroup entity,
+        CancellationToken ct
+        )
+    {
+        _context.EmploymentGroupSpecifications.RemoveRange(entity.Specifications);
+        _context.EmploymentGroups.Remove(entity);
+
+        await _context.SaveChangesAsync(ct);
+    }
+
     public async Task<EmploymentGroup?> GetWithSpecificationsAsync(Guid companyId, Guid id, CancellationToken ct)
     {
         var entity = await _context.EmploymentGroups
