@@ -82,32 +82,32 @@ public class EmploymentGroupController(
     }
 
     [HttpDelete("{id:guid}")]
-    public Task<IActionResult> Delete(
+    public async Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
         )
     {
-        // await _employmentGroupService.DeleteAsync(companyId, id, ct);
+        await _employmentGroupService.DeleteAsync(companyId, id, ct);
         return Ok();
     }
 
-    [HttpPut("{id:guid}")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Put(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromBody] UpdateEmploymentGroupDto updateDto,
-        CancellationToken ct
-        )
-    {
-        var dto = await _employmentGroupService.UpdateAsync(
-            companyId,
-            id,
-            updateDto,
-            ct
-        );
+    //[HttpPut("{id:guid}")]
+    //[Consumes("application/json")]
+    //public async Task<IActionResult> Put(
+    //    [FromRoute] Guid companyId,
+    //    [FromRoute] Guid id,
+    //    [FromBody] UpdateEmploymentGroupDto updateDto,
+    //    CancellationToken ct
+    //    )
+    //{
+    //    var dto = await _employmentGroupService.UpdateAsync(
+    //        companyId,
+    //        id,
+    //        updateDto,
+    //        ct
+    //    );
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 }

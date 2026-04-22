@@ -37,4 +37,10 @@ public interface IEmploymentGroupService
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
+
+    Task DeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+        );
 }
