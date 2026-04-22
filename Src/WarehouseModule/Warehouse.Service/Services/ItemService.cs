@@ -143,21 +143,19 @@ public class ItemService(
                 item.Category.Code,
                 item.Category.Title
             ),
-            item.ItemAttributes
+            [.. item.ItemAttributes
                 .Select(ia => new AttributeSlimDto(
                     ia.Attribute.Id,
                     ia.Attribute.Code,
                     ia.Attribute.Title
-                ))
-                .ToList(),
-            item.ItemUnitOfMeasurements
+                ))],
+            [.. item.ItemUnitOfMeasurements
                 .Select(ium => new UnitOfMeasurementSlimDto(
                     ium.UnitOfMeasurement.Id,
                     ium.UnitOfMeasurement.Code,
                     ium.UnitOfMeasurement.Title
-                ))
-                .ToList(),
-            item.ItemWarehouses
+                ))],
+            [.. item.ItemWarehouses
                 .Select(iw => new ItemWarehouseDto(
                     new WarehouseSlimDto(
                         iw.Warehouse.Id,
@@ -168,15 +166,13 @@ public class ItemService(
                     iw.CriticalPoint,
                     iw.ReorderQuantity,
                     iw.MaxStockLevel,
-                    iw.ItemWarehouseLocations
+                    [.. iw.ItemWarehouseLocations
                         .Select(iwl => new WarehouseLocationSlimDto(
                             iwl.WarehouseLocation.Id,
                             iwl.WarehouseLocation.Code,
                             BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
-                        ))
-                        .ToList()
-                ))
-                .ToList(),
+                        ))]
+                ))],
             item.IsActive
         );
     }
