@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -34,7 +34,7 @@ public class MeasurementDimensionService(
     )
     {
         var measurementDimension = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: trackChanges,
             predicate: p => p.Id == id,
             ct
         );
@@ -72,3 +72,4 @@ public class MeasurementDimensionService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
+

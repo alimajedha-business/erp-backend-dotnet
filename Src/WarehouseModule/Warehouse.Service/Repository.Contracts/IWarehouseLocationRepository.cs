@@ -14,7 +14,9 @@ public interface IWarehouseLocationRepository : IRepository<WarehouseLocation>
     );
 
     Task<List<WarehouseLocation>> FilterByQ(
-        WarehouseLocationParameters requestParameters
+        Guid warehouseId,
+        WarehouseLocationParameters requestParameters,
+        CancellationToken ct
     );
 
     IQueryable<WarehouseLocation> GetFiltered(

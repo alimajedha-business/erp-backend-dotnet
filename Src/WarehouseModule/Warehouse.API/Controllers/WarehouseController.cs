@@ -226,6 +226,17 @@ public class WarehouseController(
         );
     }
 
+    [HttpGet("{warehouseId:guid}/locations/filter-by-q")]
+    public async Task<IActionResult> GetLocations(
+        [FromRoute] Guid warehouseId,
+        [FromQuery] WarehouseLocationParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _locationService.FilterByQAsync(warehouseId, parameters, ct);
+        return Ok(result);
+    }
+
     [HttpPost("{warehouseId:guid}/locations/list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseLocationAdvancedSearchRequestExample))]

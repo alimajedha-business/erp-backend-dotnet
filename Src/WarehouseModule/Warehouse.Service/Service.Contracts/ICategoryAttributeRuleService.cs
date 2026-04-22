@@ -16,6 +16,7 @@ public interface ICategoryAttributeRuleService
     );
 
     Task<CategoryAttributeRuleDto> GetByIdAsync(
+        Guid categoryId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
@@ -33,12 +34,14 @@ public interface ICategoryAttributeRuleService
     );
 
     Task<CategoryAttributeRuleDto> PatchAsync(
+        Guid categoryId,
         Guid id,
         JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
     );
 
     Task DeleteAsync(
+        Guid categoryId,
         Guid id,
         CancellationToken ct
     );

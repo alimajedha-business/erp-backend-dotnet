@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -48,14 +48,15 @@ public class CategoryAttributeRuleService(
     }
 
     public async Task<CategoryAttributeRuleDto> GetByIdAsync(
+        Guid categoryId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
         var categoryAttributeRule = await GetSingleOrThrowAsync(
-            trackChanges: true,
-            predicate: p => p.Id == id,
+            trackChanges: trackChanges,
+            predicate: p => p.CategoryId == categoryId && p.Id == id,
             ct
         );
 
@@ -94,6 +95,7 @@ public class CategoryAttributeRuleService(
         );
     }
     public virtual async Task<CategoryAttributeRuleDto> PatchAsync(
+        Guid categoryId,
         Guid id,
         JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
@@ -101,7 +103,7 @@ public class CategoryAttributeRuleService(
     {
         var categoryAttributeRule = await GetSingleOrThrowAsync(
             trackChanges: true,
-            predicate: p => p.Id == id,
+            predicate: p => p.CategoryId == categoryId && p.Id == id,
             ct
         );
 
@@ -125,11 +127,15 @@ public class CategoryAttributeRuleService(
     }
 
     public virtual async Task DeleteAsync(
+        Guid categoryId,
         Guid id,
         CancellationToken ct
     )
     {
-        await _attributeRuleRepository.Remove(e => e.Id == id, ct);
+        await _attributeRuleRepository.Remove(
+            e => e.CategoryId == categoryId && e.Id == id,
+            ct
+        );
     }
 
     private async Task<CategoryAttributeRule> GetSingleOrThrowAsync(
