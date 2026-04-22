@@ -63,7 +63,7 @@ public class ItemService(
                 UnitOrder = index + 2
             })];
 
-        var duplicateWarehouseIds = createItemDto.Warehouses
+        var duplicateWarehouseIds = createItemDto.ItemWarehouses
             .GroupBy(w => w.WarehouseId)
             .Where(g => g.Count() > 1)
             .Select(g => g.Key)
@@ -75,22 +75,30 @@ public class ItemService(
             );
 
         item.ItemWarehouses = [.. createItemDto
-            .Warehouses
-            .Select(warehouseDto => new ItemWarehouse
+            .ItemWarehouses
+            .Select(createItemWarehouseDto => new ItemWarehouse
             {
-                WarehouseId = warehouseDto.WarehouseId,
-                ReorderPoint = warehouseDto.ReorderPoint,
-                CriticalPoint = warehouseDto.CriticalPoint,
-                ReorderQuantity = warehouseDto.ReorderQuantity,
-                MaxStockLevel = warehouseDto.MaxStockLevel,
+                WarehouseId = createItemWarehouseDto.WarehouseId,
+                ReorderPoint = createItemWarehouseDto.ReorderPoint,
+                CriticalPoint = createItemWarehouseDto.CriticalPoint,
+                ReorderQuantity = createItemWarehouseDto.ReorderQuantity,
+                MaxStockLevel = createItemWarehouseDto.MaxStockLevel,
 
-                ItemWarehouseLocations = [.. warehouseDto.LocationIds
+                ItemWarehouseLocations = [.. createItemWarehouseDto.LocationIds
                     .Distinct()
                     .Select(locationId => new ItemWarehouseLocation
                     {
                         WarehouseLocationId = locationId
                     })]
             })];
+
+        item.ItemUnitOfMeasurementConversions = [.. createItemDto
+            .ItemUnitOfMeasurementConversions
+            .Select(createItemUoMConversionDto => new ItemUnitOfMeasurementConversion
+                {
+                    UnitOfMeasurementId = createItemUoMConversionDto.UnitOfMeasurementId,
+                    ConversionEquation = createItemUoMConversionDto.ConversionEquation,
+                })];
 
         var createdItem = await _itemRepository.AddAsync(item, ct);
         await _itemRepository.SaveChangesAsync(ct);

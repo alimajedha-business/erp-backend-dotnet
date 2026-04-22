@@ -29,7 +29,7 @@ public class CreateItemExample :
                 new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
                 new Guid("87D8C665-2D17-44A5-AD91-1543DCEF77C1")
             ],
-            Warehouses = [
+            ItemWarehouses = [
                 new CreateItemWarehouseDto {
                     WarehouseId = new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
                     ReorderPoint = 1000,
