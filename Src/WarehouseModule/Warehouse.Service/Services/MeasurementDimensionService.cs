@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.Extensions.Localization;
 
@@ -31,8 +33,13 @@ public class MeasurementDimensionService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<MeasurementDimensionDto>(entity);
+        var measurementDimension = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<MeasurementDimensionDto>(measurementDimension);
     }
 
     public async Task<ListResponseModel<MeasurementDimensionSlimDto>> FilterByQAsync(
@@ -50,13 +57,18 @@ public class MeasurementDimensionService(
         );
     }
 
-    private async Task<MeasurementDimension> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<MeasurementDimension> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<MeasurementDimension, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _dimensionRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _dimensionRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

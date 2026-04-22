@@ -1,11 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.Repository.Contracts;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
@@ -13,7 +14,6 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
-using NGErp.Warehouse.Service.Specifications;
 
 namespace NGErp.Warehouse.Service.Services;
 
@@ -53,15 +53,15 @@ public class WarehouseService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
-            spec: new WarehouseSpecification(),
+        var warehouse = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
 
-        return _mapper.Map<WarehouseDto>(entity);
+        return _mapper.Map<WarehouseDto>(warehouse);
     }
 
     public async Task<ListResponseModel<WarehouseSlimDto>> FilterByQAsync(
@@ -105,15 +105,15 @@ public class WarehouseService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
-            spec: new WarehouseSpecification(),
+        var warehouse = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchWarehouseDto>(entity);
+        var patchDto = _mapper.Map<PatchWarehouseDto>(warehouse);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -126,10 +126,10 @@ public class WarehouseService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, warehouse);
 
         await _warehouseRepository.SaveChangesAsync(ct);
-        return _mapper.Map<WarehouseDto>(entity);
+        return _mapper.Map<WarehouseDto>(warehouse);
     }
 
     public virtual async Task DeleteAsync(
@@ -153,15 +153,18 @@ public class WarehouseService(
         return _warehouseRepository.GetNextCodeAsync(companyId, ct);
     }
 
-    private async Task<Domain.Entities.Warehouse> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
+    private async Task<Domain.Entities.Warehouse> GetSingleOrThrowAsync(
         bool trackChanges,
-        ISpecification<Domain.Entities.Warehouse>? spec = null,
+        Expression<Func<Domain.Entities.Warehouse, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _warehouseRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _warehouseRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

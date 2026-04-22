@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -48,8 +50,13 @@ public class ItemTypeService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<ItemTypeDto>(entity);
+        var itemType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<ItemTypeDto>(itemType);
     }
 
     public async Task<ListResponseModel<ItemTypeSlimDto>> FilterByQAsync(
@@ -90,13 +97,13 @@ public class ItemTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: false,
+        var itemType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchItemTypeDto>(entity);
+        var patchDto = _mapper.Map<PatchItemTypeDto>(itemType);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -109,10 +116,10 @@ public class ItemTypeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, itemType);
 
         await _itemTypeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemTypeDto>(entity);
+        return _mapper.Map<ItemTypeDto>(itemType);
     }
 
     public virtual async Task DeleteAsync(
@@ -120,14 +127,7 @@ public class ItemTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _itemTypeRepository.Remove(entity);
-        await _itemTypeRepository.SaveChangesAsync(ct);
+        await _itemTypeRepository.Remove(e => e.Id == id, ct);
     }
 
     public Task<int> GetNextCode(CancellationToken ct)
@@ -135,13 +135,18 @@ public class ItemTypeService(
         return _itemTypeRepository.GetNextCodeAsync(ct);
     }
 
-    private async Task<ItemType> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<ItemType> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<ItemType, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _itemTypeRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _itemTypeRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

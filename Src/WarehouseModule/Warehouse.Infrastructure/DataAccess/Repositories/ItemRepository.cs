@@ -8,7 +8,6 @@ using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
-using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;

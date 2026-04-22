@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -48,8 +50,13 @@ public class ShippingCompanyService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<ShippingCompanyDto>(entity);
+        var shippingCompany = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<ShippingCompanyDto>(shippingCompany);
     }
 
     public async Task<ListResponseModel<ShippingCompanySlimDto>> FilterByQAsync(
@@ -90,13 +97,13 @@ public class ShippingCompanyService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: false,
+        var shippingCompany = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchShippingCompanyDto>(entity);
+        var patchDto = _mapper.Map<PatchShippingCompanyDto>(shippingCompany);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -109,10 +116,10 @@ public class ShippingCompanyService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, shippingCompany);
 
         await _shippingCompanyRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ShippingCompanyDto>(entity);
+        return _mapper.Map<ShippingCompanyDto>(shippingCompany);
     }
 
     public virtual async Task DeleteAsync(
@@ -120,14 +127,7 @@ public class ShippingCompanyService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _shippingCompanyRepository.Remove(entity);
-        await _shippingCompanyRepository.SaveChangesAsync(ct);
+        await _shippingCompanyRepository.Remove(e => e.Id == id, ct);
     }
 
     public Task<int> GetNextCode(CancellationToken ct)
@@ -135,13 +135,18 @@ public class ShippingCompanyService(
         return _shippingCompanyRepository.GetNextCodeAsync(ct);
     }
 
-    private async Task<ShippingCompany> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<ShippingCompany> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<ShippingCompany, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _shippingCompanyRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _shippingCompanyRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

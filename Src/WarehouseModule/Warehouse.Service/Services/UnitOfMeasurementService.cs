@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -48,8 +50,13 @@ public class UnitOfMeasurementService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<UnitOfMeasurementDto>(entity);
+        var uom = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<UnitOfMeasurementDto>(uom);
     }
 
     public async Task<ListResponseModel<UnitOfMeasurementSlimDto>> FilterByQAsync(
@@ -90,13 +97,13 @@ public class UnitOfMeasurementService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: false,
+        var uom = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchUnitOfMeasurementDto>(entity);
+        var patchDto = _mapper.Map<PatchUnitOfMeasurementDto>(uom);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -109,10 +116,10 @@ public class UnitOfMeasurementService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, uom);
 
         await _uomRepository.SaveChangesAsync(ct);
-        return _mapper.Map<UnitOfMeasurementDto>(entity);
+        return _mapper.Map<UnitOfMeasurementDto>(uom);
     }
 
     public virtual async Task DeleteAsync(
@@ -120,14 +127,7 @@ public class UnitOfMeasurementService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _uomRepository.Remove(entity);
-        await _uomRepository.SaveChangesAsync(ct);
+        await _uomRepository.Remove(e => e.Id == id, ct);
     }
 
     public Task<int> GetNextCode(CancellationToken ct)
@@ -135,13 +135,18 @@ public class UnitOfMeasurementService(
         return _uomRepository.GetNextCodeAsync(ct);
     }
 
-    private async Task<UnitOfMeasurement> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<UnitOfMeasurement> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<UnitOfMeasurement, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _uomRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _uomRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

@@ -241,13 +241,13 @@ public class ItemService(
     )
     {
         var item = await GetSingleOrThrowAsync(
-           trackChanges: true,
-           predicate: p =>
-               p.CompanyId == companyId &&
-               p.CategoryId == categoryId &&
-               p.Id == id,
-           ct
-       );
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.CategoryId == categoryId &&
+                p.Id == id,
+            ct
+        );
 
         var patchDto = _mapper.Map<PatchItemDto>(item);
         var errors = new List<string>();

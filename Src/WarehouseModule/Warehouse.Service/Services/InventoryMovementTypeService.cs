@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -52,8 +54,13 @@ public class InventoryMovementTypeService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<InventoryMovementTypeDto>(entity);
+        var movementType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<InventoryMovementTypeDto>(movementType);
     }
 
     public async Task<ListResponseModel<InventoryMovementTypeDto>> FilterByQAsync(
@@ -97,14 +104,13 @@ public class InventoryMovementTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
+        var movementType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchInventoryMovementTypeDto>(entity);
+        var patchDto = _mapper.Map<PatchInventoryMovementTypeDto>(movementType);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -117,10 +123,10 @@ public class InventoryMovementTypeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, movementType);
 
         await _movementTypeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<InventoryMovementTypeDto>(entity);
+        return _mapper.Map<InventoryMovementTypeDto>(movementType);
     }
 
     public virtual async Task DeleteAsync(
@@ -129,15 +135,7 @@ public class InventoryMovementTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _movementTypeRepository.Remove(entity);
-        await _movementTypeRepository.SaveChangesAsync(ct);
+        await _movementTypeRepository.Remove(e => e.Id == id, ct);
     }
 
     public Task<int> GetNextCode(
@@ -148,14 +146,18 @@ public class InventoryMovementTypeService(
         return _movementTypeRepository.GetNextCodeAsync(companyId, ct);
     }
 
-    private async Task<InventoryMovementType> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<InventoryMovementType> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<InventoryMovementType, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _movementTypeRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _movementTypeRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
