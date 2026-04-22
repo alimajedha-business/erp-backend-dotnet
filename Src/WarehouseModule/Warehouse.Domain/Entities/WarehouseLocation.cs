@@ -15,6 +15,7 @@ public class WarehouseLocation :
     public Guid WarehouseId { get; set; }
     public bool CanStoreItem { get; set; } = false;
     public int LevelNo { get; set; }
+    public bool HasNextLevel { get; set; } = false;
 
     public WarehouseLocation? ParentLocation { get; set; }
     public Warehouse Warehouse { get; set; } = default!;
@@ -41,6 +42,10 @@ public class WarehouseLocation :
 
         builder
             .Property(e => e.CanStoreItem)
+            .HasDefaultValue(false);
+
+        builder
+            .Property(e => e.HasNextLevel)
             .HasDefaultValue(false);
 
         builder
