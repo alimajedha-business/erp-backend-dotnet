@@ -87,7 +87,7 @@ public class DepartmentController(
         )
     {
         await _departmentService.DeleteAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 
     [HttpPatch("{id:guid}/status")]

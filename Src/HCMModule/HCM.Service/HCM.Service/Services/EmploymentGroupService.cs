@@ -1,16 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-
-using Azure.Identity;
-
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Vml.Office;
 
 using FluentValidation;
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
@@ -48,7 +39,8 @@ public class EmploymentGroupService(
         CancellationToken ct
         )
     {
-        // await EnsureCompanyAsync(companyId, ct);
+        await _companyService.GetByIdAsync(companyId, ct);
+
         var existing = await _repo.FirstOrDefaultAsync(
             e => e.CompanyId == companyId && e.Name == createDto.Name);
         if (existing != null)
@@ -75,6 +67,7 @@ public class EmploymentGroupService(
 
         return new EmploymentGroupDetailDto
         {
+            Id = employmentGroup.Id,
             Name = employmentGroup.Name,
             Specifications = employmentGroup.Specifications
             .Select(s => _mapper.Map<EmploymentGroupSpecificationDto>(s))
@@ -88,7 +81,7 @@ public class EmploymentGroupService(
         UpdateEmploymentGroupDto updateDto,
         CancellationToken ct)
     {
-        //await EnsureCompanyAsync(companyId, ct);
+        await _companyService.GetByIdAsync(companyId, ct);
 
         // 1. Load group with all specifications (aggregate root)
 
@@ -142,7 +135,8 @@ public class EmploymentGroupService(
          CancellationToken ct
          )
     {
-        // await EnsureCompanyAsync(companyId, ct);
+        await _companyService.GetByIdAsync(companyId, ct);
+
         var entity = await _repo.GetWithSpecificationsAsync(companyId, id, ct);
 
         return entity is null
@@ -235,15 +229,15 @@ public class EmploymentGroupService(
     CancellationToken ct
 )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
-            ct
-        );
+        var employmentGroup = await _repo
+         .GetWithSpecificationsAsync(companyId, id, ct);
 
-        _repo.Remove(entity);
-        await _repo.SaveChangesAsync(ct);
+        if (employmentGroup is null)
+            throw new NotFoundException(_localizer[_key].Value);
+
+        // TODO: Check if EmploymentGroup is used
+
+        await _repo.DeleteAsync(employmentGroup, ct);
     }
 
     private async Task<EmploymentGroup> GetByIdOrThrowAsync(
@@ -253,7 +247,6 @@ public class EmploymentGroupService(
     CancellationToken ct = default
 )
     {
-        // TODO: add specification if needed
         var entity = await _repo.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }

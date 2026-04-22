@@ -1,13 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using Asp.Versioning;
 
-using Asp.Versioning;
-
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
@@ -89,7 +85,7 @@ public class EmploymentGroupController(
         )
     {
         await _employmentGroupService.DeleteAsync(companyId, id, ct);
-        return Ok();
+        return NoContent();
     }
 
     //[HttpPut("{id:guid}")]
