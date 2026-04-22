@@ -2,6 +2,8 @@
 
 using AutoMapper;
 
+using DocumentFormat.OpenXml.Vml.Office;
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
@@ -134,11 +136,19 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        await _attributeRepository.Remove(e =>
-            e.CompanyId == companyId &&
-            e.Id == id,
+        var attribute = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
+
+        if (attribute.IsStatic)
+            throw new DbUpdateBadRequestException(
+                _localizer["Attribute.IsStatic.Delete"].Value
+            );
+
+        _attributeRepository.Remove(attribute);
+        await _attributeRepository.SaveChangesAsync(ct);
     }
 
     public Task<int> GetNextCode(
