@@ -63,29 +63,33 @@ public class ItemService(
                 UnitOrder = index + 2
             })];
 
+        var duplicateWarehouseIds = createItemDto.Warehouses
+            .GroupBy(w => w.WarehouseId)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicateWarehouseIds.Count != 0)
+            throw new DbUpdateBadRequestException(
+                _localizer["Item.Warehouse.Duplicate"].Value
+            );
+
         item.ItemWarehouses = [.. createItemDto
             .Warehouses
-            .GroupBy(warehouseDto => warehouseDto.WarehouseId)
-            .Select(group =>
+            .Select(warehouseDto => new ItemWarehouse
             {
-                var warehouseDto = group.First();
+                WarehouseId = warehouseDto.WarehouseId,
+                ReorderPoint = warehouseDto.ReorderPoint,
+                CriticalPoint = warehouseDto.CriticalPoint,
+                ReorderQuantity = warehouseDto.ReorderQuantity,
+                MaxStockLevel = warehouseDto.MaxStockLevel,
 
-                return new ItemWarehouse
-                {
-                    WarehouseId = warehouseDto.WarehouseId,
-                    ReorderPoint = warehouseDto.ReorderPoint,
-                    CriticalPoint = warehouseDto.CriticalPoint,
-                    ReorderQuantity = warehouseDto.ReorderQuantity,
-                    MaxStockLevel = warehouseDto.MaxStockLevel,
-
-                    ItemWarehouseLocations = [.. group
-                        .SelectMany(w => w.LocationIds)
-                        .Distinct()
-                        .Select(locationId => new ItemWarehouseLocation
-                        {
-                            WarehouseLocationId = locationId
-                        })]
-                };
+                ItemWarehouseLocations = [.. warehouseDto.LocationIds
+                    .Distinct()
+                    .Select(locationId => new ItemWarehouseLocation
+                    {
+                        WarehouseLocationId = locationId
+                    })]
             })];
 
         var createdItem = await _itemRepository.AddAsync(item, ct);
@@ -101,7 +105,7 @@ public class ItemService(
     )
     {
         var item = await GetSingleOrThrowAsync(
-            trackChanges: false,
+            trackChanges: true,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
@@ -117,7 +121,7 @@ public class ItemService(
     )
     {
         var item = await GetSingleOrThrowAsync(
-            trackChanges: false,
+            trackChanges: true,
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.CategoryId == categoryId &&
