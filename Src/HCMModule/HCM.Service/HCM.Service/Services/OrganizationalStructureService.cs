@@ -41,7 +41,7 @@ public class OrganizationalStructureService(
     private readonly IPositionService _positionService= positiontService;
     private readonly IOrganizationNodeService _organizationNodeService = organizationNodeService;
 
-
+    
 //correct
     public async Task<ListResponseModel<OrganizationalStructureDto>> GetAll(
         Guid companyId,
@@ -60,24 +60,7 @@ public class OrganizationalStructureService(
        );
     }
 
-    public async Task<ListResponseModel<OrganizationalStructureDto>> GetFilteredAsync(
-    Guid companyId,
-    DepartmentParameters parameters,
-    FilterNodeDto? filterNodeDto = null,
-    CancellationToken ct = default
-)
-    {
-        var advancedFilters = _filterBuilder.Build<Department>(filterNodeDto);
-        var query = _organizationalStructureRepository.GetFiltered(companyId, advancedFilters);
-        var res = await _organizationalStructureRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<OrganizationalStructureDto>(
-            results: _mapper.Map<IReadOnlyList<OrganizationalStructureDto>>(res.items),
-            totalCount: res.count,
-            parameters
-        );
-    }
-
+    
     //correct
     public async Task<OrganizationalStructureTreeDto> GetTreeAtDateAsync(
         Guid companyId,
@@ -386,7 +369,9 @@ public class OrganizationalStructureService(
         List<CreateOrganizationalStructureItemDto> items = incomingTree.Items ?? [];
 
         var company = await _companyService.GetByIdAsync(companyId, ct);
-        //var structures await 
+        var structures = _organizationalStructureRepository.Find(x => x.EffectiveFrom == effectiveFrom);
+        await structures.ExecuteUpdateAsync(x => x.SetProperty(x => x.IsDeleted, true), ct);
+
         var structure = new OrganizationalStructure
         {
             Id = Guid.NewGuid(),
