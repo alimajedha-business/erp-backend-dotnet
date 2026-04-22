@@ -106,7 +106,7 @@ public class DepartmentService(
         return _mapper.Map<DepartmentDto>(entity);
     }
 
-    public virtual async Task DeleteAsync(
+    public async Task DeleteAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

@@ -24,6 +24,28 @@ public class EmploymentGroupController(
 {
     private readonly IEmploymentGroupService _employmentGroupService = employmentGroupService;
 
+    [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Create(
+    [FromRoute] Guid companyId,
+    [FromBody] CreateEmploymentGroupDto createDto,
+    CancellationToken ct
+    )
+    {
+        var dto = await _employmentGroupService.CreateAsync(
+            companyId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = dto.Id },
+            dto
+        );
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -33,7 +55,8 @@ public class EmploymentGroupController(
     {
         var dto = await _employmentGroupService.GetByIdAsync(
             companyId,
-            id
+            id,
+            ct
         );
 
         return Ok(dto);
@@ -69,22 +92,21 @@ public class EmploymentGroupController(
         return Ok();
     }
 
-    //[HttpPatch("{id:guid}")]
-    //[Consumes("application/json-patch+json")]
-    ////public async Task<IActionResult> Patch(
-    //public Task<IActionResult> Patch(
+    //[HttpPut("{id:guid}")]
+    //[Consumes("application/json")]
+    //public async Task<IActionResult> Put(
     //    [FromRoute] Guid companyId,
     //    [FromRoute] Guid id,
-    //    [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
+    //    [FromBody] UpdateEmploymentGroupDto updateDto,
     //    CancellationToken ct
     //    )
     //{
-    //    //var dto = await _employmentGroupService.PatchAsync(
-    //    //    companyId,
-    //    //    id,
-    //    //    patchDocument,
-    //    //    ct
-    //    //);
+    //    var dto = await _employmentGroupService.UpdateAsync(
+    //        companyId,
+    //        id,
+    //        updateDto,
+    //        ct
+    //    );
 
     //    return Ok();
     //}

@@ -178,7 +178,7 @@ public class ValidationFilterAttribute(
             .ToDictionary(
                 kvp => NormalizeKey(kvp.Key),
                 kvp => kvp.Value!.Errors
-                    .Select(e => LocalizeSystemError(e.ErrorMessage))
+                    .Select(e => LocalizeSystemError(e, NormalizeKey(kvp.Key)))
                     .Distinct()
                     .ToArray()
             );
@@ -204,20 +204,29 @@ public class ValidationFilterAttribute(
     /// </summary>
     /// <param name="message">The original system-generated validation message.</param>
     /// <returns>A localized message when a known pattern is detected; otherwise the original message.</returns>
-    private string LocalizeSystemError(string message)
+    private string LocalizeSystemError(ModelError modelError, string key)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            return message;
+        if (string.IsNullOrWhiteSpace(modelError.ErrorMessage))
+            return modelError.ErrorMessage;
 
-        // Translate common ASP.NET Core / System.Text.Json messages into resource-based messages.
+        string message = modelError.ErrorMessage;
+
+        // Map well-known system messages to resources
         if (message.Contains("A non-empty request body is required", StringComparison.OrdinalIgnoreCase))
-            return (string)_localizer["ObjectIsNull"];
+            return _localizer["ObjectIsNull"];
+
         if (message.Contains("missing required properties", StringComparison.OrdinalIgnoreCase))
-            return (string)_localizer["MissingRequiredProperties"];
-        if (message.Contains("JSON deserialization", StringComparison.OrdinalIgnoreCase))
-            return (string)_localizer["InvalidJsonFormat"];
+            return _localizer["MissingRequiredProperties"];
+
+        if (message.Contains("JSON de serialization", StringComparison.OrdinalIgnoreCase))
+            return _localizer["InvalidJsonFormat"];
+
         if (message.Contains("could not be converted", StringComparison.OrdinalIgnoreCase))
-            return (string)_localizer["CouldNotConvert"];
+            return _localizer["CouldNotConvert"];
+
+        // Dynamic field-level required message
+        if (message.Contains("field is required", StringComparison.OrdinalIgnoreCase))
+            return _localizer["Required", _localizer[key]];
 
         return message;
     }

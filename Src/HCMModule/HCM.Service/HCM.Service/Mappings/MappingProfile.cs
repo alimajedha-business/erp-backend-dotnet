@@ -25,6 +25,7 @@ public class MappingProfile : Profile
             d => d.Specifications,
             opt => opt.MapFrom(s => s.Specifications.OrderBy(x => x.ValidFrom))
             );
+        CreateMap<CreateEmploymentGroupDto, EmploymentGroup>();
         CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>();
         CreateMap<OrganizationNode, OrganizationNodeTreeDto>().ReverseMap();
 

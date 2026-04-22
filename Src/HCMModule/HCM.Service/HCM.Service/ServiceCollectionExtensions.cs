@@ -17,12 +17,12 @@ namespace NGErp.HCM.Service
         {
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddValidatorsFromAssemblyContaining<DepartmentValidator>();
+            services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
 
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
-            //services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
+            services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
             services.AddScoped<IOrganizationNodeService, OrganizationNodeService>();
 
             services.AddSingleton<IFilterSchema<Position>, PositionSchema>();

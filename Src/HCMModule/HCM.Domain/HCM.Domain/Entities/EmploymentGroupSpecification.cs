@@ -8,20 +8,19 @@ using NGErp.Base.Domain.Entities;
 
 namespace NGErp.HCM.Domain.Entities;
 
-public enum MonthTypeEnum
+public enum MonthType
 {
     [Description("Normal")]
     Normal = 1,
+
     [Description("ThirtyDay")]
     ThirtyDay
 }
 
-
-
 public class EmploymentGroupSpecification : BaseEntity, IBaseEntityTypeConfiguration<EmploymentGroupSpecification>
 {
     public Guid EmploymentGroupId { get; set; }
-    public MonthTypeEnum MonthType { get; set; }
+    public MonthType MonthType { get; set; }
     public int WorkMinutes { get; set; } = 220;
     public DateOnly ValidFrom { get; set; }
     public DateOnly? ValidTo { get; set; }
