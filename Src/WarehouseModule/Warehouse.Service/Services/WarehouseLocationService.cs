@@ -75,11 +75,11 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-        var res = _locationRepository.FilterByQ(parameters);
+        var res = await _locationRepository.FilterByQ(parameters);
 
         return new ListResponseModel<WarehouseLocationSlimDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseLocationSlimDto>>(res.Result),
-            totalCount: res.Result.Count,
+            results: _mapper.Map<IReadOnlyList<WarehouseLocationSlimDto>>(res),
+            totalCount: res.Count,
             parameters
         );
     }
