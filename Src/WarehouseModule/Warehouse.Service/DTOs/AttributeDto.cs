@@ -14,7 +14,8 @@ public record AttributeDto(
     AttributeEntity AttributeEntity,
     string AttributeEntityDescription,
     bool IsRequired,
-    bool IsStockDimension
+    bool IsStockDimension,
+	bool IsStatic
 )
 {
     public static string GetDataTypeDescription(AttributeDataType value)
