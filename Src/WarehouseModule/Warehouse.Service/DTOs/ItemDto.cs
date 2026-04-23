@@ -14,6 +14,7 @@ public record ItemDto(
     List<AttributeSlimDto> ItemAttributes,
     List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
+    List<ItemUnitOfMeasurementConversionDto> ItemUnitOfMeasurementConversions,
     bool IsActive
 );
 

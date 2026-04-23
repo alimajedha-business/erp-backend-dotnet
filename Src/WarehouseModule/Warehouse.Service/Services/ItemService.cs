@@ -194,6 +194,11 @@ public class ItemService(
                             BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
                         ))]
                 ))],
+            [.. item.ItemUnitOfMeasurementConversions
+                .Select(iumc => new ItemUnitOfMeasurementConversionDto(
+                    iumc.UnitOfMeasurementId,
+                    iumc.ConversionEquation
+                ))],
             item.IsActive
         );
     }
