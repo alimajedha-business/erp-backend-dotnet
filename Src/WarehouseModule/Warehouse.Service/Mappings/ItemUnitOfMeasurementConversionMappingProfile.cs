@@ -9,6 +9,7 @@ public class ItemUnitOfMeasurementConversionMappingProfile : Profile
 {
     public ItemUnitOfMeasurementConversionMappingProfile()
     {
+        CreateMap<ItemUnitOfMeasurementConversion, ItemUnitOfMeasurementConversionDto>();
         CreateMap<CreateItemUnitOfMeasurementConversionDto, ItemUnitOfMeasurementConversion>();
     }
 }

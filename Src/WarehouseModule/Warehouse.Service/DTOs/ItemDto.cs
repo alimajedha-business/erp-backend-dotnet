@@ -57,7 +57,6 @@ public class PatchItemDto
     public string? Title { get; set; }
     public string? TitleInEnglish { get; set; }
     public string? TechnicalNumber { get; set; }
-    public string? Sku { get; set; }
     public string? Barcode { get; set; }
     public bool? IsActive { get; set; }
     public Guid? PrimaryUnitOfMeasurementId { get; set; }
