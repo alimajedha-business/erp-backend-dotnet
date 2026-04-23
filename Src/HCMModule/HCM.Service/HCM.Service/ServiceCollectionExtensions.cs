@@ -21,6 +21,7 @@ namespace NGErp.HCM.Service
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
             //services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
             services.AddScoped<IOrganizationNodeService, OrganizationNodeService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
             return services;
         }
     }

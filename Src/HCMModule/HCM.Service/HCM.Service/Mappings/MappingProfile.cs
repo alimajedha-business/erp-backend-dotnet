@@ -27,6 +27,11 @@ public class MappingProfile : Profile
             );
         CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>();
         CreateMap<OrganizationNode, OrganizationNodeTreeDto>().ReverseMap();
+        
+        CreateMap<Employee, EmployeeDto>().ReverseMap();
+        CreateMap<Employee, CreateEmployeeDto>().ReverseMap();
+        CreateMap<Employee, PatchEmployeeDto>().ReverseMap();
+
 
     }
 }
