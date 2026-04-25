@@ -88,7 +88,7 @@ public class EmploymentGroupService(
         var entity = await _repo.GetWithSpecificationsAsync(companyId, id, ct);
 
         if (entity == null)
-            throw new NotFoundException("Employment group not found.");
+            throw new NotFoundException(_localizer[_key].Value);
 
         // 2. Check name uniqueness
         var nameExists = await _repo.AnyAsync(e => e.CompanyId == companyId
@@ -189,22 +189,6 @@ public class EmploymentGroupService(
         entity.Specifications.Remove(existing);
     }
 
-    //async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(
-    //     Guid companyId,
-    //     Guid id,
-    //     CancellationToken ct
-    //     )
-    //{
-    //    await EnsureCompanyAsync(companyId, ct);
-    //    var entity = await _employmentGroupRepository
-    //   .Find(companyId, e => e.Id == id)
-    //   .AsNoTracking()
-    //   .ProjectTo<EmploymentGroupDetailDto>(_mapper.ConfigurationProvider)
-    //   .FirstOrDefaultAsync(ct);
-
-    //    return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    //}
-
     public async Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
       Guid companyId,
       EmploymentGroupParameters parameters,
@@ -238,16 +222,5 @@ public class EmploymentGroupService(
         // TODO: Check if EmploymentGroup is used
 
         await _repo.DeleteAsync(employmentGroup, ct);
-    }
-
-    private async Task<EmploymentGroup> GetByIdOrThrowAsync(
-    Guid companyId,
-    Guid id,
-    bool trackChanges = false,
-    CancellationToken ct = default
-)
-    {
-        var entity = await _repo.GetByIdAsync(id, trackChanges, ct);
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
