@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -54,7 +54,7 @@ public class WarehouseService(
     )
     {
         var warehouse = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: trackChanges,
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
@@ -168,3 +168,5 @@ public class WarehouseService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
+
+

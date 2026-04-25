@@ -11,7 +11,7 @@ public class ItemUnitOfMeasurementConversion :
 {
     public Guid ItemId { get; set; }
     public Guid UnitOfMeasurementId { get; set; }
-
+    public required string ConversionEquation { get; set; }
     public Item Item { get; set; } = default!;
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
@@ -19,6 +19,10 @@ public class ItemUnitOfMeasurementConversion :
     {
         builder
             .ToTable(nameof(ItemUnitOfMeasurementConversion), "Warehouse");
+
+        builder
+            .Property(e => e.ConversionEquation)
+            .HasMaxLength(100);
 
         builder
             .HasOne(e => e.Item)

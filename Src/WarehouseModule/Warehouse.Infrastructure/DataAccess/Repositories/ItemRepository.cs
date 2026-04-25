@@ -38,6 +38,7 @@ public class ItemRepository(MainDbContext context) :
             .Include(i => i.ItemWarehouses)
                 .ThenInclude(i => i.ItemWarehouseLocations)
                 .ThenInclude(i => i.WarehouseLocation)
+            .Include(i => i.ItemUnitOfMeasurementConversions)
             .SingleOrDefaultAsync(predicate, ct);
     }
 

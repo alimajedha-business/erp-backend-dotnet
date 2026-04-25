@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper;
-
-using DocumentFormat.OpenXml.Vml.Office;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -56,7 +54,7 @@ public class AttributeService(
     )
     {
         var attribute = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: trackChanges,
             predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
@@ -174,3 +172,5 @@ public class AttributeService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
+
+

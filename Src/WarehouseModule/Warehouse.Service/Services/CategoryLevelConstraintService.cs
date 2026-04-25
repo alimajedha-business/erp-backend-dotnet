@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -55,7 +55,7 @@ public class CategoryLevelConstraintService(
     )
     {
         var categoryLevel = await GetSingleOrThrowAsync(
-            trackChanges: true,
+            trackChanges: trackChanges,
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
@@ -163,3 +163,5 @@ public class CategoryLevelConstraintService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
+
+

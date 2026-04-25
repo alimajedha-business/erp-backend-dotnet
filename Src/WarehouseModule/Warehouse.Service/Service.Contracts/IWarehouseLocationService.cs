@@ -27,6 +27,7 @@ public interface IWarehouseLocationService
     );
 
     Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
+        Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     );

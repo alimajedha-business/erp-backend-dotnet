@@ -29,7 +29,7 @@ public class CreateItemExample :
                 new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
                 new Guid("87D8C665-2D17-44A5-AD91-1543DCEF77C1")
             ],
-            Warehouses = [
+            ItemWarehouses = [
                 new CreateItemWarehouseDto {
                     WarehouseId = new Guid("47F6DAAE-73C0-4D04-AA71-2629056ACB86"),
                     ReorderPoint = 1000,
@@ -125,8 +125,13 @@ public class ItemPatchExample :
     {
         var patchDoc = new JsonPatchDocument<PatchItemDto>();
         patchDoc.Replace(x => x.Code, "100501");
-        patchDoc.Replace(x => x.Title, "New Category Title");
+        patchDoc.Replace(x => x.Title, "New Item Title");
+        patchDoc.Replace(x => x.TitleInEnglish, "New Item Title in English");
+        patchDoc.Replace(x => x.TechnicalNumber, "12-Aed85-301FX");
+        patchDoc.Replace(x => x.Barcode, "01051044136071");
         patchDoc.Replace(x => x.IsActive, false);
+        patchDoc.Replace(x => x.PrimaryUnitOfMeasurementId, new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"));
+        patchDoc.Replace(x => x.ItemTypeId, new Guid("3f148ef5-bf43-4d43-8e3a-b25decc7d092"));
 
         return patchDoc;
     }

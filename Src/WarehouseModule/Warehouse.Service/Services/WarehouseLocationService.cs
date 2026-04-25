@@ -54,8 +54,8 @@ public class WarehouseLocationService(
     )
     {
         var location = await GetSingleOrThrowAsync(
-            trackChanges: true,
-            predicate: p => p.Id == id,
+            trackChanges: false,
+            predicate: p => p.WarehouseId == warehouseId && p.Id == id,
             ct
         );
 
@@ -71,11 +71,12 @@ public class WarehouseLocationService(
     }
 
     public async Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
+        Guid warehouseId,
         WarehouseLocationParameters parameters,
         CancellationToken ct
     )
     {
-        var res = await _locationRepository.FilterByQ(parameters);
+        var res = await _locationRepository.FilterByQ(warehouseId, parameters, ct);
 
         return new ListResponseModel<WarehouseLocationSlimDto>(
             results: _mapper.Map<IReadOnlyList<WarehouseLocationSlimDto>>(res),
@@ -119,7 +120,7 @@ public class WarehouseLocationService(
     {
         var location = await GetSingleOrThrowAsync(
             trackChanges: true,
-            predicate: p => p.Id == id,
+            predicate: p => p.WarehouseId == warehouseId && p.Id == id,
             ct
         );
 
