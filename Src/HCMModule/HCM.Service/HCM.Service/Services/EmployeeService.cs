@@ -91,10 +91,15 @@ public class EmployeeService(
         var entity = _mapper.Map<Employee>(createDto);
         entity.CompanyId = companyId;
 
-        var created = await _employeeRepository.AddAsync(entity, ct);
-
+        await _employeeRepository.AddAsync(entity, ct);
         await _employeeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<EmployeeDto>(created);
+
+        return await GetByIdAsync(
+            companyId,
+            entity.Id,
+            trackChanges: false,
+            ct
+        );
     }
 
     public async Task<ListResponseModel<EmployeeDto>> GetFilteredAsync(

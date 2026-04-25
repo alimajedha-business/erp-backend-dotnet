@@ -23,6 +23,7 @@ public class EmployeeRepository(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Where(e => e.Id == id)
             .Include(e => e.MilitaryServiceStatus)
+            .Include(e => e.MaritalStatus)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
