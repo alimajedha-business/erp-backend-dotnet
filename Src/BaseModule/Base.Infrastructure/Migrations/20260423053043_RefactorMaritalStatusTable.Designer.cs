@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423053043_RefactorMaritalStatusTable")]
+    partial class RefactorMaritalStatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -546,18 +549,47 @@ namespace NGErp.Base.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
                     b.HasKey("Id");
 
-                    b.ToTable("marital_statuses", "General");
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("Title")
+                        .IsUnique()
+                        .HasDatabaseName("UX_MaritalStatus_Title");
+
+                    b.ToTable("MaritalStatus", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationNode", b =>
@@ -826,9 +858,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<bool>("IsStatic")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsStockDimension")
                         .ValueGeneratedOnAdd()
@@ -1287,15 +1316,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("MovementDate")
-                        .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
 
                     b.Property<Guid>("MovementTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("QuantityBase")
-                        .HasPrecision(23, 8)
-                        .HasColumnType("decimal(23,8)");
+                        .HasColumnType("decimal(23, 8)");
 
                     b.Property<Guid>("ReferenceDocId")
                         .HasColumnType("uniqueidentifier");
@@ -1644,6 +1671,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("Factor")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<Guid>("FromUnitOfMeasurementId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1656,7 +1690,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<string>("TimeZone")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("UnitOfMeasurementId")
+                    b.Property<Guid>("ToUnitOfMeasurementId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -1666,121 +1700,20 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UnitOfMeasurementId");
-
-                    b.ToTable("ItemUnitOfMeasurementConversion", "Warehouse");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("CriticalPoint")
-                        .HasPrecision(22, 4)
-                        .HasColumnType("decimal(22,4)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("MaxStockLevel")
-                        .HasPrecision(22, 4)
-                        .HasColumnType("decimal(22,4)");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("ReorderPoint")
-                        .HasPrecision(22, 4)
-                        .HasColumnType("decimal(22,4)");
-
-                    b.Property<decimal>("ReorderQuantity")
-                        .HasPrecision(22, 4)
-                        .HasColumnType("decimal(22,4)");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid>("WarehouseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
+                    b.HasIndex("FromUnitOfMeasurementId");
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ToUnitOfMeasurementId");
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("ItemId", "FromUnitOfMeasurementId", "ToUnitOfMeasurementId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_ItemUomConv_Unique");
 
-                    b.ToTable("ItemWarehouse", "Warehouse");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouseLocation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ItemWarehouseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid>("WarehouseLocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ItemWarehouseId");
-
-                    b.HasIndex("WarehouseLocationId");
-
-                    b.ToTable("ItemWarehouseLocation", "Warehouse");
+                    b.ToTable("ItemUnitOfMeasurementConversion", "Warehouse", t =>
+                        {
+                            t.HasCheckConstraint("CK_ItemUomConv_Factor", "Factor > 0");
+                        });
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.MeasurementDimension", b =>
@@ -2043,19 +1976,15 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ExportSaleAccountDetailed1Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ExportSaleAccountDetailed2Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ExportSaleAccountMasterValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ExportSaleAccountSlaveValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("ExportSaleSlaveAccountCompanyId")
@@ -2070,63 +1999,51 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("MaxMonetaryValue")
-                        .HasPrecision(22, 4)
-                        .HasColumnType("decimal(22,4)");
+                        .HasColumnType("decimal(22, 4)");
 
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ReturnFromPurchaseAccountDetailed1Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ReturnFromPurchaseAccountDetailed2Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReturnFromPurchaseAccountMasterValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ReturnFromPurchaseAccountSlaveValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("ReturnFromPurchaseSlaveAccountCompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ReturnFromSaleAccountDetailed1Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ReturnFromSaleAccountDetailed2Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ReturnFromSaleAccountMasterValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ReturnFromSaleAccountSlaveValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("ReturnFromSaleSlaveAccountCompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SaleAccountDetailed1Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SaleAccountDetailed2Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SaleAccountMasterValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SaleAccountSlaveValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("SaleSlaveAccountCompanyId")
@@ -2146,19 +2063,15 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("WarehouseAccountDetailed1Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("WarehouseAccountDetailed2Value")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("WarehouseAccountMasterValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("WarehouseAccountSlaveValue")
-                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("WarehouseSlaveAccountCompanyId")
@@ -2601,7 +2514,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "FromLocation")
-                        .WithMany()
+                        .WithMany("SrcLocations")
                         .HasForeignKey("FromLocationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2619,7 +2532,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "ToLocation")
-                        .WithMany()
+                        .WithMany("DstLocations")
                         .HasForeignKey("ToLocationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2645,7 +2558,7 @@ namespace NGErp.Base.Infrastructure.Migrations
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Item", b =>
                 {
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2657,7 +2570,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.ItemType", "ItemType")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2678,7 +2591,7 @@ namespace NGErp.Base.Infrastructure.Migrations
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttribute", b =>
                 {
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
-                        .WithMany("ItemAttributes")
+                        .WithMany()
                         .HasForeignKey("AttributeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2703,7 +2616,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
-                        .WithMany("ItemUnitOfMeasurements")
+                        .WithMany()
                         .HasForeignKey("UnitOfMeasurementId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2715,65 +2628,35 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemUnitOfMeasurementConversion", b =>
                 {
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
-                        .WithMany("ItemUnitOfMeasurementConversions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
-                        .WithMany("ItemUnitOfMeasurementConversions")
-                        .HasForeignKey("UnitOfMeasurementId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("UnitOfMeasurement");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouse", b =>
-                {
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
-                        .WithMany("ItemWarehouses")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.Warehouse", "Warehouse")
-                        .WithMany("ItemWarehouses")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouseLocation", b =>
-                {
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.ItemWarehouse", "ItemWarehouse")
-                        .WithMany("ItemWarehouseLocations")
-                        .HasForeignKey("ItemWarehouseId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "WarehouseLocation")
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "FromUnitOfMeasurement")
                         .WithMany()
-                        .HasForeignKey("WarehouseLocationId")
+                        .HasForeignKey("FromUnitOfMeasurementId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ItemWarehouse");
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "ToUnitOfMeasurement")
+                        .WithMany()
+                        .HasForeignKey("ToUnitOfMeasurementId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("WarehouseLocation");
+                    b.Navigation("FromUnitOfMeasurement");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("ToUnitOfMeasurement");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
                 {
                     b.HasOne("NGErp.Warehouse.Domain.Entities.MeasurementDimension", "MeasurementDimension")
-                        .WithMany()
+                        .WithMany("UnitOfMeasurements")
                         .HasForeignKey("MeasurementDimensionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2815,7 +2698,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseType", "WarehouseType")
-                        .WithMany()
+                        .WithMany("Warehouses")
                         .HasForeignKey("WarehouseTypeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2833,7 +2716,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Warehouse", "Warehouse")
-                        .WithMany()
+                        .WithMany("Locations")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2863,13 +2746,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Attribute", b =>
-                {
-                    b.Navigation("ItemAttributes");
-                });
-
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Items");
+
                     b.Navigation("SubCategories");
                 });
 
@@ -2877,33 +2757,36 @@ namespace NGErp.Base.Infrastructure.Migrations
                 {
                     b.Navigation("ItemAttributes");
 
-                    b.Navigation("ItemUnitOfMeasurementConversions");
-
                     b.Navigation("ItemUnitOfMeasurements");
-
-                    b.Navigation("ItemWarehouses");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouse", b =>
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemType", b =>
                 {
-                    b.Navigation("ItemWarehouseLocations");
+                    b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.MeasurementDimension", b =>
                 {
-                    b.Navigation("ItemUnitOfMeasurementConversions");
-
-                    b.Navigation("ItemUnitOfMeasurements");
+                    b.Navigation("UnitOfMeasurements");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Warehouse", b =>
                 {
-                    b.Navigation("ItemWarehouses");
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.WarehouseLocation", b =>
                 {
+                    b.Navigation("DstLocations");
+
+                    b.Navigation("SrcLocations");
+
                     b.Navigation("SubLocations");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.WarehouseType", b =>
+                {
+                    b.Navigation("Warehouses");
                 });
 #pragma warning restore 612, 618
         }
