@@ -13,19 +13,23 @@ namespace NGErp.HCM.Service.Services;
 
 public interface IEmploymentGroupService
 {
+    Task<EmploymentGroupDetailDto?> GetByIdAsync(
+      Guid companyId,
+      Guid id,
+      CancellationToken ct
+  );
 
-    Task<EmploymentGroupDto> CreateAsync(
-    Guid companyId,
-    CreateEmploymentGroupDto createDto,
-    CancellationToken ct
-);
+    Task<EmploymentGroupDetailDto> CreateAsync(
+        Guid companyId,
+        CreateEmploymentGroupDto createDto,
+        CancellationToken ct
+        );
 
-    Task<EmploymentGroupDto> GetByIdAsync(
+    Task<EmploymentGroupDetailDto> UpdateAsync(
         Guid companyId,
         Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    );
+        UpdateEmploymentGroupDto updateDto,
+        CancellationToken ct);
 
     Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
         Guid companyId,
@@ -34,23 +38,9 @@ public interface IEmploymentGroupService
         CancellationToken ct = default
     );
 
-    //Task<EmploymentGroupDto> PatchAsync(
-    //    Guid companyId,
-    //    Guid id,
-    //    JsonPatchDocument<PatchPositionDto> patchDocument,
-    //    CancellationToken ct
-    //);
-
     Task DeleteAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct
-    );
-
-    Task ChangeStatusAsync(
-        Guid companyId,
-        Guid id,
-        PositionChangeStatusDto changeStatusDto,
-        CancellationToken ct
-    );
+        );
 }

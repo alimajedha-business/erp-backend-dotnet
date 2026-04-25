@@ -19,7 +19,17 @@ public interface IRepository<T> where T : class
 
     IQueryable<T> Find(Expression<Func<T, bool>> predicate);
 
-    Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+    Task<T?> SingleOrDefaultAsync(
+        Expression<Func<T, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
+    );
+
+    Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
+    );
 
     Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
 
@@ -31,7 +41,12 @@ public interface IRepository<T> where T : class
 
     void UpdateRange(IEnumerable<T> entities);
 
-    void Remove(Guid id, CancellationToken ct);
+    Task Remove(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken ct
+    );
+
+    Task Remove(Guid id, CancellationToken ct);
 
     void Remove(T entity);
 

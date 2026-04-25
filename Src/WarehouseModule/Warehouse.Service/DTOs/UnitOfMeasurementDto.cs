@@ -8,6 +8,12 @@ public record UnitOfMeasurementDto(
     MeasurementDimensionDto MeasurementDimension
 );
 
+public record UnitOfMeasurementSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public record UnitOfMeasurementListDto(
     Guid Id,
     int Code,

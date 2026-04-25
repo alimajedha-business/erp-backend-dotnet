@@ -17,8 +17,8 @@ public class Category :
     public Guid? ParentCategoryId { get; set; }
 
     public Category? ParentCategory { get; private set; }
-    public virtual List<Category> SubCategories { get; set; } = [];
-    public virtual List<Item> Items { get; set; } = [];
+
+    public ICollection<Category> SubCategories { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Category> builder)
     {

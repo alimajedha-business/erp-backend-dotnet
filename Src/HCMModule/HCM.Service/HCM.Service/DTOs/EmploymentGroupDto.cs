@@ -18,7 +18,13 @@ public record EmploymentGroupDetailDto
 
 public record CreateEmploymentGroupDto
 {
-    public Guid Id { get; init; }
     public required string Name { get; init; }
-    public IReadOnlyList<CreateEmploymentGroupSpecificationDto> items { get; set; } = [];
+    public required CreateEmploymentGroupSpecificationDto Specification { get; init; }
+}
+
+public record UpdateEmploymentGroupDto
+{
+    public required string Name { get; init; }
+    public required IReadOnlyList<UpdateEmploymentGroupSpecificationDto> Specifications { get; init; }
+        = new List<UpdateEmploymentGroupSpecificationDto>();
 }

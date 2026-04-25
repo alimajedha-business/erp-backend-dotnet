@@ -10,6 +10,7 @@ public class MeasurementDimensionMappingProfile : Profile
     public MeasurementDimensionMappingProfile()
     {
         CreateMap<MeasurementDimension, MeasurementDimensionDto>();
+        CreateMap<MeasurementDimension, MeasurementDimensionSlimDto>();
         CreateMap<CreateMeasurementDimensionDto, MeasurementDimension>();
         CreateMap<PatchMeasurementDimensionDto, MeasurementDimension>().ReverseMap();
     }

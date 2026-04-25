@@ -24,16 +24,12 @@ namespace NGErp.Warehouse.API.Controllers;
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
 public class WarehouseController(
     IWarehouseService warehouseService,
-    IWarehouseTypeService warehouseTypeService,
     IWarehouseLocationService locationService,
-    ICompanyUnitService companyUnitService,
     IExcelExportService excelExportService
 ) : ControllerBase
 {
     private readonly IWarehouseService _warehouseService = warehouseService;
-    private readonly IWarehouseTypeService _warehouseTypeService = warehouseTypeService;
     private readonly IWarehouseLocationService _locationService = locationService;
-    private readonly ICompanyUnitService _companyUnitService = companyUnitService;
     private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
@@ -228,22 +224,6 @@ public class WarehouseController(
             new { companyId, warehouseId, id = dto.Id },
             dto
         );
-    }
-
-    [HttpGet("{warehouseId:guid}/locations/filter-by-q")]
-    public async Task<IActionResult> GetLocations(
-        [FromRoute] Guid warehouseId,
-        [FromQuery] WarehouseLocationParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _locationService.FilterByQAsync(
-            warehouseId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
     }
 
     [HttpPost("{warehouseId:guid}/locations/list")]

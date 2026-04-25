@@ -27,6 +27,8 @@ public class Item :
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
     public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; } = [];
+    public ICollection<ItemWarehouse> ItemWarehouses { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Item> builder)
     {
@@ -77,13 +79,13 @@ public class Item :
 
         builder
             .HasOne(e => e.Category)
-            .WithMany(e => e.Items)
+            .WithMany()
             .HasForeignKey(e => e.CategoryId)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ItemType)
-            .WithMany(e => e.Items)
+            .WithMany()
             .HasForeignKey(e => e.ItemTypeId)
             .OnDelete(DeleteBehavior.NoAction);
 

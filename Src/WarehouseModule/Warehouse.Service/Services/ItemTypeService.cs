@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -48,11 +50,16 @@ public class ItemTypeService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<ItemTypeDto>(entity);
+        var itemType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        return _mapper.Map<ItemTypeDto>(itemType);
     }
 
-    public async Task<ListResponseModel<ItemTypeDto>> FilterByQAsync(
+    public async Task<ListResponseModel<ItemTypeSlimDto>> FilterByQAsync(
         ItemTypeParameters parameters,
         CancellationToken ct = default
     )
@@ -60,8 +67,8 @@ public class ItemTypeService(
         var query = _itemTypeRepository.FilterByQ(parameters);
         var res = await _itemTypeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<ItemTypeDto>(
-            results: _mapper.Map<IReadOnlyList<ItemTypeDto>>(res.items),
+        return new ListResponseModel<ItemTypeSlimDto>(
+            results: _mapper.Map<IReadOnlyList<ItemTypeSlimDto>>(res.items),
             totalCount: res.count,
             parameters
         );
@@ -90,13 +97,13 @@ public class ItemTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: false,
+        var itemType = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p => p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchItemTypeDto>(entity);
+        var patchDto = _mapper.Map<PatchItemTypeDto>(itemType);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -109,10 +116,10 @@ public class ItemTypeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, itemType);
 
         await _itemTypeRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemTypeDto>(entity);
+        return _mapper.Map<ItemTypeDto>(itemType);
     }
 
     public virtual async Task DeleteAsync(
@@ -120,14 +127,7 @@ public class ItemTypeService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
-        _itemTypeRepository.Remove(entity);
-        await _itemTypeRepository.SaveChangesAsync(ct);
+        await _itemTypeRepository.Remove(e => e.Id == id, ct);
     }
 
     public Task<int> GetNextCode(CancellationToken ct)
@@ -135,13 +135,18 @@ public class ItemTypeService(
         return _itemTypeRepository.GetNextCodeAsync(ct);
     }
 
-    private async Task<ItemType> GetByIdOrThrowAsync(
-        Guid id,
-        bool trackChanges = false,
+    private async Task<ItemType> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<ItemType, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _itemTypeRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _itemTypeRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

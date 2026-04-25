@@ -2,6 +2,7 @@
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -20,8 +21,12 @@ public interface IWarehouseLocationService
         CancellationToken ct
     );
 
-    Task<ListResponseModel<WarehouseLocationListDto>> FilterByQAsync(
-        Guid warehouseId,
+    Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
+        Item item,
+        CancellationToken ct
+    );
+
+    Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
         WarehouseLocationParameters parameters,
         CancellationToken ct
     );

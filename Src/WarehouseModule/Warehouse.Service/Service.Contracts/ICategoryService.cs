@@ -22,7 +22,7 @@ public interface ICategoryService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryDto>> FilterByQAsync(
+    Task<ListResponseModel<CategorySlimDto>> FilterByQAsync(
         Guid companyId,
         CategoryParameters parameters,
         CancellationToken ct = default

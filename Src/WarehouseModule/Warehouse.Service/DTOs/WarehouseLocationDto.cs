@@ -9,6 +9,12 @@ public record WarehouseLocationDto(
     WarehouseSlimDto Warehouse
 );
 
+public record WarehouseLocationSlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public record WarehouseLocationListDto(
     Guid Id,
     int Code,
@@ -33,3 +39,11 @@ public class PatchWarehouseLocationDto
     public string? Title { get; set; }
     public bool? CanStoreItem { get; set; }
 }
+
+public sealed record WarehouseLocationNode(
+    Guid Id,
+    int Code,
+    string Title,
+    Guid? ParentLocationId,
+    Guid WarehouseId
+);

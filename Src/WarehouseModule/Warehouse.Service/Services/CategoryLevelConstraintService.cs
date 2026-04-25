@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -52,24 +54,15 @@ public class CategoryLevelConstraintService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<CategoryLevelConstraintDto>(entity);
-    }
-
-    public async Task<ListResponseModel<CategoryLevelConstraintDto>> FilterByQAsync(
-        Guid companyId,
-        CategoryLevelConstraintParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        var query = _constraintRepository.FilterByQ(companyId, parameters);
-        var res = await _constraintRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<CategoryLevelConstraintDto>(
-            results: _mapper.Map<IReadOnlyList<CategoryLevelConstraintDto>>(res.items),
-            totalCount: res.count,
-            parameters
+        var categoryLevel = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
+            ct
         );
+
+        return _mapper.Map<CategoryLevelConstraintDto>(categoryLevel);
     }
 
     public async Task<ListResponseModel<CategoryLevelConstraintDto>> GetFilteredAsync(
@@ -97,14 +90,15 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: false,
+        var categoryLevel = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchCategoryLevelConstraintDto>(entity);
+        var patchDto = _mapper.Map<PatchCategoryLevelConstraintDto>(categoryLevel);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -117,10 +111,10 @@ public class CategoryLevelConstraintService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, categoryLevel);
 
         await _constraintRepository.SaveChangesAsync(ct);
-        return _mapper.Map<CategoryLevelConstraintDto>(entity);
+        return _mapper.Map<CategoryLevelConstraintDto>(categoryLevel);
     }
 
     public virtual async Task DeleteAsync(
@@ -129,15 +123,11 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
-            trackChanges: true,
+        await _constraintRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
             ct
         );
-
-        _constraintRepository.Remove(entity);
-        await _constraintRepository.SaveChangesAsync(ct);
     }
 
     public async Task<CategoryLevelConstraintDto> GetByLevelNoAsync(
@@ -158,14 +148,18 @@ public class CategoryLevelConstraintService(
         return await _constraintRepository.GetNextLevelAsync(companyId, ct);
     }
 
-    private async Task<CategoryLevelConstraint> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<CategoryLevelConstraint> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<CategoryLevelConstraint, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _constraintRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _constraintRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

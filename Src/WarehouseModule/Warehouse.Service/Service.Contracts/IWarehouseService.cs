@@ -22,7 +22,7 @@ public interface IWarehouseService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<WarehouseListDto>> FilterByQAsync(
+    Task<ListResponseModel<WarehouseSlimDto>> FilterByQAsync(
         Guid companyId,
         WarehouseParameters parameters,
         CancellationToken ct = default

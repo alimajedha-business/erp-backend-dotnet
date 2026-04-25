@@ -20,7 +20,7 @@ public interface IItemTypeService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ItemTypeDto>> FilterByQAsync(
+    Task<ListResponseModel<ItemTypeSlimDto>> FilterByQAsync(
         ItemTypeParameters parameters,
         CancellationToken ct = default
     );

@@ -16,6 +16,9 @@ public class UnitOfMeasurement :
 
     public MeasurementDimension MeasurementDimension { get; set; } = default!;
 
+    public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
+    public ICollection<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; } = [];
+
     public void Map(EntityTypeBuilder<UnitOfMeasurement> builder)
     {
         builder
@@ -41,7 +44,7 @@ public class UnitOfMeasurement :
 
         builder
             .HasOne(e => e.MeasurementDimension)
-            .WithMany(e => e.UnitOfMeasurements)
+            .WithMany()
             .HasForeignKey(e => e.MeasurementDimensionId)
             .OnDelete(DeleteBehavior.NoAction);
     }

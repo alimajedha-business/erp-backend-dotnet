@@ -2,4 +2,7 @@
 
 namespace NGErp.Warehouse.Service.RequestFeatures;
 
-public class WarehouseLocationParameters : RequestParameters { }
+public class WarehouseLocationParameters : RequestParameters
+{
+    public Guid? WarehouseId { get; set; }
+}

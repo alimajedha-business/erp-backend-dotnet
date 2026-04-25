@@ -22,12 +22,6 @@ public interface ICategoryLevelConstraintService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<CategoryLevelConstraintDto>> FilterByQAsync(
-        Guid companyId,
-        CategoryLevelConstraintParameters parameters,
-        CancellationToken ct = default
-    );
-
     Task<ListResponseModel<CategoryLevelConstraintDto>> GetFilteredAsync(
         Guid companyId,
         CategoryLevelConstraintParameters parameters,

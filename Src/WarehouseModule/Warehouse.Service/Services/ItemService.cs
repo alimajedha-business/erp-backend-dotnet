@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -19,6 +21,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class ItemService(
     IAdvancedFilterBuilder filterBuilder,
     IItemRepository itemRepository,
+    IWarehouseLocationService locationService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : IItemService
@@ -29,6 +32,7 @@ public class ItemService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IItemRepository _itemRepository = itemRepository;
+    private readonly IWarehouseLocationService _locationService = locationService;
 
     public async Task<ItemDto> CreateAsync(
         Guid companyId,
@@ -41,24 +45,56 @@ public class ItemService(
         item.CompanyId = companyId;
         item.CategoryId = categoryId;
 
-        var createdItem = await _itemRepository.AddAsync(item, ct);
-
-        item.ItemAttributes = [.. createItemDto.AttributeIds
+        item.ItemAttributes = [.. createItemDto
+            .AttributeIds
+            .Distinct()
             .Select(attributeId => new ItemAttribute
             {
                 AttributeId = attributeId,
-                Item = item
             })];
 
-        item.ItemUnitOfMeasurements = [.. createItemDto.SecondaryUnitOfMeasurementIds
+        item.ItemUnitOfMeasurements = [.. createItemDto
+            .SecondaryUnitOfMeasurementIds
+            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
+            .Distinct()
             .Select((uomId, index) => new ItemUnitOfMeasurement
             {
                 UnitOfMeasurementId = uomId,
-                Item = item,
                 UnitOrder = index + 2
             })];
 
+        var duplicateWarehouseIds = createItemDto.Warehouses
+            .GroupBy(w => w.WarehouseId)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicateWarehouseIds.Count != 0)
+            throw new DbUpdateBadRequestException(
+                _localizer["Item.Warehouse.Duplicate"].Value
+            );
+
+        item.ItemWarehouses = [.. createItemDto
+            .Warehouses
+            .Select(warehouseDto => new ItemWarehouse
+            {
+                WarehouseId = warehouseDto.WarehouseId,
+                ReorderPoint = warehouseDto.ReorderPoint,
+                CriticalPoint = warehouseDto.CriticalPoint,
+                ReorderQuantity = warehouseDto.ReorderQuantity,
+                MaxStockLevel = warehouseDto.MaxStockLevel,
+
+                ItemWarehouseLocations = [.. warehouseDto.LocationIds
+                    .Distinct()
+                    .Select(locationId => new ItemWarehouseLocation
+                    {
+                        WarehouseLocationId = locationId
+                    })]
+            })];
+
+        var createdItem = await _itemRepository.AddAsync(item, ct);
         await _itemRepository.SaveChangesAsync(ct);
+
         return _mapper.Map<ItemDto>(createdItem);
     }
 
@@ -68,10 +104,9 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+        var item = await GetSingleOrThrowAsync(
             trackChanges: true,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
             ct
         );
 
@@ -85,15 +120,74 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var item = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
+        var item = await GetSingleOrThrowAsync(
             trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.CategoryId == categoryId &&
+                p.Id == id,
             ct
         );
 
-        return _mapper.Map<ItemDto>(item);
+        var locations = await _locationService.GetItemLocationsAsync(item, ct);
+        var byId = locations.ToDictionary(x => x.Id);
+        var cache = new Dictionary<Guid, string>();
+
+        return new ItemDto(
+            item.Id,
+            item.Code,
+            item.Title,
+            item.TitleInEnglish,
+            item.TechnicalNumber,
+            item.Sku,
+            item.Barcode,
+            new UnitOfMeasurementSlimDto(
+                item.PrimaryUnitOfMeasurementId,
+                item.PrimaryUnitOfMeasurement.Code,
+                item.PrimaryUnitOfMeasurement.Title
+            ),
+            new ItemTypeSlimDto(
+                item.ItemTypeId,
+                item.ItemType.Code,
+                item.ItemType.Title
+            ),
+            new CategorySlimDto(
+                item.CategoryId,
+                item.Category.Code,
+                item.Category.Title
+            ),
+            [.. item.ItemAttributes
+                .Select(ia => new AttributeSlimDto(
+                    ia.Attribute.Id,
+                    ia.Attribute.Code,
+                    ia.Attribute.Title
+                ))],
+            [.. item.ItemUnitOfMeasurements
+                .Select(ium => new UnitOfMeasurementSlimDto(
+                    ium.UnitOfMeasurement.Id,
+                    ium.UnitOfMeasurement.Code,
+                    ium.UnitOfMeasurement.Title
+                ))],
+            [.. item.ItemWarehouses
+                .Select(iw => new ItemWarehouseDto(
+                    new WarehouseSlimDto(
+                        iw.Warehouse.Id,
+                        iw.Warehouse.Code,
+                        iw.Warehouse.Title
+                    ),
+                    iw.ReorderPoint,
+                    iw.CriticalPoint,
+                    iw.ReorderQuantity,
+                    iw.MaxStockLevel,
+                    [.. iw.ItemWarehouseLocations
+                        .Select(iwl => new WarehouseLocationSlimDto(
+                            iwl.WarehouseLocation.Id,
+                            iwl.WarehouseLocation.Code,
+                            BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
+                        ))]
+                ))],
+            item.IsActive
+        );
     }
 
     public async Task<ListResponseModel<ItemDto>> GetFilteredAsync(
@@ -146,15 +240,16 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
-            trackChanges: false,
+        var item = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.CategoryId == categoryId &&
+                p.Id == id,
             ct
         );
 
-        var patchDto = _mapper.Map<PatchItemDto>(entity);
+        var patchDto = _mapper.Map<PatchItemDto>(item);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -167,10 +262,10 @@ public class ItemService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        _mapper.Map(patchDto, entity);
+        _mapper.Map(patchDto, item);
 
         await _itemRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemDto>(entity);
+        return _mapper.Map<ItemDto>(item);
     }
 
     public virtual async Task DeleteAsync(
@@ -180,46 +275,52 @@ public class ItemService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            categoryId,
-            id,
-            trackChanges: true,
+        await _itemRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.CategoryId == categoryId &&
+            e.Id == id,
             ct
         );
-
-        _itemRepository.Remove(entity);
-        await _itemRepository.SaveChangesAsync(ct);
     }
 
-    private async Task<Item> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<Item> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<Item, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _itemRepository.GetByIdAsync(companyId, id, trackChanges, ct);
-
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    }
-
-    private async Task<Item> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid categoryId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _itemRepository.GetByIdAsync(
-            companyId,
-            categoryId,
-            id,
+        var entity = await _itemRepository.SingleOrDefaultAsync(
+            predicate,
             trackChanges,
             ct
         );
 
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
+    }
+
+    private static string BuildLocationPath(
+        Guid locationId,
+        IReadOnlyDictionary<Guid, WarehouseLocationNode> byId,
+        Dictionary<Guid, string> cache,
+        HashSet<Guid>? visiting = null
+    )
+    {
+        if (cache.TryGetValue(locationId, out var cached))
+            return cached;
+
+        visiting ??= [];
+        if (!visiting.Add(locationId))
+            throw new InvalidOperationException($"Cycle detected while building location path for '{locationId}'.");
+
+        if (!byId.TryGetValue(locationId, out var node))
+            throw new InvalidOperationException($"Location '{locationId}' not found while building location path.");
+
+        var path = node.ParentLocationId is null
+            ? node.Title
+            : $"{BuildLocationPath(node.ParentLocationId.Value, byId, cache, visiting)}-{node.Title}";
+
+        cache[locationId] = path;
+        visiting.Remove(locationId);
+        return path;
     }
 }

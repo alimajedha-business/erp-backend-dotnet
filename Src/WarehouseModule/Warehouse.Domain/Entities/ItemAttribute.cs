@@ -29,7 +29,7 @@ public class ItemAttribute :
 
         builder
             .HasOne(e => e.Attribute)
-            .WithMany()
+            .WithMany(e => e.ItemAttributes)
             .HasForeignKey(e => e.AttributeId)
             .OnDelete(DeleteBehavior.NoAction);
     }

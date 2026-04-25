@@ -13,8 +13,6 @@ public class WarehouseType :
     public required string Title { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public virtual List<Warehouse> Warehouses { get; set; } = [];
-
     public void Map(EntityTypeBuilder<WarehouseType> builder)
     {
         builder

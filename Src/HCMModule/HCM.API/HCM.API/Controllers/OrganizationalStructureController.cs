@@ -31,7 +31,7 @@ public class OrganizationalStructureController(IOrganizationalStructureService o
         return Ok(tree);
     }
 
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetHistory(
         [FromRoute] Guid companyId,
         [FromQuery] OrganizationalStructureParameters parameters,

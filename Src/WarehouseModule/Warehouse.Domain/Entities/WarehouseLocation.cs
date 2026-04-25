@@ -19,9 +19,7 @@ public class WarehouseLocation :
     public WarehouseLocation? ParentLocation { get; set; }
     public Warehouse Warehouse { get; set; } = default!;
 
-    public virtual List<WarehouseLocation> SubLocations { get; set; } = [];
-    public virtual List<InventoryMovement> SrcLocations { get; set; } = [];
-    public virtual List<InventoryMovement> DstLocations { get; set; } = [];
+    public ICollection<WarehouseLocation> SubLocations { get; set; } = [];
 
     public void Map(EntityTypeBuilder<WarehouseLocation> builder)
     {
@@ -53,7 +51,7 @@ public class WarehouseLocation :
 
         builder
             .HasOne(e => e.Warehouse)
-            .WithMany(e => e.Locations)
+            .WithMany()
             .HasForeignKey(e => e.WarehouseId)
             .OnDelete(DeleteBehavior.NoAction);
     }

@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+
+using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
-using NGErp.Base.Service.RequestFeatures;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -13,27 +13,16 @@ public class AttributeEnumValueRepository(MainDbContext context) :
     Repository<AttributeEnumValue>(context),
     IAttributeEnumValueRepository
 {
-    public async Task<ListQueryResult<AttributeEnumValue>> GetAllAsync(
-        Guid attributeId,
-        RequestParameters requestParameters,
-        CancellationToken ct,
-        RequestAdvancedFilters? requestAdvancedFilters = null
+    public override async Task<AttributeEnumValue?> SingleOrDefaultAsync(
+        Expression<Func<AttributeEnumValue, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
     )
     {
-        var query = _context
-            .Set<AttributeEnumValue>()
-            .AsNoTracking()
-            .Where(e => e.AttributeId == attributeId)
-            .Include(i => i.Attribute)
-            .Filter(requestAdvancedFilters);
-
-        var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .Sort(requestParameters)
-            .Paginate(requestParameters)
-            .ToListAsync(ct);
-
-        return new ListQueryResult<AttributeEnumValue>(items, totalCount);
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return await query
+            .Include(e => e.Attribute)
+            .SingleOrDefaultAsync(predicate, ct);
     }
 
     public async Task<int> GetNextCodeAsync(

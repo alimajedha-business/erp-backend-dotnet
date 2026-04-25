@@ -13,8 +13,6 @@ public class MeasurementDimension :
     public required string Title { get; set; }
     public bool IsDiscrete { get; set; } = false;
 
-    public virtual List<UnitOfMeasurement> UnitOfMeasurements { get; set; } = [];
-
     public void Map(EntityTypeBuilder<MeasurementDimension> builder)
     {
         builder
