@@ -61,4 +61,8 @@ public class PatchItemDto
     public bool? IsActive { get; set; }
     public Guid? PrimaryUnitOfMeasurementId { get; set; }
     public Guid? ItemTypeId { get; set; }
+
+    public List<Guid>? SecondaryUnitOfMeasurementIds { get; set; }
+    public List<Guid>? AttributeIds { get; set; }
+    public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
 }
