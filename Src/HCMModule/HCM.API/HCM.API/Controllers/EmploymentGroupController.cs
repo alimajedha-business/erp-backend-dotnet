@@ -88,22 +88,22 @@ public class EmploymentGroupController(
         return NoContent();
     }
 
-    //[HttpPut("{id:guid}")]
-    //[Consumes("application/json")]
-    //public async Task<IActionResult> Put(
-    //    [FromRoute] Guid companyId,
-    //    [FromRoute] Guid id,
-    //    [FromBody] UpdateEmploymentGroupDto updateDto,
-    //    CancellationToken ct
-    //    )
-    //{
-    //    var dto = await _employmentGroupService.UpdateAsync(
-    //        companyId,
-    //        id,
-    //        updateDto,
-    //        ct
-    //    );
+    [HttpPut("{id:guid}")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Put(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] UpdateEmploymentGroupDto updateDto,
+        CancellationToken ct
+        )
+    {
+        var dto = await _employmentGroupService.UpdateAsync(
+            companyId,
+            id,
+            updateDto,
+            ct
+        );
 
-    //    return Ok();
-    //}
+        return Ok(dto);
+    }
 }

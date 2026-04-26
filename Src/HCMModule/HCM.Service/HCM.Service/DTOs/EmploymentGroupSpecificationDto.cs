@@ -4,7 +4,7 @@ using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.DTOs;
 
-public enum OperationType
+public enum SpecificationOperationType
 {
     Create = 1,
     Delete = 2
@@ -32,5 +32,5 @@ public record UpdateEmploymentGroupSpecificationDto
     public required MonthType MonthType { get; init; }
     public int WorkMinutes { get; init; }
     public DateOnly ValidFrom { get; init; }
-    public OperationType? OperationType { get; init; }
+    public SpecificationOperationType? OperationType { get; init; }
 }
