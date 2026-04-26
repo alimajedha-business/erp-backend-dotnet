@@ -471,9 +471,11 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("CompanyId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("UX_EmploymentGroup_CompanyId_Name");
 
                     b.ToTable("EmploymentGroup", "HCM", t =>
                         {
