@@ -38,7 +38,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ItemType>, ItemTypeSchema>();
         services.AddSingleton<IFilterSchema<ItemUnitOfMeasurement>, ItemUnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
-        services.AddSingleton<IFilterSchema<UnitOfMeasurementConversion>, UnitOfMeasurementConversionSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
         services.AddSingleton<IFilterSchema<WarehouseLocation>, WarehouseLocationSchema>();

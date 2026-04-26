@@ -83,7 +83,6 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<ItemAttribute> ItemAttributes { get; set; }
         public virtual DbSet<ItemType> ItemTypes { get; set; }
         public virtual DbSet<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; }
-        public virtual DbSet<UnitOfMeasurementConversion> UnitOfMeasurementConversions { get; set; }
         public virtual DbSet<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; }
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
