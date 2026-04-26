@@ -11,6 +11,11 @@ public class EmploymentGroupRepository(MainDbContext context) :
     RepositoryWithCompany<EmploymentGroup>(context),
     IEmploymentGroupRepository
 {
+    public void RemoveSpecification(EmploymentGroupSpecification specification)
+    {
+        _context.EmploymentGroupSpecifications.Remove(specification);
+    }
+
     public async Task DeleteAsync(
         EmploymentGroup entity,
         CancellationToken ct
@@ -27,12 +32,6 @@ public class EmploymentGroupRepository(MainDbContext context) :
         var entity = await _context.EmploymentGroups
             .Include(x => x.Specifications)
             .FirstOrDefaultAsync(x => x.CompanyId == companyId && x.Id == id, ct);
-
-        if (entity == null) return null;
-
-        entity.Specifications = entity.Specifications
-            .OrderBy(s => s.ValidFrom)
-            .ToList();
 
         return entity;
     }

@@ -25,6 +25,7 @@ public class EmploymentGroupService(
     ICompanyService companyService
     ) : IEmploymentGroupService
 {
+    private static readonly DateOnly EmptyValidFromFallback = new(1921, 3, 21);
     private readonly string _key = "EmploymentGroup";
     private readonly IMapper _mapper = mapper;
 
@@ -57,7 +58,7 @@ public class EmploymentGroupService(
         {
             MonthType = specDto.MonthType,
             WorkMinutes = specDto.WorkMinutes,
-            ValidFrom = specDto.ValidFrom
+            ValidFrom = NormalizeEmptyValidFrom(specDto.ValidFrom)
         };
 
         employmentGroup.Specifications.Add(specification);
@@ -180,7 +181,15 @@ public class EmploymentGroupService(
             x => x.Id == dto.Id.Value && x.EmploymentGroupId == entity.Id);
         if (existing == null)
             throw new NotFoundException("Specification to delete not found.");
+
+        _repo.RemoveSpecification(existing);
         entity.Specifications.Remove(existing);
+    }
+
+    private static DateOnly NormalizeEmptyValidFrom(DateOnly validFrom)
+    {
+        // ASP.NET binds an empty DateOnly input to its default value.
+        return validFrom == DateOnly.MinValue ? EmptyValidFromFallback : validFrom;
     }
 
     private static void NormalizeSpecificationRanges(EmploymentGroup entity)
@@ -204,7 +213,6 @@ public class EmploymentGroupService(
         }
 
         orderedSpecifications[^1].ValidTo = null;
-        entity.Specifications = orderedSpecifications;
     }
 
     public async Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
