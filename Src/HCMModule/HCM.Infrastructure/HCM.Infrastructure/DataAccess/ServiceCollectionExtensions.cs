@@ -17,10 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmploymentGroupSpecificationRepository, EmploymentGroupSpecificationRepository>();
         services.AddScoped<IOrganizationNodeRepository, OrganizationNodeRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        
         services.AddScoped<IEmployeeEducationRepository, EmployeeEducationRepository>();
-
-        
         services.AddScoped<IEmployeeWorkExperienceRepository, EmployeeWorkExperienceRepository>();
 
         return services;

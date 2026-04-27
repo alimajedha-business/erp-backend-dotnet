@@ -21,7 +21,8 @@ public class EmployeeEducationRepository(MainDbContext context) :
 
         return await query
             .Where(e => e.Id == id)
-            .Include(e => e.Employee).ThenInclude(e => e.Person)
+            .Include(e => e.Employee)
+            .ThenInclude(e => e.Person)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
@@ -31,7 +32,8 @@ public class EmployeeEducationRepository(MainDbContext context) :
     {
         return _dbSet
             .AsNoTracking()
-            .Include(e => e.Employee).ThenInclude(e => e.Person)
+            .Include(e => e.Employee)
+            .ThenInclude(e => e.Person)
             .Filter(requestAdvancedFilters);
     }
 
