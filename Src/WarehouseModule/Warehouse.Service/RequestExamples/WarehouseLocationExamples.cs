@@ -18,6 +18,7 @@ public class WarehouseLocationCreateRequestExample :
             Code = 10040,
             Title = "راهرو اصلی",
             CanStoreItem = false,
+            HasNextLevel = true,
             ParentLocationId = null,
             LevelNo = 0,
         };
@@ -36,6 +37,7 @@ public class WarehouseLocationGetListResponseExample :
                     Code: 10040,
                     Title: "راهرو اصلی",
                     CanStoreItem: true,
+                    HasNextLevel: true,
                     LevelNo: 2,
                     WarehouseTitle: "انبار مواد اولیه"
                 )
@@ -84,6 +86,7 @@ public class WarehouseLocationPatchRequestExample :
         patchDoc.Replace(x => x.Code, 10041);
         patchDoc.Replace(x => x.Title, "راهرو اصلی - ویرایش");
         patchDoc.Replace(x => x.CanStoreItem, true);
+        patchDoc.Replace(x => x.HasNextLevel, false);
 
         return patchDoc;
     }

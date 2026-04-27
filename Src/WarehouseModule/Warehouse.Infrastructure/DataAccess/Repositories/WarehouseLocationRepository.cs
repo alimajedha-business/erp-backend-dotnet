@@ -50,11 +50,13 @@ public class WarehouseLocationRepository(MainDbContext context) :
     }
 
     public async Task<List<WarehouseLocation>> FilterByQ(
-        WarehouseLocationParameters requestParameters
+        Guid warehouseId,
+        WarehouseLocationParameters requestParameters,
+        CancellationToken ct
     )
     {
-        var warehouseId = requestParameters.WarehouseId;
         var locations = await _dbSet
+            .AsNoTracking()
             .Where(e => e.WarehouseId == warehouseId)
             .Select(s => new
             {
@@ -64,7 +66,7 @@ public class WarehouseLocationRepository(MainDbContext context) :
                 s.ParentLocationId,
                 s.WarehouseId
             })
-            .ToListAsync();
+            .ToListAsync(ct);
 
         var byId = locations.ToDictionary(
             x => x.Id,

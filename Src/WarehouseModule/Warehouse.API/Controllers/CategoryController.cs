@@ -368,20 +368,23 @@ public class CategoryController(
 
     [HttpGet("{categoryId:guid}/attribute-rules/{id:guid}")]
     public async Task<IActionResult> GetCategoryAttributeRuleById(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        var dto = await _attributeRuleService.GetByIdAsync(id, trackChanges: false, ct);
+        var dto = await _attributeRuleService.GetByIdAsync(
+            categoryId,
+            id,
+            trackChanges: false,
+            ct
+        );
         return Ok(dto);
     }
 
     [HttpPatch("{categoryId:guid}/attribute-rules/{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> PatchCategoryAttributeRule(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
@@ -389,6 +392,7 @@ public class CategoryController(
     )
     {
         var dto = await _attributeRuleService.PatchAsync(
+            categoryId,
             id,
             patchDocument,
             ct
@@ -405,7 +409,7 @@ public class CategoryController(
         CancellationToken ct
     )
     {
-        await _attributeRuleService.DeleteAsync(id, ct);
+        await _attributeRuleService.DeleteAsync(categoryId, id, ct);
         return NoContent();
     }
 
