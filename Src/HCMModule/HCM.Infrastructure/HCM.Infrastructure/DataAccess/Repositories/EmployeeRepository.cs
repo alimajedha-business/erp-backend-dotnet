@@ -25,6 +25,7 @@ public class EmployeeRepository(MainDbContext context) :
             .Where(e => e.Id == id)
             .Include(e => e.MilitaryServiceStatus)
             .Include(e => e.MaritalStatus)
+            .Include(e => e.Person)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
@@ -37,6 +38,7 @@ public class EmployeeRepository(MainDbContext context) :
             .Where(e => e.CompanyId == companyId)
             .Include(e => e.MaritalStatus)
             .Include(e => e.MilitaryServiceStatus)
+            .Include(e => e.Person)
             .Filter(requestAdvancedFilters);
     }
 

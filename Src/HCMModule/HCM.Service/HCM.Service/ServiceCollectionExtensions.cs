@@ -28,7 +28,13 @@ namespace NGErp.HCM.Service
             services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
             services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
             services.AddScoped<IEmployeeService, EmployeeService>();
-            return services;
+            
+        services.AddScoped<IEmployeeEducationService, EmployeeEducationService>();
+
+        
+        services.AddScoped<IEmployeeWorkExperienceService, EmployeeWorkExperienceService>();
+
+        return services;
         }
     }
 }

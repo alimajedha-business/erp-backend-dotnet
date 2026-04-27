@@ -1,4 +1,22 @@
-﻿namespace NGErp.General.Service.DTOs;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+
+namespace NGErp.General.Service.DTOs;
+
+
+public class PersonBaseDto
+{
+    public Guid Id { get; set; }
+    public string Typ { get; set; } = default!;
+    public string Name { get; set; } = default!;
+    public long Code { get; set; }
+
+    public string? NaturalFamily { get; set; }
+    public string? NaturalNationalCode { get; set; }
+    public string? LegalNationalCode { get; set; }
+
+    public string DisplayName=> $"{Name} {NaturalFamily}".Trim();
+}
+
 
 public record PersonDto(
     Guid Id,

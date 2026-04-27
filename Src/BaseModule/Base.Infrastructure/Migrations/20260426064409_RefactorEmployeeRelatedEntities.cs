@@ -10,10 +10,15 @@ namespace NGErp.Base.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_EmploymentGroup_CompanyId",
-                schema: "HCM",
-                table: "EmploymentGroup");
+            migrationBuilder.Sql("""
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = N'IX_EmploymentGroup_CompanyId'
+                      AND object_id = OBJECT_ID(N'[HCM].[EmploymentGroup]')
+                )
+                DROP INDEX [IX_EmploymentGroup_CompanyId] ON [HCM].[EmploymentGroup];
+                """);
 
             //migrationBuilder.RenameColumn(
             //    name: "Name",
@@ -29,21 +34,30 @@ namespace NGErp.Base.Infrastructure.Migrations
             //    nullable: false,
             //    defaultValue: 0);
 
-            migrationBuilder.CreateIndex(
-                name: "UX_EmploymentGroup_CompanyId_Name",
-                schema: "HCM",
-                table: "EmploymentGroup",
-                columns: new[] { "CompanyId", "Name" },
-                unique: true);
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = N'UX_EmploymentGroup_CompanyId_Name'
+                      AND object_id = OBJECT_ID(N'[HCM].[EmploymentGroup]')
+                )
+                CREATE UNIQUE INDEX [UX_EmploymentGroup_CompanyId_Name]
+                ON [HCM].[EmploymentGroup] ([CompanyId], [Name]);
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "UX_EmploymentGroup_CompanyId_Name",
-                schema: "HCM",
-                table: "EmploymentGroup");
+            migrationBuilder.Sql("""
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = N'UX_EmploymentGroup_CompanyId_Name'
+                      AND object_id = OBJECT_ID(N'[HCM].[EmploymentGroup]')
+                )
+                DROP INDEX [UX_EmploymentGroup_CompanyId_Name] ON [HCM].[EmploymentGroup];
+                """);
 
             //migrationBuilder.DropColumn(
             //    name: "Type",
@@ -56,11 +70,16 @@ namespace NGErp.Base.Infrastructure.Migrations
             //    table: "military_service_statuses",
             //    newName: "Name");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_EmploymentGroup_CompanyId",
-                schema: "HCM",
-                table: "EmploymentGroup",
-                column: "CompanyId");
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = N'IX_EmploymentGroup_CompanyId'
+                      AND object_id = OBJECT_ID(N'[HCM].[EmploymentGroup]')
+                )
+                CREATE INDEX [IX_EmploymentGroup_CompanyId]
+                ON [HCM].[EmploymentGroup] ([CompanyId]);
+                """);
         }
     }
 }
