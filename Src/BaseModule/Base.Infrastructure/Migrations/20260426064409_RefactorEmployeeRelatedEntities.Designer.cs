@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426064409_RefactorEmployeeRelatedEntities")]
+    partial class RefactorEmployeeRelatedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,6 +25,35 @@ namespace NGErp.Base.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.City", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Code2")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Code3")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProvinceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.ToTable("cities", "General");
+                });
 
             modelBuilder.Entity("NGErp.General.Domain.Entities.Company", b =>
                 {
@@ -57,6 +89,73 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("company_units", "Shared");
                 });
 
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Country", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("CurrencyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Iso")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TaxCode")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.ToTable("countries", "General");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Currency", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DecimalPlaces")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FractionalCurrencyUnit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Iso")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoundMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("currencies", "General");
+                });
+
             modelBuilder.Entity("NGErp.General.Domain.Entities.MilitaryServiceStatus", b =>
                 {
                     b.Property<Guid>("Id")
@@ -79,106 +178,124 @@ namespace NGErp.Base.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("BirthCityId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("birth_city_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CitizenCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("citizen_code");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("Code")
-                        .HasColumnType("bigint")
-                        .HasColumnName("code");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("EconomicCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("economic_code");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EconomicCodeOld")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("economic_code_old");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("id_number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsGovernmental")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_governmental");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsInternalCitizenship")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_internal_citizenship");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LegalEstablishmentDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("legal_establishment_date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LegalManagerFamily")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("legal_manager_family");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalManagerName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("legal_manager_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalNationalCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("legal_national_code");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LegalRegisterNo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("legal_register_no");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NaturalBirthDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("natural_birth_date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("NaturalFamily")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("natural_family");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NaturalFatherName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("natural_father_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NaturalNationalCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("natural_national_code");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NaturalSex")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("natural_sex");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PassportNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("passport_number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("photo");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ReligionId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("religion_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Typ")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("typ");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BirthCityId");
+
+                    b.HasIndex("ReligionId");
+
                     b.ToTable("persons", "General");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Province", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("provinces", "General");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Religion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("religions", "General");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.Department", b =>
@@ -319,135 +436,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDatabaseName("UX_Employee_Company_Code");
 
                     b.ToTable("Employee", "HCM");
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeEducation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("CenterCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("EffectiveDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FieldCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal?>("GPA")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LevelCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MajoringCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId")
-                        .HasDatabaseName("IX_EmployeeEducation_Employee");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("EmployeeEducation", "HCM");
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeWorkExperience", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId")
-                        .HasDatabaseName("IX_EmployeeWorkExperience_Employee");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("EmployeeWorkExperience", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroup", b =>
@@ -2332,6 +2320,52 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("WarehouseType", "Warehouse");
                 });
 
+            modelBuilder.Entity("NGErp.General.Domain.Entities.City", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Country", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Currency", "Currency")
+                        .WithMany("Countries")
+                        .HasForeignKey("CurrencyId");
+
+                    b.Navigation("Currency");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Person", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.City", "BirthCity")
+                        .WithMany()
+                        .HasForeignKey("BirthCityId");
+
+                    b.HasOne("NGErp.General.Domain.Entities.Religion", "Religion")
+                        .WithMany()
+                        .HasForeignKey("ReligionId");
+
+                    b.Navigation("BirthCity");
+
+                    b.Navigation("Religion");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Province", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.Department", b =>
                 {
                     b.HasOne("NGErp.General.Domain.Entities.Company", null)
@@ -2371,28 +2405,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("MilitaryServiceStatus");
 
                     b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeEducation", b =>
-                {
-                    b.HasOne("NGErp.HCM.Domain.Entities.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeWorkExperience", b =>
-                {
-                    b.HasOne("NGErp.HCM.Domain.Entities.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroup", b =>
@@ -2847,6 +2859,11 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("ParentLocation");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.General.Domain.Entities.Currency", b =>
+                {
+                    b.Navigation("Countries");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmploymentGroup", b =>

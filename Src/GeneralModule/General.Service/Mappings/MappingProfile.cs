@@ -16,6 +16,9 @@ namespace NGErp.General.Service.Mappings
 
            CreateMap<MaritalStatus, MaritalStatusDto>();
            CreateMap<MilitaryServiceStatus, MilitaryServiceStatusDto>();
+           CreateMap<Person, PersonDto>();
+           CreateMap<Person, PersonBaseDto>();
+           
         }
     }
 }
