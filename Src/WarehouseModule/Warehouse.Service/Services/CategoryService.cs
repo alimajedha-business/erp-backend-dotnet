@@ -2,6 +2,8 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
+using DocumentFormat.OpenXml.Office2010.Excel;
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
@@ -21,6 +23,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class CategoryService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryRepository categoryRepository,
+    ICategoryLevelConstraintService constraintService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryService
@@ -31,6 +34,7 @@ public class CategoryService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    private readonly ICategoryLevelConstraintService _constraintService = constraintService;
 
     public async Task<CategoryDto> CreateAsync(
         Guid companyId,
@@ -38,6 +42,17 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        if (createDto.ParentCategoryId is not null)
+        {
+            await GetSingleOrThrowAsync(
+                 trackChanges: false,
+                 predicate: p =>
+                     p.CompanyId == companyId &&
+                     p.Id == createDto.ParentCategoryId,
+                 ct
+             );
+        }
+
         var entity = _mapper.Map<Category>(createDto);
         entity.CompanyId = companyId;
 
