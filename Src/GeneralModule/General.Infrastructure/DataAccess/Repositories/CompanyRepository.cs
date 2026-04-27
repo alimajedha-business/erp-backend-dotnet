@@ -6,6 +6,6 @@ using NGErp.General.Service.Repository.Contracts;
 namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 
 public class CompanyRepository(MainDbContext context) :
-    Base.Infrastructure.DataAccess.Repositories.Repository<Company>(context),
+    Repository<Company>(context),
     ICompanyRepository
 { }
