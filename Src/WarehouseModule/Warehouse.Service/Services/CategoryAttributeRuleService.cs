@@ -21,6 +21,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class CategoryAttributeRuleService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryAttributeRuleRepository attributeRuleRepository,
+    ICategoryService categoryService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : ICategoryAttributeRuleService
@@ -31,13 +32,23 @@ public class CategoryAttributeRuleService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryAttributeRuleRepository _attributeRuleRepository = attributeRuleRepository;
+    private readonly ICategoryService _categoryService = categoryService;
 
     public async Task<CategoryAttributeRuleDto> CreateAsync(
+        Guid companyId,
         Guid categoryId,
         CreateCategoryAttributeRuleDto createDto,
         CancellationToken ct
     )
     {
+        await _categoryService.GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == categoryId,
+             ct
+        );
+
         var entity = _mapper.Map<CategoryAttributeRule>(createDto);
         entity.CategoryId = categoryId;
 
@@ -48,12 +59,21 @@ public class CategoryAttributeRuleService(
     }
 
     public async Task<CategoryAttributeRuleDto> GetByIdAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
+        await _categoryService.GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == categoryId,
+             ct
+        );
+
         var categoryAttributeRule = await GetSingleOrThrowAsync(
             trackChanges: trackChanges,
             predicate: p => p.CategoryId == categoryId && p.Id == id,
@@ -94,13 +114,23 @@ public class CategoryAttributeRuleService(
             parameters
         );
     }
+
     public virtual async Task<CategoryAttributeRuleDto> PatchAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
         CancellationToken ct
     )
     {
+        await _categoryService.GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == categoryId,
+             ct
+        );
+
         var categoryAttributeRule = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.CategoryId == categoryId && p.Id == id,
@@ -127,11 +157,20 @@ public class CategoryAttributeRuleService(
     }
 
     public virtual async Task DeleteAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         CancellationToken ct
     )
     {
+        await _categoryService.GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == categoryId,
+             ct
+        );
+
         await _attributeRuleRepository.Remove(
             e => e.CategoryId == categoryId && e.Id == id,
             ct

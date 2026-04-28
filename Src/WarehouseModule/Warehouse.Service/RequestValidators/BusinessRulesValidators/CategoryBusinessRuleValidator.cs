@@ -94,7 +94,7 @@ public class CategoryBusinessRuleValidator(
         );
     }
 
-    public async Task CheckDeletePermissionAsync(
+    public async Task ValidateDeleteAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

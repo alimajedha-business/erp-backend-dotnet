@@ -17,6 +17,7 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -122,6 +123,8 @@ public class CategoryService(
         if (patchDocument is null)
             throw new InvalidPatchDocumentException();
 
+        PatchCategoryPolicy.Validate(patchDocument);
+
         var codePatched = HasProperty(
             patchDocument,
             nameof(PatchCategoryDto.Code)
@@ -207,7 +210,7 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await _businessRuleValidator.CheckDeletePermissionAsync(companyId, id, ct);
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
         await _categoryRepository.Remove(e =>
             e.CompanyId == companyId &&
             e.Id == id,

@@ -32,8 +32,8 @@ namespace NGErp.API.Extensions
                         NotFoundException or ForeignKeyConstraintException => StatusCodes.Status404NotFound,
                         BadRequestException or ValidationException => StatusCodes.Status400BadRequest,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-                        ForeignKeyViolationException
-                            or DuplicateInsertException
+                        BusinessRuleViolationException
+                            or DuplicateResourceException
                             or CheckConstraintException => StatusCodes.Status409Conflict,
                         _ => StatusCodes.Status500InternalServerError
                     };

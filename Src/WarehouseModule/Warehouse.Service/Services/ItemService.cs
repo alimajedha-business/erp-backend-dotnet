@@ -70,10 +70,7 @@ public class ItemService(
             .ToList();
 
         if (duplicateWarehouseIds.Count != 0)
-            throw new DbUpdateBadRequestException(
-                "Item",
-                "Warehouse.Duplicate"
-            );
+            // TODO: throw new business rule exception
 
         item.ItemWarehouses = [.. createItemDto
             .ItemWarehouses

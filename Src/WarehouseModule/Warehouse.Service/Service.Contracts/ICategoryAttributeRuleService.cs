@@ -10,12 +10,14 @@ namespace NGErp.Warehouse.Service.Service.Contracts;
 public interface ICategoryAttributeRuleService
 {
     Task<CategoryAttributeRuleDto> CreateAsync(
+        Guid companyId,
         Guid categoryId,
         CreateCategoryAttributeRuleDto createDto,
         CancellationToken ct
     );
 
     Task<CategoryAttributeRuleDto> GetByIdAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         bool trackChanges = false,
@@ -34,6 +36,7 @@ public interface ICategoryAttributeRuleService
     );
 
     Task<CategoryAttributeRuleDto> PatchAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         JsonPatchDocument<PatchCategoryAttributeRuleDto> patchDocument,
@@ -41,6 +44,7 @@ public interface ICategoryAttributeRuleService
     );
 
     Task DeleteAsync(
+        Guid companyId,
         Guid categoryId,
         Guid id,
         CancellationToken ct

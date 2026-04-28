@@ -141,10 +141,7 @@ public class AttributeService(
         );
 
         if (attribute.IsStatic)
-            throw new DbUpdateBadRequestException(
-                "Attribute",
-                "IsStatic.Delete"
-            );
+            // TODO: throw new business rule exception
 
         _attributeRepository.Remove(attribute);
         await _attributeRepository.SaveChangesAsync(ct);

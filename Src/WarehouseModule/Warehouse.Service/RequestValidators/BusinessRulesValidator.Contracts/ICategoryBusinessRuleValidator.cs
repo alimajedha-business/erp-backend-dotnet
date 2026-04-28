@@ -33,7 +33,7 @@ public interface ICategoryBusinessRuleValidator
         CancellationToken ct
     );
 
-    Task CheckDeletePermissionAsync(
+    Task ValidateDeleteAsync(
         Guid companyId,
         Guid id,
         CancellationToken ct

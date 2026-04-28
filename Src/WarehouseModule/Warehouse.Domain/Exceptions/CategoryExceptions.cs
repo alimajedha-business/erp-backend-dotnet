@@ -19,10 +19,9 @@ public sealed class CategoryCodeExceedsMaxLengthException(
 }
 
 public sealed class CategoryCodeAlreadyExistsException(string code)
-    : BadRequestException()
+    : DuplicateResourceException()
 {
     public string Code { get; } = code;
-
     public override string LocalizationKey => "Category.Code.Duplicate";
 }
 
@@ -36,7 +35,6 @@ public sealed class CategoryParentRequiredException(int levelNo)
     : BadRequestException(levelNo)
 {
     public int LevelNo { get; } = levelNo;
-
     public override string LocalizationKey => "Category.Parent.Required";
 }
 
@@ -53,42 +51,41 @@ public sealed class CategoryParentLevelMismatchException(
 {
     public int ExpectedParentLevel { get; } = expectedParentLevel;
     public int ActualParentLevel { get; } = actualParentLevel;
-
     public override string LocalizationKey => "Category.Parent.LevelMismatch";
 }
 
 public sealed class CategoryParentCannotHaveChildrenException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.Parent.CannotHaveChildren";
 }
 
 public sealed class CategoryFirstLevelMustHaveChildrenException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.LevelNo.NotLastLevelIf1";
 }
 
 public sealed class CategoryLastLevelCannotHaveChildrenException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.LevelNo.LastLevelIf6";
 }
 
 public sealed class CategoryCannotDisableNextLevelWithChildrenException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.HasNextLevel.HasSubCategories";
 }
 
 public sealed class CategoryHasSubCategoriesException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.Delete.HasSubCategories";
 }
 
 public sealed class CategoryHasItemsException()
-    : BadRequestException()
+    : BusinessRuleViolationException()
 {
     public override string LocalizationKey => "Category.Delete.HasItems";
 }
@@ -97,6 +94,5 @@ public sealed class CategoryInvalidOrderingException(string orderBy)
     : BadRequestException(orderBy)
 {
     public string OrderBy { get; } = orderBy;
-
     public override string LocalizationKey => "Category.Ordering.Invalid";
 }
