@@ -142,7 +142,8 @@ public class AttributeService(
 
         if (attribute.IsStatic)
             throw new DbUpdateBadRequestException(
-                _localizer["Attribute.IsStatic.Delete"].Value
+                "Attribute",
+                "IsStatic.Delete"
             );
 
         _attributeRepository.Remove(attribute);

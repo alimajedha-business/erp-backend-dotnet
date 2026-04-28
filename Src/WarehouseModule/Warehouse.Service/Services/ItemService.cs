@@ -71,7 +71,8 @@ public class ItemService(
 
         if (duplicateWarehouseIds.Count != 0)
             throw new DbUpdateBadRequestException(
-                _localizer["Item.Warehouse.Duplicate"].Value
+                "Item",
+                "Warehouse.Duplicate"
             );
 
         item.ItemWarehouses = [.. createItemDto

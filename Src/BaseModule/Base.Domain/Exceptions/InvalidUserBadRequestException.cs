@@ -2,7 +2,7 @@
 
 public class InvalidUserBadRequestException : BadRequestException
 {
-    public InvalidUserBadRequestException() : base("Invalid user")
-    {
-    }
+    public override string LocalizationKey => "Invalid.User";
+
+    public InvalidUserBadRequestException() : base() { }
 }

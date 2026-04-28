@@ -2,20 +2,19 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
-using DocumentFormat.OpenXml.Office2010.Excel;
+using FluentValidation;
 
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -24,17 +23,29 @@ public class CategoryService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryRepository categoryRepository,
     ICategoryLevelConstraintService constraintService,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IItemRepository itemRepository,
+    IValidator<PatchCategoryDto> patchValidator,
+    IValidator<CreateCategoryDto> postValidator,
+    IMapper mapper
 ) : ICategoryService
 {
-    private readonly string _key = "Category";
+    private static readonly HashSet<string> _allowedOrderFields = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {
+        "code",
+        "title",
+        "levelNo",
+        "createdAt"
+    };
 
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly ICategoryLevelConstraintService _constraintService = constraintService;
+    private readonly IItemRepository _itemRepository = itemRepository;
+    private readonly IValidator<PatchCategoryDto> _patchValidator = patchValidator;
+    private readonly IValidator<CreateCategoryDto> _postValidator = postValidator;
 
     public async Task<CategoryDto> CreateAsync(
         Guid companyId,
@@ -42,16 +53,16 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        if (createDto.ParentCategoryId is not null)
-        {
-            await GetSingleOrThrowAsync(
-                 trackChanges: false,
-                 predicate: p =>
-                     p.CompanyId == companyId &&
-                     p.Id == createDto.ParentCategoryId,
-                 ct
-             );
-        }
+        await _postValidator.ValidateAndThrowAsync(createDto, ct);
+
+        await ValidateCategoryInvariantsAsync(
+            companyId,
+            createDto.ParentCategoryId,
+            createDto.LevelNo,
+            createDto.HasNextLevel,
+            createDto.Code,
+            ct
+        );
 
         var entity = _mapper.Map<Category>(createDto);
         entity.CompanyId = companyId;
@@ -86,6 +97,8 @@ public class CategoryService(
         CancellationToken ct = default
     )
     {
+        ValidateParameters(parameters);
+
         var query = _categoryRepository.FilterByQ(companyId, parameters);
         var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
 
@@ -103,6 +116,8 @@ public class CategoryService(
         CancellationToken ct = default
     )
     {
+        ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<Category>(filterNodeDto);
         var query = _categoryRepository.GetFiltered(companyId, advancedFilters);
         var res = await _categoryRepository.GetResponseListAsync(query, parameters, ct);
@@ -121,6 +136,9 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        if (patchDocument is null)
+            throw new InvalidPatchDocumentException("Patch document is required.");
+
         var category = await GetSingleOrThrowAsync(
              trackChanges: true,
              predicate: p =>
@@ -142,6 +160,17 @@ public class CategoryService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await _patchValidator.ValidateAndThrowAsync(patchDto, ct);
+
+        ValidateLevelHasNextLevel(category.LevelNo, patchDto.HasNextLevel!.Value);
+
+        await ValidateCategoryCodeLengthAsync(
+            companyId,
+            category.LevelNo,
+            patchDto.Code!,
+            ct
+        );
+
         _mapper.Map(patchDto, category);
 
         await _categoryRepository.SaveChangesAsync(ct);
@@ -154,11 +183,79 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await _categoryRepository.Remove(e =>
-            e.CompanyId == companyId &&
-            e.Id == id,
+        var category = await GetSingleOrThrowAsync(
+            trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
+
+        await ValidateCanDeleteAsync(companyId, id, ct);
+
+        _categoryRepository.Remove(category);
+        await _categoryRepository.SaveChangesAsync(ct);
+    }
+
+    private static void ValidateParameters(CategoryParameters parameters)
+    {
+        if (string.IsNullOrWhiteSpace(parameters.OrderBy))
+            return;
+
+        var orderBy = parameters.OrderBy.Trim();
+        if (!_allowedOrderFields.Contains(orderBy))
+            throw new CategoryInvalidOrderingException(orderBy);
+    }
+
+    private async Task ValidateCategoryInvariantsAsync(
+        Guid companyId,
+        Guid? parentCategoryId,
+        int levelNo,
+        bool hasNextLevel,
+        string code,
+        CancellationToken ct
+    )
+    {
+        ValidateLevelHasNextLevel(levelNo, hasNextLevel);
+
+        await ValidateParentAsync(
+            companyId,
+            parentCategoryId,
+            levelNo,
+            ct
+        );
+
+        await ValidateCategoryCodeLengthAsync(
+            companyId,
+            levelNo,
+            code,
+            ct
+        );
+    }
+
+    private async Task ValidateCanDeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        var hasSubCategories = await _categoryRepository.AnyAsync(e =>
+            e.CompanyId == companyId &&
+            e.ParentCategoryId == id,
+            ct
+        );
+
+        if (hasSubCategories)
+            throw new CategoryHasSubCategoriesException();
+
+        var hasItems = await _itemRepository.AnyAsync(e =>
+            e.CompanyId == companyId &&
+            e.CategoryId == id,
+            ct
+        );
+
+        if (hasItems)
+            throw new CategoryHasItemsException();
     }
 
     private async Task<Category> GetSingleOrThrowAsync(
@@ -173,7 +270,87 @@ public class CategoryService(
             ct
         );
 
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+        return entity ?? throw new CategoryNotFoundException();
+    }
+
+    private async Task ValidateCategoryCodeLengthAsync(
+        Guid companyId,
+        int levelNo,
+        string code,
+        CancellationToken ct
+    )
+    {
+        var categoryLevel = await _constraintService.GetByLevelNoAsync(
+            companyId,
+            levelNo,
+            ct
+        );
+
+        if (categoryLevel == null || categoryLevel.CodeLength <= 0)
+            return;
+
+        if (code.Length > categoryLevel.CodeLength)
+        {
+            throw new CategoryCodeExceedsMaxLengthException(
+                categoryLevel.CodeLength,
+                code.Length,
+                levelNo
+            );
+        }
+    }
+
+    private async Task ValidateParentAsync(
+        Guid companyId,
+        Guid? parentCategoryId,
+        int levelNo,
+        CancellationToken ct
+    )
+    {
+        if (levelNo == 1)
+        {
+            if (parentCategoryId is not null)
+                throw new CategoryRootCannotHaveParentException();
+
+            return;
+        }
+
+        if (parentCategoryId is null)
+            throw new CategoryParentRequiredException(levelNo);
+
+        var parent = await GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == parentCategoryId.Value,
+            ct
+        );
+
+        var expectedParentLevel = levelNo - 1;
+        if (parent.LevelNo != expectedParentLevel)
+        {
+            throw new CategoryParentLevelMismatchException(
+                expectedParentLevel,
+                parent.LevelNo
+            );
+        }
+
+        if (!parent.HasNextLevel)
+            throw new CategoryParentCannotHaveChildrenException();
+    }
+
+    private static void ValidateLevelHasNextLevel(
+        int levelNo,
+        bool hasNextLevel
+    )
+    {
+        if (levelNo is < 1 or > 6)
+            throw new CategoryLevelOutOfRangeException();
+
+        if (levelNo == 1 && !hasNextLevel)
+            throw new CategoryFirstLevelMustHaveChildrenException();
+
+        if (levelNo == 6 && hasNextLevel)
+            throw new CategoryLastLevelCannotHaveChildrenException();
     }
 }
 
