@@ -1,15 +1,10 @@
-using System.Xml.XPath;
-
-using Microsoft.AspNetCore.JsonPatch;
-
-using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
-namespace NGErp.Warehouse.Service.Services;
+namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class CategoryBusinessRuleValidator(
     ICategoryRepository categoryRepository,

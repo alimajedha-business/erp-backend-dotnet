@@ -5,11 +5,11 @@ using Microsoft.Extensions.Localization;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Resources;
 
-namespace NGErp.Warehouse.Service.RequestValidators;
+namespace NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 
-public class CreateMeasurementDimensionValidator(
+public class CreateItemTypeValidator(
     IStringLocalizer<WarehouseResource> localizer
-) : AbstractValidator<CreateMeasurementDimensionDto>
+) : AbstractValidator<CreateItemTypeDto>
 {
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 }
