@@ -7,6 +7,7 @@ using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.EntitySchemas;
 using NGErp.Warehouse.Service.Mappings;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Resources;
