@@ -33,7 +33,29 @@ public class CategoryBusinessRuleValidator(
             return;
 
         var orderBy = parameters.OrderBy.Trim();
-        if (!_allowedOrderFields.Contains(orderBy))
+        var hasDescendingPrefix = orderBy.StartsWith('-');
+        var normalizedOrderBy = hasDescendingPrefix
+            ? orderBy.TrimStart('-').Trim()
+            : orderBy;
+
+        var orderParts = normalizedOrderBy.Split(
+            ' ',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+        );
+
+        var hasInvalidDirection = orderParts.Length > 2 ||
+            (hasDescendingPrefix && orderParts.Length > 1) ||
+            (
+                orderParts is [_, var direction] &&
+                !direction.Equals("asc", StringComparison.OrdinalIgnoreCase) &&
+                !direction.Equals("desc", StringComparison.OrdinalIgnoreCase)
+            );
+
+        if (
+            orderParts.Length == 0 ||
+            hasInvalidDirection ||
+            !_allowedOrderFields.Contains(orderParts[0])
+        )
             throw new CategoryInvalidOrderingException(orderBy);
     }
 
@@ -63,6 +85,13 @@ public class CategoryBusinessRuleValidator(
             code,
             ct
         );
+
+        await ValidateCategoryCodeUniquenessAsync(
+            companyId,
+            excludedCategoryId: null,
+            code,
+            ct
+        );
     }
 
     public async Task CheckDeletePermissionAsync(
@@ -71,6 +100,15 @@ public class CategoryBusinessRuleValidator(
         CancellationToken ct
     )
     {
+        var exists = await _categoryRepository.AnyAsync(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
+            ct
+        );
+
+        if (!exists)
+            throw new CategoryNotFoundException();
+
         var hasSubCategories = await _categoryRepository.AnyAsync(e =>
             e.CompanyId == companyId &&
             e.ParentCategoryId == id,
@@ -97,8 +135,13 @@ public class CategoryBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        if (levelNo == 1 && parentCategoryId is not null)
-            throw new CategoryRootCannotHaveParentException();
+        if (levelNo == 1)
+        {
+            if (parentCategoryId is not null)
+                throw new CategoryRootCannotHaveParentException();
+
+            return;
+        }
 
         if (parentCategoryId is null)
             throw new CategoryParentRequiredException(levelNo);
@@ -160,5 +203,29 @@ public class CategoryBusinessRuleValidator(
                 levelNo
             );
         }
+    }
+
+    public async Task ValidateCategoryCodeUniquenessAsync(
+        Guid companyId,
+        Guid? excludedCategoryId,
+        string code,
+        CancellationToken ct
+    )
+    {
+        var exists = excludedCategoryId is null
+            ? await _categoryRepository.AnyAsync(e =>
+                e.CompanyId == companyId &&
+                e.Code == code,
+                ct
+            )
+            : await _categoryRepository.AnyAsync(e =>
+                e.CompanyId == companyId &&
+                e.Id != excludedCategoryId.Value &&
+                e.Code == code,
+                ct
+            );
+
+        if (exists)
+            throw new CategoryCodeAlreadyExistsException(code);
     }
 }

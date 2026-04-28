@@ -135,8 +135,14 @@
   <data name="CouldNotConvert" xml:space="preserve">
     <value>مقدار وارد شده معتبر نیست</value>
   </data>
+  <data name="InvalidJsonFormat" xml:space="preserve">
+    <value>ساختار JSON بدنه درخواست معتبر نیست</value>
+  </data>
   <data name="MissingRequiredProperties" xml:space="preserve">
     <value>فیلدهای ضروری ارسال نشده است</value>
+  </data>
+  <data name="PatchDocument.Invalid" xml:space="preserve">
+    <value>سند تغییرات ارسالی معتبر نیست</value>
   </data>
   <data name="ForeignKeyViolation" xml:space="preserve">
     <value>امکان حذف {0} به دلیل وجود وابستگی وجود ندارد.</value>

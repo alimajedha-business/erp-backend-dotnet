@@ -26,6 +26,13 @@ public interface ICategoryBusinessRuleValidator
         CancellationToken ct
     );
 
+    Task ValidateCategoryCodeUniquenessAsync(
+        Guid companyId,
+        Guid? excludedCategoryId,
+        string code,
+        CancellationToken ct
+    );
+
     Task CheckDeletePermissionAsync(
         Guid companyId,
         Guid id,

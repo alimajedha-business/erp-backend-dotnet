@@ -18,6 +18,20 @@ public sealed class CategoryCodeExceedsMaxLengthException(
     public override string LocalizationKey => "Category.Code.ExceedsMaxLength";
 }
 
+public sealed class CategoryCodeAlreadyExistsException(string code)
+    : BadRequestException()
+{
+    public string Code { get; } = code;
+
+    public override string LocalizationKey => "Category.Code.Duplicate";
+}
+
+public sealed class CategoryLevelNoOutOfRangeException()
+    : BadRequestException()
+{
+    public override string LocalizationKey => "Category.LevelNo.Range";
+}
+
 public sealed class CategoryParentRequiredException(int levelNo)
     : BadRequestException(levelNo)
 {
@@ -59,6 +73,12 @@ public sealed class CategoryLastLevelCannotHaveChildrenException()
     : BadRequestException()
 {
     public override string LocalizationKey => "Category.LevelNo.LastLevelIf6";
+}
+
+public sealed class CategoryCannotDisableNextLevelWithChildrenException()
+    : BadRequestException()
+{
+    public override string LocalizationKey => "Category.HasNextLevel.HasSubCategories";
 }
 
 public sealed class CategoryHasSubCategoriesException()

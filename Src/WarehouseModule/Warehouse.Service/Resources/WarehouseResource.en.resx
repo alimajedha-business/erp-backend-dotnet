@@ -135,6 +135,9 @@
   <data name="Category.Code.NotEmpty" xml:space="preserve">
     <value>Category code could not be empty.</value>
   </data>
+  <data name="Category.Code.Duplicate" xml:space="preserve">
+    <value>Category code already exists.</value>
+  </data>
   <data name="Category.Delete.HasItems" xml:space="preserve">
     <value>Category cannot be deleted because it has items.</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="Category.HasNextLevel.NotNull" xml:space="preserve">
     <value>Category next-level flag is required.</value>
+  </data>
+  <data name="Category.HasNextLevel.HasSubCategories" xml:space="preserve">
+    <value>Category cannot be marked as the last level because it has sub-categories.</value>
   </data>
   <data name="Category.LevelNo.LastLevelIf6" xml:space="preserve">
     <value>The 6th level could not have sub-categories as children.</value>

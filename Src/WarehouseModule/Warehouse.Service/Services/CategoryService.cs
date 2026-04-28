@@ -2,6 +2,9 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
+using FluentValidation;
+using FluentValidation.Results;
+
 using Microsoft.AspNetCore.JsonPatch;
 
 using NGErp.Base.Domain.Exceptions;
@@ -22,6 +25,8 @@ public class CategoryService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryRepository categoryRepository,
     ICategoryBusinessRuleValidator businessRuleValidator,
+    IValidator<CreateCategoryDto> createValidator,
+    IValidator<PatchCategoryDto> patchValidator,
     IMapper mapper
 ) : ICategoryService
 {
@@ -29,6 +34,8 @@ public class CategoryService(
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly ICategoryBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IValidator<CreateCategoryDto> _createValidator = createValidator;
+    private readonly IValidator<PatchCategoryDto> _patchValidator = patchValidator;
 
     public async Task<CategoryDto> CreateAsync(
         Guid companyId,
@@ -36,6 +43,8 @@ public class CategoryService(
         CancellationToken ct
     )
     {
+        ThrowIfNull(createDto);
+        await ValidateAsync(_createValidator, createDto, ct);
         await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
 
         var entity = _mapper.Map<Category>(createDto);
@@ -110,14 +119,6 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        var category = await GetSingleOrThrowAsync(
-             trackChanges: true,
-             predicate: p =>
-                 p.CompanyId == companyId &&
-                 p.Id == id,
-             ct
-         );
-
         if (patchDocument is null)
             throw new InvalidPatchDocumentException();
 
@@ -130,6 +131,14 @@ public class CategoryService(
             patchDocument,
             nameof(PatchCategoryDto.HasNextLevel)
         );
+
+        var category = await GetSingleOrThrowAsync(
+             trackChanges: true,
+             predicate: p =>
+                 p.CompanyId == companyId &&
+                 p.Id == id,
+             ct
+         );
 
         var patchDto = _mapper.Map<PatchCategoryDto>(category);
         var errors = new List<string>();
@@ -144,25 +153,43 @@ public class CategoryService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await ValidateAsync(_patchValidator, patchDto, ct);
+
         if (hasNextLevelPatched && patchDto.HasNextLevel.HasValue)
         {
             var levelNo = category.LevelNo;
             var hasNextLevel = patchDto.HasNextLevel.Value;
 
             _businessRuleValidator.ValidateHasNextLevel(levelNo, hasNextLevel);
+
+            if (!hasNextLevel)
+            {
+                var hasSubCategories = await _categoryRepository.AnyAsync(e =>
+                     e.CompanyId == companyId &&
+                     e.ParentCategoryId == id,
+                     ct
+                 );
+
+                if (hasSubCategories)
+                    throw new CategoryCannotDisableNextLevelWithChildrenException();
+            }    
         }
 
         if (codePatched)
         {
-            if (patchDto.Code is null)
-                throw new InvalidPatchDocumentException("Patch.Category.Code");
-
             var levelNo = category.LevelNo;
-            var code = patchDto.Code;
+            var code = patchDto.Code!;
 
             await _businessRuleValidator.ValidateCategoryCodeLengthAsync(
                 companyId,
                 levelNo,
+                code,
+                ct
+            );
+
+            await _businessRuleValidator.ValidateCategoryCodeUniquenessAsync(
+                companyId,
+                excludedCategoryId: id,
                 code,
                 ct
             );
@@ -211,8 +238,31 @@ public class CategoryService(
         var path = "/" + propertyName.ToLowerInvariant();
 
         return doc.Operations.Any(op =>
+            op.path is not null &&
             op.path.Equals(path, StringComparison.InvariantCultureIgnoreCase)
         );
+    }
+
+    private static void ThrowIfNull(CreateCategoryDto? createDto)
+    {
+        if (createDto is not null)
+            return;
+
+        throw new ValidationException([
+            new ValidationFailure()
+        ]);
+    }
+
+    private static async Task ValidateAsync<T>(
+        IValidator<T> validator,
+        T dto,
+        CancellationToken ct
+    )
+    {
+        var validationResult = await validator.ValidateAsync(dto, ct);
+
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
     }
 }
 

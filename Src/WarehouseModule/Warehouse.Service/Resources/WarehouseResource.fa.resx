@@ -135,6 +135,9 @@
   <data name="Category.Code.NotEmpty" xml:space="preserve">
     <value>کد طبقه‌بندی نمی‌تواند خالی باشد.</value>
   </data>
+  <data name="Category.Code.Duplicate" xml:space="preserve">
+    <value>کد طبقه‌بندی قبلا ثبت شده است.</value>
+  </data>
   <data name="Category.Delete.HasItems" xml:space="preserve">
     <value>طبقه‌بندی به دلیل داشتن کالا قابل حذف نیست.</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="Category.HasNextLevel.NotNull" xml:space="preserve">
     <value>وضعیت داشتن سطح بعدی برای طبقه‌بندی الزامی است.</value>
+  </data>
+  <data name="Category.HasNextLevel.HasSubCategories" xml:space="preserve">
+    <value>طبقه‌بندی به دلیل داشتن زیر-سطح نمی‌تواند به عنوان سطح آخر ثبت شود.</value>
   </data>
   <data name="Category.LevelNo.LastLevelIf6" xml:space="preserve">
     <value>سطح ششم نمی‌تواند زیر-سطح داشته باشد.</value>
