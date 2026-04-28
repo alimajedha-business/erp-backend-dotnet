@@ -2,8 +2,6 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
-using FluentValidation;
-
 using Microsoft.AspNetCore.JsonPatch;
 
 using NGErp.Base.Domain.Exceptions;
@@ -24,8 +22,6 @@ public class CategoryService(
     ICategoryRepository categoryRepository,
     ICategoryLevelConstraintService constraintService,
     IItemRepository itemRepository,
-    IValidator<PatchCategoryDto> patchValidator,
-    IValidator<CreateCategoryDto> postValidator,
     IMapper mapper
 ) : ICategoryService
 {
@@ -44,8 +40,6 @@ public class CategoryService(
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly ICategoryLevelConstraintService _constraintService = constraintService;
     private readonly IItemRepository _itemRepository = itemRepository;
-    private readonly IValidator<PatchCategoryDto> _patchValidator = patchValidator;
-    private readonly IValidator<CreateCategoryDto> _postValidator = postValidator;
 
     public async Task<CategoryDto> CreateAsync(
         Guid companyId,
@@ -53,8 +47,6 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        await _postValidator.ValidateAndThrowAsync(createDto, ct);
-
         await ValidateCategoryInvariantsAsync(
             companyId,
             createDto.ParentCategoryId,
@@ -159,8 +151,6 @@ public class CategoryService(
         {
             throw new InvalidPatchDocumentException(errors);
         }
-
-        await _patchValidator.ValidateAndThrowAsync(patchDto, ct);
 
         ValidateLevelHasNextLevel(category.LevelNo, patchDto.HasNextLevel!.Value);
 
