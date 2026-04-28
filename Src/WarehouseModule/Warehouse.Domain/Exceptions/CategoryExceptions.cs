@@ -61,12 +61,6 @@ public sealed class CategoryLastLevelCannotHaveChildrenException()
     public override string LocalizationKey => "Category.LevelNo.LastLevelIf6";
 }
 
-public sealed class CategoryLevelOutOfRangeException()
-    : BadRequestException()
-{
-    public override string LocalizationKey => "Category.LevelNo.Range";
-}
-
 public sealed class CategoryHasSubCategoriesException()
     : BadRequestException()
 {

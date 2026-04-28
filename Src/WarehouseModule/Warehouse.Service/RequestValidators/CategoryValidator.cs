@@ -17,20 +17,52 @@ public class CreateCategoryValidator : AbstractValidator<CreateCategoryDto>
     {
         _localizer = localizer;
 
+        RuleFor(p => p.Code)
+            .NotEmpty()
+            .WithMessage(_localizer["Category.Code.NotEmpty"].Value)
+            .MaximumLength(64)
+            .WithMessage(_localizer["Category.Code.MaxLength"].Value);
+
         RuleFor(p => p.Title)
             .NotEmpty()
             .WithMessage(_localizer["Category.Title.NotEmpty"].Value)
             .MinimumLength(3)
-            .WithMessage(_localizer["Category.Title.MinLength"].Value);
+            .WithMessage(_localizer["Category.Title.MinLength"].Value)
+            .MaximumLength(200)
+            .WithMessage(_localizer["Category.Title.MaxLength"].Value);
+
+        RuleFor(p => p.LevelNo)
+            .InclusiveBetween(1, 6)
+            .WithMessage(_localizer["Category.LevelNo.Range"].Value);
+    }
+}
+
+public class PatchCategoryValidator : AbstractValidator<PatchCategoryDto>
+{
+    private readonly IStringLocalizer<WarehouseResource> _localizer;
+
+    public PatchCategoryValidator(
+        IStringLocalizer<WarehouseResource> localizer
+    )
+    {
+        _localizer = localizer;
+
+        RuleFor(p => p.Code)
+            .NotEmpty()
+            .WithMessage(_localizer["Category.Code.NotEmpty"].Value)
+            .MaximumLength(64)
+            .WithMessage(_localizer["Category.Code.MaxLength"].Value);
+
+        RuleFor(p => p.Title)
+            .NotEmpty()
+            .WithMessage(_localizer["Category.Title.NotEmpty"].Value)
+            .MinimumLength(3)
+            .WithMessage(_localizer["Category.Title.MinLength"].Value)
+            .MaximumLength(200)
+            .WithMessage(_localizer["Category.Title.MaxLength"].Value);
 
         RuleFor(p => p.HasNextLevel)
-            .Equal(true)
-            .When(p => p.LevelNo == 1)
-            .WithMessage(_localizer["Category.LevelNo.NotLastLevelIf1"].Value);
-
-        RuleFor(p => p.HasNextLevel)
-            .Equal(false)
-            .When(p => p.LevelNo == 6)
-            .WithMessage(_localizer["Category.LevelNo.LastLevelIf6"].Value);
+            .NotNull()
+            .WithMessage(_localizer["Category.HasNextLevel.NotNull"].Value);
     }
 }
