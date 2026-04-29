@@ -124,6 +124,7 @@ public class ItemPatchExample :
     public JsonPatchDocument<PatchItemDto> GetExamples()
     {
         var patchDoc = new JsonPatchDocument<PatchItemDto>();
+
         patchDoc.Replace(x => x.Code, "100501");
         patchDoc.Replace(x => x.Title, "New Item Title");
         patchDoc.Replace(x => x.TitleInEnglish, "New Item Title in English");
@@ -132,6 +133,41 @@ public class ItemPatchExample :
         patchDoc.Replace(x => x.IsActive, false);
         patchDoc.Replace(x => x.PrimaryUnitOfMeasurementId, new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"));
         patchDoc.Replace(x => x.ItemTypeId, new Guid("3f148ef5-bf43-4d43-8e3a-b25decc7d092"));
+
+        patchDoc.Replace(
+            x => x.SecondaryUnitOfMeasurementIds,
+            [
+                new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"),
+                new Guid("94e9eb2e-ab06-4ac6-92a1-fafa5c765d37")
+            ]
+        );
+
+        patchDoc.Replace(
+            x => x.AttributeIds,
+            [
+                new Guid("47f6daae-73c0-4d04-aa71-2629056acb86"),
+                new Guid("87d8c665-2d17-44a5-ad91-1543dcef77c1")
+            ]
+        );
+
+        patchDoc.Replace(
+            x => x.ItemWarehouses,
+            [
+                new CreateItemWarehouseDto
+                {
+                    WarehouseId = new Guid("47f6daae-73c0-4d04-aa71-2629056acb86"),
+                    ReorderPoint = 1200,
+                    CriticalPoint = 600,
+                    ReorderQuantity = 3500,
+                    MaxStockLevel = 11000,
+                    LocationIds =
+                    [
+                        new Guid("b634a73b-49f9-4b92-95d9-4aac55aff72e"),
+                        new Guid("b634a73b-49f9-4b92-95d9-4aac55aff72f")
+                    ]
+                }
+            ]
+        );
 
         return patchDoc;
     }
