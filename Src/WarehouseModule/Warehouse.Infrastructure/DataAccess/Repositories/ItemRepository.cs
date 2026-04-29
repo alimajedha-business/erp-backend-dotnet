@@ -31,7 +31,7 @@ public class ItemRepository(MainDbContext context) :
             .Include(i => i.PrimaryUnitOfMeasurement)
             .Include(i => i.ItemAttributes)
                 .ThenInclude(i => i.Attribute)
-            .Include(i => i.ItemUnitOfMeasurements)
+            .Include(i => i.ItemUnitOfMeasurements.OrderBy(o => o.UnitOrder))
                 .ThenInclude(i => i.UnitOfMeasurement)
             .Include(i => i.ItemWarehouses)
                 .ThenInclude(i => i.Warehouse)

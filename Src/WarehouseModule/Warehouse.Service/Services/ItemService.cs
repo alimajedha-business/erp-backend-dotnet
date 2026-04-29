@@ -275,7 +275,26 @@ public class ItemService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        var patchedPaths = patchDocument.Operations
+            .Select(x => x.path.Trim('/').Split('/')[0])
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         _mapper.Map(patchDto, item);
+
+        if (patchedPaths.Contains(nameof(PatchItemDto.AttributeIds)))
+        {
+            SyncItemAttributes(item, patchDto.AttributeIds);
+        }
+
+        if (patchedPaths.Contains(nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)))
+        {
+            SyncSecondaryUnits(item, patchDto.SecondaryUnitOfMeasurementIds);
+        }
+
+        if (patchedPaths.Contains(nameof(PatchItemDto.ItemWarehouses)))
+        {
+            SyncItemWarehouses(item, patchDto.ItemWarehouses);
+        }
 
         await _itemRepository.SaveChangesAsync(ct);
         return _mapper.Map<ItemDto>(item);
@@ -335,5 +354,213 @@ public class ItemService(
         cache[locationId] = path;
         visiting.Remove(locationId);
         return path;
+    }
+
+    private static void SyncItemAttributes(
+        Item item,
+        IEnumerable<Guid>? requestedAttributeIds
+    )
+    {
+        if (requestedAttributeIds is null)
+            return;
+
+        var requested = requestedAttributeIds
+            .Distinct()
+            .ToHashSet();
+
+        var existing = item.ItemAttributes
+            .Select(x => x.AttributeId)
+            .ToHashSet();
+
+        var toRemove = item.ItemAttributes
+            .Where(x => !requested.Contains(x.AttributeId))
+            .ToList();
+
+        foreach (var relation in toRemove)
+        {
+            item.ItemAttributes.Remove(relation);
+        }
+
+        foreach (var attributeId in requested.Except(existing))
+        {
+            item.ItemAttributes.Add(new ItemAttribute
+            {
+                AttributeId = attributeId
+            });
+        }
+    }
+
+    private static void SyncSecondaryUnits(
+        Item item,
+        IEnumerable<Guid>? requestedUomIds
+    )
+    {
+        if (requestedUomIds is null)
+            return;
+
+        var requested = requestedUomIds
+            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
+            .Distinct()
+            .ToList();
+
+        var requestedSet = requested.ToHashSet();
+
+        var toRemove = item.ItemUnitOfMeasurements
+            .Where(x => !requestedSet.Contains(x.UnitOfMeasurementId))
+            .ToList();
+
+        foreach (var relation in toRemove)
+        {
+            item.ItemUnitOfMeasurements.Remove(relation);
+        }
+
+        var existingByUomId = item.ItemUnitOfMeasurements
+            .ToDictionary(x => x.UnitOfMeasurementId);
+
+        for (var index = 0; index < requested.Count; index++)
+        {
+            var uomId = requested[index];
+            var unitOrder = index + 2;
+
+            if (existingByUomId.TryGetValue(uomId, out var existing))
+            {
+                if (existing.UnitOrder != unitOrder)
+                {
+                    existing.UnitOrder = unitOrder;
+                }
+
+                continue;
+            }
+
+            item.ItemUnitOfMeasurements.Add(new ItemUnitOfMeasurement
+            {
+                UnitOfMeasurementId = uomId,
+                UnitOrder = unitOrder
+            });
+        }
+    }
+
+    private void SyncItemWarehouses(
+        Item item,
+        IEnumerable<CreateItemWarehouseDto>? requestedWarehouses
+    )
+    {
+        if (requestedWarehouses is null)
+            return;
+
+        var requested = requestedWarehouses.ToList();
+
+        var duplicateWarehouseIds = requested
+            .GroupBy(x => x.WarehouseId)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicateWarehouseIds.Count != 0)
+        {
+            throw new DbUpdateBadRequestException(
+                _localizer["Item.Warehouse.Duplicate"].Value
+            );
+        }
+
+        var requestedWarehouseIds = requested
+            .Select(x => x.WarehouseId)
+            .ToHashSet();
+
+        var toRemove = item.ItemWarehouses
+            .Where(x => !requestedWarehouseIds.Contains(x.WarehouseId))
+            .ToList();
+
+        foreach (var warehouse in toRemove)
+        {
+            item.ItemWarehouses.Remove(warehouse);
+        }
+
+        var existingByWarehouseId = item.ItemWarehouses
+            .ToDictionary(x => x.WarehouseId);
+
+        foreach (var requestedWarehouse in requested)
+        {
+            if (!existingByWarehouseId.TryGetValue(requestedWarehouse.WarehouseId, out var existingWarehouse))
+            {
+                item.ItemWarehouses.Add(new ItemWarehouse
+                {
+                    WarehouseId = requestedWarehouse.WarehouseId,
+                    ReorderPoint = requestedWarehouse.ReorderPoint,
+                    CriticalPoint = requestedWarehouse.CriticalPoint,
+                    ReorderQuantity = requestedWarehouse.ReorderQuantity,
+                    MaxStockLevel = requestedWarehouse.MaxStockLevel,
+                    ItemWarehouseLocations = requestedWarehouse.LocationIds
+                        .Distinct()
+                        .Select(locationId => new ItemWarehouseLocation
+                        {
+                            WarehouseLocationId = locationId
+                        })
+                        .ToList()
+                });
+
+                continue;
+            }
+
+            UpdateWarehouseScalarValues(existingWarehouse, requestedWarehouse);
+            SyncWarehouseLocations(existingWarehouse, requestedWarehouse.LocationIds);
+        }
+    }
+
+    private static void UpdateWarehouseScalarValues(
+        ItemWarehouse existing,
+        CreateItemWarehouseDto requested
+    )
+    {
+        if (existing.ReorderPoint != requested.ReorderPoint)
+        {
+            existing.ReorderPoint = requested.ReorderPoint;
+        }
+
+        if (existing.CriticalPoint != requested.CriticalPoint)
+        {
+            existing.CriticalPoint = requested.CriticalPoint;
+        }
+
+        if (existing.ReorderQuantity != requested.ReorderQuantity)
+        {
+            existing.ReorderQuantity = requested.ReorderQuantity;
+        }
+
+        if (existing.MaxStockLevel != requested.MaxStockLevel)
+        {
+            existing.MaxStockLevel = requested.MaxStockLevel;
+        }
+    }
+
+    private static void SyncWarehouseLocations(
+        ItemWarehouse warehouse,
+        IEnumerable<Guid> requestedLocationIds
+    )
+    {
+        var requested = requestedLocationIds
+            .Distinct()
+            .ToHashSet();
+
+        var existing = warehouse.ItemWarehouseLocations
+            .Select(x => x.WarehouseLocationId)
+            .ToHashSet();
+
+        var toRemove = warehouse.ItemWarehouseLocations
+            .Where(x => !requested.Contains(x.WarehouseLocationId))
+            .ToList();
+
+        foreach (var relation in toRemove)
+        {
+            warehouse.ItemWarehouseLocations.Remove(relation);
+        }
+
+        foreach (var locationId in requested.Except(existing))
+        {
+            warehouse.ItemWarehouseLocations.Add(new ItemWarehouseLocation
+            {
+                WarehouseLocationId = locationId
+            });
+        }
     }
 }
