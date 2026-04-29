@@ -16,12 +16,10 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/attributes")]
 public class AttributeController(
-    IAttributeService attributeService,
-    IAttributeEnumValueService attributeEnumValueService
+    IAttributeService attributeService
 ) : ControllerBase
 {
     private readonly IAttributeService _attributeService = attributeService;
-    private readonly IAttributeEnumValueService _attributeEnumValueService = attributeEnumValueService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -136,86 +134,4 @@ public class AttributeController(
         await _attributeService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
-
-    #region EnumValue
-
-    [HttpPost("{attributeId:guid}/enums")]
-    public async Task<IActionResult> CreateAttributeEnumValue(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid attributeId,
-        [FromBody] CreateAttributeEnumValueDto createDto,
-        CancellationToken ct
-    )
-    {
-        var dto = await _attributeEnumValueService.CreateAsync(
-            attributeId,
-            createDto,
-            ct
-        );
-
-        return CreatedAtAction(
-            nameof(GetAttributeEnumValueById),
-            new { companyId, attributeId, id = dto.Id },
-            dto
-        );
-    }
-
-    [HttpGet("{attributeId:guid}/enums/{id:guid}")]
-    public async Task<IActionResult> GetAttributeEnumValueById(
-        [FromRoute] Guid attributeId,
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        var enumsDto = await _attributeEnumValueService.GetByIdAsync(
-            attributeId,
-            id,
-            trackChanges: false,
-            ct
-        );
-
-        return Ok(enumsDto);
-    }
-
-    [HttpGet("{attributeId:guid}/enums/new-code")]
-    public async Task<IActionResult> GetEnumNextCode(
-        [FromRoute] Guid attributeId,
-        CancellationToken ct
-    )
-    {
-        var code = await _attributeEnumValueService.GetNextCode(attributeId, ct);
-        return Ok(code);
-    }
-
-    [HttpPatch("{attributeId:guid}/enums/{id:guid}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> PatchCategoryAttributeRule(
-        [FromRoute] Guid attributeId,
-        [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchAttributeEnumValueDto> patchDocument,
-        CancellationToken ct
-    )
-    {
-        var dto = await _attributeEnumValueService.PatchAsync(
-            attributeId,
-            id,
-            patchDocument,
-            ct
-        );
-
-        return Ok(dto);
-    }
-
-    [HttpDelete("{attributeId:guid}/enums/{id:guid}")]
-    public async Task<IActionResult> DeleteCategoryAttributeRule(
-        [FromRoute] Guid attributeId,
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        await _attributeEnumValueService.DeleteAsync(attributeId, id, ct);
-        return NoContent();
-    }
-
-    #endregion
 }
