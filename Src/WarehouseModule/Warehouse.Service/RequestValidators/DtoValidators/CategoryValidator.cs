@@ -51,18 +51,18 @@ public class PatchCategoryValidator : AbstractValidator<PatchCategoryDto>
 
         RuleFor(p => p.Code)
             .NotEmpty()
-            .WithMessage(localizer["Category.Code.NotEmpty"].Value)
+            .WithMessage(_localizer["Category.Code.NotEmpty"].Value)
             .MaximumLength(64)
-            .WithMessage(localizer["Category.Code.MaxLength"].Value)
+            .WithMessage(_localizer["Category.Code.MaxLength"].Value)
             .When(p => p.Code is not null);
 
         RuleFor(p => p.Title)
             .NotEmpty()
-            .WithMessage(localizer["Category.Title.NotEmpty"].Value)
+            .WithMessage(_localizer["Category.Title.NotEmpty"].Value)
             .MinimumLength(3)
-            .WithMessage(localizer["Category.Title.MinLength"].Value)
+            .WithMessage(_localizer["Category.Title.MinLength"].Value)
             .MaximumLength(200)
-            .WithMessage(localizer["Category.Title.MaxLength"].Value)
+            .WithMessage(_localizer["Category.Title.MaxLength"].Value)
             .When(p => p.Title is not null);
     }
 }
