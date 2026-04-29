@@ -15,6 +15,8 @@ public interface IEmploymentGroupRepository : IRepositoryWithCompany<EmploymentG
         CancellationToken ct
         );
 
+    void RemoveSpecification(EmploymentGroupSpecification specification);
+
     Task DeleteAsync(
         EmploymentGroup entity,
         CancellationToken ct

@@ -3,11 +3,24 @@
 using NGErp.Base.Domain.Entities;
 
 namespace NGErp.General.Domain.Entities;
+public enum MilitaryStatusType 
+    {
+       NotInclude = 1,
+       Included = 2,
+       Exempt = 3,
+       Completed = 4,
+       StudentExeption = 5,
+       Absent = 6,
+       InProgress = 7,
+    }
+
+
 [Table("military_service_statuses",Schema ="General")]
 public class MilitaryServiceStatus 
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
+    public MilitaryStatusType Type { get; set; }
 
     //public void Map(EntityTypeBuilder<MilitaryServiceStatus> builder)
     //{

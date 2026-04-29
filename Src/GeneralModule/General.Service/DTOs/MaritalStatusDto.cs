@@ -25,3 +25,4 @@ public class PatchMaritalStatusDto
     public MaritalStatusType? Type { get; set; }
     public string? Title { get; set; }
 }
+

@@ -25,6 +25,7 @@ public class EmploymentGroupService(
     ICompanyService companyService
     ) : IEmploymentGroupService
 {
+    private static readonly DateOnly EmptyValidFromFallback = new(1921, 3, 21);
     private readonly string _key = "EmploymentGroup";
     private readonly IMapper _mapper = mapper;
 
@@ -57,7 +58,7 @@ public class EmploymentGroupService(
         {
             MonthType = specDto.MonthType,
             WorkMinutes = specDto.WorkMinutes,
-            ValidFrom = specDto.ValidFrom
+            ValidFrom = NormalizeEmptyValidFrom(specDto.ValidFrom)
         };
 
         employmentGroup.Specifications.Add(specification);
@@ -88,7 +89,7 @@ public class EmploymentGroupService(
         var entity = await _repo.GetWithSpecificationsAsync(companyId, id, ct);
 
         if (entity == null)
-            throw new NotFoundException("Employment group not found.");
+            throw new NotFoundException(_localizer[_key].Value);
 
         // 2. Check name uniqueness
         var nameExists = await _repo.AnyAsync(e => e.CompanyId == companyId
@@ -97,21 +98,25 @@ public class EmploymentGroupService(
         );
 
         if (nameExists)
-            throw new NotImplementedException("نام گروه استخدامی در شرکت باید یکتا باشد");
+            throw new InvalidOperationException("نام گروه استخدامی در شرکت باید یکتا باشد");
 
         // 3. Update root values
         entity.Name = updateDto.Name;
 
         // 4. Process specifications based on OperationEnum
-        foreach (var specDto in updateDto.Specifications.Where(s => s.OperationType == OperationType.Delete))
+        foreach (var specDto in updateDto.Specifications.Where(
+            s => s.OperationType == SpecificationOperationType.Delete))
         {
             HandleDeleteSpecification(entity, specDto);
         }
 
-        foreach (var specDto in updateDto.Specifications.Where(s => s.OperationType == OperationType.Create))
+        foreach (var specDto in updateDto.Specifications.Where(
+            s => s.OperationType == SpecificationOperationType.Create))
         {
             HandleCreateSpecification(entity, specDto);
         }
+
+        NormalizeSpecificationRanges(entity);
 
         // 5. Save changes once
 
@@ -124,6 +129,7 @@ public class EmploymentGroupService(
             Id = entity.Id,
             Name = entity.Name,
             Specifications = entity.Specifications
+            .OrderBy(s => s.ValidFrom)
             .Select(s => _mapper.Map<EmploymentGroupSpecificationDto>(s))
             .ToList()
         };
@@ -148,23 +154,9 @@ public class EmploymentGroupService(
         EmploymentGroup entity,
         UpdateEmploymentGroupSpecificationDto dto)
     {
-        // 1) Sort existing specs by ValidFrom
-        var orderedSpecs = entity.Specifications
-            .OrderBy(s => s.ValidFrom)
-            .ToList();
+        if (entity.Specifications.Any(x => x.ValidFrom == dto.ValidFrom))
+            throw new InvalidOperationException("برای هر تاریخ شروع فقط یک مشخصات گروه استخدامی مجاز است");
 
-        // 2) Find previous spec (the one immediately BEFORE new.ValidFrom)
-        var previousSpec = orderedSpecs
-            .LastOrDefault(s => s.ValidFrom < dto.ValidFrom);
-
-        // 3) If rules say new spec must follow previous one
-        // Set previous.ValidTo = new.ValidFrom - 1 day
-        if (previousSpec != null)
-        {
-            previousSpec.ValidTo = dto.ValidFrom.AddDays(-1);
-        }
-
-        // 4) Create the new specification
         var newSpec = new EmploymentGroupSpecification
 
         {
@@ -182,28 +174,46 @@ public class EmploymentGroupService(
         )
     {
         // TODO:check EmploymentGroup in detail entities and if has duration overlap prevent to delete
+        if (!dto.Id.HasValue)
+            throw new InvalidOperationException("Specification id is required for delete operation.");
+
         var existing = entity.Specifications.FirstOrDefault(
-            x => x.Id == dto.Id && x.EmploymentGroupId == entity.Id);
+            x => x.Id == dto.Id.Value && x.EmploymentGroupId == entity.Id);
         if (existing == null)
             throw new NotFoundException("Specification to delete not found.");
+
+        _repo.RemoveSpecification(existing);
         entity.Specifications.Remove(existing);
     }
 
-    //async Task<EmploymentGroupDetailDto?> IEmploymentGroupService.GetByIdAsync(
-    //     Guid companyId,
-    //     Guid id,
-    //     CancellationToken ct
-    //     )
-    //{
-    //    await EnsureCompanyAsync(companyId, ct);
-    //    var entity = await _employmentGroupRepository
-    //   .Find(companyId, e => e.Id == id)
-    //   .AsNoTracking()
-    //   .ProjectTo<EmploymentGroupDetailDto>(_mapper.ConfigurationProvider)
-    //   .FirstOrDefaultAsync(ct);
+    private static DateOnly NormalizeEmptyValidFrom(DateOnly validFrom)
+    {
+        // ASP.NET binds an empty DateOnly input to its default value.
+        return validFrom == DateOnly.MinValue ? EmptyValidFromFallback : validFrom;
+    }
 
-    //    return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    //}
+    private static void NormalizeSpecificationRanges(EmploymentGroup entity)
+    {
+        var orderedSpecifications = entity.Specifications
+            .OrderBy(x => x.ValidFrom)
+            .ToList();
+
+        if (orderedSpecifications.Count == 0)
+            throw new InvalidOperationException("حداقل یک مشخصات برای گروه استخدامی الزامی است");
+
+        for (var i = 0; i < orderedSpecifications.Count - 1; i++)
+        {
+            var current = orderedSpecifications[i];
+            var next = orderedSpecifications[i + 1];
+
+            if (current.ValidFrom >= next.ValidFrom)
+                throw new InvalidOperationException("تاریخ شروع مشخصات گروه استخدامی باید یکتا و صعودی باشد");
+
+            current.ValidTo = next.ValidFrom.AddDays(-1);
+        }
+
+        orderedSpecifications[^1].ValidTo = null;
+    }
 
     public async Task<ListResponseModel<EmploymentGroupDto>> GetFilteredAsync(
       Guid companyId,
@@ -238,16 +248,5 @@ public class EmploymentGroupService(
         // TODO: Check if EmploymentGroup is used
 
         await _repo.DeleteAsync(employmentGroup, ct);
-    }
-
-    private async Task<EmploymentGroup> GetByIdOrThrowAsync(
-    Guid companyId,
-    Guid id,
-    bool trackChanges = false,
-    CancellationToken ct = default
-)
-    {
-        var entity = await _repo.GetByIdAsync(id, trackChanges, ct);
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

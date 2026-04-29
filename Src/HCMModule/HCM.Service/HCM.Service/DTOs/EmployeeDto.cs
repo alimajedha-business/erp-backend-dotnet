@@ -2,9 +2,19 @@
 using NGErp.General.Service.DTOs;
 namespace NGErp.HCM.Service.DTOs;
 
+
+public record EmployeeBaseDto
+(
+    Guid Id ,
+    PersonBaseDto Person,
+    string Code 
+);
+
+
 public record EmployeeDto(
     Guid Id,
     Guid PersonId,
+    PersonBaseDto Person,
     string? Code,
     string? CaseNumber,
     Guid? MilitaryServiceStatusId,

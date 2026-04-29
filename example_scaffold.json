@@ -1,0 +1,40 @@
+{
+  "entity": "EmployeeWorkExperience",
+  "schema": "HCM",
+  "module": "HCM",
+  "route": "employee-work-experiences",
+  "baseClass": "BaseEntity",
+  "status": false,
+  "fields": [
+    {
+      "name": "EmployeeId",
+      "type": "Guid",
+      "required": true,
+      "relation": "Employee",
+      "index": true
+    },
+    {
+      "name": "CompanyName",
+      "type": "string",
+      "required": true,
+      "maxLength": 200,
+      "minLength": 2
+    },
+    {
+      "name": "Position",
+      "type": "string",
+      "required": true,
+      "maxLength": 150,
+      "minLength": 2
+    },
+    {
+      "name": "StartDate",
+      "type": "DateTime",
+      "required": true
+    },
+    {
+      "name": "EndDate",
+      "type": "DateTime?"
+    }
+  ]
+}

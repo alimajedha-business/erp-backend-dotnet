@@ -11,7 +11,8 @@ namespace NGErp.HCM.Domain.Entities
     public enum MaritalStatusType
     {
         Single = 1,
-        Married = 2
+        Married = 2,
+        HeadOfHouseHold = 3
     }
 
     [Table("marital_statuses",Schema ="General")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.Repository.Contracts;
@@ -24,7 +25,22 @@ public class EmployeeRepository(MainDbContext context) :
             .Where(e => e.Id == id)
             .Include(e => e.MilitaryServiceStatus)
             .Include(e => e.MaritalStatus)
+            .Include(e => e.Person)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
+
+    public override IQueryable<Employee> GetFiltered(
+       Guid companyId, RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        return _dbSet
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Include(e => e.MaritalStatus)
+            .Include(e => e.MilitaryServiceStatus)
+            .Include(e => e.Person)
+            .Filter(requestAdvancedFilters);
+    }
+
 
 }

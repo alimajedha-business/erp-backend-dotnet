@@ -1,22 +1,28 @@
-﻿namespace NGErp.General.Service.DTOs;
+﻿using NGErp.General.Domain.Entities;
+
+namespace NGErp.General.Service.DTOs;
 
 public record MilitaryServiceStatusDto(
     Guid Id,
-    string Name
+    string Title,
+    MilitaryStatusType Type
 );
 
 public record MilitaryServiceStatusListDto(
     Guid Id,
-    string Name
+    string Title,
+    MilitaryStatusType Type
 );
 
 public class CreateMilitaryServiceStatusDto
 {
-    public required string Name { get; set; }
+    public required string Title { get; set; }
+    public required MilitaryStatusType Type { get; set; }
 }
 
 public class UpdateMilitaryServiceStatusDto
 {
     public Guid Id { get; set; }
-    public required string Name { get; set; }
+    public required string Title { get; set; }
+    public required MilitaryStatusType Type { get; set; }
 }

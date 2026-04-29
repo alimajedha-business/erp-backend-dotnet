@@ -30,9 +30,17 @@ public class MappingProfile : Profile
         CreateMap<OrganizationNode, OrganizationNodeTreeDto>().ReverseMap();
         
         CreateMap<Employee, EmployeeDto>().ReverseMap();
+        CreateMap<Employee, EmployeeBaseDto>().ReverseMap();
         CreateMap<Employee, CreateEmployeeDto>().ReverseMap();
         CreateMap<Employee, PatchEmployeeDto>().ReverseMap();
 
+        CreateMap<EmployeeEducation, EmployeeEducationDto>().ReverseMap();
+        CreateMap<CreateEmployeeEducationDto, EmployeeEducation>();
+        CreateMap<EmployeeEducation, PatchEmployeeEducationDto>().ReverseMap();
+
+        CreateMap<EmployeeWorkExperience, EmployeeWorkExperienceDto>().ReverseMap();
+        CreateMap<CreateEmployeeWorkExperienceDto, EmployeeWorkExperience>();
+        CreateMap<EmployeeWorkExperience, PatchEmployeeWorkExperienceDto>().ReverseMap();
 
     }
 }

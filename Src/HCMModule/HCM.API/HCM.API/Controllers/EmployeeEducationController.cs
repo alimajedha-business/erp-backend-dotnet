@@ -1,5 +1,6 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
@@ -13,45 +14,41 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employment-groups")]
-public class EmploymentGroupController(
-    IEmploymentGroupService employmentGroupService
-    ) : ControllerBase
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employee-educations")]
+public class EmployeeEducationController(
+    IEmployeeEducationService employeeEducationService
+) : ControllerBase
 {
-    private readonly IEmploymentGroupService _employmentGroupService = employmentGroupService;
+    private readonly IEmployeeEducationService _employeeEducationService = employeeEducationService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
-    [FromRoute] Guid companyId,
-    [FromBody] CreateEmploymentGroupDto createDto,
-    CancellationToken ct
+        [FromRoute] Guid companyId,
+        [FromBody] CreateEmployeeEducationDto createDto,
+        CancellationToken ct
     )
     {
-        var dto = await _employmentGroupService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
+        var dto = await _employeeEducationService.CreateAsync(createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new {companyId, id = dto.Id },
             dto
         );
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
+        [FromRoute] Guid companyid,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
-        var dto = await _employmentGroupService.GetByIdAsync(
-            companyId,
+        var dto = await _employeeEducationService.GetByIdAsync(
             id,
+            trackChanges: true,
             ct
         );
 
@@ -61,14 +58,12 @@ public class EmploymentGroupController(
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] EmploymentGroupParameters parameters,
+        [FromQuery] EmployeeEducationParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
-        )
+    )
     {
-        var result = await _employmentGroupService.GetFilteredAsync(
-            companyId,
+        var result = await _employeeEducationService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct
@@ -79,28 +74,25 @@ public class EmploymentGroupController(
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
-        await _employmentGroupService.DeleteAsync(companyId, id, ct);
+        await _employeeEducationService.DeleteAsync(id, ct);
         return NoContent();
     }
 
-    [HttpPut("{id:guid}")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Put(
-        [FromRoute] Guid companyId,
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
         [FromRoute] Guid id,
-        [FromBody] UpdateEmploymentGroupDto updateDto,
+        [FromBody] JsonPatchDocument<PatchEmployeeEducationDto> patchDocument,
         CancellationToken ct
-        )
+    )
     {
-        var dto = await _employmentGroupService.UpdateAsync(
-            companyId,
+        var dto = await _employeeEducationService.PatchAsync(
             id,
-            updateDto,
+            patchDocument,
             ct
         );
 
