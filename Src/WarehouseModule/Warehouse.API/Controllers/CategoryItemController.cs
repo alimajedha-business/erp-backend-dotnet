@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -19,66 +20,56 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
-public class CategoryController(
-    ICategoryService categoryService,
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories/{categoryId:guid}/items")]
+public class CategoryItemController(
+    IItemService itemService,
     IExcelExportService excelExportService
 ) : ControllerBase
 {
-    private readonly ICategoryService _categoryService = categoryService;
+    private readonly IItemService _itemService = itemService;
     private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [SwaggerRequestExample(typeof(CreateCategoryDto), typeof(CreateCategoryExample))]
+    [SwaggerRequestExample(typeof(CreateItemDto), typeof(CreateItemExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateCategoryDto createDto,
+        [FromRoute] Guid categoryId,
+        [FromBody] CreateItemDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.CreateAsync(
+        var dto = await _itemService.CreateAsync(
             companyId,
+            categoryId,
             createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { companyId, categoryId, id = dto.Id },
             dto
         );
     }
 
-    [HttpGet("filter-by-q")]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _categoryService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
     [HttpPost("list")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
-    public async Task<IActionResult> GetAdvancedSearch(
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
+    [ProducesResponseType(typeof(ListResponseModel<ItemListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetItemsListExample))]
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] CategoryParameters parameters,
+        [FromRoute] Guid categoryId,
+        [FromQuery] ItemParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _categoryService.GetFilteredAsync(
+        var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
+            categoryId,
             parameters,
             filterNodeDto,
             ct
@@ -89,21 +80,23 @@ public class CategoryController(
 
     [HttpPost("excel")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromBody] FilterNodeDto? filterNodeDto,
         [FromQuery] string? columns,
         CancellationToken ct
     )
     {
-        var parameters = new CategoryParameters
+        var parameters = new ItemParameters
         {
             Paginated = false,
         };
 
-        var result = await _categoryService.GetFilteredAsync(
+        var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
+            categoryId,
             parameters,
             filterNodeDto,
             ct
@@ -123,21 +116,22 @@ public class CategoryController(
             excludedColumns
         );
 
-        Response.Headers.Append("Content-Disposition", "attachment; filename=\"categories.xlsx\"");
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"items.xlsx\"");
         return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.GetByIdAsync(
+        var dto = await _itemService.GetByIdAsync(
             companyId,
+            categoryId,
             id,
-            trackChanges: false,
             ct
         );
 
@@ -147,18 +141,20 @@ public class CategoryController(
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
-        typeof(JsonPatchDocument<PatchCategoryDto>),
-        typeof(CategoryPatchExample)
+        typeof(JsonPatchDocument<PatchItemDto>),
+        typeof(ItemPatchExample)
     )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchCategoryDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchItemDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _categoryService.PatchAsync(
+        var dto = await _itemService.PatchAsync(
             companyId,
+            categoryId,
             id,
             patchDocument,
             ct
@@ -170,11 +166,12 @@ public class CategoryController(
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _categoryService.DeleteAsync(companyId, id, ct);
+        await _itemService.DeleteAsync(companyId, categoryId, id, ct);
         return NoContent();
     }
 }
