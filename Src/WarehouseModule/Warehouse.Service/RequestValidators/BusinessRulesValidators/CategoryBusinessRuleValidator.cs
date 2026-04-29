@@ -1,3 +1,4 @@
+using NGErp.Base.Domain.Exceptions;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -56,7 +57,7 @@ public class CategoryBusinessRuleValidator(
             hasInvalidDirection ||
             !_allowedOrderFields.Contains(orderParts[0])
         )
-            throw new CategoryInvalidOrderingException(orderBy);
+            throw new InvalidOrderingException(orderBy);
     }
 
     public async Task ValidateCreateAsync(

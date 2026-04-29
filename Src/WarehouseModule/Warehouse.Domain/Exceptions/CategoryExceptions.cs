@@ -89,10 +89,3 @@ public sealed class CategoryHasItemsException()
 {
     public override string LocalizationKey => "Category.Delete.HasItems";
 }
-
-public sealed class CategoryInvalidOrderingException(string orderBy)
-    : BadRequestException(orderBy)
-{
-    public string OrderBy { get; } = orderBy;
-    public override string LocalizationKey => "Category.Ordering.Invalid";
-}
