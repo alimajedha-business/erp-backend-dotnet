@@ -634,9 +634,8 @@ public class ItemService(
 
         if (duplicateWarehouseIds.Count != 0)
         {
-            throw new DbUpdateBadRequestException(
-                _localizer["Item.Warehouse.Duplicate"].Value
-            );
+            // TODO: throw proper exception
+            throw new Exception();
         }
 
         var requestedWarehouseIds = requested
