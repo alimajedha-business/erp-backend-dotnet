@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IEmployeeEducationRepository, EmployeeEducationRepository>();
         services.AddScoped<IEmployeeWorkExperienceRepository, EmployeeWorkExperienceRepository>();
+        services.AddScoped<IJobCategoryRepository, JobCategoryRepository>();
 
         return services;
     }

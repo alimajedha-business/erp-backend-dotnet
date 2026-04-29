@@ -66,6 +66,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<OrganizationNode> OrganizationNodes { get; set; }
         public virtual DbSet<EmploymentGroup> EmploymentGroups { get; set; }
         public virtual DbSet<EmploymentGroupSpecification> EmploymentGroupSpecifications { get; set; }
+        public virtual DbSet<JobCategory> JobCategories { get; set; }
 
         #endregion HCM
 

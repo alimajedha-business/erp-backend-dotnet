@@ -28,7 +28,7 @@ public class MappingProfile : Profile
         CreateMap<CreateEmploymentGroupDto, EmploymentGroup>();
         CreateMap<EmploymentGroupSpecification, EmploymentGroupSpecificationDto>();
         CreateMap<OrganizationNode, OrganizationNodeTreeDto>().ReverseMap();
-        
+
         CreateMap<Employee, EmployeeDto>().ReverseMap();
         CreateMap<Employee, EmployeeBaseDto>().ReverseMap();
         CreateMap<Employee, CreateEmployeeDto>().ReverseMap();
@@ -42,5 +42,8 @@ public class MappingProfile : Profile
         CreateMap<CreateEmployeeWorkExperienceDto, EmployeeWorkExperience>();
         CreateMap<EmployeeWorkExperience, PatchEmployeeWorkExperienceDto>().ReverseMap();
 
+        CreateMap<JobCategory, JobCategoryDto>().ReverseMap();
+        CreateMap<CreateJobCategoryDto, JobCategory>();
+        CreateMap<PatchJobCategoryDto, JobCategory>();
     }
 }
