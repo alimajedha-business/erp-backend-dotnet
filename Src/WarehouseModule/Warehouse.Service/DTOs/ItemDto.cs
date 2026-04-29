@@ -1,4 +1,6 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+﻿using System.Text.Json.Serialization;
+
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record ItemDto(
     Guid Id,
@@ -49,6 +51,17 @@ public class CreateItemDto
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
     public List<CreateItemUnitOfMeasurementConversionDto> ItemUnitOfMeasurementConversions { get; set; } = [];
+
+    [JsonPropertyName("unitConversions")]
+    public List<CreateItemUnitOfMeasurementConversionDto>? ItemUnitOfMeasurementConversionsAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                ItemUnitOfMeasurementConversions = value;
+        }
+    }
 }
 
 public class PatchItemDto
