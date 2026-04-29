@@ -1,4 +1,4 @@
-using NGErp.Base.Domain.Exceptions;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -30,34 +30,7 @@ public class CategoryBusinessRuleValidator(
 
     public void ValidateParameters(CategoryParameters parameters)
     {
-        if (string.IsNullOrWhiteSpace(parameters.OrderBy))
-            return;
-
-        var orderBy = parameters.OrderBy.Trim();
-        var hasDescendingPrefix = orderBy.StartsWith('-');
-        var normalizedOrderBy = hasDescendingPrefix
-            ? orderBy.TrimStart('-').Trim()
-            : orderBy;
-
-        var orderParts = normalizedOrderBy.Split(
-            ' ',
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-        );
-
-        var hasInvalidDirection = orderParts.Length > 2 ||
-            (hasDescendingPrefix && orderParts.Length > 1) ||
-            (
-                orderParts is [_, var direction] &&
-                !direction.Equals("asc", StringComparison.OrdinalIgnoreCase) &&
-                !direction.Equals("desc", StringComparison.OrdinalIgnoreCase)
-            );
-
-        if (
-            orderParts.Length == 0 ||
-            hasInvalidDirection ||
-            !_allowedOrderFields.Contains(orderParts[0])
-        )
-            throw new InvalidOrderingException(orderBy);
+        RequestParametersValidator.ValidateOrdering(parameters, _allowedOrderFields);
     }
 
     public async Task ValidateCreateAsync(

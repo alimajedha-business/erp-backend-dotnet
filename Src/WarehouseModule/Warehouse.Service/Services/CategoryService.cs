@@ -120,9 +120,6 @@ public class CategoryService(
         CancellationToken ct
     )
     {
-        if (patchDocument is null)
-            throw new InvalidPatchDocumentException();
-
         PatchCategoryPolicy.Validate(patchDocument);
 
         var codePatched = HasProperty(

@@ -156,4 +156,7 @@
   <data name="CheckConstraint" xml:space="preserve">
     <value>Error in creating {0}: {1}</value>
   </data>
+  <data name="InvalidListOrdering" xml:space="preserve">
+    <value>The ordering parameter is not valid {0}.</value>
+  </data>
 </root>
