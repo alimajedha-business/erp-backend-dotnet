@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System.Linq.Expressions;
+
+using Microsoft.AspNetCore.JsonPatch;
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -46,5 +49,11 @@ public interface ICategoryService
         Guid companyId,
         Guid id,
         CancellationToken ct
+    );
+
+    Task<Category> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<Category, bool>> predicate,
+        CancellationToken ct = default
     );
 }

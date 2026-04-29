@@ -2,6 +2,9 @@
 
 using AutoMapper;
 
+using FluentValidation;
+using FluentValidation.Results;
+
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
@@ -53,26 +56,39 @@ public class ItemService(
                 AttributeId = attributeId,
             })];
 
-        item.ItemUnitOfMeasurements = [.. createItemDto
-            .SecondaryUnitOfMeasurementIds
-            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
-            .Distinct()
+        List<Guid> unitOfMeasurementIds = [
+            createItemDto.PrimaryUnitOfMeasurementId,
+            .. createItemDto.SecondaryUnitOfMeasurementIds
+                .Where(uomId => uomId != createItemDto.PrimaryUnitOfMeasurementId)
+                .Distinct()
+        ];
+
+        item.ItemUnitOfMeasurements = [.. unitOfMeasurementIds
+            .Skip(1)
             .Select((uomId, index) => new ItemUnitOfMeasurement
             {
                 UnitOfMeasurementId = uomId,
                 UnitOrder = index + 2
             })];
 
-        var duplicateWarehouseIds = createItemDto.ItemWarehouses
-            .GroupBy(w => w.WarehouseId)
-            .Where(g => g.Count() > 1)
-            .Select(g => g.Key)
-            .ToList();
+        var warehouseIds = new HashSet<Guid>();
+        var duplicateWarehouseIds = new List<Guid>();
+
+        foreach (var itemWarehouse in createItemDto.ItemWarehouses)
+        {
+            if (!warehouseIds.Add(itemWarehouse.WarehouseId))
+                duplicateWarehouseIds.Add(itemWarehouse.WarehouseId);
+        }
 
         if (duplicateWarehouseIds.Count != 0)
-            throw new DbUpdateBadRequestException(
-                _localizer["Item.Warehouse.Duplicate"].Value
-            );
+        {
+            throw new ValidationException(duplicateWarehouseIds.Select(warehouseId =>
+                new ValidationFailure(
+                    nameof(CreateItemDto.ItemWarehouses),
+                    $"Duplicate warehouseId '{warehouseId}' is not allowed."
+                )
+            ));
+        }
 
         item.ItemWarehouses = [.. createItemDto
             .ItemWarehouses
@@ -92,13 +108,19 @@ public class ItemService(
                     })]
             })];
 
-        item.ItemUnitOfMeasurementConversions = [.. createItemDto
-            .ItemUnitOfMeasurementConversions
-            .Select(createItemUoMConversionDto => new ItemUnitOfMeasurementConversion
-                {
-                    UnitOfMeasurementId = createItemUoMConversionDto.UnitOfMeasurementId,
-                    ConversionEquation = createItemUoMConversionDto.ConversionEquation,
-                })];
+        var unitConversions = createItemDto.ItemUnitOfMeasurementConversions
+            .Where(conversion => !IsEmptyUnitConversion(conversion.Value))
+            .ToList();
+
+        ValidateUnitConversionCycles(unitConversions, unitOfMeasurementIds.Count);
+
+        item.ItemUnitOfMeasurementConversions = [.. unitConversions
+            .Select(conversion => CreateItemUnitOfMeasurementConversion(
+                conversion,
+                unitOfMeasurementIds
+            ))
+            .Where(conversion => conversion is not null)
+            .Select(conversion => conversion!)];
 
         var createdItem = await _itemRepository.AddAsync(item, ct);
         await _itemRepository.SaveChangesAsync(ct);
@@ -330,6 +352,160 @@ public class ItemService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 
+    private static ItemUnitOfMeasurementConversion? CreateItemUnitOfMeasurementConversion(
+    KeyValuePair<string, UnitConversionEquationDto> conversion,
+    List<Guid> unitOfMeasurementIds
+)
+    {
+        if (!int.TryParse(conversion.Key, out var unitOrder) ||
+            unitOrder < 1 ||
+            unitOrder > unitOfMeasurementIds.Count)
+        {
+            throw new ValidationException([
+                new ValidationFailure(
+                nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
+                $"unitConversions key '{conversion.Key}' must be a unit order between 1 and {unitOfMeasurementIds.Count}."
+            )
+            ]);
+        }
+
+        try
+        {
+            var equation = UnitConversionEquationBuilder.Build(
+                conversion.Value,
+                maxUnitOrder: unitOfMeasurementIds.Count
+            );
+
+            if (equation is null)
+                return null;
+
+            return new ItemUnitOfMeasurementConversion
+            {
+                UnitOfMeasurementId = unitOfMeasurementIds[unitOrder - 1],
+                ConversionEquation = equation,
+            };
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ValidationException([
+                new ValidationFailure($"unitConversions[{conversion.Key}]", ex.Message)
+            ]);
+        }
+    }
+
+    private static void ValidateUnitConversionCycles(
+        IReadOnlyList<KeyValuePair<string, UnitConversionEquationDto>> conversions,
+        int unitCount
+    )
+    {
+        var graph = new Dictionary<int, List<int>>();
+
+        foreach (var conversion in conversions)
+        {
+            if (!int.TryParse(conversion.Key, out var unitOrder) ||
+                unitOrder < 1 ||
+                unitOrder > unitCount)
+            {
+                continue;
+            }
+
+            graph[unitOrder] = [.. GetReferencedUnitOrders(conversion.Value)
+                .Where(reference => reference <= unitCount)];
+        }
+
+        var states = new Dictionary<int, VisitState>();
+        var path = new Stack<int>();
+
+        foreach (var unitOrder in graph.Keys)
+        {
+            VisitUnitConversion(unitOrder, graph, states, path);
+        }
+    }
+
+    private static void VisitUnitConversion(
+        int unitOrder,
+        IReadOnlyDictionary<int, List<int>> graph,
+        Dictionary<int, VisitState> states,
+        Stack<int> path
+    )
+    {
+        if (states.TryGetValue(unitOrder, out var state))
+        {
+            if (state == VisitState.Visiting)
+                ThrowUnitConversionCycle(unitOrder, path);
+
+            return;
+        }
+
+        states[unitOrder] = VisitState.Visiting;
+        path.Push(unitOrder);
+
+        if (graph.TryGetValue(unitOrder, out var references))
+        {
+            foreach (var reference in references)
+            {
+                if (graph.ContainsKey(reference))
+                    VisitUnitConversion(reference, graph, states, path);
+            }
+        }
+
+        path.Pop();
+        states[unitOrder] = VisitState.Visited;
+    }
+
+    private static void ThrowUnitConversionCycle(int repeatedUnitOrder, Stack<int> path)
+    {
+        var cycle = path
+            .Reverse()
+            .SkipWhile(unitOrder => unitOrder != repeatedUnitOrder)
+            .Append(repeatedUnitOrder)
+            .Select(unitOrder => $"@u{unitOrder}");
+
+        throw new ValidationException([
+            new ValidationFailure(
+                nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
+                $"Unit conversion cycle detected: {string.Join(" -> ", cycle)}."
+            )
+        ]);
+    }
+
+    private static IEnumerable<int> GetReferencedUnitOrders(UnitConversionEquationDto conversion)
+    {
+        return new[]
+            {
+                conversion.Operand1,
+                conversion.Operand2,
+                conversion.Operand3,
+                conversion.Operand4
+            }
+            .Where(operand => !IsEmpty(operand))
+            .Select(operand => operand!.ToString()!.Trim())
+            .Where(operand => RegexHelpers.UnitOfMeasurementRefRegex().IsMatch(operand))
+            .Select(operand => int.Parse(operand[2..]));
+    }
+
+    private static bool IsEmptyUnitConversion(UnitConversionEquationDto conversion)
+    {
+        return IsEmpty(conversion.Operand1) &&
+            IsEmpty(conversion.Operand2) &&
+            IsEmpty(conversion.Operand3) &&
+            IsEmpty(conversion.Operand4) &&
+            IsEmpty(conversion.Op1) &&
+            IsEmpty(conversion.Op2) &&
+            IsEmpty(conversion.Op3);
+    }
+
+    private static bool IsEmpty(object? value)
+    {
+        return value is null || string.IsNullOrWhiteSpace(value.ToString());
+    }
+
+    private enum VisitState
+    {
+        Visiting,
+        Visited
+    }
+
     private static string BuildLocationPath(
         Guid locationId,
         IReadOnlyDictionary<Guid, WarehouseLocationNode> byId,
@@ -458,9 +634,8 @@ public class ItemService(
 
         if (duplicateWarehouseIds.Count != 0)
         {
-            throw new DbUpdateBadRequestException(
-                _localizer["Item.Warehouse.Duplicate"].Value
-            );
+            // TODO: throw proper exception
+            throw new Exception();
         }
 
         var requestedWarehouseIds = requested

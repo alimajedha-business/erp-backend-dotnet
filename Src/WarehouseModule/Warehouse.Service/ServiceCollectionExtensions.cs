@@ -7,7 +7,9 @@ using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.EntitySchemas;
 using NGErp.Warehouse.Service.Mappings;
-using NGErp.Warehouse.Service.RequestValidators;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 using NGErp.Warehouse.Service.Services;
@@ -45,6 +47,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
+        services.AddScoped<ICategoryBusinessRuleValidator, CategoryBusinessRuleValidator>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();

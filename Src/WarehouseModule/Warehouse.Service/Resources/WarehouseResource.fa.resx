@@ -126,14 +126,56 @@
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>
+  <data name="Category.Code.MaxLength" xml:space="preserve">
+    <value>کد طبقه‌بندی نمی‌تواند بیشتر از 64 کاراکتر باشد.</value>
+  </data>
   <data name="Category.Code.ExceedsMaxLength" xml:space="preserve">
-    <value>طول کد طبقه‌بندی از مقدار تعریف‌شده در محدودیت سطوح طبقه‌بندی بیشتر است.</value>
+    <value>طول کد طبقه‌بندی از مقدار تعریف‌شده در محدودیت سطوح طبقه‌بندی بیشتر است: {0} رقم.</value>
+  </data>
+  <data name="Category.Code.NotEmpty" xml:space="preserve">
+    <value>کد طبقه‌بندی نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Category.Code.Duplicate" xml:space="preserve">
+    <value>کد طبقه‌بندی قبلا ثبت شده است.</value>
+  </data>
+  <data name="Category.Delete.HasItems" xml:space="preserve">
+    <value>طبقه‌بندی به دلیل داشتن کالا قابل حذف نیست.</value>
+  </data>
+  <data name="Category.Delete.HasSubCategories" xml:space="preserve">
+    <value>طبقه‌بندی به دلیل داشتن زیر-سطح قابل حذف نیست.</value>
+  </data>
+  <data name="Category.HasNextLevel.NotNull" xml:space="preserve">
+    <value>وضعیت داشتن سطح بعدی برای طبقه‌بندی الزامی است.</value>
+  </data>
+  <data name="Category.HasNextLevel.HasSubCategories" xml:space="preserve">
+    <value>طبقه‌بندی به دلیل داشتن زیر-سطح نمی‌تواند به عنوان سطح آخر ثبت شود.</value>
   </data>
   <data name="Category.LevelNo.LastLevelIf6" xml:space="preserve">
     <value>سطح ششم نمی‌تواند زیر-سطح داشته باشد.</value>
   </data>
   <data name="Category.LevelNo.NotLastLevelIf1" xml:space="preserve">
     <value>بالاترین سطح نمی‌تواند به عنوان سطح آخر ثبت شود.</value>
+  </data>
+  <data name="Category.LevelNo.Range" xml:space="preserve">
+    <value>شماره سطح طبقه‌بندی باید بین 1 و 6 باشد.</value>
+  </data>
+  <data name="Category.Ordering.Invalid" xml:space="preserve">
+    <value>فیلد مرتب‌سازی طبقه‌بندی مجاز نیست: {0}.</value>
+  </data>
+  <data name="Category.Parent.CannotHaveChildren" xml:space="preserve">
+    <value>طبقه‌بندی والد انتخاب‌شده نمی‌تواند زیر-سطح داشته باشد.</value>
+  </data>
+  <data name="Category.Parent.LevelMismatch" xml:space="preserve">
+    <value>طبقه‌بندی والد انتخاب‌شده باید در سطح {0} باشد، اما در سطح {1} است.</value>
+  </data>
+  <data name="Category.Parent.Required" xml:space="preserve">
+    <value>برای طبقه‌بندی‌های پایین‌تر از سطح اول، طبقه‌بندی والد الزامی است.</value>
+  </data>
+  <data name="Category.Parent.RootCannotHaveParent" xml:space="preserve">
+    <value>طبقه‌بندی سطح اول نمی‌تواند والد داشته باشد.</value>
+  </data>
+  <data name="Category.Title.MaxLength" xml:space="preserve">
+    <value>عنوان طبقه‌بندی نمی‌تواند بیشتر از 200 کاراکتر باشد.</value>
   </data>
   <data name="Category.Title.MinLength" xml:space="preserve">
     <value>عنوان طبقه‌بندی باید حداقل 3 کاراکتر داشته باشد.</value>

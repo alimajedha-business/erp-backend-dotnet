@@ -135,8 +135,14 @@
   <data name="CouldNotConvert" xml:space="preserve">
     <value>The value could not be converted.</value>
   </data>
+  <data name="InvalidJsonFormat" xml:space="preserve">
+    <value>The request body contains invalid JSON.</value>
+  </data>
   <data name="MissingRequiredProperties" xml:space="preserve">
     <value>Missing required properties</value>
+  </data>
+  <data name="PatchDocument.Invalid" xml:space="preserve">
+    <value>The patch document is invalid.</value>
   </data>
   <data name="ForeignKeyViolation" xml:space="preserve">
     <value>Removing {0} is not permitted due to relations.</value>
@@ -149,5 +155,8 @@
   </data>
   <data name="CheckConstraint" xml:space="preserve">
     <value>Error in creating {0}: {1}</value>
+  </data>
+  <data name="InvalidListOrdering" xml:space="preserve">
+    <value>The ordering parameter is not valid {0}.</value>
   </data>
 </root>

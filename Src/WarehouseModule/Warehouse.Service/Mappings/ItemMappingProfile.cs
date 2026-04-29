@@ -33,9 +33,13 @@ public class ItemMappingProfile : Profile
                 opt => opt.MapFrom(src => src.Category.Title)
             );
 
-        CreateMap<CreateItemDto, Item>();
+		CreateMap<CreateItemDto, Item>()
+			.ForMember(dst => dst.ItemAttributes, opt => opt.Ignore())
+			.ForMember(dst => dst.ItemUnitOfMeasurements, opt => opt.Ignore())
+			.ForMember(dst => dst.ItemUnitOfMeasurementConversions, opt => opt.Ignore())
+			.ForMember(dst => dst.ItemWarehouses, opt => opt.Ignore());
 
-        CreateMap<Item, PatchItemDto>()
+		CreateMap<Item, PatchItemDto>()
             .ForMember(
                 dst => dst.AttributeIds,
                 opt => opt.MapFrom(src => src.ItemAttributes.Select(x => x.AttributeId))
