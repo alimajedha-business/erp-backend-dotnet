@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+using Newtonsoft.Json;
+
 namespace NGErp.Warehouse.Service.DTOs;
 
 public record ItemDto(
@@ -50,10 +52,11 @@ public class CreateItemDto
     public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
-    public List<CreateItemUnitOfMeasurementConversionDto> ItemUnitOfMeasurementConversions { get; set; } = [];
+    public Dictionary<string, UnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
 
+    [JsonProperty("unitConversions")]
     [JsonPropertyName("unitConversions")]
-    public List<CreateItemUnitOfMeasurementConversionDto>? ItemUnitOfMeasurementConversionsAlias
+    public Dictionary<string, UnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
     {
         get => null; // never used for output
         set

@@ -7,22 +7,34 @@ public static class UnitConversionEquationBuilder
 {
     private static readonly HashSet<string> AllowedOperators = ["+", "-", "*", "/"];
 
-    public static string Build(UnitConversionEquationDto dto, int maxUnitOrder)
+    public static string? Build(UnitConversionEquationDto dto, int maxUnitOrder)
     {
         var operands = new[]
         {
-            dto.Operand1,
-            dto.Operand2,
-            dto.Operand3,
-            dto.Operand4
-        };
+        dto.Operand1,
+        dto.Operand2,
+        dto.Operand3,
+        dto.Operand4
+    };
 
         var operators = new[]
         {
-            dto.Op1,
-            dto.Op2,
-            dto.Op3
-        };
+        dto.Op1,
+        dto.Op2,
+        dto.Op3
+    };
+
+        if (operands.All(IsEmpty) && operators.All(string.IsNullOrWhiteSpace))
+            return null;
+
+        if (!IsEmpty(operands[0]) &&
+            operands.Skip(1).All(IsEmpty) &&
+            operators.All(string.IsNullOrWhiteSpace))
+        {
+            ValidateOperand(operands[0], 1, maxUnitOrder, required: true);
+
+            return FormatOperand(operands[0]);
+        }
 
         ValidateOperand(operands[0], 1, maxUnitOrder, required: true);
         ValidateOperand(operands[1], 2, maxUnitOrder, required: true);
