@@ -18,7 +18,8 @@ public record UnitOfMeasurementListDto(
     Guid Id,
     int Code,
     string Title,
-    string Symbol
+    string Symbol,
+    string MeasurementDimensionTitle
 );
 
 public record UnitOfMeasurementTitleDto(string Title);
