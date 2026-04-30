@@ -18,7 +18,7 @@ public record ItemDto(
     List<AttributeSlimDto> ItemAttributes,
     List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
-    List<ItemUnitOfMeasurementConversionDto> ItemUnitOfMeasurementConversions,
+    Dictionary<string, ItemUnitConversionEquationDto> UnitConversions,
     bool IsActive
 );
 
@@ -52,11 +52,11 @@ public class CreateItemDto
     public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
-    public Dictionary<string, UnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
+    public Dictionary<string, ItemUnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
 
     [JsonProperty("unitConversions")]
     [JsonPropertyName("unitConversions")]
-    public Dictionary<string, UnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
     {
         get => null; // never used for output
         set
