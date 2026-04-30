@@ -29,3 +29,10 @@ public class PatchCategoryDto
     public string? Title { get; set; }
     public bool? HasNextLevel { get; set; }
 }
+
+public record CategoryCodeDto(
+    Guid Id,
+    string Code,
+    string FullCode,
+    int LevelNo
+);

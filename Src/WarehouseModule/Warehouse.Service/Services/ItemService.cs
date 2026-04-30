@@ -125,7 +125,7 @@ public class ItemService(
         var createdItem = await _itemRepository.AddAsync(item, ct);
         await _itemRepository.SaveChangesAsync(ct);
 
-        return _mapper.Map<ItemDto>(createdItem);
+        return await GetByIdAsync(companyId, categoryId, createdItem.Id, ct);
     }
 
     public async Task<ItemDto> GetByIdAsync(
@@ -140,7 +140,7 @@ public class ItemService(
             ct
         );
 
-        return _mapper.Map<ItemDto>(item);
+        return await BuildItemDtoAsync(item, ct);
     }
 
     public async Task<ItemDto> GetByIdAsync(
@@ -159,6 +159,14 @@ public class ItemService(
             ct
         );
 
+        return await BuildItemDtoAsync(item, ct);
+    }
+
+    private async Task<ItemDto> BuildItemDtoAsync(
+        Item item,
+        CancellationToken ct
+    )
+    {
         var locations = await _locationService.GetItemLocationsAsync(item, ct);
         var byId = locations.ToDictionary(x => x.Id);
         var cache = new Dictionary<Guid, string>();
@@ -216,16 +224,12 @@ public class ItemService(
                             BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
                         ))]
                 ))],
-            [.. item.ItemUnitOfMeasurementConversions
-                .Select(iumc => new ItemUnitOfMeasurementConversionDto(
-                    iumc.UnitOfMeasurementId,
-                    iumc.ConversionEquation
-                ))],
+            BuildUnitConversionsByOrder(item),
             item.IsActive
         );
     }
 
-    public async Task<ListResponseModel<ItemDto>> GetFilteredAsync(
+    public async Task<ListResponseModel<ItemListDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -236,8 +240,8 @@ public class ItemService(
         var query = _itemRepository.GetFiltered(companyId, advancedFilters);
         var res = await _itemRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<ItemDto>(
-            results: _mapper.Map<IReadOnlyList<ItemDto>>(res.items),
+        return new ListResponseModel<ItemListDto>(
+            results: _mapper.Map<IReadOnlyList<ItemListDto>>(res.items),
             totalCount: res.count,
             parameters
         );
@@ -319,7 +323,7 @@ public class ItemService(
         }
 
         await _itemRepository.SaveChangesAsync(ct);
-        return _mapper.Map<ItemDto>(item);
+        return await BuildItemDtoAsync(item, ct);
     }
 
     public virtual async Task DeleteAsync(
@@ -353,7 +357,7 @@ public class ItemService(
     }
 
     private static ItemUnitOfMeasurementConversion? CreateItemUnitOfMeasurementConversion(
-    KeyValuePair<string, UnitConversionEquationDto> conversion,
+    KeyValuePair<string, ItemUnitConversionEquationDto> conversion,
     List<Guid> unitOfMeasurementIds
 )
     {
@@ -394,7 +398,7 @@ public class ItemService(
     }
 
     private static void ValidateUnitConversionCycles(
-        IReadOnlyList<KeyValuePair<string, UnitConversionEquationDto>> conversions,
+        IReadOnlyList<KeyValuePair<string, ItemUnitConversionEquationDto>> conversions,
         int unitCount
     )
     {
@@ -469,7 +473,7 @@ public class ItemService(
         ]);
     }
 
-    private static IEnumerable<int> GetReferencedUnitOrders(UnitConversionEquationDto conversion)
+    private static IEnumerable<int> GetReferencedUnitOrders(ItemUnitConversionEquationDto conversion)
     {
         return new[]
             {
@@ -484,7 +488,7 @@ public class ItemService(
             .Select(operand => int.Parse(operand[2..]));
     }
 
-    private static bool IsEmptyUnitConversion(UnitConversionEquationDto conversion)
+    private static bool IsEmptyUnitConversion(ItemUnitConversionEquationDto conversion)
     {
         return IsEmpty(conversion.Operand1) &&
             IsEmpty(conversion.Operand2) &&
@@ -504,6 +508,28 @@ public class ItemService(
     {
         Visiting,
         Visited
+    }
+
+    private static Dictionary<string, ItemUnitConversionEquationDto> BuildUnitConversionsByOrder(Item item)
+    {
+        var unitOrderById = new Dictionary<Guid, int>
+        {
+            [item.PrimaryUnitOfMeasurementId] = 1
+        };
+
+        foreach (var itemUnitOfMeasurement in item.ItemUnitOfMeasurements)
+        {
+            unitOrderById[itemUnitOfMeasurement.UnitOfMeasurementId] =
+                itemUnitOfMeasurement.UnitOrder;
+        }
+
+        return item.ItemUnitOfMeasurementConversions
+            .Where(conversion => unitOrderById.ContainsKey(conversion.UnitOfMeasurementId))
+            .OrderBy(conversion => unitOrderById[conversion.UnitOfMeasurementId])
+            .ToDictionary(
+                conversion => unitOrderById[conversion.UnitOfMeasurementId].ToString(),
+                conversion => UnitConversionEquationBuilder.Parse(conversion.ConversionEquation)
+            );
     }
 
     private static string BuildLocationPath(
@@ -616,7 +642,7 @@ public class ItemService(
         }
     }
 
-    private void SyncItemWarehouses(
+    private static void SyncItemWarehouses(
         Item item,
         IEnumerable<CreateItemWarehouseDto>? requestedWarehouses
     )
