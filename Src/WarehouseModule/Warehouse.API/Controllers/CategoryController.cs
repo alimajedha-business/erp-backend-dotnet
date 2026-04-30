@@ -144,6 +144,22 @@ public class CategoryController(
         return Ok(dto);
     }
 
+    [HttpGet("{id:guid}/full-code")]
+    public async Task<IActionResult> GetCategoryCodeAsync(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var result = await _categoryService.GetCategoryCodeAsync(
+            companyId,
+            id,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(

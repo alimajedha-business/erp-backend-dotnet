@@ -172,7 +172,7 @@ public class CategoryService(
 
                 if (hasSubCategories)
                     throw new CategoryCannotDisableNextLevelWithChildrenException();
-            }    
+            }
         }
 
         if (codePatched)
@@ -213,6 +213,21 @@ public class CategoryService(
             e.Id == id,
             ct
         );
+    }
+
+    public async Task<CategoryCodeDto?> GetCategoryCodeAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        await GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p => p.CompanyId == companyId && p.Id == id,
+            ct
+        );
+
+        return await _categoryRepository.GetCategoryCodeAsync(companyId, id, ct);
     }
 
     public async Task<Category> GetSingleOrThrowAsync(
