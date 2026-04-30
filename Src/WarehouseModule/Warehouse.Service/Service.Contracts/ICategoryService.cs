@@ -56,4 +56,10 @@ public interface ICategoryService
         Expression<Func<Category, bool>> predicate,
         CancellationToken ct = default
     );
+
+    Task<CategoryCodeDto?> GetCategoryCodeAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
 }
