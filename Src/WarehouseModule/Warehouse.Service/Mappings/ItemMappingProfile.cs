@@ -53,7 +53,8 @@ public class ItemMappingProfile : Profile
                         .Select(l => l.WarehouseLocationId)
                         .ToList()
                 }))
-            );
+            )
+            .ForMember(dst => dst.ItemUnitOfMeasurementConversions, opt => opt.Ignore());
 
         CreateMap<PatchItemDto, Item>()
             // ignore collection navigation props

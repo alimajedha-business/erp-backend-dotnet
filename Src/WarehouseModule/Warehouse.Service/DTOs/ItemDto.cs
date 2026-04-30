@@ -81,4 +81,17 @@ public class PatchItemDto
     public List<Guid>? SecondaryUnitOfMeasurementIds { get; set; }
     public List<Guid>? AttributeIds { get; set; }
     public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversions { get; set; }
+
+    [JsonProperty("unitConversions")]
+    [JsonPropertyName("unitConversions")]
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                ItemUnitOfMeasurementConversions = value;
+        }
+    }
 }

@@ -162,73 +162,6 @@ public class ItemService(
         return await BuildItemDtoAsync(item, ct);
     }
 
-    private async Task<ItemDto> BuildItemDtoAsync(
-        Item item,
-        CancellationToken ct
-    )
-    {
-        var locations = await _locationService.GetItemLocationsAsync(item, ct);
-        var byId = locations.ToDictionary(x => x.Id);
-        var cache = new Dictionary<Guid, string>();
-
-        return new ItemDto(
-            item.Id,
-            item.Code,
-            item.Title,
-            item.TitleInEnglish,
-            item.TechnicalNumber,
-            item.Sku,
-            item.Barcode,
-            new UnitOfMeasurementSlimDto(
-                item.PrimaryUnitOfMeasurementId,
-                item.PrimaryUnitOfMeasurement.Code,
-                item.PrimaryUnitOfMeasurement.Title
-            ),
-            new ItemTypeSlimDto(
-                item.ItemTypeId,
-                item.ItemType.Code,
-                item.ItemType.Title
-            ),
-            new CategorySlimDto(
-                item.CategoryId,
-                item.Category.Code,
-                item.Category.Title
-            ),
-            [.. item.ItemAttributes
-                .Select(ia => new AttributeSlimDto(
-                    ia.Attribute.Id,
-                    ia.Attribute.Code,
-                    ia.Attribute.Title
-                ))],
-            [.. item.ItemUnitOfMeasurements
-                .Select(ium => new UnitOfMeasurementSlimDto(
-                    ium.UnitOfMeasurement.Id,
-                    ium.UnitOfMeasurement.Code,
-                    ium.UnitOfMeasurement.Title
-                ))],
-            [.. item.ItemWarehouses
-                .Select(iw => new ItemWarehouseDto(
-                    new WarehouseSlimDto(
-                        iw.Warehouse.Id,
-                        iw.Warehouse.Code,
-                        iw.Warehouse.Title
-                    ),
-                    iw.ReorderPoint,
-                    iw.CriticalPoint,
-                    iw.ReorderQuantity,
-                    iw.MaxStockLevel,
-                    [.. iw.ItemWarehouseLocations
-                        .Select(iwl => new WarehouseLocationSlimDto(
-                            iwl.WarehouseLocation.Id,
-                            iwl.WarehouseLocation.Code,
-                            BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
-                        ))]
-                ))],
-            BuildUnitConversionsByOrder(item),
-            item.IsActive
-        );
-    }
-
     public async Task<ListResponseModel<ItemListDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,
@@ -289,6 +222,7 @@ public class ItemService(
         );
 
         var patchDto = _mapper.Map<PatchItemDto>(item);
+        patchDto.ItemUnitOfMeasurementConversions = BuildUnitConversionsByOrder(item);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -322,8 +256,25 @@ public class ItemService(
             SyncItemWarehouses(item, patchDto.ItemWarehouses);
         }
 
+        if (patchedPaths.Contains(nameof(PatchItemDto.ItemUnitOfMeasurementConversions)) ||
+            patchedPaths.Contains(nameof(PatchItemDto.ItemUnitOfMeasurementConversionsAlias)) ||
+            patchedPaths.Contains("unitConversions"))
+        {
+            SyncItemUnitOfMeasurementConversions(item, patchDto.ItemUnitOfMeasurementConversions);
+        }
+
         await _itemRepository.SaveChangesAsync(ct);
-        return await BuildItemDtoAsync(item, ct);
+
+        var updatedItem = await GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.CategoryId == categoryId &&
+                p.Id == id,
+            ct
+        );
+
+        return await BuildItemDtoAsync(updatedItem, ct);
     }
 
     public virtual async Task DeleteAsync(
@@ -510,6 +461,73 @@ public class ItemService(
         Visited
     }
 
+    private async Task<ItemDto> BuildItemDtoAsync(
+        Item item,
+        CancellationToken ct
+    )
+    {
+        var locations = await _locationService.GetItemLocationsAsync(item, ct);
+        var byId = locations.ToDictionary(x => x.Id);
+        var cache = new Dictionary<Guid, string>();
+
+        return new ItemDto(
+            item.Id,
+            item.Code,
+            item.Title,
+            item.TitleInEnglish,
+            item.TechnicalNumber,
+            item.Sku,
+            item.Barcode,
+            new UnitOfMeasurementSlimDto(
+                item.PrimaryUnitOfMeasurementId,
+                item.PrimaryUnitOfMeasurement.Code,
+                item.PrimaryUnitOfMeasurement.Title
+            ),
+            new ItemTypeSlimDto(
+                item.ItemTypeId,
+                item.ItemType.Code,
+                item.ItemType.Title
+            ),
+            new CategorySlimDto(
+                item.CategoryId,
+                item.Category.Code,
+                item.Category.Title
+            ),
+            [.. item.ItemAttributes
+                .Select(ia => new AttributeSlimDto(
+                    ia.Attribute.Id,
+                    ia.Attribute.Code,
+                    ia.Attribute.Title
+                ))],
+            [.. item.ItemUnitOfMeasurements
+                .Select(ium => new UnitOfMeasurementSlimDto(
+                    ium.UnitOfMeasurement.Id,
+                    ium.UnitOfMeasurement.Code,
+                    ium.UnitOfMeasurement.Title
+                ))],
+            [.. item.ItemWarehouses
+                .Select(iw => new ItemWarehouseDto(
+                    new WarehouseSlimDto(
+                        iw.Warehouse.Id,
+                        iw.Warehouse.Code,
+                        iw.Warehouse.Title
+                    ),
+                    iw.ReorderPoint,
+                    iw.CriticalPoint,
+                    iw.ReorderQuantity,
+                    iw.MaxStockLevel,
+                    [.. iw.ItemWarehouseLocations
+                        .Select(iwl => new WarehouseLocationSlimDto(
+                            iwl.WarehouseLocation.Id,
+                            iwl.WarehouseLocation.Code,
+                            BuildLocationPath(iwl.WarehouseLocation.Id, byId, cache)
+                        ))]
+                ))],
+            BuildUnitConversionsByOrder(item),
+            item.IsActive
+        );
+    }
+
     private static Dictionary<string, ItemUnitConversionEquationDto> BuildUnitConversionsByOrder(Item item)
     {
         var unitOrderById = new Dictionary<Guid, int>
@@ -530,6 +548,18 @@ public class ItemService(
                 conversion => unitOrderById[conversion.UnitOfMeasurementId].ToString(),
                 conversion => UnitConversionEquationBuilder.Parse(conversion.ConversionEquation)
             );
+    }
+
+    private static List<Guid> BuildUnitOfMeasurementIdsByOrder(Item item)
+    {
+        return [
+            item.PrimaryUnitOfMeasurementId,
+            .. item.ItemUnitOfMeasurements
+                .OrderBy(x => x.UnitOrder)
+                .Select(x => x.UnitOfMeasurementId)
+                .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
+                .Distinct()
+        ];
     }
 
     private static string BuildLocationPath(
@@ -691,13 +721,12 @@ public class ItemService(
                     CriticalPoint = requestedWarehouse.CriticalPoint,
                     ReorderQuantity = requestedWarehouse.ReorderQuantity,
                     MaxStockLevel = requestedWarehouse.MaxStockLevel,
-                    ItemWarehouseLocations = requestedWarehouse.LocationIds
+                    ItemWarehouseLocations = [.. requestedWarehouse.LocationIds
                         .Distinct()
                         .Select(locationId => new ItemWarehouseLocation
                         {
                             WarehouseLocationId = locationId
-                        })
-                        .ToList()
+                        })]
                 });
 
                 continue;
@@ -705,6 +734,62 @@ public class ItemService(
 
             UpdateWarehouseScalarValues(existingWarehouse, requestedWarehouse);
             SyncWarehouseLocations(existingWarehouse, requestedWarehouse.LocationIds);
+        }
+    }
+
+    private static void SyncItemUnitOfMeasurementConversions(
+        Item item,
+        Dictionary<string, ItemUnitConversionEquationDto>? requestedConversions
+    )
+    {
+        if (requestedConversions is null)
+            return;
+
+        var unitOfMeasurementIds = BuildUnitOfMeasurementIdsByOrder(item);
+        var requested = requestedConversions
+            .Where(conversion => !IsEmptyUnitConversion(conversion.Value))
+            .ToList();
+
+        ValidateUnitConversionCycles(requested, unitOfMeasurementIds.Count);
+
+        var requestedEntities = requested
+            .Select(conversion => CreateItemUnitOfMeasurementConversion(
+                conversion,
+                unitOfMeasurementIds
+            ))
+            .Where(conversion => conversion is not null)
+            .Select(conversion => conversion!)
+            .ToList();
+
+        var requestedUomIds = requestedEntities
+            .Select(x => x.UnitOfMeasurementId)
+            .ToHashSet();
+
+        var toRemove = item.ItemUnitOfMeasurementConversions
+            .Where(x => !requestedUomIds.Contains(x.UnitOfMeasurementId))
+            .ToList();
+
+        foreach (var conversion in toRemove)
+        {
+            item.ItemUnitOfMeasurementConversions.Remove(conversion);
+        }
+
+        var existingByUomId = item.ItemUnitOfMeasurementConversions
+            .ToDictionary(x => x.UnitOfMeasurementId);
+
+        foreach (var requestedEntity in requestedEntities)
+        {
+            if (existingByUomId.TryGetValue(requestedEntity.UnitOfMeasurementId, out var existing))
+            {
+                if (existing.ConversionEquation != requestedEntity.ConversionEquation)
+                {
+                    existing.ConversionEquation = requestedEntity.ConversionEquation;
+                }
+
+                continue;
+            }
+
+            item.ItemUnitOfMeasurementConversions.Add(requestedEntity);
         }
     }
 
