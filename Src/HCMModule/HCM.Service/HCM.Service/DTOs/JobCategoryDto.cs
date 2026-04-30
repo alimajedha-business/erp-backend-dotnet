@@ -9,11 +9,7 @@ public record JobCategoryDto(
 );
 
 public record CreateJobCategoryDto(
-    [Required]
-    [Range(1, int.MaxValue)]
     int Code,
-    [Required]
-    [MaxLength(200)]
     string Title
     );
 public record PatchJobCategoryDto(
