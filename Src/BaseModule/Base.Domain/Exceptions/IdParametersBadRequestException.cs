@@ -2,7 +2,7 @@
 
 public sealed class IdParametersBadRequestException : BadRequestException
 {
-    public IdParametersBadRequestException() : base("Parameter ids is null")
-    {
-    }
+    public override string LocalizationKey => "Id.Parameters";
+
+    public IdParametersBadRequestException() : base() { }
 }

@@ -141,9 +141,7 @@ public class AttributeService(
         );
 
         if (attribute.IsStatic)
-            throw new DbUpdateBadRequestException(
-                _localizer["Attribute.IsStatic.Delete"].Value
-            );
+            // TODO: throw new business rule exception
 
         _attributeRepository.Remove(attribute);
         await _attributeRepository.SaveChangesAsync(ct);

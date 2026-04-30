@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace NGErp.Base.Domain.Exceptions;
 
-namespace NGErp.Base.Domain.Exceptions
+public sealed class CollectionByIdsBadRequestException : BadRequestException
 {
-    public sealed class CollectionByIdsBadRequestException : BadRequestException
-    {
-        public CollectionByIdsBadRequestException() : base("Collection count mismatch comparing to ids.")
-        {
-        }
-    }
+    public override string LocalizationKey => "Collection.CountMismatch";
+
+    public CollectionByIdsBadRequestException() : base() { }
 }

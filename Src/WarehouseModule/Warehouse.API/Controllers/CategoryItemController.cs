@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -8,7 +8,6 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -21,68 +20,56 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
-public class WarehouseController(
-    IWarehouseService warehouseService,
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories/{categoryId:guid}/items")]
+public class CategoryItemController(
+    IItemService itemService,
     IExcelExportService excelExportService
 ) : ControllerBase
 {
-    private readonly IWarehouseService _warehouseService = warehouseService;
+    private readonly IItemService _itemService = itemService;
     private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [SwaggerRequestExample(typeof(object), typeof(WarehouseCreateRequestExample))]
+    [SwaggerRequestExample(typeof(CreateItemDto), typeof(CreateItemExample))]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateWarehouseDto createDto,
+        [FromRoute] Guid categoryId,
+        [FromBody] CreateItemDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _warehouseService.CreateAsync(
+        var dto = await _itemService.CreateAsync(
             companyId,
+            categoryId,
             createDto,
             ct
         );
 
         return CreatedAtAction(
             nameof(GetById),
-            new { companyId, id = dto.Id },
+            new { companyId, categoryId, id = dto.Id },
             dto
         );
     }
 
-    [HttpGet("filter-by-q")]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] WarehouseParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _warehouseService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
     [HttpPost("list")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK,typeof(WarehouseGetListResponseExample))]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
+    [ProducesResponseType(typeof(ListResponseModel<ItemListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetItemsListExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] WarehouseParameters parameters,
+        [FromRoute] Guid categoryId,
+        [FromQuery] ItemParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _warehouseService.GetFilteredAsync(
+        var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
+            categoryId,
             parameters,
             filterNodeDto,
             ct
@@ -93,23 +80,23 @@ public class WarehouseController(
 
     [HttpPost("excel")]
     [SkipModelValidation]
-    [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseGetListResponseExample))]
+    [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromBody] FilterNodeDto? filterNodeDto,
         [FromQuery] string? columns,
         CancellationToken ct
     )
     {
-        var parameters = new WarehouseParameters
+        var parameters = new ItemParameters
         {
             Paginated = false,
         };
 
-        var result = await _warehouseService.GetFilteredAsync(
+        var result = await _itemService.GetCategoryAllItemsAsync(
             companyId,
+            categoryId,
             parameters,
             filterNodeDto,
             ct
@@ -129,52 +116,45 @@ public class WarehouseController(
             excludedColumns
         );
 
-        Response.Headers.Append("Content-Disposition", "attachment; filename=\"warehouse.xlsx\"");
+        Response.Headers.Append("Content-Disposition", "attachment; filename=\"items.xlsx\"");
         return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-       [FromRoute] Guid companyId,
-       [FromRoute] Guid id,
-       CancellationToken ct
-    )
-    {
-        var warehouse = await _warehouseService.GetByIdAsync(
-            companyId,
-            id,
-            trackChanges: false,
-            ct
-        );
-
-        return Ok(warehouse);
-    }
-
-    [HttpGet("new-code")]
-    public async Task<IActionResult> GetNextCode(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        var code = await _warehouseService.GetNextCode(companyId, ct);
-        return Ok(code);
+        var dto = await _itemService.GetByIdAsync(
+            companyId,
+            categoryId,
+            id,
+            ct
+        );
+
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     [SwaggerRequestExample(
-        typeof(JsonPatchDocument<PatchWarehouseDto>),
-        typeof(WarehousePatchRequestExample)
+        typeof(JsonPatchDocument<PatchItemDto>),
+        typeof(ItemPatchExample)
     )]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchWarehouseDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchItemDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _warehouseService.PatchAsync(
+        var dto = await _itemService.PatchAsync(
             companyId,
+            categoryId,
             id,
             patchDocument,
             ct
@@ -186,11 +166,12 @@ public class WarehouseController(
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid categoryId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _warehouseService.DeleteAsync(companyId, id, ct);
+        await _itemService.DeleteAsync(companyId, categoryId, id, ct);
         return NoContent();
     }
 }

@@ -70,10 +70,11 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     }
 
     public virtual async Task<bool> AnyAsync(
-        Expression<Func<T, bool>> predicate
+        Expression<Func<T, bool>> predicate,
+        CancellationToken ct = default
     )
     {
-        return await _dbSet.AnyAsync(predicate);
+        return await _dbSet.AnyAsync(predicate, ct);
     }
 
     public virtual async Task<T> AddAsync(

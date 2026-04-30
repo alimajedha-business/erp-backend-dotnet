@@ -2,4 +2,10 @@
 
 namespace NGErp.Warehouse.Service.RequestFeatures;
 
-public class CategoryParameters : RequestParameters { }
+public class CategoryParameters : RequestParameters
+{
+    public CategoryParameters()
+    {
+        OrderBy = "code";
+    }
+}

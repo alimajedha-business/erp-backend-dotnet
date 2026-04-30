@@ -1,6 +1,6 @@
 ﻿namespace NGErp.Base.Domain.Exceptions;
 
-public abstract class BadRequestException(
+public abstract class BusinessRuleViolationException(
     params object[] args
 ) : Exception()
 {

@@ -11,7 +11,11 @@ public class UnitOfMeasurementMappingProfile : Profile
     {
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDto>();
         CreateMap<UnitOfMeasurement, UnitOfMeasurementSlimDto>();
-        CreateMap<UnitOfMeasurement, UnitOfMeasurementListDto>();
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementListDto>()
+            .ForCtorParam(
+                nameof(UnitOfMeasurementListDto.MeasurementDimensionTitle),
+                opt => opt.MapFrom(src => src.MeasurementDimension.Title)
+            );
         CreateMap<CreateUnitOfMeasurementDto, UnitOfMeasurement>();
         CreateMap<PatchUnitOfMeasurementDto, UnitOfMeasurement>().ReverseMap();
     }

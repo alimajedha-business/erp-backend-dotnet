@@ -24,13 +24,11 @@ public class ItemAttribute :
         builder
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemAttributes)
-            .HasForeignKey(e => e.ItemId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(e => e.ItemId);
 
         builder
             .HasOne(e => e.Attribute)
             .WithMany(e => e.ItemAttributes)
-            .HasForeignKey(e => e.AttributeId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(e => e.AttributeId);
     }
 }

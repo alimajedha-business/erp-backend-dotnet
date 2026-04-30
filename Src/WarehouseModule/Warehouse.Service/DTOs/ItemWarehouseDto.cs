@@ -1,4 +1,6 @@
-﻿using NGErp.Warehouse.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+using Newtonsoft.Json;
 
 namespace NGErp.Warehouse.Service.DTOs;
 
@@ -20,4 +22,16 @@ public class CreateItemWarehouseDto
     public decimal ReorderQuantity { get; set; }
     public decimal MaxStockLevel { get; set; }
     public List<Guid> LocationIds { get; set; } = [];
+
+    [JsonProperty("locations")]
+    [JsonPropertyName("locations")]
+    public List<Guid>? LocationIdsAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                LocationIds = value;
+        }
+    }
 }

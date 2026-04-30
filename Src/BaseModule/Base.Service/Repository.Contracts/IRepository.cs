@@ -31,7 +31,10 @@ public interface IRepository<T> where T : class
         CancellationToken ct = default
     );
 
-    Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+    Task<bool> AnyAsync(
+        Expression<Func<T, bool>> predicate,
+        CancellationToken ct = default
+    );
 
     Task<T> AddAsync(T entity, CancellationToken ct);
 

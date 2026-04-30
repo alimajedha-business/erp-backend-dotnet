@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using FluentValidation;
+
+using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.Resources;
@@ -16,11 +18,14 @@ public class ExceptionLocalizer<TEntityResource>(
 
     public string Localize(Exception ex)
     {
+        if (ex is ValidationException)
+            return _commonLocalizer["ValidationFailed"];
+
         if (ex is NotFoundException notFound)
             return LocalizeOrFallback(notFound.LocalizationKey, notFound.Arguments);
 
-        if (ex is ForeignKeyViolationException fkViolation)
-            return LocalizeOrFallback(fkViolation.LocalizationKey, fkViolation.Arguments);
+        if (ex is BadRequestException badRequest)
+            return LocalizeOrFallback(badRequest.LocalizationKey, badRequest.Arguments);
 
         if (ex is ForeignKeyConstraintException fkConstraint)
             return LocalizeOrFallback(fkConstraint.LocalizationKey, fkConstraint.Arguments);
@@ -28,28 +33,39 @@ public class ExceptionLocalizer<TEntityResource>(
         if (ex is CheckConstraintException checkConstraint)
             return LocalizeOrFallback(checkConstraint.LocalizationKey, checkConstraint.Arguments);
 
-        if (ex is DuplicateInsertException duplicateInsert)
+        if (ex is DuplicateResourceException duplicateInsert)
             return LocalizeOrFallback(duplicateInsert.LocalizationKey, duplicateInsert.Arguments);
 
         // Generic fallback
         return _commonLocalizer["GeneralError"];
     }
 
-    private string LocalizeOrFallback(string key, params object[] args)
+    public string Localize(string key, params object[] args) => LocalizeOrFallback(key, args);
+
+    private string LocalizeOrFallback(string key, object[] args)
     {
-        // Module resource first
-        var module = _moduleLocalizer[key, args];
-        if (!module.ResourceNotFound)
-            return module.Value;
+        var localizedArgs = args
+            .Select(LocalizeArgument)
+            .ToArray();
 
-        // Shared fallback
-        var shared = _commonLocalizer[key, args];
-        if (!shared.ResourceNotFound)
-            return shared.Value;
+        var localized = _moduleLocalizer[key, localizedArgs];
+        if (!localized.ResourceNotFound)
+            return localized.Value;
 
-        // Raw fallback
-        return (args is { Length: > 0 })
-            ? string.Format(key, args)
-            : key;
+        localized = _commonLocalizer[key, localizedArgs];
+        return localized.ResourceNotFound ? key : localized.Value;
+    }
+
+    private object LocalizeArgument(object arg)
+    {
+        if (arg is not string stringArg)
+            return arg;
+
+        var localizedArg = _moduleLocalizer[stringArg];
+        if (!localizedArg.ResourceNotFound)
+            return localizedArg.Value;
+
+        localizedArg = _commonLocalizer[stringArg];
+        return localizedArg.ResourceNotFound ? stringArg : localizedArg.Value;
     }
 }

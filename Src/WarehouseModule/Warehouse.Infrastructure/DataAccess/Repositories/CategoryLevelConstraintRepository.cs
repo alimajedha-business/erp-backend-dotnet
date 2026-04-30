@@ -17,7 +17,10 @@ public class CategoryLevelConstraintRepository(MainDbContext context) :
         CancellationToken ct
     )
     {
-        return await _dbSet.SingleOrDefaultAsync(e => e.LevelNo == levelNo, ct);
+        return await _dbSet.SingleOrDefaultAsync(
+            e => e.CompanyId == companyId && e.LevelNo == levelNo,
+            ct
+        );
     }
 
     public async Task<int> GetNextLevelAsync(
