@@ -65,6 +65,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Accounting.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Accounting.Service", "Src\AccountingModule\NGErp.Accounting.Service\NGErp.Accounting.Service.csproj", "{FCECBA27-3A52-421C-93CF-81EC654CEAAF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{4A7EB7E4-675D-4360-8531-87E7A7A17735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.EntityTypeSync", "Src\Tools\EntityTypeSync\NGErp.EntityTypeSync.csproj", "{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +163,10 @@ Global
 		{FCECBA27-3A52-421C-93CF-81EC654CEAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCECBA27-3A52-421C-93CF-81EC654CEAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCECBA27-3A52-421C-93CF-81EC654CEAAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +201,8 @@ Global
 		{216CC5B0-63B0-49EC-B80C-4DCD6934DBE5} = {4D8C4F34-2361-490E-AC3F-EFA8AED667E0}
 		{CAAB4C63-47CF-43C4-9EE7-3E532B60431D} = {4D8C4F34-2361-490E-AC3F-EFA8AED667E0}
 		{FCECBA27-3A52-421C-93CF-81EC654CEAAF} = {4D8C4F34-2361-490E-AC3F-EFA8AED667E0}
+		{4A7EB7E4-675D-4360-8531-87E7A7A17735} = {00293A27-E0AC-4B6C-BA00-1975D2915C60}
+		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6} = {4A7EB7E4-675D-4360-8531-87E7A7A17735}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD08F26D-DEEA-4DF8-89F2-7D46444A79BC}

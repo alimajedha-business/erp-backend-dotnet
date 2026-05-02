@@ -5,7 +5,6 @@ namespace NGErp.HCM.Service.DTOs;
 public class EmployeeEducationDto
 {
     public Guid Id { get; set; }
-    public Guid EmployeeId { get; set; }
     public EmployeeBaseDto? Employee { get; set; }
     [MaxLength(50)]
     public string? LevelCode { get; set; }
@@ -24,7 +23,6 @@ public class EmployeeEducationDto
 public class CreateEmployeeEducationDto
 {
     [Required]
-    public Guid? EmployeeId { get; set; }
     [MaxLength(50)]
     public string? LevelCode { get; set; }
     [MaxLength(50)]
@@ -43,7 +41,6 @@ public class CreateEmployeeEducationDto
 
 public class PatchEmployeeEducationDto
 {
-    public Guid? EmployeeId { get; set; }
     [MaxLength(50)]
     public string? LevelCode { get; set; }
     [MaxLength(50)]

@@ -11,6 +11,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHCMInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IMaritalStatusRepository, MaritalStatusRepository>();
+        services.AddScoped<IMilitaryServiceStatusRepository, MilitaryServiceStatusRepository>();
         services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IOrganizationalStructureRepository, OrganizationalStructureRepository>();
         services.AddScoped<IEmploymentGroupRepository, EmploymentGroupRepository>();

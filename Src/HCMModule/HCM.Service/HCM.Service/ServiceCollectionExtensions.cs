@@ -20,6 +20,8 @@ namespace NGErp.HCM.Service
             services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
 
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IMaritalStatusService, MaritalStatusService>();
+            services.AddScoped<IMilitaryServiceStatusService, MilitaryServiceStatusService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
             services.AddScoped<IEmploymentGroupService, EmploymentGroupService>();
@@ -27,14 +29,13 @@ namespace NGErp.HCM.Service
 
             services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
             services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
+            services.AddSingleton<IFilterSchema<MaritalStatus>, MaritalStatusSchema>();
+            services.AddSingleton<IFilterSchema<MilitaryServiceStatus>, MilitaryServiceStatusSchema>();
             services.AddScoped<IEmployeeService, EmployeeService>();
-            
-        services.AddScoped<IEmployeeEducationService, EmployeeEducationService>();
+            services.AddScoped<IEmployeeEducationService, EmployeeEducationService>();
+            services.AddScoped<IEmployeeWorkExperienceService, EmployeeWorkExperienceService>();
 
-        
-        services.AddScoped<IEmployeeWorkExperienceService, EmployeeWorkExperienceService>();
-
-        return services;
+            return services;
         }
     }
 }

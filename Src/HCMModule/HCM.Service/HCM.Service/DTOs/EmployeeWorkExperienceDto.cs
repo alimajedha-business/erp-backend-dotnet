@@ -5,7 +5,6 @@ namespace NGErp.HCM.Service.DTOs;
 public class EmployeeWorkExperienceDto
 {
     public Guid Id { get; set; }
-    public Guid EmployeeId { get; set; }
     public EmployeeBaseDto? Employee { get; set; }
     [MaxLength(200)]
     [MinLength(2)]
@@ -20,8 +19,6 @@ public class EmployeeWorkExperienceDto
 public class CreateEmployeeWorkExperienceDto
 {
     [Required]
-    public Guid? EmployeeId { get; set; }
-    [Required]
     [MaxLength(200)]
     [MinLength(2)]
     public required string CompanyName { get; set; }
@@ -35,7 +32,6 @@ public class CreateEmployeeWorkExperienceDto
 
 public class PatchEmployeeWorkExperienceDto
 {
-    public Guid? EmployeeId { get; set; }
     [MaxLength(200)]
     [MinLength(2)]
     public string? CompanyName { get; set; }

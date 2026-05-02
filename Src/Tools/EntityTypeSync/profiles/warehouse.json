@@ -1,0 +1,280 @@
+{
+  "moduleId": 4,
+  "prefix": "store",
+  "deleteStale": true,
+  "entityTypes": [
+    {
+      "key": "WAREHOUSE_TYPE",
+      "nameFa": "Warehouse Type",
+      "nameEn": "Warehouse Type",
+      "code": "W001",
+      "ordering": 10,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "WAREHOUSE",
+      "nameFa": "Warehouse",
+      "nameEn": "Warehouse",
+      "code": "W002",
+      "ordering": 20,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "WAREHOUSE_LOCATION",
+      "nameFa": "Warehouse Location",
+      "nameEn": "Warehouse Location",
+      "code": "W003",
+      "ordering": 30,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "UNIT_OF_MEASUREMENT",
+      "nameFa": "Unit Of Measurement",
+      "nameEn": "Unit Of Measurement",
+      "code": "W004",
+      "ordering": 40,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "SHIPPING_COMPANY",
+      "nameFa": "Shipping Company",
+      "nameEn": "Shipping Company",
+      "code": "W005",
+      "ordering": 50,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "MEASUREMENT_DIMENSION",
+      "nameFa": "Measurement Dimension",
+      "nameEn": "Measurement Dimension",
+      "code": "W006",
+      "ordering": 60,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": false,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "ITEM_TYPE",
+      "nameFa": "Item Type",
+      "nameEn": "Item Type",
+      "code": "W007",
+      "ordering": 70,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "ITEM",
+      "nameFa": "Item",
+      "nameEn": "Item",
+      "code": "W008",
+      "ordering": 80,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "INVENTORY_MOVEMENT_TYPE",
+      "nameFa": "Inventory Movement Type",
+      "nameEn": "Inventory Movement Type",
+      "code": "W009",
+      "ordering": 90,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "CATEGORY",
+      "nameFa": "Category",
+      "nameEn": "Category",
+      "code": "W010",
+      "ordering": 100,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "CATEGORY_LEVEL_CONSTRAINT",
+      "nameFa": "Category Level Constraint",
+      "nameEn": "Category Level Constraint",
+      "code": "W011",
+      "ordering": 110,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "ATTRIBUTE",
+      "nameFa": "Attribute",
+      "nameEn": "Attribute",
+      "code": "W012",
+      "ordering": 120,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "ATTRIBUTE_ENUM_VALUE",
+      "nameFa": "Attribute Enum Value",
+      "nameEn": "Attribute Enum Value",
+      "code": "W013",
+      "ordering": 130,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    }
+  ]
+}

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502054529_RefactorMilitaryAndMaritalStatuses")]
+    partial class RefactorMilitaryAndMaritalStatuses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2257,6 +2260,61 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("UnitOfMeasurement", "Warehouse");
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurementConversion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Factor")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<Guid>("FromUnitOfMeasurementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("ToUnitOfMeasurementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ToUnitOfMeasurementId");
+
+                    b.HasIndex("FromUnitOfMeasurementId", "ToUnitOfMeasurementId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_UomConv_Unique");
+
+                    b.ToTable("UnitOfMeasurementConversion", "Warehouse", t =>
+                        {
+                            t.HasCheckConstraint("CK_UomConv_Factor", "Factor > 0");
+                        });
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Warehouse", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2922,13 +2980,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Attribute", "Attribute")
                         .WithMany("ItemAttributes")
                         .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
                         .WithMany("ItemAttributes")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Attribute");
@@ -2947,7 +3005,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
                         .WithMany("ItemUnitOfMeasurements")
                         .HasForeignKey("UnitOfMeasurementId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -2979,13 +3037,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
                         .WithMany("ItemWarehouses")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany("ItemWarehouses")
                         .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -3021,6 +3079,25 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("MeasurementDimension");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurementConversion", b =>
+                {
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "FromUnitOfMeasurement")
+                        .WithMany()
+                        .HasForeignKey("FromUnitOfMeasurementId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "ToUnitOfMeasurement")
+                        .WithMany()
+                        .HasForeignKey("ToUnitOfMeasurementId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("FromUnitOfMeasurement");
+
+                    b.Navigation("ToUnitOfMeasurement");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Warehouse", b =>
