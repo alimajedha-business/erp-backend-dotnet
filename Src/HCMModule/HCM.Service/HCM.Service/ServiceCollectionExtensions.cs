@@ -8,6 +8,8 @@ using NGErp.HCM.Service.Services;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Domain.EntitySchemas;
 using NGErp.Base.Domain.EntitySchemas;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidators;
 
 namespace NGErp.HCM.Service
 {
@@ -33,6 +35,7 @@ namespace NGErp.HCM.Service
 
             services.AddScoped<IEmployeeWorkExperienceService, EmployeeWorkExperienceService>();
             services.AddScoped<IJobCategoryService, JobCategoryService>();
+            services.AddScoped<IJobCategoryBusinessRulesValidator, JobCategoryBusinessRuleValidator>();
 
             return services;
         }

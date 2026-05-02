@@ -43,7 +43,7 @@ public class JobCategoryService(
     {
         ThrowIfNull(createDto);
         await ValidateAsync(_createValidator, createDto, ct);
-        //await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(createDto, ct);
 
         var entity = _mapper.Map<JobCategory>(createDto);
 

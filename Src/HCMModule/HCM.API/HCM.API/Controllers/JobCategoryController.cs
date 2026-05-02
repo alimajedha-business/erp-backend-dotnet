@@ -11,13 +11,13 @@ using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
 
-namespace NGErp.Warehouse.API.Controllers;
+namespace NGErp.HCM.API.Controllers;
 
 [ApiController]
 [ApiVersion(1.0)]
-[ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/job-categories")]
-public class CategoryController(
+[ApiExplorerSettings(GroupName = "v1-hcm")]
+[Route("api/v{version:apiVersion}/hcm/job-categories")]
+public class JobCategoryController(
     IJobCategoryService jobCategoryService,
     IExcelExportService excelExportService
 ) : ControllerBase
