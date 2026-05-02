@@ -11,7 +11,8 @@ public class EmployeeEducationRepository(MainDbContext context) :
     Repository<EmployeeEducation>(context),
     IEmployeeEducationRepository
 {
-   new public async Task<EmployeeEducation?> GetByIdAsync(
+    public async Task<EmployeeEducation?> GetByIdAsync(
+        Guid employeeId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
@@ -20,22 +21,23 @@ public class EmployeeEducationRepository(MainDbContext context) :
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
 
         return await query
-            .Where(e => e.Id == id)
+            .Where(e => e.EmployeeId == employeeId && e.Id == id)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
-    public override IQueryable<EmployeeEducation> GetFiltered(
-       RequestAdvancedFilters requestAdvancedFilters
+    public IQueryable<EmployeeEducation> GetFiltered(
+        Guid employeeId,
+        RequestAdvancedFilters requestAdvancedFilters
     )
     {
         return _dbSet
             .AsNoTracking()
+            .Where(e => e.EmployeeId == employeeId)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
             .Filter(requestAdvancedFilters);
     }
-
 }
 

@@ -11,31 +11,32 @@ public class EmployeeWorkExperienceRepository(MainDbContext context) :
     Repository<EmployeeWorkExperience>(context),
     IEmployeeWorkExperienceRepository
 {
-
-    new public async Task<EmployeeWorkExperience?> GetByIdAsync(
-         Guid id,
-         bool trackChanges = false,
-         CancellationToken ct = default
-     )
+    public async Task<EmployeeWorkExperience?> GetByIdAsync(
+        Guid employeeId,
+        Guid id,
+        bool trackChanges = false,
+        CancellationToken ct = default
+    )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
 
         return await query
-            .Where(e => e.Id == id)
+            .Where(e => e.EmployeeId == employeeId && e.Id == id)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
-    public override IQueryable<EmployeeWorkExperience> GetFiltered(
-       RequestAdvancedFilters requestAdvancedFilters
+    public IQueryable<EmployeeWorkExperience> GetFiltered(
+        Guid employeeId,
+        RequestAdvancedFilters requestAdvancedFilters
     )
     {
         return _dbSet
             .AsNoTracking()
+            .Where(e => e.EmployeeId == employeeId)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
             .Filter(requestAdvancedFilters);
     }
-
 }
