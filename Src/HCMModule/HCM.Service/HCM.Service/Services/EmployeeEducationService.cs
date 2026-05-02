@@ -30,40 +30,45 @@ public class EmployeeEducationService(
     private readonly IEmployeeEducationRepository _employeeEducationRepository = employeeEducationRepository;
 
     public async Task<EmployeeEducationDto> CreateAsync(
+        Guid employeeId,
         CreateEmployeeEducationDto createDto,
         CancellationToken ct
     )
     {
         var entity = _mapper.Map<EmployeeEducation>(createDto);
+        entity.EmployeeId = employeeId;
 
         await _employeeEducationRepository.AddAsync(entity, ct);
         await _employeeEducationRepository.SaveChangesAsync(ct);
 
         return await GetByIdAsync(
+                employeeId,
                 entity.Id,
                 trackChanges: false,
                 ct
             );
-}
+    }
 
     public async Task<EmployeeEducationDto> GetByIdAsync(
+        Guid employeeId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync(employeeId, id, trackChanges, ct);
         return _mapper.Map<EmployeeEducationDto>(entity);
     }
 
     public async Task<ListResponseModel<EmployeeEducationDto>> GetFilteredAsync(
+        Guid employeeId,
         EmployeeEducationParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<EmployeeEducation>(filterNodeDto);
-        var query = _employeeEducationRepository.GetFiltered(advancedFilters);
+        var query = _employeeEducationRepository.GetFiltered(employeeId, advancedFilters);
         var res = await _employeeEducationRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<EmployeeEducationDto>(
@@ -74,14 +79,16 @@ public class EmployeeEducationService(
     }
 
     public virtual async Task<EmployeeEducationDto> PatchAsync(
+        Guid employeeId,
         Guid id,
         JsonPatchDocument<PatchEmployeeEducationDto> patchDocument,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(
+            employeeId,
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 
@@ -99,17 +106,20 @@ public class EmployeeEducationService(
         }
 
         _mapper.Map(patchDto, entity);
+        entity.EmployeeId = employeeId;
 
         await _employeeEducationRepository.SaveChangesAsync(ct);
         return _mapper.Map<EmployeeEducationDto>(entity);
     }
 
     public async Task DeleteAsync(
+        Guid employeeId,
         Guid id,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(
+            employeeId,
             id,
             trackChanges: true,
             ct
@@ -120,12 +130,13 @@ public class EmployeeEducationService(
     }
 
     private async Task<EmployeeEducation> GetByIdOrThrowAsync(
+        Guid employeeId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await _employeeEducationRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _employeeEducationRepository.GetByIdAsync(employeeId, id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

@@ -83,7 +83,7 @@ public class PositionService(
         var entity = await GetByIdOrThrowAsync(
             companyId,
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 

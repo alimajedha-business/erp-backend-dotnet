@@ -14,56 +14,53 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employee-educations")]
-public class EmployeeEducationController(
-    IEmployeeEducationService employeeEducationService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/marital-statuses")]
+public class MaritalStatusController(
+    IMaritalStatusService maritalStatusService
 ) : ControllerBase
 {
-    private readonly IEmployeeEducationService _employeeEducationService = employeeEducationService;
+    private readonly IMaritalStatusService _maritalStatusService = maritalStatusService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateEmployeeEducationDto createDto,
+        [FromBody] CreateMaritalStatusDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _employeeEducationService.CreateAsync(createDto, ct);
+        var dto = await _maritalStatusService.CreateAsync(companyId, createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
-            new {companyId, id = dto.Id },
+            new { companyId, id = dto.Id },
             dto
         );
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyid,
+        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        var dto = await _employeeEducationService.GetByIdAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
+        var dto = await _maritalStatusService.GetByIdAsync(companyId, id, false, ct);
         return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
-        [FromQuery] EmployeeEducationParameters parameters,
+        [FromRoute] Guid companyId,
+        [FromQuery] MaritalStatusParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _employeeEducationService.GetFilteredAsync(
+        var result = await _maritalStatusService.GetFilteredAsync(
+            companyId,
             parameters,
             filterNodeDto,
             ct
@@ -72,30 +69,27 @@ public class EmployeeEducationController(
         return Ok(result);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        await _employeeEducationService.DeleteAsync(id, ct);
-        return NoContent();
-    }
-
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchEmployeeEducationDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _employeeEducationService.PatchAsync(
-            id,
-            patchDocument,
-            ct
-        );
-
+        var dto = await _maritalStatusService.PatchAsync(companyId, id, patchDocument, ct);
         return Ok(dto);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _maritalStatusService.DeleteAsync(companyId, id, ct);
+        return NoContent();
     }
 }

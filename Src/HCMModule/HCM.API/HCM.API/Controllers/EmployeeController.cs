@@ -14,10 +14,14 @@ namespace NGErp.HCM.API.Controllers;
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employees")]
 public class EmployeeController(
-    IEmployeeService employeeService
+    IEmployeeService employeeService,
+    IEmployeeEducationService employeeEducationService,
+    IEmployeeWorkExperienceService employeeWorkExperienceService
     ) : ControllerBase
 {
     private readonly IEmployeeService _employeeService = employeeService;
+    private readonly IEmployeeEducationService _employeeEducationService = employeeEducationService;
+    private readonly IEmployeeWorkExperienceService _employeeWorkExperienceService = employeeWorkExperienceService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -107,6 +111,233 @@ public class EmployeeController(
         return Ok(dto);
     }
 
+    #region Educations
+
+    [HttpPost("{employeeId:guid}/educations")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateEducation(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromBody] CreateEmployeeEducationDto createDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeEducationService.CreateAsync(
+            employeeId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetEducationById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/educations/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetEducations(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeEducationParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var result = await _employeeEducationService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/educations/{id:guid}")]
+    public async Task<IActionResult> GetEducationById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeEducationService.GetByIdAsync(
+            employeeId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{employeeId:guid}/educations/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchEducation(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeEducationDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeEducationService.PatchAsync(
+            employeeId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{employeeId:guid}/educations/{id:guid}")]
+    public async Task<IActionResult> DeleteEducation(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        await _employeeEducationService.DeleteAsync(employeeId, id, ct);
+        return NoContent();
+    }
+
+    #endregion
+
+    #region Work Experiences
+
+    [HttpPost("{employeeId:guid}/work-experiences")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateWorkExperience(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromBody] CreateEmployeeWorkExperienceDto createDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWorkExperienceService.CreateAsync(
+            employeeId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetWorkExperienceById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/work-experiences/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetWorkExperiences(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeWorkExperienceParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var result = await _employeeWorkExperienceService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/work-experiences/{id:guid}")]
+    public async Task<IActionResult> GetWorkExperienceById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWorkExperienceService.GetByIdAsync(
+            employeeId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{employeeId:guid}/work-experiences/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchWorkExperience(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeWorkExperienceDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWorkExperienceService.PatchAsync(
+            employeeId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{employeeId:guid}/work-experiences/{id:guid}")]
+    public async Task<IActionResult> DeleteWorkExperience(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        await _employeeWorkExperienceService.DeleteAsync(employeeId, id, ct);
+        return NoContent();
+    }
+
+    #endregion
+
+    private async Task EnsureEmployeeExistsAsync(
+        Guid companyId,
+        Guid employeeId,
+        CancellationToken ct
+    )
+    {
+        await _employeeService.GetByIdAsync(
+            companyId,
+            employeeId,
+            trackChanges: false,
+            ct
+        );
+    }
 }
 
 
