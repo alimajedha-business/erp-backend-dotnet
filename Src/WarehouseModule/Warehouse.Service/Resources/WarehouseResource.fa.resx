@@ -186,6 +186,24 @@
   <data name="CategoryLevelConstraint" xml:space="preserve">
     <value>محدودیت سطوح طبقه‌بندی</value>
   </data>
+  <data name="CategoryLevelConstraint.CodeLength.CannotDecrease" xml:space="preserve">
+    <value>طول کد سطح {0} به دلیل وجود طبقه‌بندی در این سطح نمی‌تواند از {1} به {2} کاهش یابد.</value>
+  </data>
+  <data name="CategoryLevelConstraint.Delete.HasCategories" xml:space="preserve">
+    <value>محدودیت سطح طبقه‌بندی برای سطح {0} به دلیل وجود طبقه‌بندی در این سطح قابل حذف نیست.</value>
+  </data>
+  <data name="CategoryLevelConstraint.CodeLength.Range" xml:space="preserve">
+    <value>طول کد محدودیت سطح طبقه‌بندی باید بین 1 و 5 باشد.</value>
+  </data>
+  <data name="CategoryLevelConstraint.LevelNo.Duplicate" xml:space="preserve">
+    <value>برای سطح {0} قبلا محدودیت سطح طبقه‌بندی تعریف شده است.</value>
+  </data>
+  <data name="CategoryLevelConstraint.LevelNo.PreviousRequired" xml:space="preserve">
+    <value>محدودیت سطح طبقه‌بندی برای سطح {1} قبل از تعریف سطح {0} قابل ثبت نیست.</value>
+  </data>
+  <data name="CategoryLevelConstraint.LevelNo.Range" xml:space="preserve">
+    <value>شماره سطح محدودیت طبقه‌بندی باید بین 1 و 6 باشد.</value>
+  </data>
   <data name="CK_Category_LevelNo" xml:space="preserve">
     <value>شماره سطح باید بین اعداد 1 و 7 باشد.</value>
   </data>
