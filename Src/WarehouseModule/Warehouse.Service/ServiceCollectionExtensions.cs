@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
+        services.AddScoped<IWarehouseTypeBusinessRuleValidator, WarehouseTypeBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
         services.AddScoped<IExcelExportService, ExcelExportService<WarehouseResource>>();

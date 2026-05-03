@@ -255,6 +255,24 @@
   <data name="WarehouseLocation" xml:space="preserve">
     <value>Warehouse Location</value>
   </data>
+  <data name="WarehouseType.Code.Duplicate" xml:space="preserve">
+    <value>Warehouse type code already exists.</value>
+  </data>
+  <data name="WarehouseType.Code.NotEmpty" xml:space="preserve">
+    <value>Warehouse type code could not be empty.</value>
+  </data>
+  <data name="WarehouseType.Delete.HasWarehouses" xml:space="preserve">
+    <value>Warehouse type cannot be deleted because warehouses are registered with it.</value>
+  </data>
+  <data name="WarehouseType.Title.MaxLength" xml:space="preserve">
+    <value>Warehouse type title must not be longer than 50 characters.</value>
+  </data>
+  <data name="WarehouseType.Title.MinLength" xml:space="preserve">
+    <value>Warehouse type title must have at least 3 characters.</value>
+  </data>
+  <data name="WarehouseType.Title.NotEmpty" xml:space="preserve">
+    <value>Warehouse type title could not be empty.</value>
+  </data>
   <data name="WarehouseType" xml:space="preserve">
     <value>Warehouse Type</value>
   </data>
