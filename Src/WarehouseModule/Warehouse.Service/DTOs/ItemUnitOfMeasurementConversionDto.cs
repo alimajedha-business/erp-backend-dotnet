@@ -1,16 +1,5 @@
 ﻿namespace NGErp.Warehouse.Service.DTOs;
 
-public record ItemUnitOfMeasurementConversionDto(
-    Dictionary<string, ItemUnitConversionEquationDto> UnitConversions
-);
-
-public class CreateItemUnitOfMeasurementConversionDto
-{
-    public Guid ItemId { get; set; }
-    public Guid UnitOfMeasurementId { get; set; }
-    public required string ConversionEquation { get; set; }
-}
-
 public sealed class ItemUnitConversionEquationDto
 {
     public required object? Operand1 { get; set; }
