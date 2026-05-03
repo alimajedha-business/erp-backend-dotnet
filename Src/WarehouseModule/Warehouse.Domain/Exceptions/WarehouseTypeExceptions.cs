@@ -2,6 +2,9 @@ using NGErp.Base.Domain.Exceptions;
 
 namespace NGErp.Warehouse.Domain.Exceptions;
 
+public sealed class WarehouseTypeNotFoundException()
+    : NotFoundException("WarehouseType");
+
 public sealed class WarehouseTypeCodeAlreadyExistsException(int code)
     : DuplicateResourceException(code)
 {

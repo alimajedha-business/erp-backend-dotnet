@@ -5,7 +5,6 @@ using AutoMapper;
 using FluentValidation;
 
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
@@ -13,12 +12,12 @@ using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
-using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -29,14 +28,10 @@ public class WarehouseTypeService(
     IWarehouseTypeBusinessRuleValidator businessRuleValidator,
     IValidator<CreateWarehouseTypeDto> createValidator,
     IValidator<PatchWarehouseTypeDto> patchValidator,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IMapper mapper
 ) : IWarehouseTypeService
 {
-    private readonly string _key = "WarehouseType";
-
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IWarehouseTypeRepository _warehouseTypeRepository = warehouseTypeRepository;
     private readonly IWarehouseTypeBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
@@ -185,8 +180,9 @@ public class WarehouseTypeService(
             ct
         );
 
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    }
+		return entity ?? throw new WarehouseTypeNotFoundException();
+
+	}
 }
 
 
