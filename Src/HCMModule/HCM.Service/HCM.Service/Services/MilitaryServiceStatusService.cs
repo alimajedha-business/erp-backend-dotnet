@@ -30,12 +30,10 @@ public class MilitaryServiceStatusService(
     private readonly IMilitaryServiceStatusRepository _militaryServiceStatusRepository = militaryServiceStatusRepository;
 
     public async Task<MilitaryServiceStatusDto> CreateAsync(
-        Guid companyId,
         CreateMilitaryServiceStatusDto createDto,
         CancellationToken ct
     )
     {
-        _ = companyId;
 
         var entity = _mapper.Map<MilitaryServiceStatus>(createDto);
         var created = await _militaryServiceStatusRepository.AddAsync(entity, ct);
@@ -45,26 +43,22 @@ public class MilitaryServiceStatusService(
     }
 
     public async Task<MilitaryServiceStatusDto> GetByIdAsync(
-        Guid companyId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        _ = companyId;
 
         var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
         return _mapper.Map<MilitaryServiceStatusDto>(entity);
     }
 
     public async Task<ListResponseModel<MilitaryServiceStatusDto>> GetFilteredAsync(
-        Guid companyId,
         MilitaryServiceStatusParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        _ = companyId;
 
         var advancedFilters = _filterBuilder.Build<MilitaryServiceStatus>(filterNodeDto);
         var query = _militaryServiceStatusRepository.GetFiltered(advancedFilters);
@@ -78,14 +72,11 @@ public class MilitaryServiceStatusService(
     }
 
     public async Task<MilitaryServiceStatusDto> PatchAsync(
-        Guid companyId,
         Guid id,
         JsonPatchDocument<PatchMilitaryServiceStatusDto> patchDocument,
         CancellationToken ct
     )
     {
-        _ = companyId;
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         var patchDto = _mapper.Map<PatchMilitaryServiceStatusDto>(entity);
         var errors = new List<string>();
@@ -107,13 +98,10 @@ public class MilitaryServiceStatusService(
     }
 
     public async Task DeleteAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        _ = companyId;
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         _militaryServiceStatusRepository.Remove(entity);
         await _militaryServiceStatusRepository.SaveChangesAsync(ct);

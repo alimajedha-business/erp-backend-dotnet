@@ -30,12 +30,10 @@ public class MaritalStatusService(
     private readonly IMaritalStatusRepository _maritalStatusRepository = maritalStatusRepository;
 
     public async Task<MaritalStatusDto> CreateAsync(
-        Guid companyId,
         CreateMaritalStatusDto createDto,
         CancellationToken ct
     )
     {
-        _ = companyId;
 
         var entity = _mapper.Map<MaritalStatus>(createDto);
         var created = await _maritalStatusRepository.AddAsync(entity, ct);
@@ -45,27 +43,22 @@ public class MaritalStatusService(
     }
 
     public async Task<MaritalStatusDto> GetByIdAsync(
-        Guid companyId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        _ = companyId;
 
         var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
         return _mapper.Map<MaritalStatusDto>(entity);
     }
 
     public async Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
-        Guid companyId,
         MaritalStatusParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        _ = companyId;
-
         var advancedFilters = _filterBuilder.Build<MaritalStatus>(filterNodeDto);
         var query = _maritalStatusRepository.GetFiltered(advancedFilters);
         var res = await _maritalStatusRepository.GetResponseListAsync(query, parameters, ct);
@@ -78,14 +71,11 @@ public class MaritalStatusService(
     }
 
     public async Task<MaritalStatusDto> PatchAsync(
-        Guid companyId,
         Guid id,
         JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
         CancellationToken ct
     )
     {
-        _ = companyId;
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         var patchDto = _mapper.Map<PatchMaritalStatusDto>(entity);
         var errors = new List<string>();
@@ -107,13 +97,10 @@ public class MaritalStatusService(
     }
 
     public async Task DeleteAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
-        _ = companyId;
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
         _maritalStatusRepository.Remove(entity);
         await _maritalStatusRepository.SaveChangesAsync(ct);

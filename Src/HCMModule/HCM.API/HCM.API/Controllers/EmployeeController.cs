@@ -16,12 +16,16 @@ namespace NGErp.HCM.API.Controllers;
 public class EmployeeController(
     IEmployeeService employeeService,
     IEmployeeEducationService employeeEducationService,
-    IEmployeeWorkExperienceService employeeWorkExperienceService
-    ) : ControllerBase
+    IEmployeeWorkExperienceService employeeWorkExperienceService,
+    IEmployeeWarriorRecordService employeeWarriorRecordService,
+    IEmployeeRelativeService employeeRelativeService
+) : ControllerBase
 {
     private readonly IEmployeeService _employeeService = employeeService;
     private readonly IEmployeeEducationService _employeeEducationService = employeeEducationService;
     private readonly IEmployeeWorkExperienceService _employeeWorkExperienceService = employeeWorkExperienceService;
+    private readonly IEmployeeWarriorRecordService _employeeWarriorRecordService = employeeWarriorRecordService;
+    private readonly IEmployeeRelativeService _employeeRelativeService = employeeRelativeService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -30,7 +34,7 @@ public class EmployeeController(
         [FromRoute] Guid companyId,
         [FromBody] CreateEmployeeDto createDto,
         CancellationToken ct
-        )
+    )
     {
         var dto = await _employeeService.CreateAsync(
             companyId,
@@ -50,7 +54,7 @@ public class EmployeeController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
         var dto = await _employeeService.GetByIdAsync(
             companyId,
@@ -69,7 +73,7 @@ public class EmployeeController(
         [FromQuery] EmployeeParamaters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
-        )
+    )
     {
         var result = await _employeeService.GetFilteredAsync(
             companyId,
@@ -86,7 +90,7 @@ public class EmployeeController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
         await _employeeService.DeleteAsync(companyId, id, ct);
         return Ok();
@@ -99,9 +103,9 @@ public class EmployeeController(
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchEmployeeDto> patchDocument,
         CancellationToken ct
-        )
+    )
     {
-    var dto = await _employeeService.PatchAsync(
+        var dto = await _employeeService.PatchAsync(
             companyId,
             id,
             patchDocument,
@@ -325,6 +329,220 @@ public class EmployeeController(
 
     #endregion
 
+    #region Warrior Records
+
+    [HttpPost("{employeeId:guid}/warrior-records")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateWarriorRecord(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromBody] CreateEmployeeWarriorRecordDto createDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWarriorRecordService.CreateAsync(
+            employeeId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetWarriorRecordById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/warrior-records/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetWarriorRecords(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeWarriorRecordParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var result = await _employeeWarriorRecordService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/warrior-records/{id:guid}")]
+    public async Task<IActionResult> GetWarriorRecordById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWarriorRecordService.GetByIdAsync(
+            employeeId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{employeeId:guid}/warrior-records/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchWarriorRecord(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeWarriorRecordDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeWarriorRecordService.PatchAsync(
+            employeeId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{employeeId:guid}/warrior-records/{id:guid}")]
+    public async Task<IActionResult> DeleteWarriorRecord(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        await _employeeWarriorRecordService.DeleteAsync(employeeId, id, ct);
+        return Ok();
+    }
+
+    #endregion
+
+    #region Relatives
+
+    [HttpPost("{employeeId:guid}/relatives")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromBody] CreateEmployeeRelativeDto createDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.CreateAsync(
+            employeeId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetRelativeById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/relatives/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetRelatives(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeRelativeParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var result = await _employeeRelativeService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/relatives/{id:guid}")]
+    public async Task<IActionResult> GetRelativeById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.GetByIdAsync(
+            employeeId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{employeeId:guid}/relatives/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeRelativeDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.PatchAsync(
+            employeeId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{employeeId:guid}/relatives/{id:guid}")]
+    public async Task<IActionResult> DeleteRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        await _employeeRelativeService.DeleteAsync(employeeId, id, ct);
+        return NoContent();
+    }
+
+    #endregion
+
     private async Task EnsureEmployeeExistsAsync(
         Guid companyId,
         Guid employeeId,
@@ -339,5 +557,4 @@ public class EmployeeController(
         );
     }
 }
-
 
