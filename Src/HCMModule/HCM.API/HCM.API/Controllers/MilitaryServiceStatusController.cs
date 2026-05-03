@@ -14,23 +14,23 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employee-work-experiences")]
-public class EmployeeWorkExperienceController(
-    IEmployeeWorkExperienceService employeeWorkExperienceService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/military-service-statuses")]
+public class MilitaryServiceStatusController(
+    IMilitaryServiceStatusService militaryServiceStatusService
 ) : ControllerBase
 {
-    private readonly IEmployeeWorkExperienceService _employeeWorkExperienceService = employeeWorkExperienceService;
+    private readonly IMilitaryServiceStatusService _militaryServiceStatusService = militaryServiceStatusService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateEmployeeWorkExperienceDto createDto,
+        [FromBody] CreateMilitaryServiceStatusDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _employeeWorkExperienceService.CreateAsync(createDto, ct);
+        var dto = await _militaryServiceStatusService.CreateAsync(companyId, createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -46,12 +46,7 @@ public class EmployeeWorkExperienceController(
         CancellationToken ct
     )
     {
-        var dto = await _employeeWorkExperienceService.GetByIdAsync(
-            id,
-            trackChanges: true,
-            ct
-        );
-
+        var dto = await _militaryServiceStatusService.GetByIdAsync(companyId, id, false, ct);
         return Ok(dto);
     }
 
@@ -59,18 +54,32 @@ public class EmployeeWorkExperienceController(
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] EmployeeWorkExperienceParameters parameters,
+        [FromQuery] MilitaryServiceStatusParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _employeeWorkExperienceService.GetFilteredAsync(
+        var result = await _militaryServiceStatusService.GetFilteredAsync(
+            companyId,
             parameters,
             filterNodeDto,
             ct
         );
 
         return Ok(result);
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchMilitaryServiceStatusDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _militaryServiceStatusService.PatchAsync(companyId, id, patchDocument, ct);
+        return Ok(dto);
     }
 
     [HttpDelete("{id:guid}")]
@@ -80,25 +89,7 @@ public class EmployeeWorkExperienceController(
         CancellationToken ct
     )
     {
-        await _employeeWorkExperienceService.DeleteAsync(id, ct);
+        await _militaryServiceStatusService.DeleteAsync(companyId, id, ct);
         return NoContent();
-    }
-
-    [HttpPatch("{id:guid}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchEmployeeWorkExperienceDto> patchDocument,
-        CancellationToken ct
-    )
-    {
-        var dto = await _employeeWorkExperienceService.PatchAsync(
-            id,
-            patchDocument,
-            ct
-        );
-
-        return Ok(dto);
     }
 }

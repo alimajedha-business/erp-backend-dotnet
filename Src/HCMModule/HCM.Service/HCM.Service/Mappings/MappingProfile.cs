@@ -13,6 +13,14 @@ public class MappingProfile : Profile
         CreateMap<Department, CreateDepartmentDto>().ReverseMap();
         CreateMap<Department, PatchDepartmentDto>().ReverseMap();
 
+        CreateMap<MaritalStatus, MaritalStatusDto>();
+        CreateMap<MaritalStatus, CreateMaritalStatusDto>().ReverseMap();
+        CreateMap<MaritalStatus, PatchMaritalStatusDto>().ReverseMap();
+
+        CreateMap<MilitaryServiceStatus, MilitaryServiceStatusDto>();
+        CreateMap<MilitaryServiceStatus, CreateMilitaryServiceStatusDto>().ReverseMap();
+        CreateMap<MilitaryServiceStatus, PatchMilitaryServiceStatusDto>().ReverseMap();
+
         CreateMap<Position, PositionDto>();
         CreateMap<Position, CreatePositionDto>().ReverseMap();
         CreateMap<Position, PatchPositionDto>().ReverseMap();

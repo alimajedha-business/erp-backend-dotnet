@@ -1,0 +1,154 @@
+{
+  "moduleId": 6,
+  "prefix": "hcm",
+  "deleteStale": true,
+  "entityTypes": [
+    {
+      "key": "DEPARTMENT",
+      "nameFa": "Department",
+      "nameEn": "Department",
+      "code": "H001",
+      "ordering": 10,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "POSITION",
+      "nameFa": "Position",
+      "nameEn": "Position",
+      "code": "H002",
+      "ordering": 20,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "ORGANIZATIONAL_STRUCTURE",
+      "nameFa": "Organizational Structure",
+      "nameEn": "Organizational Structure",
+      "code": "H003",
+      "ordering": 30,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "EMPLOYMENT_GROUP",
+      "nameFa": "Employment Group",
+      "nameEn": "Employment Group",
+      "code": "H004",
+      "ordering": 40,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "EMPLOYEE",
+      "nameFa": "Employee",
+      "nameEn": "Employee",
+      "code": "H005",
+      "ordering": 50,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "EMPLOYEE_EDUCATION",
+      "nameFa": "Employee Education",
+      "nameEn": "Employee Education",
+      "code": "H006",
+      "ordering": 60,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    },
+    {
+      "key": "EMPLOYEE_WORK_EXPERIENCE",
+      "nameFa": "Employee Work Experience",
+      "nameEn": "Employee Work Experience",
+      "code": "H007",
+      "ordering": 70,
+      "attrs": {
+        "readable": true,
+        "creatable": true,
+        "editable": true,
+        "deletable": true,
+        "loggable": true,
+        "printable": false,
+        "importable": false,
+        "exportable": true,
+        "ifNotCreator": false,
+        "hasRestriction": false,
+        "permissible": true
+      },
+      "commands": []
+    }
+  ]
+}

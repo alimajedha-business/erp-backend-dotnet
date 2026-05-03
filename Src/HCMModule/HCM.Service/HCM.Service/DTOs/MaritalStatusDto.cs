@@ -1,4 +1,4 @@
-﻿using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Domain.Entities;
 
 namespace NGErp.HCM.Service.DTOs;
 
@@ -25,4 +25,3 @@ public class PatchMaritalStatusDto
     public MaritalStatusType? Type { get; set; }
     public string? Title { get; set; }
 }
-

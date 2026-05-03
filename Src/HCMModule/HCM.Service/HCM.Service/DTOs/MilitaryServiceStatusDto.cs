@@ -1,6 +1,6 @@
-﻿using NGErp.General.Domain.Entities;
+using NGErp.HCM.Domain.Entities;
 
-namespace NGErp.General.Service.DTOs;
+namespace NGErp.HCM.Service.DTOs;
 
 public record MilitaryServiceStatusDto(
     Guid Id,
@@ -20,9 +20,8 @@ public class CreateMilitaryServiceStatusDto
     public required MilitaryStatusType Type { get; set; }
 }
 
-public class UpdateMilitaryServiceStatusDto
+public class PatchMilitaryServiceStatusDto
 {
-    public Guid Id { get; set; }
-    public required string Title { get; set; }
-    public required MilitaryStatusType Type { get; set; }
+    public string? Title { get; set; }
+    public MilitaryStatusType? Type { get; set; }
 }

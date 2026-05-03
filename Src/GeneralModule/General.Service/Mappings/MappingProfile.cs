@@ -2,8 +2,6 @@
 
 using NGErp.General.Domain.Entities;
 using NGErp.General.Service.DTOs;
-using NGErp.HCM.Domain.Entities;
-using NGErp.HCM.Service.DTOs;
 
 namespace NGErp.General.Service.Mappings
 {
@@ -14,8 +12,6 @@ namespace NGErp.General.Service.Mappings
            CreateMap<Company, CompanyDto>();
            CreateMap<CompanyUnit, CompanyUnitDto>();
 
-           CreateMap<MaritalStatus, MaritalStatusDto>();
-           CreateMap<MilitaryServiceStatus, MilitaryServiceStatusDto>();
            CreateMap<Person, PersonDto>();
            CreateMap<Person, PersonBaseDto>();
            

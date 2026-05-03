@@ -7,37 +7,37 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IEmployeeWorkExperienceService
+public interface IMaritalStatusService
 {
-    Task<EmployeeWorkExperienceDto> CreateAsync(
-        Guid employeeId,
-        CreateEmployeeWorkExperienceDto createDto,
+    Task<MaritalStatusDto> CreateAsync(
+        Guid companyId,
+        CreateMaritalStatusDto createDto,
         CancellationToken ct
     );
 
-    Task<EmployeeWorkExperienceDto> GetByIdAsync(
-        Guid employeeId,
+    Task<MaritalStatusDto> GetByIdAsync(
+        Guid companyId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<EmployeeWorkExperienceDto>> GetFilteredAsync(
-        Guid employeeId,
-        EmployeeWorkExperienceParameters parameters,
+    Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
+        Guid companyId,
+        MaritalStatusParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
-    Task<EmployeeWorkExperienceDto> PatchAsync(
-        Guid employeeId,
+    Task<MaritalStatusDto> PatchAsync(
+        Guid companyId,
         Guid id,
-        JsonPatchDocument<PatchEmployeeWorkExperienceDto> patchDocument,
+        JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
         CancellationToken ct
     );
 
     Task DeleteAsync(
-        Guid employeeId,
+        Guid companyId,
         Guid id,
         CancellationToken ct
     );
