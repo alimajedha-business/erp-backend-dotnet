@@ -50,6 +50,20 @@ public static class PatchPolicyValidator
             }
         }
     }
+
+    public static bool HasProperty<TDto>(
+        JsonPatchDocument<TDto> doc,
+        string propertyName
+    )
+        where TDto : class
+    {
+        var path = "/" + propertyName.ToLowerInvariant();
+
+        return doc.Operations.Any(op =>
+            op.path is not null &&
+            op.path.Equals(path, StringComparison.InvariantCultureIgnoreCase)
+        );
+    }
 }
 
 public sealed record PatchFieldRule(
