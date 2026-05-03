@@ -15,69 +15,67 @@ using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
-public class MaritalStatusService(
-    IMaritalStatusRepository maritalStatusRepository,
+public class EducationFieldService(
+    IEducationFieldRepository educationFieldRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder
-) : IMaritalStatusService
+) : IEducationFieldService
 {
-    private readonly string _key = "MaritalStatus";
+    private readonly string _key = "EducationField";
 
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly IMaritalStatusRepository _maritalStatusRepository = maritalStatusRepository;
+    private readonly IEducationFieldRepository _educationFieldRepository = educationFieldRepository;
 
-    public async Task<MaritalStatusDto> CreateAsync(
-        CreateMaritalStatusDto createDto,
+    public async Task<EducationFieldDto> CreateAsync(
+        CreateEducationFieldDto createDto,
         CancellationToken ct
     )
     {
+        var entity = _mapper.Map<EducationField>(createDto);
+        var created = await _educationFieldRepository.AddAsync(entity, ct);
 
-        var entity = _mapper.Map<MaritalStatus>(createDto);
-        var created = await _maritalStatusRepository.AddAsync(entity, ct);
-
-        await _maritalStatusRepository.SaveChangesAsync(ct);
-        return _mapper.Map<MaritalStatusDto>(created);
+        await _educationFieldRepository.SaveChangesAsync(ct);
+        return _mapper.Map<EducationFieldDto>(created);
     }
 
-    public async Task<MaritalStatusDto> GetByIdAsync(
+    public async Task<EducationFieldDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<MaritalStatusDto>(entity);
+        return _mapper.Map<EducationFieldDto>(entity);
     }
 
-    public async Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
-        MaritalStatusParameters parameters,
+    public async Task<ListResponseModel<EducationFieldDto>> GetFilteredAsync(
+        EducationFieldParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        var advancedFilters = _filterBuilder.Build<MaritalStatus>(filterNodeDto);
-        var query = _maritalStatusRepository.GetFiltered(advancedFilters);
-        var res = await _maritalStatusRepository.GetResponseListAsync(query, parameters, ct);
+        var advancedFilters = _filterBuilder.Build<EducationField>(filterNodeDto);
+        var query = _educationFieldRepository.GetFiltered(advancedFilters);
+        var res = await _educationFieldRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<MaritalStatusDto>(
-            results: _mapper.Map<IReadOnlyList<MaritalStatusDto>>(res.items),
+        return new ListResponseModel<EducationFieldDto>(
+            results: _mapper.Map<IReadOnlyList<EducationFieldDto>>(res.items),
             totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<MaritalStatusDto> PatchAsync(
+    public async Task<EducationFieldDto> PatchAsync(
         Guid id,
-        JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
+        JsonPatchDocument<PatchEducationFieldDto> patchDocument,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        var patchDto = _mapper.Map<PatchMaritalStatusDto>(entity);
+        var patchDto = _mapper.Map<PatchEducationFieldDto>(entity);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -92,8 +90,8 @@ public class MaritalStatusService(
 
         _mapper.Map(patchDto, entity);
 
-        await _maritalStatusRepository.SaveChangesAsync(ct);
-        return _mapper.Map<MaritalStatusDto>(entity);
+        await _educationFieldRepository.SaveChangesAsync(ct);
+        return _mapper.Map<EducationFieldDto>(entity);
     }
 
     public async Task DeleteAsync(
@@ -102,17 +100,17 @@ public class MaritalStatusService(
     )
     {
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        _maritalStatusRepository.Remove(entity);
-        await _maritalStatusRepository.SaveChangesAsync(ct);
+        _educationFieldRepository.Remove(entity);
+        await _educationFieldRepository.SaveChangesAsync(ct);
     }
 
-    private async Task<MaritalStatus> GetByIdOrThrowAsync(
+    private async Task<EducationField> GetByIdOrThrowAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await _maritalStatusRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _educationFieldRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

@@ -14,26 +14,26 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/hcm/military-service-statuses")]
-public class MilitaryServiceStatusController(
-    IMilitaryServiceStatusService militaryServiceStatusService
+[Route("api/v{version:apiVersion}/hcm/educational-statuses")]
+public class EducationalStatusController(
+    IEducationalStatusService educationalStatusService
 ) : ControllerBase
 {
-    private readonly IMilitaryServiceStatusService _militaryServiceStatusService = militaryServiceStatusService;
+    private readonly IEducationalStatusService _educationalStatusService = educationalStatusService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
-        [FromBody] CreateMilitaryServiceStatusDto createDto,
+        [FromBody] CreateEducationalStatusDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _militaryServiceStatusService.CreateAsync(createDto, ct);
+        var dto = await _educationalStatusService.CreateAsync(createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
-            new {id = dto.Id },
+            new { id = dto.Id },
             dto
         );
     }
@@ -44,19 +44,19 @@ public class MilitaryServiceStatusController(
         CancellationToken ct
     )
     {
-        var dto = await _militaryServiceStatusService.GetByIdAsync(id, false, ct);
+        var dto = await _educationalStatusService.GetByIdAsync(id, false, ct);
         return Ok(dto);
     }
 
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
-        [FromQuery] MilitaryServiceStatusParameters parameters,
+        [FromQuery] EducationalStatusParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _militaryServiceStatusService.GetFilteredAsync(
+        var result = await _educationalStatusService.GetFilteredAsync(
             parameters,
             filterNodeDto,
             ct
@@ -69,11 +69,11 @@ public class MilitaryServiceStatusController(
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchMilitaryServiceStatusDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchEducationalStatusDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _militaryServiceStatusService.PatchAsync(id, patchDocument, ct);
+        var dto = await _educationalStatusService.PatchAsync(id, patchDocument, ct);
         return Ok(dto);
     }
 
@@ -83,7 +83,7 @@ public class MilitaryServiceStatusController(
         CancellationToken ct
     )
     {
-        await _militaryServiceStatusService.DeleteAsync(id, ct);
+        await _educationalStatusService.DeleteAsync(id, ct);
         return NoContent();
     }
 }

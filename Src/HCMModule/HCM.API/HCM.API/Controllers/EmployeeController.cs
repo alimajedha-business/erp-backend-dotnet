@@ -17,13 +17,15 @@ public class EmployeeController(
     IEmployeeService employeeService,
     IEmployeeEducationService employeeEducationService,
     IEmployeeWorkExperienceService employeeWorkExperienceService,
-    IEmployeeWarriorRecordService employeeWarriorRecordService
+    IEmployeeWarriorRecordService employeeWarriorRecordService,
+    IEmployeeRelativeService employeeRelativeService
 ) : ControllerBase
 {
     private readonly IEmployeeService _employeeService = employeeService;
     private readonly IEmployeeEducationService _employeeEducationService = employeeEducationService;
     private readonly IEmployeeWorkExperienceService _employeeWorkExperienceService = employeeWorkExperienceService;
     private readonly IEmployeeWarriorRecordService _employeeWarriorRecordService = employeeWarriorRecordService;
+    private readonly IEmployeeRelativeService _employeeRelativeService = employeeRelativeService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -430,6 +432,113 @@ public class EmployeeController(
 
         await _employeeWarriorRecordService.DeleteAsync(employeeId, id, ct);
         return Ok();
+    }
+
+    #endregion
+
+    #region Relatives
+
+    [HttpPost("{employeeId:guid}/relatives")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromBody] CreateEmployeeRelativeDto createDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.CreateAsync(
+            employeeId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetRelativeById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/relatives/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetRelatives(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeRelativeParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var result = await _employeeRelativeService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/relatives/{id:guid}")]
+    public async Task<IActionResult> GetRelativeById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.GetByIdAsync(
+            employeeId,
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("{employeeId:guid}/relatives/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeRelativeDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        var dto = await _employeeRelativeService.PatchAsync(
+            employeeId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{employeeId:guid}/relatives/{id:guid}")]
+    public async Task<IActionResult> DeleteRelative(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
+
+        await _employeeRelativeService.DeleteAsync(employeeId, id, ct);
+        return NoContent();
     }
 
     #endregion

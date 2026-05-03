@@ -15,69 +15,67 @@ using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
-public class MaritalStatusService(
-    IMaritalStatusRepository maritalStatusRepository,
+public class RelativeTypeService(
+    IRelativeTypeRepository relativeTypeRepository,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder
-) : IMaritalStatusService
+) : IRelativeTypeService
 {
-    private readonly string _key = "MaritalStatus";
+    private readonly string _key = "RelativeType";
 
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly IMaritalStatusRepository _maritalStatusRepository = maritalStatusRepository;
+    private readonly IRelativeTypeRepository _relativeTypeRepository = relativeTypeRepository;
 
-    public async Task<MaritalStatusDto> CreateAsync(
-        CreateMaritalStatusDto createDto,
+    public async Task<RelativeTypeDto> CreateAsync(
+        CreateRelativeTypeDto createDto,
         CancellationToken ct
     )
     {
+        var entity = _mapper.Map<RelativeType>(createDto);
+        var created = await _relativeTypeRepository.AddAsync(entity, ct);
 
-        var entity = _mapper.Map<MaritalStatus>(createDto);
-        var created = await _maritalStatusRepository.AddAsync(entity, ct);
-
-        await _maritalStatusRepository.SaveChangesAsync(ct);
-        return _mapper.Map<MaritalStatusDto>(created);
+        await _relativeTypeRepository.SaveChangesAsync(ct);
+        return _mapper.Map<RelativeTypeDto>(created);
     }
 
-    public async Task<MaritalStatusDto> GetByIdAsync(
+    public async Task<RelativeTypeDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-
         var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
-        return _mapper.Map<MaritalStatusDto>(entity);
+        return _mapper.Map<RelativeTypeDto>(entity);
     }
 
-    public async Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
-        MaritalStatusParameters parameters,
+    public async Task<ListResponseModel<RelativeTypeDto>> GetFilteredAsync(
+        RelativeTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        var advancedFilters = _filterBuilder.Build<MaritalStatus>(filterNodeDto);
-        var query = _maritalStatusRepository.GetFiltered(advancedFilters);
-        var res = await _maritalStatusRepository.GetResponseListAsync(query, parameters, ct);
+        var advancedFilters = _filterBuilder.Build<RelativeType>(filterNodeDto);
+        var query = _relativeTypeRepository.GetFiltered(advancedFilters);
+        var res = await _relativeTypeRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<MaritalStatusDto>(
-            results: _mapper.Map<IReadOnlyList<MaritalStatusDto>>(res.items),
+        return new ListResponseModel<RelativeTypeDto>(
+            results: _mapper.Map<IReadOnlyList<RelativeTypeDto>>(res.items),
             totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<MaritalStatusDto> PatchAsync(
+    public async Task<RelativeTypeDto> PatchAsync(
         Guid id,
-        JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
+        JsonPatchDocument<PatchRelativeTypeDto> patchDocument,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        var patchDto = _mapper.Map<PatchMaritalStatusDto>(entity);
+        var patchDto = _mapper.Map<PatchRelativeTypeDto>(entity);
         var errors = new List<string>();
 
         patchDocument.ApplyTo(patchDto, error =>
@@ -92,8 +90,8 @@ public class MaritalStatusService(
 
         _mapper.Map(patchDto, entity);
 
-        await _maritalStatusRepository.SaveChangesAsync(ct);
-        return _mapper.Map<MaritalStatusDto>(entity);
+        await _relativeTypeRepository.SaveChangesAsync(ct);
+        return _mapper.Map<RelativeTypeDto>(entity);
     }
 
     public async Task DeleteAsync(
@@ -102,17 +100,17 @@ public class MaritalStatusService(
     )
     {
         var entity = await GetByIdOrThrowAsync(id, trackChanges: true, ct);
-        _maritalStatusRepository.Remove(entity);
-        await _maritalStatusRepository.SaveChangesAsync(ct);
+        _relativeTypeRepository.Remove(entity);
+        await _relativeTypeRepository.SaveChangesAsync(ct);
     }
 
-    private async Task<MaritalStatus> GetByIdOrThrowAsync(
+    private async Task<RelativeType> GetByIdOrThrowAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await _maritalStatusRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _relativeTypeRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

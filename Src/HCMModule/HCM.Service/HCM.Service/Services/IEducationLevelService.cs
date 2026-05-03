@@ -7,28 +7,28 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IMaritalStatusService
+public interface IEducationLevelService
 {
-    Task<MaritalStatusDto> CreateAsync(
-        CreateMaritalStatusDto createDto,
+    Task<EducationLevelDto> CreateAsync(
+        CreateEducationLevelDto createDto,
         CancellationToken ct
     );
 
-    Task<MaritalStatusDto> GetByIdAsync(
+    Task<EducationLevelDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
-        MaritalStatusParameters parameters,
+    Task<ListResponseModel<EducationLevelDto>> GetFilteredAsync(
+        EducationLevelParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
-    Task<MaritalStatusDto> PatchAsync(
+    Task<EducationLevelDto> PatchAsync(
         Guid id,
-        JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
+        JsonPatchDocument<PatchEducationLevelDto> patchDocument,
         CancellationToken ct
     );
 

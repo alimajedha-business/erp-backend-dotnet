@@ -7,28 +7,28 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IMaritalStatusService
+public interface IRelativeTypeService
 {
-    Task<MaritalStatusDto> CreateAsync(
-        CreateMaritalStatusDto createDto,
+    Task<RelativeTypeDto> CreateAsync(
+        CreateRelativeTypeDto createDto,
         CancellationToken ct
     );
 
-    Task<MaritalStatusDto> GetByIdAsync(
+    Task<RelativeTypeDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<MaritalStatusDto>> GetFilteredAsync(
-        MaritalStatusParameters parameters,
+    Task<ListResponseModel<RelativeTypeDto>> GetFilteredAsync(
+        RelativeTypeParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
-    Task<MaritalStatusDto> PatchAsync(
+    Task<RelativeTypeDto> PatchAsync(
         Guid id,
-        JsonPatchDocument<PatchMaritalStatusDto> patchDocument,
+        JsonPatchDocument<PatchRelativeTypeDto> patchDocument,
         CancellationToken ct
     );
 

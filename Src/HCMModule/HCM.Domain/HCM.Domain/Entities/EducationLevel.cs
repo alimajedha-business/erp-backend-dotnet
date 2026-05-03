@@ -5,28 +5,28 @@ using NGErp.Base.Domain.Entities;
 
 namespace NGErp.HCM.Domain.Entities;
 
-public enum MilitaryStatusType
+public enum EducationLevelType
 {
-    NotInclude = 1,
-    Included = 2,
-    Exempt = 3,
-    Completed = 4,
-    StudentExeption = 5,
-    Absent = 6,
-    InProgress = 7,
+    PreDiploma = 1,
+    Diploma = 2,
+    Associate = 3,
+    Bachelor = 4,
+    Master = 5,
+    PhD = 6,
+    Postdoctoral = 7
 }
 
-public class MilitaryServiceStatus : BaseEntity, IBaseEntityTypeConfiguration<MilitaryServiceStatus>
+public class EducationLevel : BaseEntity, IBaseEntityTypeConfiguration<EducationLevel>
 {
     public string Title { get; set; } = default!;
-    public MilitaryStatusType Type { get; set; }
+    public EducationLevelType Type { get; set; }
 
-    public void Map(EntityTypeBuilder<MilitaryServiceStatus> builder)
+    public void Map(EntityTypeBuilder<EducationLevel> builder)
     {
         builder
-            .ToTable("MilitaryServiceStatus", "HCM", t =>
+            .ToTable(nameof(EducationLevel), "HCM", t =>
                 t.HasCheckConstraint(
-                    "CK_MilitaryServiceStatus_Type",
+                    "CK_EducationLevel_Type",
                     "[Type] BETWEEN 1 AND 7"
                 ));
 
@@ -35,7 +35,8 @@ public class MilitaryServiceStatus : BaseEntity, IBaseEntityTypeConfiguration<Mi
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasIndex(e => e.Title)
+        builder
+            .HasIndex(e => e.Title)
             .IsUnique();
 
         builder
