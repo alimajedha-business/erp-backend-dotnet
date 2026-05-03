@@ -36,6 +36,12 @@ public class ExceptionLocalizer<TEntityResource>(
         if (ex is DuplicateResourceException duplicateInsert)
             return LocalizeOrFallback(duplicateInsert.LocalizationKey, duplicateInsert.Arguments);
 
+        if (ex is BusinessRuleViolationException businessRuleViolation)
+            return LocalizeOrFallback(
+                businessRuleViolation.LocalizationKey,
+                businessRuleViolation.Arguments
+            );
+
         // Generic fallback
         return _commonLocalizer["GeneralError"];
     }
