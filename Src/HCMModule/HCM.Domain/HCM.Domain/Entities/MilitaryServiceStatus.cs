@@ -24,7 +24,11 @@ public class MilitaryServiceStatus : BaseEntity, IBaseEntityTypeConfiguration<Mi
     public void Map(EntityTypeBuilder<MilitaryServiceStatus> builder)
     {
         builder
-            .ToTable("MilitaryServiceStatus", "HCM");
+            .ToTable("MilitaryServiceStatus", "HCM", t =>
+                t.HasCheckConstraint(
+                    "CK_MilitaryServiceStatus_Type",
+                    "[Type] BETWEEN 1 AND 7"
+                ));
 
         builder
             .Property(e => e.Title)

@@ -24,6 +24,8 @@ public class EmployeeEducationRepository(MainDbContext context) :
             .Where(e => e.EmployeeId == employeeId && e.Id == id)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
+            .Include(e => e.EducationLevel)
+            .Include(e => e.EducationField)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
@@ -37,6 +39,8 @@ public class EmployeeEducationRepository(MainDbContext context) :
             .Where(e => e.EmployeeId == employeeId)
             .Include(e => e.Employee)
             .ThenInclude(e => e.Person)
+            .Include(e => e.EducationLevel)
+            .Include(e => e.EducationField)
             .Filter(requestAdvancedFilters);
     }
 }

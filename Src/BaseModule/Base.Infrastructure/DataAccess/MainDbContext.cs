@@ -63,6 +63,8 @@ namespace NGErp.Base.Infrastructure.DataAccess
         #region HCM
 
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<EducationField> EducationFields { get; set; }
+        public virtual DbSet<EducationLevel> EducationLevels { get; set; }
         public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; }
         public virtual DbSet<MilitaryServiceStatus> MilitaryServiceStatuses { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
