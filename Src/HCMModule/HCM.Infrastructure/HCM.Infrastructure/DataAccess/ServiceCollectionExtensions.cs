@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using NGErp.HCM.Infrastructure.DataAccess.Repositories;
@@ -11,17 +11,22 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHCMInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-        services.AddScoped<IMaritalStatusRepository, MaritalStatusRepository>();
-        services.AddScoped<IMilitaryServiceStatusRepository, MilitaryServiceStatusRepository>();
-        services.AddScoped<IPositionRepository, PositionRepository>();
-        services.AddScoped<IOrganizationalStructureRepository, OrganizationalStructureRepository>();
+        services.AddScoped<IEducationFieldRepository, EducationFieldRepository>();
+        services.AddScoped<IEducationLevelRepository, EducationLevelRepository>();
+        services.AddScoped<IEducationalStatusRepository, EducationalStatusRepository>();
+        services.AddScoped<IEmployeeEducationRepository, EmployeeEducationRepository>();
+        services.AddScoped<IEmployeeRelativeRepository, EmployeeRelativeRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IEmployeeWarriorRecordRepository, EmployeeWarriorRecordRepository>();
+        services.AddScoped<IEmployeeWorkExperienceRepository, EmployeeWorkExperienceRepository>();
         services.AddScoped<IEmploymentGroupRepository, EmploymentGroupRepository>();
         services.AddScoped<IEmploymentGroupSpecificationRepository, EmploymentGroupSpecificationRepository>();
+        services.AddScoped<IMaritalStatusRepository, MaritalStatusRepository>();
+        services.AddScoped<IMilitaryServiceStatusRepository, MilitaryServiceStatusRepository>();
         services.AddScoped<IOrganizationNodeRepository, OrganizationNodeRepository>();
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        services.AddScoped<IEmployeeEducationRepository, EmployeeEducationRepository>();
-        services.AddScoped<IEmployeeWorkExperienceRepository, EmployeeWorkExperienceRepository>();
-        services.AddScoped<IEmployeeWarriorRecordRepository, EmployeeWarriorRecordRepository>();
+        services.AddScoped<IOrganizationalStructureRepository, OrganizationalStructureRepository>();
+        services.AddScoped<IPositionRepository, PositionRepository>();
+        services.AddScoped<IRelativeTypeRepository, RelativeTypeRepository>();
 
         return services;
     }

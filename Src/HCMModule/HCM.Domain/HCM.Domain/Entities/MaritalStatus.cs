@@ -20,7 +20,11 @@ public class MaritalStatus : BaseEntity, IBaseEntityTypeConfiguration<MaritalSta
     public void Map(EntityTypeBuilder<MaritalStatus> builder)
     {
         builder
-            .ToTable("MaritalStatus", "HCM");
+            .ToTable("MaritalStatus", "HCM", t =>
+                t.HasCheckConstraint(
+                    "CK_MaritalStatus_Type",
+                    "[Type] BETWEEN 1 AND 3"
+                ));
 
         builder
             .Property(e => e.Title)

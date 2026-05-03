@@ -6,10 +6,8 @@ public class EmployeeEducationDto
 {
     public Guid Id { get; set; }
     public EmployeeBaseDto? Employee { get; set; }
-    [MaxLength(50)]
-    public string? LevelCode { get; set; }
-    [MaxLength(50)]
-    public string? FieldCode { get; set; }
+    public EducationLevelDto? EducationLevel { get; set; }
+    public EducationFieldDto? EducationField { get; set; }
     [MaxLength(50)]
     public string? MajoringCode { get; set; }
     public DateTime StartDate { get; set; }
@@ -18,15 +16,14 @@ public class EmployeeEducationDto
     [MaxLength(50)]
     public string? CenterCode { get; set; }
     public DateTime EffectiveDate { get; set; }
+    public bool IsDefault { get; set; }
 }
 
 public class CreateEmployeeEducationDto
 {
     [Required]
-    [MaxLength(50)]
-    public string? LevelCode { get; set; }
-    [MaxLength(50)]
-    public string? FieldCode { get; set; }
+    public Guid? EducationLevelId { get; set; }
+    public Guid? EducationFieldId { get; set; }
     [MaxLength(50)]
     public string? MajoringCode { get; set; }
     [Required]
@@ -37,14 +34,13 @@ public class CreateEmployeeEducationDto
     public string? CenterCode { get; set; }
     [Required]
     public DateTime? EffectiveDate { get; set; }
+    public bool IsDefault { get; set; }
 }
 
 public class PatchEmployeeEducationDto
 {
-    [MaxLength(50)]
-    public string? LevelCode { get; set; }
-    [MaxLength(50)]
-    public string? FieldCode { get; set; }
+    public Guid? EducationLevelId { get; set; }
+    public Guid? EducationFieldId { get; set; }
     [MaxLength(50)]
     public string? MajoringCode { get; set; }
     public DateTime? StartDate { get; set; }
@@ -53,4 +49,5 @@ public class PatchEmployeeEducationDto
     [MaxLength(50)]
     public string? CenterCode { get; set; }
     public DateTime? EffectiveDate { get; set; }
+    public bool? IsDefault { get; set; }
 }

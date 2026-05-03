@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260503062718_AddNewEntitiesRelatedtoEmployeeEducation")]
+    partial class AddNewEntitiesRelatedtoEmployeeEducation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -528,10 +531,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("EducationLevel", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_EducationLevel_Type", "[Type] BETWEEN 1 AND 7");
-                        });
+                    b.ToTable("EducationLevel", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EducationalStatus", b =>
@@ -578,10 +578,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("EducationalStatus", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_EducationalStatus_Type", "[Type] BETWEEN 1 AND 2");
-                        });
+                    b.ToTable("EducationalStatus", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.Employee", b =>
@@ -901,7 +898,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("EmployeeWarriorRecord", "HCM", t =>
                         {
                             t.HasCheckConstraint("CK_EmployeeWarriorRecord_IncentiveGroup_Range", "[IncentiveGroup] IS NULL OR ([IncentiveGroup] BETWEEN 1 AND 20)");
-                            t.HasCheckConstraint("CK_EmployeeWarriorRecord_VeteranServiceType", "[VeteranServiceType] BETWEEN 1 AND 2");
                         });
                 });
 
@@ -1119,10 +1115,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("MaritalStatus", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_MaritalStatus_Type", "[Type] BETWEEN 1 AND 3");
-                        });
+                    b.ToTable("MaritalStatus", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.MilitaryServiceStatus", b =>
@@ -1169,10 +1162,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("MilitaryServiceStatus", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_MilitaryServiceStatus_Type", "[Type] BETWEEN 1 AND 7");
-                        });
+                    b.ToTable("MilitaryServiceStatus", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationNode", b =>
@@ -1451,10 +1441,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("RelativeType", "HCM", t =>
-                        {
-                            t.HasCheckConstraint("CK_RelativeType_Type", "[Type] BETWEEN 1 AND 5");
-                        });
+                    b.ToTable("RelativeType", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Attribute", b =>
