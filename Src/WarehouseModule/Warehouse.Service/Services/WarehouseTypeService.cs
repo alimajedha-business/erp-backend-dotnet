@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using AutoMapper;
 
 using FluentValidation;
-using FluentValidation.Results;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
@@ -12,6 +11,7 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -48,8 +48,8 @@ public class WarehouseTypeService(
         CancellationToken ct
     )
     {
-        ThrowIfNull(createDto);
-        await ValidateAsync(_createValidator, createDto, ct);
+		RequestBodyValidator.ThrowIfNull(createDto);
+		await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
         await _businessRuleValidator.ValidateCreateAsync(createDto, ct);
 
         var entity = _mapper.Map<WarehouseType>(createDto);
@@ -118,7 +118,7 @@ public class WarehouseTypeService(
     {
         PatchWarehouseTypePolicy.Validate(patchDocument);
 
-        var codePatched = HasProperty(
+        var codePatched = PatchPolicyValidator.HasProperty(
             patchDocument,
             nameof(PatchWarehouseTypeDto.Code)
         );
@@ -142,7 +142,7 @@ public class WarehouseTypeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
-        await ValidateAsync(_patchValidator, patchDto, ct);
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
 
         if (codePatched && patchDto.Code.HasValue)
         {
@@ -186,41 +186,6 @@ public class WarehouseTypeService(
         );
 
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    }
-
-    private static bool HasProperty(
-        JsonPatchDocument<PatchWarehouseTypeDto> doc,
-        string propertyName
-    )
-    {
-        var path = "/" + propertyName.ToLowerInvariant();
-
-        return doc.Operations.Any(op =>
-            op.path is not null &&
-            op.path.Equals(path, StringComparison.InvariantCultureIgnoreCase)
-        );
-    }
-
-    private static void ThrowIfNull(CreateWarehouseTypeDto? createDto)
-    {
-        if (createDto is not null)
-            return;
-
-        throw new ValidationException([
-            new ValidationFailure()
-        ]);
-    }
-
-    private static async Task ValidateAsync<T>(
-        IValidator<T> validator,
-        T dto,
-        CancellationToken ct
-    )
-    {
-        var validationResult = await validator.ValidateAsync(dto, ct);
-
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
     }
 }
 
