@@ -10,6 +10,12 @@ public interface ICategoryLevelConstraintBusinessRuleValidator
         CancellationToken ct
     );
 
+    Task ValidateDeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
+
     Task ValidateCodeLengthChangeAsync(
         Guid companyId,
         int levelNo,

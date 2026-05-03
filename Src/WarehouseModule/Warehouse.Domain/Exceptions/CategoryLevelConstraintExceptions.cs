@@ -39,3 +39,12 @@ public sealed class CategoryLevelConstraintCodeLengthCannotDecreaseException(
     public override string LocalizationKey =>
         "CategoryLevelConstraint.CodeLength.CannotDecrease";
 }
+
+public sealed class CategoryLevelConstraintHasCategoriesException(int levelNo)
+    : BusinessRuleViolationException(levelNo)
+{
+    public int LevelNo { get; } = levelNo;
+
+    public override string LocalizationKey =>
+        "CategoryLevelConstraint.Delete.HasCategories";
+}

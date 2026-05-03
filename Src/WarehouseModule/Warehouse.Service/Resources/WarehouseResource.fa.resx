@@ -189,6 +189,9 @@
   <data name="CategoryLevelConstraint.CodeLength.CannotDecrease" xml:space="preserve">
     <value>طول کد سطح {0} به دلیل وجود طبقه‌بندی در این سطح نمی‌تواند از {1} به {2} کاهش یابد.</value>
   </data>
+  <data name="CategoryLevelConstraint.Delete.HasCategories" xml:space="preserve">
+    <value>محدودیت سطح طبقه‌بندی برای سطح {0} به دلیل وجود طبقه‌بندی در این سطح قابل حذف نیست.</value>
+  </data>
   <data name="CategoryLevelConstraint.CodeLength.Range" xml:space="preserve">
     <value>طول کد محدودیت سطح طبقه‌بندی باید بین 1 و 5 باشد.</value>
   </data>

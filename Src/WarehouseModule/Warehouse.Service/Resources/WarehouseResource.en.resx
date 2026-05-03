@@ -189,6 +189,9 @@
   <data name="CategoryLevelConstraint.CodeLength.CannotDecrease" xml:space="preserve">
     <value>Code length for level {0} cannot be reduced from {1} to {2} because categories already exist on that level.</value>
   </data>
+  <data name="CategoryLevelConstraint.Delete.HasCategories" xml:space="preserve">
+    <value>Category level constraint for level {0} cannot be deleted because categories already exist on that level.</value>
+  </data>
   <data name="CategoryLevelConstraint.CodeLength.Range" xml:space="preserve">
     <value>Category level constraint code length must be between 1 and 5.</value>
   </data>

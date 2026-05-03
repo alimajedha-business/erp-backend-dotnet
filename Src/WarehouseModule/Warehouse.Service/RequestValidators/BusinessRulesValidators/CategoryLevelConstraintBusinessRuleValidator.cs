@@ -51,6 +51,30 @@ public class CategoryLevelConstraintBusinessRuleValidator(
         }
     }
 
+    public async Task ValidateDeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        var categoryLevel = await _constraintRepository.SingleOrDefaultAsync(
+            predicate: e =>
+                e.CompanyId == companyId &&
+                e.Id == id,
+            trackChanges: false,
+            ct
+        ) ?? throw new CategoryLevelConstraintNotFoundException();
+
+        var hasCategoriesAtLevel = await _categoryRepository.AnyAsync(e =>
+            e.CompanyId == companyId &&
+            e.LevelNo == categoryLevel.LevelNo,
+            ct
+        );
+
+        if (hasCategoriesAtLevel)
+            throw new CategoryLevelConstraintHasCategoriesException(categoryLevel.LevelNo);
+    }
+
     public async Task ValidateCodeLengthChangeAsync(
         Guid companyId,
         int levelNo,

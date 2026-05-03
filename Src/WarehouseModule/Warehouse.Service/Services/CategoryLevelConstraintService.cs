@@ -157,6 +157,7 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
         await _constraintRepository.Remove(e =>
             e.CompanyId == companyId &&
             e.Id == id,
