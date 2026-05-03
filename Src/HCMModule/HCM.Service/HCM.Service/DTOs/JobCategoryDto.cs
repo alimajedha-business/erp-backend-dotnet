@@ -12,6 +12,7 @@ public record CreateJobCategoryDto(
     int Code,
     string Title
     );
+
 public record PatchJobCategoryDto(
     int? Code,
     string? Title

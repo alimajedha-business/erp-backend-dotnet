@@ -1,3 +1,6 @@
+using FluentValidation;
+using FluentValidation.Results;
+
 using NGErp.HCM.Domain.Exceptions;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
@@ -14,22 +17,25 @@ public class JobCategoryBusinessRuleValidator(
     )
     {
         "code",
-        "title",
-        "levelNo",
-        "createdAt"
+        "title"
     };
 
     private readonly IJobCategoryRepository _jobCategoryRepository = jobCategoryRepository;
 
     public async Task ValidateCreateAsync(CreateJobCategoryDto createDto, CancellationToken ct)
     {
-        await ValidateCodeUniquenessAsync(
+        await ValidateJobCategoryCodeUniquenessAsync(
            createDto.Code,
             ct
         );
+
+        await ValidateTitleUniquenessAsync(
+            createDto.Title,
+            ct
+            );
     }
 
-    private async Task ValidateCodeUniquenessAsync(
+    private async Task ValidateJobCategoryCodeUniquenessAsync(
         int code,
         CancellationToken ct
     )
@@ -40,5 +46,18 @@ public class JobCategoryBusinessRuleValidator(
 
         if (exists)
             throw new JobCategoryCodeAlreadyExistsException(code);
+    }
+
+    private async Task ValidateTitleUniquenessAsync(
+       string title,
+        CancellationToken ct
+    )
+    {
+        var exists = await _jobCategoryRepository.AnyAsync(
+            c => c.Title == title,
+            ct);
+
+        if (exists)
+            throw new JobCategoryTitleAlreadyExistsException(title);
     }
 }
