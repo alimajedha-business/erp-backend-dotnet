@@ -35,7 +35,10 @@ namespace NGErp.HCM.Service
             services.AddScoped<IEmployeeEducationService, EmployeeEducationService>();
             services.AddScoped<IEmployeeWorkExperienceService, EmployeeWorkExperienceService>();
 
-            return services;
+            
+        services.AddScoped<IEmployeeWarriorRecordService, EmployeeWarriorRecordService>();
+
+        return services;
         }
     }
 }

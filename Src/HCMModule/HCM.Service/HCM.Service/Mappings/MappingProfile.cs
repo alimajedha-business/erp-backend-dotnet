@@ -49,6 +49,10 @@ public class MappingProfile : Profile
         CreateMap<EmployeeWorkExperience, EmployeeWorkExperienceDto>().ReverseMap();
         CreateMap<CreateEmployeeWorkExperienceDto, EmployeeWorkExperience>();
         CreateMap<EmployeeWorkExperience, PatchEmployeeWorkExperienceDto>().ReverseMap();
+        CreateMap<EmployeeWarriorRecord, EmployeeWarriorRecordDto>().ReverseMap();
+        CreateMap<CreateEmployeeWarriorRecordDto, EmployeeWarriorRecord>();
+        CreateMap<EmployeeWarriorRecord, PatchEmployeeWarriorRecordDto>().ReverseMap();
 
     }
-}
+
+ }
