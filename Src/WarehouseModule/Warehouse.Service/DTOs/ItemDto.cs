@@ -15,8 +15,8 @@ public record ItemDto(
     UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
     ItemTypeSlimDto ItemType,
     CategorySlimDto Category,
-    List<AttributeSlimDto> ItemAttributes,
-    List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
+    List<AttributeSlimDto> Attributes,
+    List<UnitOfMeasurementSlimDto> SecondaryUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
     Dictionary<string, ItemUnitConversionEquationDto> UnitConversions,
     bool IsActive
