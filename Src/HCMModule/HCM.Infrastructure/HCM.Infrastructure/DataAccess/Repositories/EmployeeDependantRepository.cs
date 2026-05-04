@@ -29,23 +29,6 @@ public class EmployeeDependantRepository(MainDbContext context) :
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
 
-    public async Task<EmployeeDependant?> GetByIdAsync(
-        Guid employeeId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
-        return await query
-            .Where(e => e.EmployeeRelative.EmployeeId == employeeId && e.Id == id)
-            .Include(e => e.EmployeeRelative)
-            .ThenInclude(e => e.Employee)
-            .ThenInclude(e => e.Person)
-            .SingleOrDefaultAsync(cancellationToken: ct);
-    }
-
     public IQueryable<EmployeeDependant> GetFiltered(
         Guid employeeId,
         RequestAdvancedFilters requestAdvancedFilters

@@ -39,7 +39,11 @@ public class EmployeeDependantService(
         await _employeeDependantRepository.AddAsync(entity, ct);
         await _employeeDependantRepository.SaveChangesAsync(ct);
 
-        return await GetByIdAsync(entity.Id, trackChanges: false, ct);
+        return await GetByIdAsync(
+            entity.Id,
+            trackChanges: false,
+            ct
+        );
     }
 
     public async Task<EmployeeDependantDto> GetByIdAsync(
@@ -48,7 +52,7 @@ public class EmployeeDependantService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync( id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
         return _mapper.Map<EmployeeDependantDto>(entity);
     }
 
@@ -125,15 +129,5 @@ public class EmployeeDependantService(
         var entity = await _employeeDependantRepository.GetByIdAsync(id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
-
-    private async Task<EmployeeDependant> GetByIdOrThrowAsync(
-        Guid employeeId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _employeeDependantRepository.GetByIdAsync(id, trackChanges, ct);
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
-    }
 }
+

@@ -589,7 +589,6 @@ public class EmployeeController(
     [HttpGet("{employeeId:guid}/dependants/{id:guid}")]
     public async Task<IActionResult> GetDependantById(
         [FromRoute] Guid companyId,
-        [FromRoute] Guid employeeId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
