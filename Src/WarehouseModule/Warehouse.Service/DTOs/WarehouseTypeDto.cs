@@ -16,7 +16,7 @@ public record WarehouseTypeSlimDto(
 public class CreateWarehouseTypeDto
 {
     public required int Code { get; set; }
-    public required string Title { get; set; }
+    public string? Title { get; set; }
     public bool IsActive { get; set; } = true;
 }
 

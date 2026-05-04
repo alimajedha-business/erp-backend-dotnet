@@ -9,16 +9,6 @@ public class ItemMappingProfile : Profile
 {
     public ItemMappingProfile()
     {
-        CreateMap<Item, ItemDto>()
-            .ForCtorParam(
-                nameof(ItemDto.ItemAttributes),
-                opt => opt.MapFrom(src => src.ItemAttributes.Select(s => s.Attribute))
-            )
-            .ForCtorParam(
-                nameof(ItemDto.ItemUnitOfMeasurements),
-                opt => opt.MapFrom(src => src.ItemUnitOfMeasurements.Select(s => s.UnitOfMeasurement))
-            );
-
         CreateMap<Item, ItemListDto>()
             .ForCtorParam(
                 nameof(ItemListDto.ItemTypeTitle),
@@ -63,7 +53,8 @@ public class ItemMappingProfile : Profile
                         .Select(l => l.WarehouseLocationId)
                         .ToList()
                 }))
-            );
+            )
+            .ForMember(dst => dst.ItemUnitOfMeasurementConversions, opt => opt.Ignore());
 
         CreateMap<PatchItemDto, Item>()
             // ignore collection navigation props

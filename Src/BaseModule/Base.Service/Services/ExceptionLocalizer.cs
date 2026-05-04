@@ -33,6 +33,12 @@ public class ExceptionLocalizer<TEntityResource>(
         if (ex is CheckConstraintException checkConstraint)
             return LocalizeOrFallback(checkConstraint.LocalizationKey, checkConstraint.Arguments);
 
+        if (ex is BusinessRuleViolationException businessRuleViolation)
+            return LocalizeOrFallback(
+                businessRuleViolation.LocalizationKey,
+                businessRuleViolation.Arguments
+            );
+
         if (ex is DuplicateResourceException duplicateInsert)
             return LocalizeOrFallback(duplicateInsert.LocalizationKey, duplicateInsert.Arguments);
 
