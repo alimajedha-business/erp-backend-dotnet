@@ -12,11 +12,12 @@ using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.HCM.Domain.Entities;
+using NGErp.HCM.Domain.Exceptions;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
-using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
-using NGErp.HCM.Domain.Exceptions;
 using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.HCM.Service.RequestValidators.DtoValidators;
 
 namespace NGErp.HCM.Service.Services;
 
@@ -74,7 +75,7 @@ public class JobCategoryService(
         CancellationToken ct = default
     )
     {
-        //_businessRuleValidator.ValidateParameters(parameters);
+        _businessRuleValidator.ValidateParameters(parameters);
 
         var query = _jobCategoryRepository.FilterByQ(parameters);
         var res = await _jobCategoryRepository.GetResponseListAsync(query, parameters, ct);
@@ -92,7 +93,7 @@ public class JobCategoryService(
         CancellationToken ct = default
     )
     {
-        //_businessRuleValidator.ValidateParameters(parameters);
+        _businessRuleValidator.ValidateParameters(parameters);
 
         var advancedFilters = _filterBuilder.Build<JobCategory>(filterNodeDto);
         var query = _jobCategoryRepository.GetFiltered(advancedFilters);
@@ -111,12 +112,7 @@ public class JobCategoryService(
         CancellationToken ct
     )
     {
-        //PatchJobCategoryPolicy.Validate(patchDocument);
-
-        var codePatched = HasProperty(
-            patchDocument,
-            nameof(PatchJobCategoryDto.Code)
-        );
+        PatchJobCategoryPolicy.Validate(patchDocument);
 
         var entity = await GetSingleOrThrowAsync(
           trackChanges: true,
@@ -151,7 +147,8 @@ public class JobCategoryService(
         CancellationToken ct
     )
     {
-        //await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
+        await _businessRuleValidator.ValidateDeleteAsync(id, ct);
+
         await _jobCategoryRepository.Remove(e =>
             e.Id == id,
             ct

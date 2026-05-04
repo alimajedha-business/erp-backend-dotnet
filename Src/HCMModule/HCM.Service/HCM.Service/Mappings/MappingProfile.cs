@@ -44,6 +44,6 @@ public class MappingProfile : Profile
 
         CreateMap<JobCategory, JobCategoryDto>().ReverseMap();
         CreateMap<CreateJobCategoryDto, JobCategory>();
-        CreateMap<PatchJobCategoryDto, JobCategory>();
+        CreateMap<PatchJobCategoryDto, JobCategory>().ReverseMap();
     }
 }

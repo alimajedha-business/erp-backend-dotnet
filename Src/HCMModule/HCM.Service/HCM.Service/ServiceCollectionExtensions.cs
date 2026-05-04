@@ -10,6 +10,8 @@ using NGErp.HCM.Domain.EntitySchemas;
 using NGErp.Base.Domain.EntitySchemas;
 using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.HCM.Service.RequestValidators.BusinessRulesValidators;
+using NGErp.HCM.Service.Resources;
+using NGErp.Base.Service.Services;
 
 namespace NGErp.HCM.Service
 {
@@ -18,6 +20,8 @@ namespace NGErp.HCM.Service
         public static IServiceCollection AddHCMServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
 
             services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
 
