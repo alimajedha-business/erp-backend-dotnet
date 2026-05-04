@@ -18,7 +18,8 @@ public class EmployeeController(
     IEmployeeEducationService employeeEducationService,
     IEmployeeWorkExperienceService employeeWorkExperienceService,
     IEmployeeWarriorRecordService employeeWarriorRecordService,
-    IEmployeeRelativeService employeeRelativeService
+    IEmployeeRelativeService employeeRelativeService,
+    IEmployeeDependantService employeeDependantService
 ) : ControllerBase
 {
     private readonly IEmployeeService _employeeService = employeeService;
@@ -26,6 +27,7 @@ public class EmployeeController(
     private readonly IEmployeeWorkExperienceService _employeeWorkExperienceService = employeeWorkExperienceService;
     private readonly IEmployeeWarriorRecordService _employeeWarriorRecordService = employeeWarriorRecordService;
     private readonly IEmployeeRelativeService _employeeRelativeService = employeeRelativeService;
+    private readonly IEmployeeDependantService _employeeDependantService = employeeDependantService;
 
     [HttpPost]
     [Produces("application/json")]
@@ -538,6 +540,94 @@ public class EmployeeController(
         await EnsureEmployeeExistsAsync(companyId, employeeId, ct);
 
         await _employeeRelativeService.DeleteAsync(employeeId, id, ct);
+        return NoContent();
+    }
+
+    #endregion
+
+    #region Dependants
+
+    [HttpPost("dependants")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> CreateDependant(
+        [FromRoute] Guid companyId,
+        [FromBody] CreateEmployeeDependantDto createDto,
+        CancellationToken ct
+    )
+    {
+        var dto = await _employeeDependantService.CreateAsync(createDto, ct);
+        var employeeId = dto.EmployeeRelative.Employee.Id;
+
+        return CreatedAtAction(
+            nameof(GetDependantById),
+            new { companyId, employeeId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpPost("{employeeId:guid}/dependants/list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> GetDependants(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid employeeId,
+        [FromQuery] EmployeeDependantParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var result = await _employeeDependantService.GetFilteredAsync(
+            employeeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("{employeeId:guid}/dependants/{id:guid}")]
+    public async Task<IActionResult> GetDependantById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _employeeDependantService.GetByIdAsync(
+            id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPatch("dependants/{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> PatchDependant(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchEmployeeDependantDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _employeeDependantService.PatchAsync(
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("dependants/{id:guid}")]
+    public async Task<IActionResult> DeleteDependant(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _employeeDependantService.DeleteAsync(id, ct);
         return NoContent();
     }
 
