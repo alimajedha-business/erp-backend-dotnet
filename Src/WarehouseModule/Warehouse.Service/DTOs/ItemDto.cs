@@ -15,10 +15,10 @@ public record ItemDto(
     UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
     ItemTypeSlimDto ItemType,
     CategorySlimDto Category,
-    List<AttributeSlimDto> ItemAttributes,
-    List<UnitOfMeasurementSlimDto> ItemUnitOfMeasurements,
+    List<AttributeSlimDto> Attributes,
+    List<UnitOfMeasurementSlimDto> SecondaryUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
-    List<ItemUnitOfMeasurementConversionDto> ItemUnitOfMeasurementConversions,
+    Dictionary<string, ItemUnitConversionEquationDto> UnitConversions,
     bool IsActive
 );
 
@@ -52,11 +52,11 @@ public class CreateItemDto
     public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
-    public Dictionary<string, UnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
+    public Dictionary<string, ItemUnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
 
     [JsonProperty("unitConversions")]
     [JsonPropertyName("unitConversions")]
-    public Dictionary<string, UnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
     {
         get => null; // never used for output
         set
@@ -81,4 +81,17 @@ public class PatchItemDto
     public List<Guid>? SecondaryUnitOfMeasurementIds { get; set; }
     public List<Guid>? AttributeIds { get; set; }
     public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversions { get; set; }
+
+    [JsonProperty("unitConversions")]
+    [JsonPropertyName("unitConversions")]
+    public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                ItemUnitOfMeasurementConversions = value;
+        }
+    }
 }

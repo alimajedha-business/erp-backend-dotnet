@@ -59,7 +59,7 @@ public class EmployeeService(
         var entity = await GetByIdOrThrowAsync(
             companyId,
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 
@@ -134,8 +134,24 @@ public class EmployeeService(
 
         _employeeRepository.Remove(entity);
         await _employeeRepository.SaveChangesAsync(ct);
+        
     }
+    public virtual async Task SoftDeleteAsync(
+      Guid companyId,
+      Guid id,
+      CancellationToken ct
+    )
+    {
+        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            trackChanges: true,
+            ct
+        );
 
+        entity.IsDeleted = true;
 
+        await _employeeRepository.SaveChangesAsync(ct);
+    }
 }
 

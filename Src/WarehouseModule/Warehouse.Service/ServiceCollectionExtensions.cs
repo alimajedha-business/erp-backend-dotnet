@@ -48,6 +48,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<ICategoryBusinessRuleValidator, CategoryBusinessRuleValidator>();
+        services.AddScoped<
+            ICategoryLevelConstraintBusinessRuleValidator,
+            CategoryLevelConstraintBusinessRuleValidator
+        >();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
@@ -59,6 +63,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
+        services.AddScoped<IWarehouseTypeBusinessRuleValidator, WarehouseTypeBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 
         services.AddScoped<IExcelExportService, ExcelExportService<WarehouseResource>>();

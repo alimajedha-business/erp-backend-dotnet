@@ -2,18 +2,22 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -21,16 +25,18 @@ namespace NGErp.Warehouse.Service.Services;
 public class CategoryLevelConstraintService(
     IAdvancedFilterBuilder filterBuilder,
     ICategoryLevelConstraintRepository constraintRepository,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    ICategoryLevelConstraintBusinessRuleValidator businessRuleValidator,
+    IValidator<CreateCategoryLevelConstraintDto> createValidator,
+    IValidator<PatchCategoryLevelConstraintDto> patchValidator,
+    IMapper mapper
 ) : ICategoryLevelConstraintService
 {
-    private readonly string _key = "CategoryLevelConstraint";
-
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly ICategoryLevelConstraintRepository _constraintRepository = constraintRepository;
+    private readonly ICategoryLevelConstraintBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IValidator<CreateCategoryLevelConstraintDto> _createValidator = createValidator;
+    private readonly IValidator<PatchCategoryLevelConstraintDto> _patchValidator = patchValidator;
 
     public async Task<CategoryLevelConstraintDto> CreateAsync(
         Guid companyId,
@@ -38,6 +44,10 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
+        RequestBodyValidator.ThrowIfNull(createDto);
+        await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
+
         var entity = _mapper.Map<CategoryLevelConstraint>(createDto);
         entity.CompanyId = companyId;
 
@@ -90,6 +100,13 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
+        PatchCategoryLevelConstraintPolicy.Validate(patchDocument);
+
+        var codeLengthPatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchCategoryLevelConstraintDto.CodeLength)
+        );
+
         var categoryLevel = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p =>
@@ -111,6 +128,23 @@ public class CategoryLevelConstraintService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+
+        if (codeLengthPatched)
+        {
+            var levelNo = categoryLevel.LevelNo;
+            var currentCodeLength = categoryLevel.CodeLength;
+            var newCodeLength = patchDto.CodeLength!;
+
+            await _businessRuleValidator.ValidateCodeLengthChangeAsync(
+                companyId,
+                levelNo,
+                currentCodeLength,
+                newCodeLength.Value,
+                ct
+            );
+        }
+
         _mapper.Map(patchDto, categoryLevel);
 
         await _constraintRepository.SaveChangesAsync(ct);
@@ -123,6 +157,7 @@ public class CategoryLevelConstraintService(
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
         await _constraintRepository.Remove(e =>
             e.CompanyId == companyId &&
             e.Id == id,
@@ -160,7 +195,7 @@ public class CategoryLevelConstraintService(
             ct
         );
 
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+        return entity ?? throw new CategoryLevelConstraintNotFoundException();
     }
 }
 

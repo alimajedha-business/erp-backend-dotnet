@@ -54,12 +54,19 @@ namespace NGErp.Base.Infrastructure.DataAccess
         #region General
 
         public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<Module> Modules { get; set; }
+        public virtual DbSet<EntityType> EntityTypes { get; set; }
+        public virtual DbSet<EntityTypeCommand> EntityTypeCommands { get; set; }
 
         #endregion General
 
         #region HCM
 
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<EducationField> EducationFields { get; set; }
+        public virtual DbSet<EducationLevel> EducationLevels { get; set; }
+        public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; }
+        public virtual DbSet<MilitaryServiceStatus> MilitaryServiceStatuses { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<OrganizationalStructure> OrganizationalStructures { get; set; }
         public virtual DbSet<OrganizationalStructureItem> OrganizationalStructureItems { get; set; }

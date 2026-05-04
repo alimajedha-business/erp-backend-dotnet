@@ -30,37 +30,41 @@ public class EmployeeWorkExperienceService(
     private readonly IEmployeeWorkExperienceRepository _employeeWorkExperienceRepository = employeeWorkExperienceRepository;
 
     public async Task<EmployeeWorkExperienceDto> CreateAsync(
+        Guid employeeId,
         CreateEmployeeWorkExperienceDto createDto,
         CancellationToken ct
     )
     {
         var entity = _mapper.Map<EmployeeWorkExperience>(createDto);
+        entity.EmployeeId = employeeId;
 
         await _employeeWorkExperienceRepository.AddAsync(entity, ct);
         await _employeeWorkExperienceRepository.SaveChangesAsync(ct);
 
-        return await GetByIdAsync(entity.Id, trackChanges: false, ct);
+        return await GetByIdAsync(employeeId, entity.Id, trackChanges: false, ct);
            
     }
 
     public async Task<EmployeeWorkExperienceDto> GetByIdAsync(
+        Guid employeeId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync(employeeId, id, trackChanges, ct);
         return _mapper.Map<EmployeeWorkExperienceDto>(entity);
     }
 
     public async Task<ListResponseModel<EmployeeWorkExperienceDto>> GetFilteredAsync(
+        Guid employeeId,
         EmployeeWorkExperienceParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<EmployeeWorkExperience>(filterNodeDto);
-        var query = _employeeWorkExperienceRepository.GetFiltered(advancedFilters);
+        var query = _employeeWorkExperienceRepository.GetFiltered(employeeId, advancedFilters);
         var res = await _employeeWorkExperienceRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<EmployeeWorkExperienceDto>(
@@ -71,14 +75,16 @@ public class EmployeeWorkExperienceService(
     }
 
     public virtual async Task<EmployeeWorkExperienceDto> PatchAsync(
+        Guid employeeId,
         Guid id,
         JsonPatchDocument<PatchEmployeeWorkExperienceDto> patchDocument,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(
+            employeeId,
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 
@@ -96,17 +102,20 @@ public class EmployeeWorkExperienceService(
         }
 
         _mapper.Map(patchDto, entity);
+        entity.EmployeeId = employeeId;
 
         await _employeeWorkExperienceRepository.SaveChangesAsync(ct);
         return _mapper.Map<EmployeeWorkExperienceDto>(entity);
     }
 
     public async Task DeleteAsync(
+        Guid employeeId,
         Guid id,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(
+            employeeId,
             id,
             trackChanges: true,
             ct
@@ -117,12 +126,13 @@ public class EmployeeWorkExperienceService(
     }
 
     private async Task<EmployeeWorkExperience> GetByIdOrThrowAsync(
+        Guid employeeId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await _employeeWorkExperienceRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _employeeWorkExperienceRepository.GetByIdAsync(employeeId, id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }
