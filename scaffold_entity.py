@@ -104,6 +104,7 @@ class EntitySpec:
     base_class: str = "BaseEntityWithCompany"
     route: str | None = None
     status: bool = False
+    with_company: bool = True
     fields: list[FieldSpec] = field(default_factory=list)
 
     @property
@@ -294,26 +295,31 @@ def load_spec(args: argparse.Namespace) -> EntitySpec:
     if args.fields_file:
         data = json.loads(Path(args.fields_file).read_text(encoding="utf-8"))
         fields = [parse_field_spec(f) for f in data.get("fields", [])]
+        with_company = bool(data.get("withCompany", getattr(args, "with_company", True)))
+        base_class = data.get("baseClass", args.base_class if with_company else "BaseEntity")
         return EntitySpec(
             entity=data.get("entity", args.entity),
             schema=data.get("schema", args.schema),
             module=data.get("module", args.module),
-            base_class=data.get("baseClass", args.base_class),
+            base_class=base_class,
             route=data.get("route"),
             status=bool(data.get("status", args.status)),
+            with_company=with_company,
             fields=fields,
         )
 
     if not args.fields:
         raise ValueError("Provide --fields or --fields-file.")
 
+    with_company = getattr(args, "with_company", True)
     return EntitySpec(
         entity=args.entity,
         schema=args.schema,
         module=args.module,
-        base_class=args.base_class,
+        base_class=args.base_class if with_company else "BaseEntity",
         route=args.route,
         status=args.status,
+        with_company=with_company,
         fields=parse_fields_inline(args.fields),
     )
 
@@ -620,17 +626,20 @@ public class Patch{spec.entity}Dto
 
 
 def generate_repository_contract(spec: EntitySpec) -> str:
+    repo_interface = "IRepositoryWithCompany" if spec.with_company else "IRepository"
+
     return f'''using NGErp.General.Service.Repository.Contracts;
 using NGErp.{spec.module}.Domain.Entities;
 
 namespace NGErp.{spec.module}.Service.Repository.Contracts;
 
-public interface I{spec.entity}Repository : IRepositoryWithCompany<{spec.entity}>
+public interface I{spec.entity}Repository : {repo_interface}<{spec.entity}>
 {{ }}
 '''
 
-
 def generate_repository(spec: EntitySpec) -> str:
+    repo_base = "RepositoryWithCompany" if spec.with_company else "Repository"
+
     return f'''using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.{spec.module}.Domain.Entities;
@@ -639,11 +648,10 @@ using NGErp.{spec.module}.Service.Repository.Contracts;
 namespace NGErp.{spec.module}.Infrastructure.DataAccess.Repositories;
 
 public class {spec.entity}Repository(MainDbContext context) :
-    RepositoryWithCompany<{spec.entity}>(context),
+    {repo_base}<{spec.entity}>(context),
     I{spec.entity}Repository
 {{ }}
 '''
-
 
 def generate_parameters(spec: EntitySpec) -> str:
     return f'''using NGErp.Base.Service.RequestFeatures;
@@ -657,12 +665,13 @@ public class {spec.entity}Parameters : RequestParameters
 
 
 def generate_service_interface(spec: EntitySpec) -> str:
+    company_arg = "\n        Guid companyId," if spec.with_company else ""
+
     status_method = ""
     if spec.status:
         status_method = f'''
 
-    Task ChangeStatusAsync(
-        Guid companyId,
+    Task ChangeStatusAsync({company_arg}
         Guid id,
         {spec.entity}ChangeStatusDto changeStatusDto,
         CancellationToken ct
@@ -679,56 +688,58 @@ namespace NGErp.{spec.module}.Service.Services;
 
 public interface I{spec.entity}Service
 {{
-    Task<{spec.entity}Dto> CreateAsync(
-        Guid companyId,
+    Task<{spec.entity}Dto> CreateAsync({company_arg}
         Create{spec.entity}Dto createDto,
         CancellationToken ct
     );
 
-    Task<{spec.entity}Dto> GetByIdAsync(
-        Guid companyId,
+    Task<{spec.entity}Dto> GetByIdAsync({company_arg}
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<{spec.entity}Dto>> GetFilteredAsync(
-        Guid companyId,
+    Task<ListResponseModel<{spec.entity}Dto>> GetFilteredAsync({company_arg}
         {spec.entity}Parameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
-    Task<{spec.entity}Dto> PatchAsync(
-        Guid companyId,
+    Task<{spec.entity}Dto> PatchAsync({company_arg}
         Guid id,
         JsonPatchDocument<Patch{spec.entity}Dto> patchDocument,
         CancellationToken ct
     );
 
-    Task DeleteAsync(
-        Guid companyId,
+    Task DeleteAsync({company_arg}
         Guid id,
         CancellationToken ct
     );{status_method}
 }}
 '''
 
-
 def generate_service(spec: EntitySpec) -> str:
     entity = spec.entity
     camel = spec.entity_camel
+    company_arg = "\n        Guid companyId," if spec.with_company else ""
+    company_call = "companyId, " if spec.with_company else ""
+    set_company = "\n        entity.CompanyId = companyId;" if spec.with_company else ""
+    filtered_query = (
+        f"var query = _{camel}Repository.GetFiltered(companyId, advancedFilters);"
+        if spec.with_company
+        else f"var query = _{camel}Repository.GetFiltered(advancedFilters);"
+    )
+
     status_method = ""
     if spec.status:
         status_method = f'''
 
-    public async Task ChangeStatusAsync(
-        Guid companyId,
+    public async Task ChangeStatusAsync({company_arg}
         Guid id,
         {entity}ChangeStatusDto changeStatusDto,
         CancellationToken ct)
     {{
-        var {camel} = await GetByIdOrThrowAsync(companyId, id, trackChanges: true, ct);
+        var {camel} = await GetByIdOrThrowAsync({company_call}id, trackChanges: true, ct);
         if (changeStatusDto.Date is null)
             throw new ArgumentException("Date is required.");
 
@@ -773,14 +784,12 @@ public class {entity}Service(
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly I{entity}Repository _{camel}Repository = {camel}Repository;
 
-    public async Task<{entity}Dto> CreateAsync(
-        Guid companyId,
+    public async Task<{entity}Dto> CreateAsync({company_arg}
         Create{entity}Dto createDto,
         CancellationToken ct
     )
     {{
-        var entity = _mapper.Map<{entity}>(createDto);
-        entity.CompanyId = companyId;
+        var entity = _mapper.Map<{entity}>(createDto);{set_company}
 
         var created = await _{camel}Repository.AddAsync(entity, ct);
 
@@ -788,26 +797,24 @@ public class {entity}Service(
         return _mapper.Map<{entity}Dto>(created);
     }}
 
-    public async Task<{entity}Dto> GetByIdAsync(
-        Guid companyId,
+    public async Task<{entity}Dto> GetByIdAsync({company_arg}
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {{
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync({company_call}id, trackChanges, ct);
         return _mapper.Map<{entity}Dto>(entity);
     }}
 
-    public async Task<ListResponseModel<{entity}Dto>> GetFilteredAsync(
-        Guid companyId,
+    public async Task<ListResponseModel<{entity}Dto>> GetFilteredAsync({company_arg}
         {entity}Parameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {{
         var advancedFilters = _filterBuilder.Build<{entity}>(filterNodeDto);
-        var query = _{camel}Repository.GetFiltered(companyId, advancedFilters);
+        {filtered_query}
         var res = await _{camel}Repository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<{entity}Dto>(
@@ -817,16 +824,14 @@ public class {entity}Service(
         );
     }}
 
-    public virtual async Task<{entity}Dto> PatchAsync(
-        Guid companyId,
+    public virtual async Task<{entity}Dto> PatchAsync({company_arg}
         Guid id,
         JsonPatchDocument<Patch{entity}Dto> patchDocument,
         CancellationToken ct
     )
     {{
         var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+            {company_call}id,
             trackChanges: false,
             ct
         );
@@ -850,15 +855,13 @@ public class {entity}Service(
         return _mapper.Map<{entity}Dto>(entity);
     }}
 
-    public async Task DeleteAsync(
-        Guid companyId,
+    public async Task DeleteAsync({company_arg}
         Guid id,
         CancellationToken ct
     )
     {{
         var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+            {company_call}id,
             trackChanges: true,
             ct
         );
@@ -867,8 +870,7 @@ public class {entity}Service(
         await _{camel}Repository.SaveChangesAsync(ct);
     }}{status_method}
 
-    private async Task<{entity}> GetByIdOrThrowAsync(
-        Guid companyId,
+    private async Task<{entity}> GetByIdOrThrowAsync({company_arg}
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
@@ -880,25 +882,31 @@ public class {entity}Service(
 }}
 '''
 
-
 def generate_controller(spec: EntitySpec) -> str:
     entity = spec.entity
     camel = spec.entity_camel
+    route = (
+        f"api/v{{version:apiVersion}}/companies/{{companyId:guid}}/{spec.module.lower()}/{spec.route_name}"
+        if spec.with_company
+        else f"api/v{{version:apiVersion}}/{spec.module.lower()}/{spec.route_name}"
+    )
+    company_param = "\n        [FromRoute] Guid companyId," if spec.with_company else ""
+    company_call = "companyId, " if spec.with_company else ""
+    created_route_values = "new { companyId, id = dto.Id }" if spec.with_company else "new { id = dto.Id }"
+
     status_action = ""
     if spec.status:
         status_action = f'''
 
     [HttpPatch("{{id:guid}}/status")]
-    public async Task<IActionResult> ChangeStatus(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> ChangeStatus({company_param}
         [FromRoute] Guid id,
         [FromBody] {entity}ChangeStatusDto changeStatusDto,
         CancellationToken ct
     )
     {{
         await _{camel}Service.ChangeStatusAsync(
-            companyId,
-            id,
+            {company_call}id,
             changeStatusDto,
             ct
         );
@@ -922,7 +930,7 @@ namespace NGErp.{spec.module}.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-{spec.module.lower()}")]
-[Route("api/v{{version:apiVersion}}/companies/{{companyId:guid}}/{spec.module.lower()}/{spec.route_name}")]
+[Route("{route}")]
 public class {entity}Controller(
     I{entity}Service {camel}Service
 ) : ControllerBase
@@ -932,31 +940,28 @@ public class {entity}Controller(
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public async Task<IActionResult> Create(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> Create({company_param}
         [FromBody] Create{entity}Dto createDto,
         CancellationToken ct
     )
     {{
-        var dto = await _{camel}Service.CreateAsync(companyId, createDto, ct);
+        var dto = await _{camel}Service.CreateAsync({company_call}createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
-            new {{ companyId, id = dto.Id }},
+            {created_route_values},
             dto
         );
     }}
 
     [HttpGet("{{id:guid}}")]
-    public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> GetById({company_param}
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {{
         var dto = await _{camel}Service.GetByIdAsync(
-            companyId,
-            id,
+            {company_call}id,
             trackChanges: true,
             ct
         );
@@ -966,16 +971,14 @@ public class {entity}Controller(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> Get({company_param}
         [FromQuery] {entity}Parameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {{
         var result = await _{camel}Service.GetFilteredAsync(
-            companyId,
-            parameters,
+            {company_call}parameters,
             filterNodeDto,
             ct
         );
@@ -984,28 +987,25 @@ public class {entity}Controller(
     }}
 
     [HttpDelete("{{id:guid}}")]
-    public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> Delete({company_param}
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {{
-        await _{camel}Service.DeleteAsync(companyId, id, ct);
+        await _{camel}Service.DeleteAsync({company_call}id, ct);
         return NoContent();
     }}{status_action}
 
     [HttpPatch("{{id:guid}}")]
     [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> Patch(
-        [FromRoute] Guid companyId,
+    public async Task<IActionResult> Patch({company_param}
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<Patch{entity}Dto> patchDocument,
         CancellationToken ct
     )
     {{
         var dto = await _{camel}Service.PatchAsync(
-            companyId,
-            id,
+            {company_call}id,
             patchDocument,
             ct
         );
@@ -1014,7 +1014,6 @@ public class {entity}Controller(
     }}
 }}
 '''
-
 
 def generate_validator(spec: EntitySpec) -> str:
     if spec.status:
@@ -1180,6 +1179,11 @@ def main() -> int:
     parser.add_argument("--module", default="HCM", help="Module name, default HCM")
     parser.add_argument("--schema", default="HCM", help="DB schema, default HCM")
     parser.add_argument("--base-class", default="BaseEntityWithCompany")
+    parser.add_argument(
+        "--without-company",
+        action="store_true",
+        help="Generate repository/service/controller without companyId support",
+    )
     parser.add_argument("--route", help="Controller route segment, e.g. employee-educations")
     parser.add_argument("--status", action="store_true", help="Generate Status/ChangeStatus support")
     parser.add_argument("--force", action="store_true", help="Overwrite existing generated files")
@@ -1191,6 +1195,7 @@ def main() -> int:
     )
 
     args = parser.parse_args()
+    args.with_company = not args.without_company
 
     try:
         spec = load_spec(args)
