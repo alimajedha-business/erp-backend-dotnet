@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 using AutoMapper;
 
@@ -7,6 +8,7 @@ using FluentValidation.Results;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
+using Microsoft.VisualBasic;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
@@ -312,14 +314,13 @@ public class ItemService(
     List<Guid> unitOfMeasurementIds
 )
     {
-        if (!int.TryParse(conversion.Key, out var unitOrder) ||
-            unitOrder < 1 ||
-            unitOrder > unitOfMeasurementIds.Count)
+        var unitOrder = GetConversionKey(conversion);
+        if (unitOrder < 1 || unitOrder > unitOfMeasurementIds.Count)
         {
             throw new ValidationException([
                 new ValidationFailure(
                 nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
-                $"unitConversions key '{conversion.Key}' must be a unit order between 1 and {unitOfMeasurementIds.Count}."
+                $"unitConversions key '{unitOrder}' must be a unit order between 1 and {unitOfMeasurementIds.Count}."
             )
             ]);
         }
@@ -343,7 +344,7 @@ public class ItemService(
         catch (ArgumentException ex)
         {
             throw new ValidationException([
-                new ValidationFailure($"unitConversions[{conversion.Key}]", ex.Message)
+                new ValidationFailure($"unitConversions[{unitOrder}]", ex.Message)
             ]);
         }
     }
@@ -357,12 +358,10 @@ public class ItemService(
 
         foreach (var conversion in conversions)
         {
-            if (!int.TryParse(conversion.Key, out var unitOrder) ||
-                unitOrder < 1 ||
-                unitOrder > unitCount)
-            {
+            var unitOrder = GetConversionKey(conversion);
+
+            if (unitOrder < 1 || unitOrder > unitCount)
                 continue;
-            }
 
             graph[unitOrder] = [.. GetReferencedUnitOrders(conversion.Value)
                 .Where(reference => reference <= unitCount)];
@@ -375,6 +374,23 @@ public class ItemService(
         {
             VisitUnitConversion(unitOrder, graph, states, path);
         }
+    }
+
+    private static int GetConversionKey(
+        KeyValuePair<string, ItemUnitConversionEquationDto> conversion
+    )
+    {
+        var conversionKey = conversion.Key;
+        var match = RegexHelpers
+            .UnitOfMeasurementConversionRegex()
+            .Match(conversionKey);
+
+        if (!match.Success)
+        {
+            throw new ValidationException("Unit Error");
+        }
+
+        return int.Parse(match.Groups[1].Value);
     }
 
     private static void VisitUnitConversion(
@@ -545,7 +561,7 @@ public class ItemService(
             .Where(conversion => unitOrderById.ContainsKey(conversion.UnitOfMeasurementId))
             .OrderBy(conversion => unitOrderById[conversion.UnitOfMeasurementId])
             .ToDictionary(
-                conversion => unitOrderById[conversion.UnitOfMeasurementId].ToString(),
+                conversion => $"unit{unitOrderById[conversion.UnitOfMeasurementId]}",
                 conversion => UnitConversionEquationBuilder.Parse(conversion.ConversionEquation)
             );
     }
