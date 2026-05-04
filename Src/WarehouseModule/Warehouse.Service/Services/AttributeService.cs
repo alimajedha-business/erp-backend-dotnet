@@ -155,7 +155,7 @@ public class AttributeService(
         return _attributeRepository.GetNextCodeAsync(companyId, ct);
     }
 
-    private async Task<Domain.Entities.Attribute> GetSingleOrThrowAsync(
+    public async Task<Domain.Entities.Attribute> GetSingleOrThrowAsync(
         bool trackChanges,
         Expression<Func<Domain.Entities.Attribute, bool>> predicate,
         CancellationToken ct = default

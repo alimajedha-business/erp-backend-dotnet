@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System.Linq.Expressions;
+
+using Microsoft.AspNetCore.JsonPatch;
 
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
@@ -49,4 +51,10 @@ public interface IAttributeService
     );
 
     Task<int> GetNextCode(Guid companyId, CancellationToken ct);
+
+    Task<Domain.Entities.Attribute> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<Domain.Entities.Attribute, bool>> predicate,
+        CancellationToken ct = default
+    );
 }
