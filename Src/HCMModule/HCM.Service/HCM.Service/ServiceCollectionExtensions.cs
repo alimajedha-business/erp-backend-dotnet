@@ -45,6 +45,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
         services.AddSingleton<IFilterSchema<RelativeType>, RelativeTypeSchema>();
 
+        
+        services.AddScoped<IEmployeeDependantService, EmployeeDependantService>();
+
         return services;
     }
 }

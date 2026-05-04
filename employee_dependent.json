@@ -1,0 +1,26 @@
+{
+  "entity": "EmployeeDependant",
+  "schema": "HCM",
+  "module": "HCM",
+  "withCompany": false,
+  "baseClass": "BaseEntity",
+  "route": "employee-dependants",
+  "status": false,
+  "fields": [
+    {
+      "name": "EmployeeRelativeId",
+      "type": "Guid",
+      "required": true,
+      "relation": "EmployeeRelative"
+    },
+    {
+      "name": "FromDate",
+      "type": "DateTime",
+      "required": true
+    },
+    {
+      "name": "ToDate",
+      "type": "DateTime?"
+    }
+  ]
+}
