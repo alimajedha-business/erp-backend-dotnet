@@ -706,8 +706,12 @@ public class ItemService(
 
         if (duplicateWarehouseIds.Count != 0)
         {
-            // TODO: throw proper exception
-            throw new Exception();
+            throw new ValidationException(duplicateWarehouseIds.Select(warehouseId =>
+                new ValidationFailure(
+                    nameof(PatchItemDto.ItemWarehouses),
+                    $"Duplicate warehouseId '{warehouseId}' is not allowed."
+                )
+            ));
         }
 
         var requestedWarehouseIds = requested
