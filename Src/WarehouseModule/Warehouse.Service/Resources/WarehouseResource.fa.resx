@@ -285,6 +285,36 @@
   <data name="Warehouse" xml:space="preserve">
     <value>انبار</value>
   </data>
+  <data name="Warehouse.Code.Duplicate" xml:space="preserve">
+    <value>کد انبار قبلا ثبت شده است.</value>
+  </data>
+  <data name="Warehouse.Code.NotEmpty" xml:space="preserve">
+    <value>کد انبار نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Warehouse.Code.Numeric" xml:space="preserve">
+    <value>کد انبار باید عددی باشد.</value>
+  </data>
+  <data name="Warehouse.CompanyUnit.NotEmpty" xml:space="preserve">
+    <value>واحد شرکت الزامی است.</value>
+  </data>
+  <data name="Warehouse.Delete.HasLocations" xml:space="preserve">
+    <value>انبار به دلیل داشتن محل نگهداری قابل حذف نیست.</value>
+  </data>
+  <data name="Warehouse.MaxMonetaryValue.Precision" xml:space="preserve">
+    <value>حداکثر ارزش ریالی باید دقت 22 و مقیاس 4 داشته باشد.</value>
+  </data>
+  <data name="Warehouse.Title.MaxLength" xml:space="preserve">
+    <value>عنوان انبار نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="Warehouse.Title.MinLength" xml:space="preserve">
+    <value>عنوان انبار باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Warehouse.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان انبار نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Warehouse.Type.NotEmpty" xml:space="preserve">
+    <value>نوع انبار الزامی است.</value>
+  </data>
   <data name="WarehouseLocation" xml:space="preserve">
     <value>محل نگهداری</value>
   </data>

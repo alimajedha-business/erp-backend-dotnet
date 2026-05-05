@@ -17,24 +17,6 @@ public record WarehouseDto(
     string WarehouseAccountDetailed1Value,
     string WarehouseAccountDetailed2Value,
 
-    Guid? SaleSlaveAccountCompanyId,
-    string SaleAccountMasterValue,
-    string SaleAccountSlaveValue,
-    string SaleAccountDetailed1Value,
-    string SaleAccountDetailed2Value,
-
-    Guid? ExportSaleSlaveAccountCompanyId,
-    string ExportSaleAccountMasterValue,
-    string ExportSaleAccountSlaveValue,
-    string ExportSaleAccountDetailed1Value,
-    string ExportSaleAccountDetailed2Value,
-
-    Guid? ReturnFromSaleSlaveAccountCompanyId,
-    string ReturnFromSaleAccountMasterValue,
-    string ReturnFromSaleAccountSlaveValue,
-    string ReturnFromSaleAccountDetailed1Value,
-    string ReturnFromSaleAccountDetailed2Value,
-
     Guid? ReturnFromPurchaseSlaveAccountCompanyId,
     string ReturnFromPurchaseAccountMasterValue,
     string ReturnFromPurchaseAccountSlaveValue,
@@ -75,30 +57,6 @@ public class CreateWarehouseDto
     public string? WarehouseAccountDetailed2Value { get; set; }
     #endregion
 
-    #region Sale
-    public Guid? SaleSlaveAccountCompanyId { get; set; }
-    public string? SaleAccountMasterValue { get; set; }
-    public string? SaleAccountSlaveValue { get; set; }
-    public string? SaleAccountDetailed1Value { get; set; }
-    public string? SaleAccountDetailed2Value { get; set; }
-    #endregion
-
-    #region ExportSale
-    public Guid? ExportSaleSlaveAccountCompanyId { get; set; }
-    public string? ExportSaleAccountMasterValue { get; set; }
-    public string? ExportSaleAccountSlaveValue { get; set; }
-    public string? ExportSaleAccountDetailed1Value { get; set; }
-    public string? ExportSaleAccountDetailed2Value { get; set; }
-    #endregion
-
-    #region ReturnFromSale
-    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; set; }
-    public string? ReturnFromSaleAccountMasterValue { get; set; }
-    public string? ReturnFromSaleAccountSlaveValue { get; set; }
-    public string? ReturnFromSaleAccountDetailed1Value { get; set; }
-    public string? ReturnFromSaleAccountDetailed2Value { get; set; }
-    #endregion
-
     #region ReturnFromPurchase
     public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; set; }
     public string? ReturnFromPurchaseAccountMasterValue { get; set; }
@@ -116,4 +74,20 @@ public class PatchWarehouseDto
     public Guid? WarehouseTypeId { get; set; }
     public Guid? CompanyUnitId { get; set; }
     public bool? IsActive { get; set; }
+
+    #region Warehouse
+    public Guid? WarehouseSlaveAccountCompanyId { get; set; }
+    public string? WarehouseAccountMasterValue { get; set; }
+    public string? WarehouseAccountSlaveValue { get; set; }
+    public string? WarehouseAccountDetailed1Value { get; set; }
+    public string? WarehouseAccountDetailed2Value { get; set; }
+    #endregion
+
+    #region ReturnFromPurchase
+    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; set; }
+    public string? ReturnFromPurchaseAccountMasterValue { get; set; }
+    public string? ReturnFromPurchaseAccountSlaveValue { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed1Value { get; set; }
+    public string? ReturnFromPurchaseAccountDetailed2Value { get; set; }
+    #endregion
 }

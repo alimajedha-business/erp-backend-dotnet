@@ -285,6 +285,36 @@
   <data name="Warehouse" xml:space="preserve">
     <value>Warehouse</value>
   </data>
+  <data name="Warehouse.Code.Duplicate" xml:space="preserve">
+    <value>Warehouse code already exists.</value>
+  </data>
+  <data name="Warehouse.Code.NotEmpty" xml:space="preserve">
+    <value>Warehouse code could not be empty.</value>
+  </data>
+  <data name="Warehouse.Code.Numeric" xml:space="preserve">
+    <value>Warehouse code must be numeric.</value>
+  </data>
+  <data name="Warehouse.CompanyUnit.NotEmpty" xml:space="preserve">
+    <value>Company unit is required.</value>
+  </data>
+  <data name="Warehouse.Delete.HasLocations" xml:space="preserve">
+    <value>Warehouse cannot be deleted because warehouse locations are attached to it.</value>
+  </data>
+  <data name="Warehouse.MaxMonetaryValue.Precision" xml:space="preserve">
+    <value>Maximum monetary value must have precision 22 and scale 4.</value>
+  </data>
+  <data name="Warehouse.Title.MaxLength" xml:space="preserve">
+    <value>Warehouse title must not be longer than 250 characters.</value>
+  </data>
+  <data name="Warehouse.Title.MinLength" xml:space="preserve">
+    <value>Warehouse title must have at least 3 characters.</value>
+  </data>
+  <data name="Warehouse.Title.NotEmpty" xml:space="preserve">
+    <value>Warehouse title could not be empty.</value>
+  </data>
+  <data name="Warehouse.Type.NotEmpty" xml:space="preserve">
+    <value>Warehouse type is required.</value>
+  </data>
   <data name="WarehouseLocation" xml:space="preserve">
     <value>Warehouse Location</value>
   </data>
