@@ -55,4 +55,5 @@ public class PatchAttributeDto
     public string? Title { get; set; }
     public AttributeDataType? DataType { get; set; }
     public AttributeEntity? AttributeEntity { get; set; }
+    public bool? IsRequired { get; set; }
 }

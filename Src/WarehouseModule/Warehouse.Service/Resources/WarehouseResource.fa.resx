@@ -123,6 +123,39 @@
   <data name="AttributeEnumValue" xml:space="preserve">
     <value>مقدار انتخابی مشخصه</value>
   </data>
+  <data name="Attribute.AttributeEntity.Invalid" xml:space="preserve">
+    <value>موجودیت مشخصه نامعتبر است.</value>
+  </data>
+  <data name="Attribute.Code.Duplicate" xml:space="preserve">
+    <value>کد مشخصه قبلا ثبت شده است.</value>
+  </data>
+  <data name="Attribute.Code.NotEmpty" xml:space="preserve">
+    <value>کد مشخصه نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Attribute.Code.Numeric" xml:space="preserve">
+    <value>کد مشخصه باید عددی باشد.</value>
+  </data>
+  <data name="Attribute.DataType.EnumHasValues" xml:space="preserve">
+    <value>نوع داده مشخصه به دلیل داشتن مقادیر انتخابی قابل تغییر از انتخابی به نوع دیگر نیست.</value>
+  </data>
+  <data name="Attribute.DataType.Invalid" xml:space="preserve">
+    <value>نوع داده مشخصه نامعتبر است.</value>
+  </data>
+  <data name="Attribute.Delete.HasEnumValues" xml:space="preserve">
+    <value>مشخصه به دلیل داشتن مقدار انتخابی قابل حذف نیست.</value>
+  </data>
+  <data name="Attribute.Delete.IsStatic" xml:space="preserve">
+    <value>مشخصه سیستمی قابل حذف نیست.</value>
+  </data>
+  <data name="Attribute.Title.MaxLength" xml:space="preserve">
+    <value>عنوان مشخصه نمی‌تواند بیشتر از 50 کاراکتر باشد.</value>
+  </data>
+  <data name="Attribute.Title.MinLength" xml:space="preserve">
+    <value>عنوان مشخصه باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Attribute.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان مشخصه نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>

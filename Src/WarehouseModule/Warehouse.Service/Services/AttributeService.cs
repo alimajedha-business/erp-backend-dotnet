@@ -2,17 +2,21 @@ using System.Linq.Expressions;
 
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -20,16 +24,18 @@ namespace NGErp.Warehouse.Service.Services;
 public class AttributeService(
     IAdvancedFilterBuilder filterBuilder,
     IAttributeRepository attributeRepository,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IAttributeBusinessRuleValidator businessRuleValidator,
+    IValidator<CreateAttributeDto> createValidator,
+    IValidator<PatchAttributeDto> patchValidator,
+    IMapper mapper
 ) : IAttributeService
 {
-    private readonly string _key = "Attribute";
-
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IAttributeRepository _attributeRepository = attributeRepository;
+    private readonly IAttributeBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IValidator<CreateAttributeDto> _createValidator = createValidator;
+    private readonly IValidator<PatchAttributeDto> _patchValidator = patchValidator;
 
     public async Task<AttributeDto> CreateAsync(
         Guid companyId,
@@ -37,6 +43,10 @@ public class AttributeService(
         CancellationToken ct
     )
     {
+        RequestBodyValidator.ThrowIfNull(createDto);
+        await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
+
         var entity = _mapper.Map<Domain.Entities.Attribute>(createDto);
         entity.CompanyId = companyId;
 
@@ -68,6 +78,8 @@ public class AttributeService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var query = _attributeRepository.FilterByQ(companyId, parameters);
         var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
 
@@ -85,6 +97,8 @@ public class AttributeService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<Domain.Entities.Attribute>(filterNodeDto);
         var query = _attributeRepository.GetFiltered(companyId, advancedFilters);
         var res = await _attributeRepository.GetResponseListAsync(query, parameters, ct);
@@ -103,6 +117,18 @@ public class AttributeService(
         CancellationToken ct
     )
     {
+        PatchAttributePolicy.Validate(patchDocument);
+
+        var codePatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchAttributeDto.Code)
+        );
+
+        var dataTypePatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchAttributeDto.DataType)
+        );
+
         var attribute = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.CompanyId == companyId && p.Id == id,
@@ -122,6 +148,29 @@ public class AttributeService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+
+        if (codePatched && patchDto.Code.HasValue)
+        {
+            await _businessRuleValidator.ValidateAttributeCodeUniquenessAsync(
+                companyId,
+                excludedAttributeId: id,
+                patchDto.Code.Value,
+                ct
+            );
+        }
+
+        if (dataTypePatched && patchDto.DataType.HasValue)
+        {
+            await _businessRuleValidator.ValidateDataTypeChangeAsync(
+                companyId,
+                id,
+                attribute.DataType,
+                patchDto.DataType.Value,
+                ct
+            );
+        }
+
         _mapper.Map(patchDto, attribute);
 
         await _attributeRepository.SaveChangesAsync(ct);
@@ -134,19 +183,12 @@ public class AttributeService(
         CancellationToken ct
     )
     {
-        var attribute = await GetSingleOrThrowAsync(
-            trackChanges: true,
-            predicate: p => p.CompanyId == companyId && p.Id == id,
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
+        await _attributeRepository.Remove(e =>
+            e.CompanyId == companyId &&
+            e.Id == id,
             ct
         );
-
-        if (attribute.IsStatic)
-        {
-            // TODO: throw new business rule exception
-        }
-
-        _attributeRepository.Remove(attribute);
-        await _attributeRepository.SaveChangesAsync(ct);
     }
 
     public Task<int> GetNextCode(
@@ -169,7 +211,7 @@ public class AttributeService(
             ct
         );
 
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+        return entity ?? throw new AttributeNotFoundException();
     }
 }
 

@@ -123,6 +123,39 @@
   <data name="AttributeEnumValue" xml:space="preserve">
     <value>Attribute Enum Value</value>
   </data>
+  <data name="Attribute.AttributeEntity.Invalid" xml:space="preserve">
+    <value>Attribute entity is invalid.</value>
+  </data>
+  <data name="Attribute.Code.Duplicate" xml:space="preserve">
+    <value>Attribute code already exists.</value>
+  </data>
+  <data name="Attribute.Code.NotEmpty" xml:space="preserve">
+    <value>Attribute code could not be empty.</value>
+  </data>
+  <data name="Attribute.Code.Numeric" xml:space="preserve">
+    <value>Attribute code must be numeric.</value>
+  </data>
+  <data name="Attribute.DataType.EnumHasValues" xml:space="preserve">
+    <value>Attribute data type cannot be changed from enum because enum values are attached to it.</value>
+  </data>
+  <data name="Attribute.DataType.Invalid" xml:space="preserve">
+    <value>Attribute data type is invalid.</value>
+  </data>
+  <data name="Attribute.Delete.HasEnumValues" xml:space="preserve">
+    <value>Attribute cannot be deleted because enum values are attached to it.</value>
+  </data>
+  <data name="Attribute.Delete.IsStatic" xml:space="preserve">
+    <value>Static attribute cannot be deleted.</value>
+  </data>
+  <data name="Attribute.Title.MaxLength" xml:space="preserve">
+    <value>Attribute title must not be longer than 50 characters.</value>
+  </data>
+  <data name="Attribute.Title.MinLength" xml:space="preserve">
+    <value>Attribute title must have at least 3 characters.</value>
+  </data>
+  <data name="Attribute.Title.NotEmpty" xml:space="preserve">
+    <value>Attribute title could not be empty.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>

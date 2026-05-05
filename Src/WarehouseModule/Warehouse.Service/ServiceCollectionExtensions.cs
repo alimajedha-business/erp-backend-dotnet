@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
+        services.AddScoped<IAttributeBusinessRuleValidator, AttributeBusinessRuleValidator>();
         services.AddScoped<ICategoryBusinessRuleValidator, CategoryBusinessRuleValidator>();
         services.AddScoped<
             ICategoryLevelConstraintBusinessRuleValidator,
