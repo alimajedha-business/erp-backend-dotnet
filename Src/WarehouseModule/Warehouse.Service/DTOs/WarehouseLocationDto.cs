@@ -42,6 +42,7 @@ public class PatchWarehouseLocationDto
     public string? Title { get; set; }
     public bool? CanStoreItem { get; set; }
     public bool? HasNextLevel { get; set; }
+    public int? LevelNo { get; set; }
 }
 
 public sealed record WarehouseLocationNode(

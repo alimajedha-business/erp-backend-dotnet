@@ -65,6 +65,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
         services.AddScoped<IWarehouseBusinessRuleValidator, WarehouseBusinessRuleValidator>();
+        services.AddScoped<
+            IWarehouseLocationBusinessRuleValidator,
+            WarehouseLocationBusinessRuleValidator
+        >();
         services.AddScoped<IWarehouseTypeBusinessRuleValidator, WarehouseTypeBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 

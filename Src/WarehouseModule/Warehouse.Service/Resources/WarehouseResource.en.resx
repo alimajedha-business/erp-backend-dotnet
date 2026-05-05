@@ -318,6 +318,36 @@
   <data name="WarehouseLocation" xml:space="preserve">
     <value>Warehouse Location</value>
   </data>
+  <data name="WarehouseLocation.Code.Duplicate" xml:space="preserve">
+    <value>Warehouse location code already exists.</value>
+  </data>
+  <data name="WarehouseLocation.Code.NotEmpty" xml:space="preserve">
+    <value>Warehouse location code could not be empty.</value>
+  </data>
+  <data name="WarehouseLocation.Code.Numeric" xml:space="preserve">
+    <value>Warehouse location code must be numeric.</value>
+  </data>
+  <data name="WarehouseLocation.Delete.HasChildren" xml:space="preserve">
+    <value>Warehouse location cannot be deleted because child locations are attached to it.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>The 6th level warehouse location cannot have child locations.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.Range" xml:space="preserve">
+    <value>Warehouse location level number must be between 1 and 6.</value>
+  </data>
+  <data name="WarehouseLocation.Parent.NotInWarehouse" xml:space="preserve">
+    <value>The selected parent warehouse location must belong to the same warehouse.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MaxLength" xml:space="preserve">
+    <value>Warehouse location title must not be longer than 250 characters.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MinLength" xml:space="preserve">
+    <value>Warehouse location title must have at least 3 characters.</value>
+  </data>
+  <data name="WarehouseLocation.Title.NotEmpty" xml:space="preserve">
+    <value>Warehouse location title could not be empty.</value>
+  </data>
   <data name="WarehouseType.Code.Duplicate" xml:space="preserve">
     <value>Warehouse type code already exists.</value>
   </data>

@@ -318,6 +318,36 @@
   <data name="WarehouseLocation" xml:space="preserve">
     <value>محل نگهداری</value>
   </data>
+  <data name="WarehouseLocation.Code.Duplicate" xml:space="preserve">
+    <value>کد محل نگهداری قبلا ثبت شده است.</value>
+  </data>
+  <data name="WarehouseLocation.Code.NotEmpty" xml:space="preserve">
+    <value>کد محل نگهداری نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Code.Numeric" xml:space="preserve">
+    <value>کد محل نگهداری باید عددی باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Delete.HasChildren" xml:space="preserve">
+    <value>محل نگهداری به دلیل داشتن زیر-سطح قابل حذف نیست.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>سطح ششم محل نگهداری نمی‌تواند زیر-سطح داشته باشد.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.Range" xml:space="preserve">
+    <value>شماره سطح محل نگهداری باید بین 1 و 6 باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Parent.NotInWarehouse" xml:space="preserve">
+    <value>محل نگهداری والد انتخاب‌شده باید متعلق به همان انبار باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MaxLength" xml:space="preserve">
+    <value>عنوان محل نگهداری نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MinLength" xml:space="preserve">
+    <value>عنوان محل نگهداری باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان محل نگهداری نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="WarehouseType.Code.Duplicate" xml:space="preserve">
     <value>کد نوع انبار قبلا ثبت شده است.</value>
   </data>

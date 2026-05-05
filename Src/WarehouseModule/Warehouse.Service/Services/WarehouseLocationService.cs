@@ -2,18 +2,22 @@
 
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -21,16 +25,19 @@ namespace NGErp.Warehouse.Service.Services;
 public class WarehouseLocationService(
     IAdvancedFilterBuilder filterBuilder,
     IWarehouseLocationRepository locationRepository,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IWarehouseLocationBusinessRuleValidator businessRuleValidator,
+    IValidator<CreateWarehouseLocationDto> createValidator,
+    IValidator<PatchWarehouseLocationDto> patchValidator,
+    IMapper mapper
 ) : IWarehouseLocationService
 {
-    private readonly string _key = "WarehouseLocation";
-
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IWarehouseLocationRepository _locationRepository = locationRepository;
+    private readonly IWarehouseLocationBusinessRuleValidator _businessRuleValidator =
+        businessRuleValidator;
+    private readonly IValidator<CreateWarehouseLocationDto> _createValidator = createValidator;
+    private readonly IValidator<PatchWarehouseLocationDto> _patchValidator = patchValidator;
 
     public async Task<WarehouseLocationDto> CreateAsync(
         Guid warehouseId,
@@ -38,6 +45,10 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
+        RequestBodyValidator.ThrowIfNull(createLocationDto);
+        await RequestBodyValidator.ValidateAsync(_createValidator, createLocationDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(warehouseId, createLocationDto, ct);
+
         var location = _mapper.Map<WarehouseLocation>(createLocationDto);
         location.WarehouseId = warehouseId;
 
@@ -76,6 +87,8 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var res = await _locationRepository.FilterByQ(warehouseId, parameters, ct);
 
         return new ListResponseModel<WarehouseLocationSlimDto>(
@@ -92,6 +105,8 @@ public class WarehouseLocationService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<WarehouseLocation>(filterNodeDto);
         var query = _locationRepository.GetFiltered(warehouseId, advancedFilters);
         var res = await _locationRepository.GetResponseListAsync(query, parameters, ct);
@@ -118,6 +133,23 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
+        PatchWarehouseLocationPolicy.Validate(patchDocument);
+
+        var codePatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchWarehouseLocationDto.Code)
+        );
+
+        var levelNoPatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchWarehouseLocationDto.LevelNo)
+        );
+
+        var hasNextLevelPatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchWarehouseLocationDto.HasNextLevel)
+        );
+
         var location = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p => p.WarehouseId == warehouseId && p.Id == id,
@@ -135,6 +167,29 @@ public class WarehouseLocationService(
         if (errors.Count != 0)
             throw new InvalidPatchDocumentException(errors);
 
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+
+        if (codePatched && patchDto.Code.HasValue)
+        {
+            await _businessRuleValidator.ValidateWarehouseLocationCodeUniquenessAsync(
+                excludedLocationId: id,
+                patchDto.Code.Value,
+                ct
+            );
+        }
+
+        if (
+            (levelNoPatched || hasNextLevelPatched) &&
+            patchDto.LevelNo.HasValue &&
+            patchDto.HasNextLevel.HasValue
+        )
+        {
+            _businessRuleValidator.ValidateHasNextLevel(
+                patchDto.LevelNo.Value,
+                patchDto.HasNextLevel.Value
+            );
+        }
+
         _mapper.Map(patchDto, location);
 
         await _locationRepository.SaveChangesAsync(ct);
@@ -147,6 +202,8 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateDeleteAsync(warehouseId, id, ct);
+
         await _locationRepository.Remove(e =>
             e.WarehouseId == warehouseId &&
             e.Id == id,
@@ -166,6 +223,6 @@ public class WarehouseLocationService(
             ct
         );
 
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+        return entity ?? throw new WarehouseLocationNotFoundException();
     }
 }
