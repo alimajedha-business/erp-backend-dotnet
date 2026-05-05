@@ -41,10 +41,10 @@ public record AttributeSlimDto(
 
 public class CreateAttributeDto
 {
-    public required int Code { get; set; }
-    public required string Title { get; set; }
-    public required AttributeDataType DataType { get; set; }
-    public required AttributeEntity AttributeEntity { get; set; }
+    public int Code { get; set; }
+    public string? Title { get; set; }
+    public AttributeDataType DataType { get; set; }
+    public AttributeEntity AttributeEntity { get; set; }
     public bool IsRequired { get; set; } = false;
     public bool IsStockDimension { get; set; } = false;
 }
