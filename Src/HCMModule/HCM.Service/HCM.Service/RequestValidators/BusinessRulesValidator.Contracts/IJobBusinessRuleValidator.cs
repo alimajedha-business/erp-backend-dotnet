@@ -1,36 +1,34 @@
-using FluentValidation;
-
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Localization;
-
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
-using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
 
-public interface IJobCategoryBusinessRulesValidator
+public interface IJobBusinessRuleValidator
 {
-    void ValidateParameters(JobCategoryParameters parameters);
+    void ValidateParameters(JobParameters parameters);
 
     Task ValidateCreateAsync(
-        CreateJobCategoryDto createDto,
+        Guid companyId,
+        CreateJobDto createDto,
         CancellationToken ct
     );
 
-    Task ValidateJobCategoryCodeUniquenessAsync(
-        Guid? excludedJobCategoryId,
-        int code,
+    Task ValidateJobCodeUniquenessAsync(
+        Guid companyId,
+        Guid? excludedJobId,
+        string code,
         CancellationToken ct
     );
 
     Task ValidateTitleUniquenessAsync(
-        Guid? excludedJobCategoryId,
+        Guid companyId,
+        Guid? excludedJobId,
         string title,
         CancellationToken ct
     );
 
     Task ValidateDeleteAsync(
+        Guid companyId,
         Guid id,
         CancellationToken ct
     );

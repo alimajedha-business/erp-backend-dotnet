@@ -29,37 +29,53 @@ public class JobCategoryBusinessRuleValidator(
     public async Task ValidateCreateAsync(CreateJobCategoryDto createDto, CancellationToken ct)
     {
         await ValidateJobCategoryCodeUniquenessAsync(
-           createDto.Code,
+            excludedJobCategoryId: null,
+            createDto.Code,
             ct
         );
 
         await ValidateTitleUniquenessAsync(
+            excludedJobCategoryId: null,
             createDto.Title,
             ct
-            );
+        );
     }
 
-    private async Task ValidateJobCategoryCodeUniquenessAsync(
+    public async Task ValidateJobCategoryCodeUniquenessAsync(
+        Guid? excludedJobCategoryId,
         int code,
         CancellationToken ct
     )
     {
-        var exists = await _jobCategoryRepository.AnyAsync(
-            c => c.Code == code,
-            ct);
+        var exists = excludedJobCategoryId is null
+            ? await _jobCategoryRepository.AnyAsync(
+                c => c.Code == code,
+                ct
+            )
+            : await _jobCategoryRepository.AnyAsync(
+                c => c.Id != excludedJobCategoryId.Value && c.Code == code,
+                ct
+            );
 
         if (exists)
             throw new JobCategoryCodeAlreadyExistsException(code);
     }
 
-    private async Task ValidateTitleUniquenessAsync(
-       string title,
+    public async Task ValidateTitleUniquenessAsync(
+        Guid? excludedJobCategoryId,
+        string title,
         CancellationToken ct
     )
     {
-        var exists = await _jobCategoryRepository.AnyAsync(
-            c => c.Title == title,
-            ct);
+        var exists = excludedJobCategoryId is null
+            ? await _jobCategoryRepository.AnyAsync(
+                c => c.Title == title,
+                ct
+            )
+            : await _jobCategoryRepository.AnyAsync(
+                c => c.Id != excludedJobCategoryId.Value && c.Title == title,
+                ct
+            );
 
         if (exists)
             throw new JobCategoryTitleAlreadyExistsException(title);

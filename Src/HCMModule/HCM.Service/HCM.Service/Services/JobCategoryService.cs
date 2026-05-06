@@ -114,6 +114,16 @@ public class JobCategoryService(
     {
         PatchJobCategoryPolicy.Validate(patchDocument);
 
+        var codePatched = HasProperty(
+            patchDocument,
+            nameof(PatchJobCategoryDto.Code)
+        );
+
+        var titlePatched = HasProperty(
+            patchDocument,
+            nameof(PatchJobCategoryDto.Title)
+        );
+
         var entity = await GetSingleOrThrowAsync(
           trackChanges: true,
           predicate: p =>
@@ -135,6 +145,24 @@ public class JobCategoryService(
         }
 
         await ValidateAsync(_patchValidator, patchDto, ct);
+
+        if (codePatched && patchDto.Code.HasValue)
+        {
+            await _businessRuleValidator.ValidateJobCategoryCodeUniquenessAsync(
+                excludedJobCategoryId: id,
+                patchDto.Code.Value,
+                ct
+            );
+        }
+
+        if (titlePatched && patchDto.Title is not null)
+        {
+            await _businessRuleValidator.ValidateTitleUniquenessAsync(
+                excludedJobCategoryId: id,
+                patchDto.Title,
+                ct
+            );
+        }
 
         _mapper.Map(patchDto, entity);
 

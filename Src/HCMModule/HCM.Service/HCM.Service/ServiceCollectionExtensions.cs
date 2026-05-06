@@ -8,9 +8,6 @@ using NGErp.HCM.Domain.EntitySchemas;
 using NGErp.HCM.Service.Mappings;
 using NGErp.HCM.Service.RequestValidators;
 using NGErp.HCM.Service.Services;
-using NGErp.HCM.Domain.Entities;
-using NGErp.HCM.Domain.EntitySchemas;
-using NGErp.Base.Domain.EntitySchemas;
 using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.HCM.Service.RequestValidators.BusinessRulesValidators;
 using NGErp.HCM.Service.Resources;
@@ -53,6 +50,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<MilitaryServiceStatus>, MilitaryServiceStatusSchema>();
         services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
         services.AddSingleton<IFilterSchema<RelativeType>, RelativeTypeSchema>();
+
+        
+        services.AddScoped<IJobService, JobService>();
+        services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
 
         return services;
     }
