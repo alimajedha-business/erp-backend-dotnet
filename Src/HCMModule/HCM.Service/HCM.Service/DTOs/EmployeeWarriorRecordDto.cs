@@ -11,8 +11,7 @@ public class EmployeeWarriorRecordDto
     public string Code { get; set; } = default!;
     [Range(0, 100)]
     public decimal? DisabilityPercentage { get; set; }
-    [MaxLength(50)]
-    public string? IncentiveGroup { get; set; }
+    public int? IncentiveGroup { get; set; }
     public decimal? Score { get; set; }
     public DateTime EffectiveDate { get; set; }
     [Range(1, 2)]
@@ -29,8 +28,7 @@ public class CreateEmployeeWarriorRecordDto
     public required string Code { get; set; }
     [Range(0, 100)]
     public decimal? DisabilityPercentage { get; set; }
-    [MaxLength(50)]
-    public string? IncentiveGroup { get; set; }
+    public int? IncentiveGroup { get; set; }
     public decimal? Score { get; set; }
     [Required]
     public DateTime? EffectiveDate { get; set; }
@@ -48,8 +46,7 @@ public class PatchEmployeeWarriorRecordDto
     public string? Code { get; set; }
     [Range(0, 100)]
     public decimal? DisabilityPercentage { get; set; }
-    [MaxLength(50)]
-    public string? IncentiveGroup { get; set; }
+    public int? IncentiveGroup { get; set; }
     public decimal? Score { get; set; }
     public DateTime? EffectiveDate { get; set; }
     [Range(1, 2)]
