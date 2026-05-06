@@ -40,6 +40,7 @@ public class WarehouseLocationBusinessRuleValidator(
         );
 
         await ValidateWarehouseLocationCodeUniquenessAsync(
+            warehouseId,
             excludedLocationId: null,
             createDto.Code,
             ct
@@ -47,19 +48,22 @@ public class WarehouseLocationBusinessRuleValidator(
     }
 
     public async Task ValidateWarehouseLocationCodeUniquenessAsync(
+        Guid warehouseId,
         Guid? excludedLocationId,
         int code,
         CancellationToken ct
     )
     {
         var exists = excludedLocationId is null
-            ? await _locationRepository.AnyAsync(e =>
-                e.Code == code,
+            ? await _locationRepository.AnyAsync(
+                e => e.WarehouseId == warehouseId && e.Code == code,
                 ct
             )
-            : await _locationRepository.AnyAsync(e =>
-                e.Id != excludedLocationId.Value &&
-                e.Code == code,
+            : await _locationRepository.AnyAsync(
+                e => 
+                    e.WarehouseId == warehouseId &&
+                    e.Id != excludedLocationId.Value &&
+                    e.Code == code,
                 ct
             );
 
@@ -76,9 +80,10 @@ public class WarehouseLocationBusinessRuleValidator(
         if (parentLocationId is null)
             return;
 
-        var exists = await _locationRepository.AnyAsync(e =>
-            e.WarehouseId == warehouseId &&
-            e.Id == parentLocationId.Value,
+        var exists = await _locationRepository.AnyAsync(
+            e =>
+                e.WarehouseId == warehouseId &&
+                e.Id == parentLocationId.Value,
             ct
         );
 
@@ -101,18 +106,18 @@ public class WarehouseLocationBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        var exists = await _locationRepository.AnyAsync(e =>
-            e.WarehouseId == warehouseId &&
-            e.Id == id,
+        var exists = await _locationRepository.AnyAsync(
+            e => e.WarehouseId == warehouseId && e.Id == id,
             ct
         );
 
         if (!exists)
             throw new WarehouseLocationNotFoundException();
 
-        var hasChildren = await _locationRepository.AnyAsync(e =>
-            e.WarehouseId == warehouseId &&
-            e.ParentLocationId == id,
+        var hasChildren = await _locationRepository.AnyAsync(
+            e =>
+                e.WarehouseId == warehouseId &&
+                e.ParentLocationId == id,
             ct
         );
 

@@ -56,15 +56,15 @@ public class WarehouseBusinessRuleValidator(
     )
     {
         var exists = excludedWarehouseId is null
-            ? await _warehouseRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Code == code,
+            ? await _warehouseRepository.AnyAsync(
+                e => e.CompanyId == companyId && e.Code == code,
                 ct
             )
-            : await _warehouseRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Id != excludedWarehouseId.Value &&
-                e.Code == code,
+            : await _warehouseRepository.AnyAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.Id != excludedWarehouseId.Value &&
+                    e.Code == code,
                 ct
             );
 
@@ -120,17 +120,16 @@ public class WarehouseBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        var exists = await _warehouseRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.Id == id,
+        var exists = await _warehouseRepository.AnyAsync(
+            e => e.CompanyId == companyId && e.Id == id,
             ct
         );
 
         if (!exists)
             throw new WarehouseNotFoundException();
 
-        var hasLocations = await _warehouseLocationRepository.AnyAsync(e =>
-            e.WarehouseId == id,
+        var hasLocations = await _warehouseLocationRepository.AnyAsync(
+            e => e.WarehouseId == id,
             ct
         );
 

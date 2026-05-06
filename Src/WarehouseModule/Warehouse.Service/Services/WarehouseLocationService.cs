@@ -172,6 +172,7 @@ public class WarehouseLocationService(
         if (codePatched && patchDto.Code.HasValue)
         {
             await _businessRuleValidator.ValidateWarehouseLocationCodeUniquenessAsync(
+                warehouseId,
                 excludedLocationId: id,
                 patchDto.Code.Value,
                 ct

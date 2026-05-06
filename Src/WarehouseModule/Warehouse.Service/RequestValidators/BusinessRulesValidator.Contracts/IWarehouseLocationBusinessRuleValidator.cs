@@ -19,6 +19,7 @@ public interface IWarehouseLocationBusinessRuleValidator
     );
 
     Task ValidateWarehouseLocationCodeUniquenessAsync(
+        Guid warehouseId,
         Guid? excludedLocationId,
         int code,
         CancellationToken ct

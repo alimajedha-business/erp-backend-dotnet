@@ -74,27 +74,28 @@ public class CategoryBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        var exists = await _categoryRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.Id == id,
+        var exists = await _categoryRepository.AnyAsync(
+            e => e.CompanyId == companyId && e.Id == id,
             ct
         );
 
         if (!exists)
             throw new CategoryNotFoundException();
 
-        var hasSubCategories = await _categoryRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.ParentCategoryId == id,
+        var hasSubCategories = await _categoryRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.ParentCategoryId == id,
             ct
         );
 
         if (hasSubCategories)
             throw new CategoryHasSubCategoriesException();
 
-        var hasItems = await _itemRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.CategoryId == id,
+        var hasItems = await _itemRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.CategoryId == id,
             ct
         );
 
@@ -187,15 +188,15 @@ public class CategoryBusinessRuleValidator(
     )
     {
         var exists = excludedCategoryId is null
-            ? await _categoryRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Code == code,
+            ? await _categoryRepository.AnyAsync(
+                e => e.CompanyId == companyId && e.Code == code,
                 ct
             )
-            : await _categoryRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Id != excludedCategoryId.Value &&
-                e.Code == code,
+            : await _categoryRepository.AnyAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.Id != excludedCategoryId.Value &&
+                    e.Code == code,
                 ct
             );
 

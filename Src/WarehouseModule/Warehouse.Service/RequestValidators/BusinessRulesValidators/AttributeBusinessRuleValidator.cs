@@ -53,15 +53,15 @@ public class AttributeBusinessRuleValidator(
     )
     {
         var exists = excludedAttributeId is null
-            ? await _attributeRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Code == code,
+            ? await _attributeRepository.AnyAsync(
+                e => e.CompanyId == companyId && e.Code == code,
                 ct
             )
-            : await _attributeRepository.AnyAsync(e =>
-                e.CompanyId == companyId &&
-                e.Id != excludedAttributeId.Value &&
-                e.Code == code,
+            : await _attributeRepository.AnyAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.Id != excludedAttributeId.Value &&
+                    e.Code == code,
                 ct
             );
 
@@ -109,9 +109,8 @@ public class AttributeBusinessRuleValidator(
             return;
         }
 
-        var exists = await _attributeRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.Id == id,
+        var exists = await _attributeRepository.AnyAsync(
+            e => e.CompanyId == companyId && e.Id == id,
             ct
         );
 
@@ -127,8 +126,8 @@ public class AttributeBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        return _enumRepository.AnyAsync(e =>
-            e.AttributeId == attributeId,
+        return _enumRepository.AnyAsync(
+            e => e.AttributeId == attributeId,
             ct
         );
     }
@@ -138,8 +137,8 @@ public class AttributeBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        return _categoryAttributeRepository.AnyAsync(e =>
-            e.AttributeId == attributeId,
+        return _categoryAttributeRepository.AnyAsync(
+            e => e.AttributeId == attributeId,
             ct
         );
     }
