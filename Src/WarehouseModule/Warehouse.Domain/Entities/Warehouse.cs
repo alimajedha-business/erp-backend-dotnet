@@ -25,30 +25,6 @@ public class Warehouse :
     public string? WarehouseAccountDetailed2Value { get; set; }
     #endregion
 
-    #region Sale
-    public Guid? SaleSlaveAccountCompanyId { get; set; }
-    public string? SaleAccountMasterValue { get; set; }
-    public string? SaleAccountSlaveValue { get; set; }
-    public string? SaleAccountDetailed1Value { get; set; }
-    public string? SaleAccountDetailed2Value { get; set; }
-    #endregion
-
-    #region ExportSale
-    public Guid? ExportSaleSlaveAccountCompanyId { get; set; }
-    public string? ExportSaleAccountMasterValue { get; set; }
-    public string? ExportSaleAccountSlaveValue { get; set; }
-    public string? ExportSaleAccountDetailed1Value { get; set; }
-    public string? ExportSaleAccountDetailed2Value { get; set; }
-    #endregion
-
-    #region ReturnFromSale
-    public Guid? ReturnFromSaleSlaveAccountCompanyId { get; set; }
-    public string? ReturnFromSaleAccountMasterValue { get; set; }
-    public string? ReturnFromSaleAccountSlaveValue { get; set; }
-    public string? ReturnFromSaleAccountDetailed1Value { get; set; }
-    public string? ReturnFromSaleAccountDetailed2Value { get; set; }
-    #endregion
-
     #region ReturnFromPurchase
     public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; set; }
     public string? ReturnFromPurchaseAccountMasterValue { get; set; }
@@ -101,54 +77,6 @@ public class Warehouse :
             .HasMaxLength(20);
 
         builder
-            .Property(e => e.SaleAccountMasterValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.SaleAccountSlaveValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.SaleAccountDetailed1Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.SaleAccountDetailed2Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ExportSaleAccountMasterValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ExportSaleAccountSlaveValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ExportSaleAccountDetailed1Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ExportSaleAccountDetailed2Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ReturnFromSaleAccountMasterValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ReturnFromSaleAccountSlaveValue)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ReturnFromSaleAccountDetailed1Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ReturnFromSaleAccountDetailed2Value)
-            .HasMaxLength(20);
-
-        builder
             .Property(e => e.ReturnFromPurchaseAccountMasterValue)
             .HasMaxLength(20);
 
@@ -158,10 +86,6 @@ public class Warehouse :
 
         builder
             .Property(e => e.ReturnFromPurchaseAccountDetailed1Value)
-            .HasMaxLength(20);
-
-        builder
-            .Property(e => e.ReturnFromSaleAccountDetailed2Value)
             .HasMaxLength(20);
 
         builder

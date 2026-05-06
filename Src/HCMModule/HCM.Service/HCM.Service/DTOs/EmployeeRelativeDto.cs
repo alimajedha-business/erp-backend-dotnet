@@ -5,7 +5,7 @@ namespace NGErp.HCM.Service.DTOs;
 public class EmployeeRelativeDto
 {
     public Guid Id { get; set; }
-    public EmployeeBaseDto? Employee { get; set; }
+    public EmployeeBaseDto Employee { get; set; } = default!;
     [MaxLength(100)]
     public string Name { get; set; } = default!;
     [MaxLength(100)]

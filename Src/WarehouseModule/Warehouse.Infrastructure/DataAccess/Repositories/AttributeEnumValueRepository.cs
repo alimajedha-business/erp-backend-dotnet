@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
@@ -23,6 +24,17 @@ public class AttributeEnumValueRepository(MainDbContext context) :
         return await query
             .Include(e => e.Attribute)
             .SingleOrDefaultAsync(predicate, ct);
+    }
+
+    public IQueryable<AttributeEnumValue> GetFiltered(
+        Guid attributeId,
+        RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        var query = base.GetFiltered(requestAdvancedFilters);
+        return query
+            .Where(e => e.AttributeId == attributeId)
+            .Include(i => i.Attribute);
     }
 
     public async Task<int> GetNextCodeAsync(

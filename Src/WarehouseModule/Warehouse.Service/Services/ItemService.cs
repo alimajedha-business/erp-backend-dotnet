@@ -12,10 +12,13 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
@@ -24,6 +27,9 @@ namespace NGErp.Warehouse.Service.Services;
 public class ItemService(
     IAdvancedFilterBuilder filterBuilder,
     IItemRepository itemRepository,
+    IItemBusinessRuleValidator businessRuleValidator,
+    IValidator<CreateItemDto> createValidator,
+    IValidator<PatchItemDto> patchValidator,
     IWarehouseLocationService locationService,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
@@ -35,6 +41,9 @@ public class ItemService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IItemRepository _itemRepository = itemRepository;
+    private readonly IItemBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IValidator<CreateItemDto> _createValidator = createValidator;
+    private readonly IValidator<PatchItemDto> _patchValidator = patchValidator;
     private readonly IWarehouseLocationService _locationService = locationService;
 
     public async Task<ItemDto> CreateAsync(
@@ -44,6 +53,10 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        RequestBodyValidator.ThrowIfNull(createItemDto);
+        await RequestBodyValidator.ValidateAsync(_createValidator, createItemDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(companyId, createItemDto, ct);
+
         var item = _mapper.Map<Item>(createItemDto);
         item.CompanyId = companyId;
         item.CategoryId = categoryId;
@@ -169,6 +182,8 @@ public class ItemService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var query = _itemRepository.GetFiltered(companyId, advancedFilters);
         var res = await _itemRepository.GetResponseListAsync(query, parameters, ct);
@@ -188,6 +203,8 @@ public class ItemService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<Item>(filterNodeDto);
         var listQueryResult = await _itemRepository.GetCategoryAllAsync(
             companyId,
@@ -212,6 +229,18 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        PatchItemPolicy.Validate(patchDocument);
+
+        var codePatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchItemDto.Code)
+        );
+
+        var secondaryUnitOfMeasurementsPatched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)
+        ) || PatchHasPath(patchDocument, "/itemUnitOfMeasurements");
+
         var item = await GetSingleOrThrowAsync(
             trackChanges: true,
             predicate: p =>
@@ -235,18 +264,44 @@ public class ItemService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+
+        if (codePatched && patchDto.Code is not null)
+        {
+            await _businessRuleValidator.ValidateItemCodeUniquenessAsync(
+                companyId,
+                excludedItemId: id,
+                patchDto.Code,
+                ct
+            );
+        }
+
+        if (secondaryUnitOfMeasurementsPatched)
+        {
+            _businessRuleValidator.ValidateItemUnitOfMeasurementCount(
+                item.PrimaryUnitOfMeasurementId,
+                patchDto.SecondaryUnitOfMeasurementIds
+            );
+        }
+
         var patchedPaths = patchDocument.Operations
             .Select(x => x.path.Trim('/').Split('/')[0])
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         _mapper.Map(patchDto, item);
 
-        if (patchedPaths.Contains(nameof(PatchItemDto.AttributeIds)))
+        if (
+            patchedPaths.Contains(nameof(PatchItemDto.AttributeIds)) ||
+            patchedPaths.Contains("itemAttributes")
+        )
         {
             SyncItemAttributes(item, patchDto.AttributeIds);
         }
 
-        if (patchedPaths.Contains(nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)))
+        if (
+            patchedPaths.Contains(nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)) ||
+            patchedPaths.Contains("itemUnitOfMeasurements")
+        )
         {
             SyncSecondaryUnits(item, patchDto.SecondaryUnitOfMeasurementIds);
         }
@@ -284,6 +339,8 @@ public class ItemService(
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, categoryId, id, ct);
+
         await _itemRepository.Remove(e =>
             e.CompanyId == companyId &&
             e.CategoryId == categoryId &&
@@ -307,19 +364,29 @@ public class ItemService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 
+    private static bool PatchHasPath(
+        JsonPatchDocument<PatchItemDto> doc,
+        string path
+    )
+    {
+        return doc.Operations.Any(op =>
+            op.path is not null &&
+            op.path.Equals(path, StringComparison.InvariantCultureIgnoreCase)
+        );
+    }
+
     private static ItemUnitOfMeasurementConversion? CreateItemUnitOfMeasurementConversion(
     KeyValuePair<string, ItemUnitConversionEquationDto> conversion,
     List<Guid> unitOfMeasurementIds
 )
     {
-        if (!int.TryParse(conversion.Key, out var unitOrder) ||
-            unitOrder < 1 ||
-            unitOrder > unitOfMeasurementIds.Count)
+        var unitOrder = GetConversionKey(conversion);
+        if (unitOrder < 1 || unitOrder > unitOfMeasurementIds.Count)
         {
             throw new ValidationException([
                 new ValidationFailure(
                 nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
-                $"unitConversions key '{conversion.Key}' must be a unit order between 1 and {unitOfMeasurementIds.Count}."
+                $"unitConversions key '{unitOrder}' must be a unit order between 1 and {unitOfMeasurementIds.Count}."
             )
             ]);
         }
@@ -343,7 +410,7 @@ public class ItemService(
         catch (ArgumentException ex)
         {
             throw new ValidationException([
-                new ValidationFailure($"unitConversions[{conversion.Key}]", ex.Message)
+                new ValidationFailure($"unitConversions[{unitOrder}]", ex.Message)
             ]);
         }
     }
@@ -357,12 +424,10 @@ public class ItemService(
 
         foreach (var conversion in conversions)
         {
-            if (!int.TryParse(conversion.Key, out var unitOrder) ||
-                unitOrder < 1 ||
-                unitOrder > unitCount)
-            {
+            var unitOrder = GetConversionKey(conversion);
+
+            if (unitOrder < 1 || unitOrder > unitCount)
                 continue;
-            }
 
             graph[unitOrder] = [.. GetReferencedUnitOrders(conversion.Value)
                 .Where(reference => reference <= unitCount)];
@@ -375,6 +440,23 @@ public class ItemService(
         {
             VisitUnitConversion(unitOrder, graph, states, path);
         }
+    }
+
+    private static int GetConversionKey(
+        KeyValuePair<string, ItemUnitConversionEquationDto> conversion
+    )
+    {
+        var conversionKey = conversion.Key;
+        var match = RegexHelpers
+            .UnitOfMeasurementConversionRegex()
+            .Match(conversionKey);
+
+        if (!match.Success)
+        {
+            throw new ValidationException("Unit Error");
+        }
+
+        return int.Parse(match.Groups[1].Value);
     }
 
     private static void VisitUnitConversion(
@@ -545,7 +627,7 @@ public class ItemService(
             .Where(conversion => unitOrderById.ContainsKey(conversion.UnitOfMeasurementId))
             .OrderBy(conversion => unitOrderById[conversion.UnitOfMeasurementId])
             .ToDictionary(
-                conversion => unitOrderById[conversion.UnitOfMeasurementId].ToString(),
+                conversion => $"unit{unitOrderById[conversion.UnitOfMeasurementId]}",
                 conversion => UnitConversionEquationBuilder.Parse(conversion.ConversionEquation)
             );
     }
@@ -690,8 +772,12 @@ public class ItemService(
 
         if (duplicateWarehouseIds.Count != 0)
         {
-            // TODO: throw proper exception
-            throw new Exception();
+            throw new ValidationException(duplicateWarehouseIds.Select(warehouseId =>
+                new ValidationFailure(
+                    nameof(PatchItemDto.ItemWarehouses),
+                    $"Duplicate warehouseId '{warehouseId}' is not allowed."
+                )
+            ));
         }
 
         var requestedWarehouseIds = requested

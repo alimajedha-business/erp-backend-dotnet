@@ -658,6 +658,54 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("Employee", "HCM");
                 });
 
+            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeDependant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeeRelativeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeRelativeId")
+                        .HasDatabaseName("IX_EmployeeDependant_EmployeeRelative");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("EmployeeDependant", "HCM");
+                });
+
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeEducation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2833,25 +2881,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ExportSaleAccountDetailed1Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ExportSaleAccountDetailed2Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ExportSaleAccountMasterValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ExportSaleAccountSlaveValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid?>("ExportSaleSlaveAccountCompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -2883,44 +2912,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("ReturnFromPurchaseSlaveAccountCompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ReturnFromSaleAccountDetailed1Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ReturnFromSaleAccountDetailed2Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ReturnFromSaleAccountMasterValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ReturnFromSaleAccountSlaveValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid?>("ReturnFromSaleSlaveAccountCompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SaleAccountDetailed1Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("SaleAccountDetailed2Value")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("SaleAccountMasterValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("SaleAccountSlaveValue")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid?>("SaleSlaveAccountCompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TimeZone")
@@ -3159,6 +3150,17 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("MilitaryServiceStatus");
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeDependant", b =>
+                {
+                    b.HasOne("NGErp.HCM.Domain.Entities.EmployeeRelative", "EmployeeRelative")
+                        .WithMany()
+                        .HasForeignKey("EmployeeRelativeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("EmployeeRelative");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.EmployeeEducation", b =>

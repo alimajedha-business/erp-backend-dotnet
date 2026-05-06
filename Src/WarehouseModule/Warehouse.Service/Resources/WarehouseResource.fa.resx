@@ -123,6 +123,39 @@
   <data name="AttributeEnumValue" xml:space="preserve">
     <value>مقدار انتخابی مشخصه</value>
   </data>
+  <data name="Attribute.AttributeEntity.Invalid" xml:space="preserve">
+    <value>موجودیت مشخصه نامعتبر است.</value>
+  </data>
+  <data name="Attribute.Code.Duplicate" xml:space="preserve">
+    <value>کد مشخصه قبلا ثبت شده است.</value>
+  </data>
+  <data name="Attribute.Code.NotEmpty" xml:space="preserve">
+    <value>کد مشخصه نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Attribute.Code.Numeric" xml:space="preserve">
+    <value>کد مشخصه باید عددی باشد.</value>
+  </data>
+  <data name="Attribute.DataType.EnumHasValues" xml:space="preserve">
+    <value>نوع داده مشخصه به دلیل داشتن مقادیر انتخابی قابل تغییر از انتخابی به نوع دیگر نیست.</value>
+  </data>
+  <data name="Attribute.DataType.Invalid" xml:space="preserve">
+    <value>نوع داده مشخصه نامعتبر است.</value>
+  </data>
+  <data name="Attribute.Delete.HasEnumValues" xml:space="preserve">
+    <value>مشخصه به دلیل داشتن مقدار انتخابی قابل حذف نیست.</value>
+  </data>
+  <data name="Attribute.Delete.IsStatic" xml:space="preserve">
+    <value>مشخصه سیستمی قابل حذف نیست.</value>
+  </data>
+  <data name="Attribute.Title.MaxLength" xml:space="preserve">
+    <value>عنوان مشخصه نمی‌تواند بیشتر از 50 کاراکتر باشد.</value>
+  </data>
+  <data name="Attribute.Title.MinLength" xml:space="preserve">
+    <value>عنوان مشخصه باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Attribute.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان مشخصه نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>
@@ -252,8 +285,68 @@
   <data name="Warehouse" xml:space="preserve">
     <value>انبار</value>
   </data>
+  <data name="Warehouse.Code.Duplicate" xml:space="preserve">
+    <value>کد انبار قبلا ثبت شده است.</value>
+  </data>
+  <data name="Warehouse.Code.NotEmpty" xml:space="preserve">
+    <value>کد انبار نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Warehouse.Code.Numeric" xml:space="preserve">
+    <value>کد انبار باید عددی باشد.</value>
+  </data>
+  <data name="Warehouse.CompanyUnit.NotEmpty" xml:space="preserve">
+    <value>واحد شرکت الزامی است.</value>
+  </data>
+  <data name="Warehouse.Delete.HasLocations" xml:space="preserve">
+    <value>انبار به دلیل داشتن محل نگهداری قابل حذف نیست.</value>
+  </data>
+  <data name="Warehouse.MaxMonetaryValue.Precision" xml:space="preserve">
+    <value>حداکثر ارزش ریالی باید دقت 22 و مقیاس 4 داشته باشد.</value>
+  </data>
+  <data name="Warehouse.Title.MaxLength" xml:space="preserve">
+    <value>عنوان انبار نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="Warehouse.Title.MinLength" xml:space="preserve">
+    <value>عنوان انبار باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Warehouse.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان انبار نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Warehouse.Type.NotEmpty" xml:space="preserve">
+    <value>نوع انبار الزامی است.</value>
+  </data>
   <data name="WarehouseLocation" xml:space="preserve">
     <value>محل نگهداری</value>
+  </data>
+  <data name="WarehouseLocation.Code.Duplicate" xml:space="preserve">
+    <value>کد محل نگهداری قبلا ثبت شده است.</value>
+  </data>
+  <data name="WarehouseLocation.Code.NotEmpty" xml:space="preserve">
+    <value>کد محل نگهداری نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Code.Numeric" xml:space="preserve">
+    <value>کد محل نگهداری باید عددی باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Delete.HasChildren" xml:space="preserve">
+    <value>محل نگهداری به دلیل داشتن زیر-سطح قابل حذف نیست.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>سطح ششم محل نگهداری نمی‌تواند زیر-سطح داشته باشد.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.Range" xml:space="preserve">
+    <value>شماره سطح محل نگهداری باید بین 1 و 6 باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Parent.NotInWarehouse" xml:space="preserve">
+    <value>محل نگهداری والد انتخاب‌شده باید متعلق به همان انبار باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MaxLength" xml:space="preserve">
+    <value>عنوان محل نگهداری نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MinLength" xml:space="preserve">
+    <value>عنوان محل نگهداری باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="WarehouseLocation.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان محل نگهداری نمی‌تواند خالی باشد.</value>
   </data>
   <data name="WarehouseType.Code.Duplicate" xml:space="preserve">
     <value>کد نوع انبار قبلا ثبت شده است.</value>
@@ -278,5 +371,50 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>بلی</value>
+  </data>
+  <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
+    <value>مشخصه به دلیل داشتن قانون طبقه‌بندی قابل حذف نیست.</value>
+  </data>
+  <data name="Item.Barcode.MaxLength" xml:space="preserve">
+    <value>بارکد کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Code.Duplicate" xml:space="preserve">
+    <value>کد کالا قبلا ثبت شده است.</value>
+  </data>
+  <data name="Item.Code.MaxLength" xml:space="preserve">
+    <value>کد کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Code.NotEmpty" xml:space="preserve">
+    <value>کد کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.Delete.HasInventoryLots" xml:space="preserve">
+    <value>کالا به دلیل داشتن بچ موجودی قابل حذف نیست.</value>
+  </data>
+  <data name="Item.ItemUnitOfMeasurements.MaxCount" xml:space="preserve">
+    <value>کالا می‌تواند حداکثر {0} واحد اندازه‌گیری داشته باشد.</value>
+  </data>
+  <data name="Item.Sku.MaxLength" xml:space="preserve">
+    <value>شناسه SKU کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Sku.MinLength" xml:space="preserve">
+    <value>شناسه SKU کالا باید حداقل 7 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Item.Sku.NotEmpty" xml:space="preserve">
+    <value>شناسه SKU کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.TechnicalNumber.MaxLength" xml:space="preserve">
+    <value>شماره فنی کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Title.MaxLength" xml:space="preserve">
+    <value>عنوان کالا نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Title.MinLength" xml:space="preserve">
+    <value>عنوان کالا باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Item.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
+    <value>عنوان انگلیسی کالا نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
   </data>
 </root>

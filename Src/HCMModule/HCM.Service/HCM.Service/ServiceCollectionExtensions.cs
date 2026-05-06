@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganizationalStructureService, OrganizationalStructureService>();
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IRelativeTypeService, RelativeTypeService>();
+        services.AddScoped<IEmployeeDependantService, EmployeeDependantService>();
 
         services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
         services.AddSingleton<IFilterSchema<EducationField>, EducationFieldSchema>();

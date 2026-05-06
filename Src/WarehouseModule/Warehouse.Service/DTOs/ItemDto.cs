@@ -83,6 +83,30 @@ public class PatchItemDto
     public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
     public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversions { get; set; }
 
+    [JsonProperty("itemAttributes")]
+    [JsonPropertyName("itemAttributes")]
+    public List<Guid>? ItemAttributesAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                AttributeIds = value;
+        }
+    }
+
+    [JsonProperty("itemUnitOfMeasurements")]
+    [JsonPropertyName("itemUnitOfMeasurements")]
+    public List<Guid>? ItemUnitOfMeasurementsAlias
+    {
+        get => null; // never used for output
+        set
+        {
+            if (value != null)
+                SecondaryUnitOfMeasurementIds = value;
+        }
+    }
+
     [JsonProperty("unitConversions")]
     [JsonPropertyName("unitConversions")]
     public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversionsAlias

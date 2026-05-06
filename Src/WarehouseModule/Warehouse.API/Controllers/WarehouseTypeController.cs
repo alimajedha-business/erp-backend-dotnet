@@ -59,7 +59,7 @@ public class WarehouseTypeController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseTypeAdvancedSearchExample))]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromQuery] WarehouseTypeParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
