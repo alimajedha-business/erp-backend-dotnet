@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260506103622_RemittanceTypeEntity")]
+    partial class RemittanceTypeEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1124,135 +1127,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.Job", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("JobCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("LevelCode")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("NextJobId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool?>("Seniority")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("JobCategoryId")
-                        .HasDatabaseName("IX_Job_JobCategory");
-
-                    b.HasIndex("NextJobId")
-                        .HasDatabaseName("IX_Job_NextJob");
-
-                    b.HasIndex("ParentId")
-                        .HasDatabaseName("IX_Job_Parent");
-
-                    b.HasIndex("CompanyId", "Code")
-                        .IsUnique()
-                        .HasDatabaseName("UX_Job_CompanyId_Code");
-
-                    b.ToTable("Job", "HCM");
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.JobCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasDatabaseName("UX_JobCategory_Code");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("JobCategory", "HCM");
-                });
-
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.MaritalStatus", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1583,54 +1457,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Position_StatusChangeDate", "([Status] = 0 AND [StatusChangeDate] IS NOT NULL) OR ([Status] = 1 AND [StatusChangeDate] IS NULL)");
                         });
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.PositionJob", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PositionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("JobId")
-                        .HasDatabaseName("IX_PositionJob_Job");
-
-                    b.HasIndex("PositionId")
-                        .HasDatabaseName("IX_PositionJob_Position");
-
-                    b.ToTable("PositionJob", "HCM");
                 });
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.RelativeType", b =>
@@ -3371,37 +3197,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.Job", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.HCM.Domain.Entities.JobCategory", "JobCategory")
-                        .WithMany()
-                        .HasForeignKey("JobCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.HCM.Domain.Entities.Job", "NextJob")
-                        .WithMany()
-                        .HasForeignKey("NextJobId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("NGErp.HCM.Domain.Entities.Job", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("JobCategory");
-
-                    b.Navigation("NextJob");
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.OrganizationNode", b =>
                 {
                     b.HasOne("NGErp.General.Domain.Entities.Company", null)
@@ -3473,25 +3268,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.PositionJob", b =>
-                {
-                    b.HasOne("NGErp.HCM.Domain.Entities.Job", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.HCM.Domain.Entities.Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Job");
-
-                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Attribute", b =>
