@@ -62,13 +62,13 @@ public class MappingProfile : Profile
         CreateMap<CreateEmployeeEducationDto, EmployeeEducation>();
         CreateMap<EmployeeEducation, PatchEmployeeEducationDto>().ReverseMap();
 
-        CreateMap<EmployeeWorkExperience, EmployeeWorkExperienceDto>();
+        CreateMap<EmployeeWorkExperience, EmployeeWorkExperienceDto>().ReverseMap();
         CreateMap<CreateEmployeeWorkExperienceDto, EmployeeWorkExperience>();
-        CreateMap<EmployeeWorkExperience, PatchEmployeeWorkExperienceDto>();
+        CreateMap<EmployeeWorkExperience, PatchEmployeeWorkExperienceDto>().ReverseMap();
 
-        CreateMap<EmployeeWarriorRecord, EmployeeWarriorRecordDto>();
+        CreateMap<EmployeeWarriorRecord, EmployeeWarriorRecordDto>().ReverseMap();
         CreateMap<CreateEmployeeWarriorRecordDto, EmployeeWarriorRecord>();
-        CreateMap<EmployeeWarriorRecord, PatchEmployeeWarriorRecordDto>();
+        CreateMap<EmployeeWarriorRecord, PatchEmployeeWarriorRecordDto>().ReverseMap();
 
         CreateMap<EmployeeRelative, EmployeeRelativeDto>();
         CreateMap<CreateEmployeeRelativeDto, EmployeeRelative>();
@@ -81,6 +81,14 @@ public class MappingProfile : Profile
         CreateMap<EducationField, EducationFieldDto>();
         CreateMap<CreateEducationFieldDto, EducationField>();
         CreateMap<EducationField, PatchEducationFieldDto>();
+
+        CreateMap<Job, JobDto>().ReverseMap();
+        CreateMap<CreateJobDto, Job>();
+        CreateMap<Job, PatchJobDto>().ReverseMap();
+
+        CreateMap<JobCategory, JobCategoryDto>().ReverseMap();
+        CreateMap<CreateJobCategoryDto, JobCategory>();
+        CreateMap<JobCategory, PatchJobCategoryDto>().ReverseMap();
 
         CreateMap<EmployeeDependant, EmployeeDependantDto>().ReverseMap();
         CreateMap<CreateEmployeeDependantDto, EmployeeDependant>();

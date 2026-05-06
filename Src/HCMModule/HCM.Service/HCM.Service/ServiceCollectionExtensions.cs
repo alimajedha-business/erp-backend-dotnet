@@ -8,6 +8,10 @@ using NGErp.HCM.Domain.EntitySchemas;
 using NGErp.HCM.Service.Mappings;
 using NGErp.HCM.Service.RequestValidators;
 using NGErp.HCM.Service.Services;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidators;
+using NGErp.HCM.Service.Resources;
+using NGErp.Base.Service.Services;
 
 namespace NGErp.HCM.Service;
 
@@ -17,7 +21,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddAutoMapper(typeof(MappingProfile));
 
-        services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
+            services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
+
+            services.AddValidatorsFromAssemblyContaining<DepartmentChangeStatusValidator>();
 
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IEducationFieldService, EducationFieldService>();
@@ -45,6 +51,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<MilitaryServiceStatus>, MilitaryServiceStatusSchema>();
         services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
         services.AddSingleton<IFilterSchema<RelativeType>, RelativeTypeSchema>();
+
+        
+        services.AddScoped<IJobService, JobService>();
+        services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
 
         return services;
     }

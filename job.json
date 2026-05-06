@@ -1,0 +1,60 @@
+{
+  "entity": "Job",
+  "schema": "HCM",
+  "module": "HCM",
+  "route": "jobs",
+  "baseClass": "BaseEntityWithCompany",
+  "status": false,
+  "dtoValidators": true,
+  "businessRuleValidators": true,
+  "fields": [
+    {
+      "name": "Code",
+      "type": "string",
+      "required": true,
+      "maxLength": 50,
+      "uniqueWithCompany": true
+    },
+    {
+      "name": "ParentId",
+      "type": "Guid?",
+      "relation": "Job",
+      "index": true
+    },
+    {
+      "name": "NextJobId",
+      "type": "Guid?",
+      "relation": "Job",
+      "index": true
+    },
+    {
+      "name": "Title",
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "minLength": 2
+    },
+    {
+      "name": "JobCategoryId",
+      "type": "Guid",
+      "required": true,
+      "relation": "JobCategory",
+      "index": true
+    },
+    {
+      "name": "Description",
+      "type": "string?",
+      "maxLength": 1000
+    },
+    {
+      "name": "LevelCode",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "Seniority",
+      "type": "bool",
+      "required": true
+    }
+  ]
+}

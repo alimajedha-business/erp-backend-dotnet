@@ -104,7 +104,8 @@ class EntitySpec:
     base_class: str = "BaseEntityWithCompany"
     route: str | None = None
     status: bool = False
-    with_company: bool = True
+    generate_dto_validators: bool = False
+    generate_business_rule_validators: bool = False
     fields: list[FieldSpec] = field(default_factory=list)
 
     @property
@@ -183,6 +184,20 @@ def cs_literal(value: Any) -> str:
         return "null"
     escaped = str(value).replace("\\", "\\\\").replace('"', '\\"')
     return f'"{escaped}"'
+
+
+def relation_navigation_name(spec: EntitySpec, field: FieldSpec) -> str:
+    if not field.name.endswith("Id"):
+        return field.relation or field.name
+    candidate = field.name[:-2]
+    if field.relation == spec.entity and candidate:
+        return candidate
+    return field.relation or candidate
+
+
+def relation_dto_type(spec: EntitySpec, field: FieldSpec) -> str:
+    relation = field.relation or relation_navigation_name(spec, field)
+    return f"{spec.entity}Dto" if relation == spec.entity else f"{relation}Dto"
 
 
 def field_data_annotations(field: FieldSpec, include_required: bool) -> list[str]:
@@ -293,7 +308,19 @@ def parse_field_spec(data: dict[str, Any]) -> FieldSpec:
 
 def load_spec(args: argparse.Namespace) -> EntitySpec:
     if args.fields_file:
-        data = json.loads(Path(args.fields_file).read_text(encoding="utf-8"))
+        fields_file = Path(args.fields_file)
+        raw_spec = fields_file.read_text(encoding="utf-8-sig").strip()
+        if not raw_spec:
+            raise ValueError(f"Fields file '{fields_file}' is empty.")
+
+        try:
+            data = json.loads(raw_spec)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Fields file '{fields_file}' is not valid JSON: {exc.msg} "
+                f"at line {exc.lineno}, column {exc.colno}."
+            ) from exc
+
         fields = [parse_field_spec(f) for f in data.get("fields", [])]
         with_company = bool(data.get("withCompany", getattr(args, "with_company", True)))
         base_class = data.get("baseClass", args.base_class if with_company else "BaseEntity")
@@ -304,7 +331,15 @@ def load_spec(args: argparse.Namespace) -> EntitySpec:
             base_class=base_class,
             route=data.get("route"),
             status=bool(data.get("status", args.status)),
-            with_company=with_company,
+            generate_dto_validators=bool(
+                data.get("dtoValidators", data.get("generateDtoValidators", args.dto_validators))
+            ),
+            generate_business_rule_validators=bool(
+                data.get(
+                    "businessRuleValidators",
+                    data.get("generateBusinessRuleValidators", args.business_rule_validators)
+                )
+            ),
             fields=fields,
         )
 
@@ -319,7 +354,8 @@ def load_spec(args: argparse.Namespace) -> EntitySpec:
         base_class=args.base_class if with_company else "BaseEntity",
         route=args.route,
         status=args.status,
-        with_company=with_company,
+        generate_dto_validators=args.dto_validators,
+        generate_business_rule_validators=args.business_rule_validators,
         fields=parse_fields_inline(args.fields),
     )
 
@@ -487,11 +523,12 @@ def generate_entity(spec: EntitySpec) -> str:
             property_configs.append(config)
 
         if f.relation and f.name.endswith("Id"):
+            nav_name = relation_navigation_name(spec, f)
             nullable_marker = "?" if f.type.endswith("?") else ""
             default_value = "" if nullable_marker else " = default!;"
-            nav_props.append(f"    public {f.relation}{nullable_marker} {f.relation} {{ get; set; }}{default_value}")
+            nav_props.append(f"    public {f.relation}{nullable_marker} {nav_name} {{ get; set; }}{default_value}")
             relation_configs.append(f'''        builder
-            .HasOne(e => e.{f.relation})
+            .HasOne(e => e.{nav_name})
             .WithMany()
             .HasForeignKey(e => e.{f.name})
             .OnDelete(DeleteBehavior.NoAction);''')
@@ -536,6 +573,7 @@ def generate_entity(spec: EntitySpec) -> str:
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
+using NGErp.General.Domain.Entities;
 
 namespace NGErp.{spec.module}.Domain.Entities;
 
@@ -576,7 +614,8 @@ def generate_dto(spec: EntitySpec) -> str:
             dto_attrs,
         ))
         if f.relation and f.name.endswith("Id"):
-            dto_props.append(f"    public {f.relation}Dto? {f.relation} {{ get; set; }}")
+            nav_name = relation_navigation_name(spec, f)
+            dto_props.append(f"    public {relation_dto_type(spec, f)}? {nav_name} {{ get; set; }}")
 
         create_type = dto_type_for_create(f)
         create_attrs = field_data_annotations(f, include_required=True) + [
@@ -585,7 +624,7 @@ def generate_dto(spec: EntitySpec) -> str:
         patch_attrs = field_data_annotations(f, include_required=False) + [
             normalize_attr(attr) for attr in f.patch_attributes
         ]
-        create_props.append(property_with_attributes(create_type, f.name, "", create_attrs))
+        create_props.append(property_with_attributes(create_type, f.name, cs_default_property(f), create_attrs))
         patch_props.append(property_with_attributes(dto_type_for_patch(f), f.name, "", patch_attrs))
 
     status_code = ""
@@ -721,14 +760,65 @@ public interface I{spec.entity}Service
 def generate_service(spec: EntitySpec) -> str:
     entity = spec.entity
     camel = spec.entity_camel
-    company_arg = "\n        Guid companyId," if spec.with_company else ""
-    company_call = "companyId, " if spec.with_company else ""
-    set_company = "\n        entity.CompanyId = companyId;" if spec.with_company else ""
-    filtered_query = (
-        f"var query = _{camel}Repository.GetFiltered(companyId, advancedFilters);"
-        if spec.with_company
-        else f"var query = _{camel}Repository.GetFiltered(advancedFilters);"
-    )
+    unique_fields = [f for f in spec.fields if f.unique_with_company]
+    uses_business_rules = spec.generate_business_rule_validators
+
+    business_rule_usings = ""
+    business_rule_ctor = ""
+    business_rule_field = ""
+    create_business_rule_call = ""
+    patch_property_checks = ""
+    patch_uniqueness_checks = ""
+    delete_business_rule_call = ""
+
+    if uses_business_rules:
+        business_rule_usings = (
+            f"using NGErp.{spec.module}.Service.RequestValidators.BusinessRulesValidator.Contracts;\n"
+        )
+        business_rule_ctor = f"    I{entity}BusinessRuleValidator businessRuleValidator,\n"
+        business_rule_field = (
+            f"    private readonly I{entity}BusinessRuleValidator _businessRuleValidator = businessRuleValidator;\n"
+        )
+        create_business_rule_call = (
+            f"        await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);\n\n"
+        )
+        delete_business_rule_call = (
+            f"        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);\n\n"
+        )
+
+        if unique_fields:
+            checks: list[str] = []
+            uniqueness_calls: list[str] = []
+            for f in unique_fields:
+                field_camel = f.name[:1].lower() + f.name[1:]
+                checks.append(
+                    f'''        var {field_camel}Patched = PatchPolicyValidator.HasProperty(
+            patchDocument,
+            nameof(Patch{entity}Dto.{f.name})
+        );'''
+                )
+
+                value_expr = f"patchDto.{f.name}"
+                patch_type = dto_type_for_patch(f)
+                condition = f"{field_camel}Patched"
+                call_arg = value_expr
+                if patch_type.endswith("?") or f.clean_type == "string":
+                    condition += f" && {value_expr} is not null"
+                    call_arg = f"{value_expr}.Value" if f.clean_type != "string" else f"{value_expr}!"
+                uniqueness_calls.append(
+                    f'''        if ({condition})
+        {{
+            await _businessRuleValidator.Validate{entity}{f.name}UniquenessAsync(
+                companyId,
+                excluded{entity}Id: id,
+                {call_arg},
+                ct
+            );
+        }}'''
+                )
+
+            patch_property_checks = "\n".join(checks) + "\n\n"
+            patch_uniqueness_checks = "\n\n" + "\n\n".join(uniqueness_calls) + "\n"
 
     status_method = ""
     if spec.status:
@@ -762,17 +852,18 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.{spec.module}.Domain.Entities;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.Repository.Contracts;
 using NGErp.{spec.module}.Service.RequestFeatures;
-using NGErp.{spec.module}.Service.Resources;
+{business_rule_usings}using NGErp.{spec.module}.Service.Resources;
 
 namespace NGErp.{spec.module}.Service.Services;
 
 public class {entity}Service(
     I{entity}Repository {camel}Repository,
-    IMapper mapper,
+{business_rule_ctor}    IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder
 ) : I{entity}Service
@@ -783,13 +874,15 @@ public class {entity}Service(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly I{entity}Repository _{camel}Repository = {camel}Repository;
+{business_rule_field}
 
     public async Task<{entity}Dto> CreateAsync({company_arg}
         Create{entity}Dto createDto,
         CancellationToken ct
     )
     {{
-        var entity = _mapper.Map<{entity}>(createDto);{set_company}
+{create_business_rule_call}        var entity = _mapper.Map<{entity}>(createDto);
+        entity.CompanyId = companyId;
 
         var created = await _{camel}Repository.AddAsync(entity, ct);
 
@@ -830,9 +923,10 @@ public class {entity}Service(
         CancellationToken ct
     )
     {{
-        var entity = await GetByIdOrThrowAsync(
-            {company_call}id,
-            trackChanges: false,
+{patch_property_checks}        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
+            trackChanges: true,
             ct
         );
 
@@ -849,7 +943,7 @@ public class {entity}Service(
             throw new InvalidPatchDocumentException(errors);
         }}
 
-        _mapper.Map(patchDto, entity);
+{patch_uniqueness_checks}        _mapper.Map(patchDto, entity);
 
         await _{camel}Repository.SaveChangesAsync(ct);
         return _mapper.Map<{entity}Dto>(entity);
@@ -860,8 +954,9 @@ public class {entity}Service(
         CancellationToken ct
     )
     {{
-        var entity = await GetByIdOrThrowAsync(
-            {company_call}id,
+{delete_business_rule_call}        var entity = await GetByIdOrThrowAsync(
+            companyId,
+            id,
             trackChanges: true,
             ct
         );
@@ -1063,6 +1158,246 @@ public class Create{spec.entity}Validator : AbstractValidator<Create{spec.entity
 '''
 
 
+def generate_dto_validators(spec: EntitySpec) -> str:
+    create_rules: list[str] = []
+    patch_rules: list[str] = []
+    patch_policy_rules: list[str] = []
+
+    for f in spec.fields:
+        create_chain: list[str] = []
+        patch_chain: list[str] = []
+
+        if f.is_required_in_create:
+            create_chain.append(".NotEmpty()")
+        if f.min_length is not None:
+            create_chain.append(f".MinimumLength({f.min_length})")
+            patch_chain.append(f".MinimumLength({f.min_length})")
+        if f.max_length is not None:
+            create_chain.append(f".MaximumLength({f.max_length})")
+            patch_chain.append(f".MaximumLength({f.max_length})")
+        if f.range is not None:
+            create_chain.append(f".InclusiveBetween({cs_literal(f.range[0])}, {cs_literal(f.range[1])})")
+            patch_chain.append(f".InclusiveBetween({cs_literal(f.range[0])}, {cs_literal(f.range[1])})")
+        if f.email:
+            create_chain.append(".EmailAddress()")
+            patch_chain.append(".EmailAddress()")
+        if f.phone:
+            create_chain.append(".Matches(@\"^[0-9+()\\-\\s]+$\")")
+            patch_chain.append(".Matches(@\"^[0-9+()\\-\\s]+$\")")
+        if f.url:
+            create_chain.append(
+                ".Must(value => string.IsNullOrWhiteSpace(value) || System.Uri.IsWellFormedUriString(value, System.UriKind.Absolute))"
+            )
+            patch_chain.append(
+                ".Must(value => string.IsNullOrWhiteSpace(value) || System.Uri.IsWellFormedUriString(value, System.UriKind.Absolute))"
+            )
+        if f.regular_expression:
+            pattern = f.regular_expression.replace("\\", "\\\\").replace('"', '\\"')
+            create_chain.append(f'.Matches("{pattern}")')
+            patch_chain.append(f'.Matches("{pattern}")')
+
+        if create_chain:
+            create_rules.append(
+                "        RuleFor(x => x.{name})\n{chain};".format(
+                    name=f.name,
+                    chain="\n".join(f"            {call}" for call in create_chain),
+                )
+            )
+
+        if patch_chain:
+            patch_rules.append(
+                "        RuleFor(x => x.{name})\n{chain}\n            .When(x => x.{name} is not null);".format(
+                    name=f.name,
+                    chain="\n".join(f"            {call}" for call in patch_chain),
+                )
+            )
+
+        policy = "RequiredReplaceOnly" if f.is_required_in_create else "OptionalReplaceOrRemove"
+        patch_policy_rules.append(f'        ["/{f.name[:1].lower()}{f.name[1:]}"] = PatchFieldRule.{policy}()')
+
+    create_body = "\n\n".join(create_rules) or "        // Add create rules here."
+    patch_body = "\n\n".join(patch_rules) or "        // Add patch rules here."
+    patch_policy_body = ",\n".join(patch_policy_rules)
+
+    return f'''using FluentValidation;
+
+using Microsoft.AspNetCore.JsonPatch;
+
+using NGErp.Base.Service.Validators;
+using NGErp.{spec.module}.Service.DTOs;
+
+namespace NGErp.{spec.module}.Service.RequestValidators.DtoValidators;
+
+public class Create{spec.entity}Validator : AbstractValidator<Create{spec.entity}Dto>
+{{
+    public Create{spec.entity}Validator()
+    {{
+{create_body}
+    }}
+}}
+
+public class Patch{spec.entity}Validator : AbstractValidator<Patch{spec.entity}Dto>
+{{
+    public Patch{spec.entity}Validator()
+    {{
+{patch_body}
+    }}
+}}
+
+public static class Patch{spec.entity}Policy
+{{
+    private static readonly Dictionary<string, PatchFieldRule> Rules =
+    new(StringComparer.OrdinalIgnoreCase)
+    {{
+{patch_policy_body}
+    }};
+
+    public static void Validate(JsonPatchDocument<Patch{spec.entity}Dto> patchDocument)
+    {{
+        PatchPolicyValidator.Validate(patchDocument, Rules);
+    }}
+}}
+'''
+
+
+def generate_business_rule_validator_contract(spec: EntitySpec) -> str:
+    unique_fields = [f for f in spec.fields if f.unique_with_company]
+    uniqueness_methods = ""
+    if unique_fields:
+        uniqueness_methods = "\n\n" + "\n\n".join(
+            f'''    Task Validate{spec.entity}{f.name}UniquenessAsync(
+        Guid companyId,
+        Guid? excluded{spec.entity}Id,
+        {f.clean_type} {f.name[:1].lower()}{f.name[1:]},
+        CancellationToken ct
+    );'''
+            for f in unique_fields
+        )
+
+    return f'''using NGErp.{spec.module}.Service.DTOs;
+using NGErp.{spec.module}.Service.RequestFeatures;
+
+namespace NGErp.{spec.module}.Service.RequestValidators.BusinessRulesValidator.Contracts;
+
+public interface I{spec.entity}BusinessRuleValidator
+{{
+    void ValidateParameters({spec.entity}Parameters parameters);
+
+    Task ValidateCreateAsync(
+        Guid companyId,
+        Create{spec.entity}Dto createDto,
+        CancellationToken ct
+    );{uniqueness_methods}
+
+    Task ValidateDeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
+}}
+'''
+
+
+def generate_business_rule_validator(spec: EntitySpec) -> str:
+    unique_fields = [f for f in spec.fields if f.unique_with_company]
+    allowed_order_fields = ",\n".join(
+        f'        "{f.name[:1].lower()}{f.name[1:]}"' for f in spec.fields
+    ) or '        ""'
+    create_uniqueness_checks = ""
+    uniqueness_methods = ""
+    create_method_signature = "public Task ValidateCreateAsync"
+    create_method_body = "        _ = companyId;\n        _ = createDto;\n        _ = ct;\n        return Task.CompletedTask;"
+
+    if unique_fields:
+        create_method_signature = "public async Task ValidateCreateAsync"
+        create_uniqueness_checks = "\n\n".join(
+            f'''        await Validate{spec.entity}{f.name}UniquenessAsync(
+            companyId,
+            excluded{spec.entity}Id: null,
+            createDto.{f.name},
+            ct
+        );'''
+            for f in unique_fields
+        )
+        create_method_body = create_uniqueness_checks
+
+        uniqueness_methods = "\n\n" + "\n\n".join(
+            f'''    public async Task Validate{spec.entity}{f.name}UniquenessAsync(
+        Guid companyId,
+        Guid? excluded{spec.entity}Id,
+        {f.clean_type} {f.name[:1].lower()}{f.name[1:]},
+        CancellationToken ct
+    )
+    {{
+        var exists = excluded{spec.entity}Id is null
+            ? await _{spec.entity_camel}Repository.AnyAsync(e =>
+                e.CompanyId == companyId &&
+                e.{f.name} == {f.name[:1].lower()}{f.name[1:]},
+                ct
+            )
+            : await _{spec.entity_camel}Repository.AnyAsync(e =>
+                e.CompanyId == companyId &&
+                e.Id != excluded{spec.entity}Id.Value &&
+                e.{f.name} == {f.name[:1].lower()}{f.name[1:]},
+                ct
+            );
+
+        if (exists)
+            throw new InvalidOperationException("{spec.entity}.{f.name}.Duplicate");
+    }}'''
+            for f in unique_fields
+        )
+
+    return f'''using NGErp.Base.Service.Validators;
+using NGErp.{spec.module}.Service.DTOs;
+using NGErp.{spec.module}.Service.Repository.Contracts;
+using NGErp.{spec.module}.Service.RequestFeatures;
+using NGErp.{spec.module}.Service.RequestValidators.BusinessRulesValidator.Contracts;
+
+namespace NGErp.{spec.module}.Service.RequestValidators.BusinessRulesValidators;
+
+public class {spec.entity}BusinessRuleValidator(
+    I{spec.entity}Repository {spec.entity_camel}Repository
+) : I{spec.entity}BusinessRuleValidator
+{{
+    private static readonly HashSet<string> _allowedOrderFields = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {{
+{allowed_order_fields}
+    }};
+
+    private readonly I{spec.entity}Repository _{spec.entity_camel}Repository = {spec.entity_camel}Repository;
+
+    public void ValidateParameters({spec.entity}Parameters parameters)
+    {{
+        RequestParametersValidator.ValidateOrdering(parameters, _allowedOrderFields);
+    }}
+
+    {create_method_signature}(
+        Guid companyId,
+        Create{spec.entity}Dto createDto,
+        CancellationToken ct
+    )
+    {{
+{create_method_body}
+    }}{uniqueness_methods}
+
+    public Task ValidateDeleteAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
+    {{
+        _ = companyId;
+        _ = id;
+        _ = ct;
+        return Task.CompletedTask;
+    }}
+}}
+'''
+
+
 def generate_mapper_patch(spec: EntitySpec) -> str:
     entity = spec.entity
     return f'''            CreateMap<{entity}, {entity}Dto>().ReverseMap();
@@ -1109,8 +1444,24 @@ def patch_mapping_profile(paths: ProjectPaths, spec: EntitySpec, force: bool) ->
         print("WARN no MappingProfile file found")
         return
     path = candidates[0]
+    marker = f"CreateMap<{spec.entity}, {spec.entity}Dto>"
+    content = path.read_text(encoding="utf-8")
+    if marker in content:
+        print(f"SKIP already patched: {path}")
+        return
+
+    match = re.search(r"\n\s{4}\}\s*\n\}\s*$", content)
+    if not match:
+        print(f"WARN could not patch mapping profile constructor: {path}")
+        return
+
     text = "\n" + generate_mapper_patch(spec) + "\n"
-    insert_before_last_brace(path, text, f"CreateMap<{spec.entity}, {spec.entity}Dto>", force)
+    patched = content[:match.start()] + text + content[match.start():]
+    if force:
+        path.write_text(patched, encoding="utf-8")
+        print(f"PATCH: {path}")
+    else:
+        print(f"DRY PATCH: {path}")
 
 
 def patch_service_collection(paths: ProjectPaths, spec: EntitySpec, force: bool) -> None:
@@ -1146,17 +1497,44 @@ def patch_service_collection(paths: ProjectPaths, spec: EntitySpec, force: bool)
 def scaffold(spec: EntitySpec, root: Path, force: bool, patch: bool) -> None:
     paths = resolve_paths(root, spec.module)
 
+    validator_path = (
+        paths.service / "RequestValidators" / f"{spec.entity}Validator.cs"
+        if not spec.generate_dto_validators or spec.status
+        else None
+    )
+
     files = {
         paths.domain / "Entities" / f"{spec.entity}.cs": generate_entity(spec),
         paths.service / "DTOs" / f"{spec.entity}Dto.cs": generate_dto(spec),
         paths.service / "Repository.Contracts" / f"I{spec.entity}Repository.cs": generate_repository_contract(spec),
         paths.infrastructure / "DataAccess" / "Repositories" / f"{spec.entity}Repository.cs": generate_repository(spec),
         paths.service / "RequestFeatures" / f"{spec.entity}Parameters.cs": generate_parameters(spec),
-        paths.service / "RequestValidators" / f"{spec.entity}Validator.cs": generate_validator(spec),
         paths.service / "Services" / f"I{spec.entity}Service.cs": generate_service_interface(spec),
         paths.service / "Services" / f"{spec.entity}Service.cs": generate_service(spec),
         paths.api / "Controllers" / f"{spec.entity}Controller.cs": generate_controller(spec),
     }
+
+    if validator_path is not None:
+        files[validator_path] = generate_validator(spec)
+
+    if spec.generate_dto_validators:
+        files[
+            paths.service / "RequestValidators" / "DtoValidators" / f"{spec.entity}Validator.cs"
+        ] = generate_dto_validators(spec)
+
+    if spec.generate_business_rule_validators:
+        files[
+            paths.service
+            / "RequestValidators"
+            / "BusinessRulesValidator.Contracts"
+            / f"I{spec.entity}BusinessRuleValidator.cs"
+        ] = generate_business_rule_validator_contract(spec)
+        files[
+            paths.service
+            / "RequestValidators"
+            / "BusinessRulesValidators"
+            / f"{spec.entity}BusinessRuleValidator.cs"
+        ] = generate_business_rule_validator(spec)
 
     for path, content in files.items():
         write_file(path, content, force)
@@ -1186,6 +1564,16 @@ def main() -> int:
     )
     parser.add_argument("--route", help="Controller route segment, e.g. employee-educations")
     parser.add_argument("--status", action="store_true", help="Generate Status/ChangeStatus support")
+    parser.add_argument(
+        "--dto-validators",
+        action="store_true",
+        help="Generate RequestValidators/DtoValidators with Create/Patch validators and patch policy",
+    )
+    parser.add_argument(
+        "--business-rule-validators",
+        action="store_true",
+        help="Generate business rule validator contract and implementation folders/files",
+    )
     parser.add_argument("--force", action="store_true", help="Overwrite existing generated files")
     parser.add_argument("--patch", action="store_true", help="Patch MappingProfile and DI registration")
     parser.add_argument(

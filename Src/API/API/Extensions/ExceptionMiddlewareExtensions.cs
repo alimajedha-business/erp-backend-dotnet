@@ -9,7 +9,7 @@ using NGErp.Base.Infrastructure.Logging;
 
 namespace NGErp.API.Extensions
 {
-    public static class ExceptionMiddlewareExtensions
+    public static class ExceptionMiddleWareExtensions
     {
         public static void ConfigureExceptionHandler(this WebApplication app)
         {
