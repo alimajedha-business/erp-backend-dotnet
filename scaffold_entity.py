@@ -104,6 +104,7 @@ class EntitySpec:
     base_class: str = "BaseEntityWithCompany"
     route: str | None = None
     status: bool = False
+    with_company: bool = True
     generate_dto_validators: bool = False
     generate_business_rule_validators: bool = False
     fields: list[FieldSpec] = field(default_factory=list)
@@ -331,6 +332,7 @@ def load_spec(args: argparse.Namespace) -> EntitySpec:
             base_class=base_class,
             route=data.get("route"),
             status=bool(data.get("status", args.status)),
+            with_company=with_company,
             generate_dto_validators=bool(
                 data.get("dtoValidators", data.get("generateDtoValidators", args.dto_validators))
             ),
@@ -354,6 +356,7 @@ def load_spec(args: argparse.Namespace) -> EntitySpec:
         base_class=args.base_class if with_company else "BaseEntity",
         route=args.route,
         status=args.status,
+        with_company=with_company,
         generate_dto_validators=args.dto_validators,
         generate_business_rule_validators=args.business_rule_validators,
         fields=parse_fields_inline(args.fields),
@@ -763,6 +766,9 @@ def generate_service(spec: EntitySpec) -> str:
     unique_fields = [f for f in spec.fields if f.unique_with_company]
     uses_business_rules = spec.generate_business_rule_validators
 
+    company_arg = "\n        Guid companyId," if spec.with_company else ""
+    company_call = "companyId, " if spec.with_company else ""
+
     business_rule_usings = ""
     business_rule_ctor = ""
     business_rule_field = ""
@@ -843,6 +849,12 @@ def generate_service(spec: EntitySpec) -> str:
     }}
 '''
 
+    filtered_query = (
+        f"var query = _{camel}Repository.GetFiltered(companyId, advancedFilters);"
+        if spec.with_company
+        else f"var query = _{camel}Repository.GetFiltered(advancedFilters);"
+    )
+
     return f'''using AutoMapper;
 
 using Microsoft.AspNetCore.JsonPatch;
@@ -882,8 +894,7 @@ public class {entity}Service(
     )
     {{
 {create_business_rule_call}        var entity = _mapper.Map<{entity}>(createDto);
-        entity.CompanyId = companyId;
-
+''' + (f"        entity.CompanyId = companyId;\n" if spec.with_company else "") + f'''
         var created = await _{camel}Repository.AddAsync(entity, ct);
 
         await _{camel}Repository.SaveChangesAsync(ct);
@@ -924,8 +935,7 @@ public class {entity}Service(
     )
     {{
 {patch_property_checks}        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+            {company_call}id,
             trackChanges: true,
             ct
         );
@@ -955,8 +965,7 @@ public class {entity}Service(
     )
     {{
 {delete_business_rule_call}        var entity = await GetByIdOrThrowAsync(
-            companyId,
-            id,
+            {company_call}id,
             trackChanges: true,
             ct
         );

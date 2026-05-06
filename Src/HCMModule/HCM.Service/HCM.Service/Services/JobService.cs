@@ -83,6 +83,24 @@ public class JobService(
         );
     }
 
+    public async Task<ListResponseModel<JobDto>> FilterByQAsync(
+        Guid companyId,
+        JobParameters parameters,
+        CancellationToken ct = default
+    )
+    {
+        _businessRuleValidator.ValidateParameters(parameters);
+
+        var query = _jobRepository.FilterByQ(companyId, parameters);
+        var res = await _jobRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<JobDto>(
+            results: _mapper.Map<IReadOnlyList<JobDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
     public virtual async Task<JobDto> PatchAsync(
         Guid companyId,
         Guid id,

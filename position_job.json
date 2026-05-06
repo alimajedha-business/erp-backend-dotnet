@@ -1,0 +1,23 @@
+{
+  "entity": "PositionJob",
+  "schema": "HCM",
+  "module": "HCM",
+  "withCompany": false,
+  "baseClass": "BaseEntity",
+  "route": "position-jobs",
+  "status": false,
+  "fields": [
+    {
+      "name": "PositionId",
+      "type": "Guid",
+      "required": true,
+      "relation": "Position"
+    },
+    {
+      "name": "JobId",
+      "type": "Guid",
+      "required": true,
+      "relation": "Job"
+    }
+  ]
+}

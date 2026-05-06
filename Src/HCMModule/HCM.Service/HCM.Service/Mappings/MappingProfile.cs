@@ -94,6 +94,8 @@ public class MappingProfile : Profile
         CreateMap<CreateEmployeeDependantDto, EmployeeDependant>();
         CreateMap<EmployeeDependant, PatchEmployeeDependantDto>().ReverseMap();
 
+        CreateMap<PositionJob, PositionJobDto>().ReverseMap();
+        CreateMap<CreatePositionJobDto, PositionJob>();
+        CreateMap<PositionJob, PatchPositionJobDto>().ReverseMap();
     }
-
-          }
+}

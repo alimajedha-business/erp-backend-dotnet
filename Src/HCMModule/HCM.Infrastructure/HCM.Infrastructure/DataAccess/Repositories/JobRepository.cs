@@ -38,5 +38,15 @@ public class JobRepository(MainDbContext context) :
             .Filter(requestAdvancedFilters);
     }
 
-
+    public override IQueryable<Job> FilterByQ(
+        Guid companyId,
+        RequestParameters requestParameters
+    )
+    {
+        return _dbSet
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Include(e => e.JobCategory)
+            .Filter(requestParameters);
+    }
 }

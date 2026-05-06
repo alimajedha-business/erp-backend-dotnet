@@ -7,43 +7,32 @@ using NGErp.HCM.Service.RequestFeatures;
 
 namespace NGErp.HCM.Service.Services;
 
-public interface IJobService
+public interface IPositionJobService
 {
-    Task<JobDto> CreateAsync(
-        Guid companyId,
-        CreateJobDto createDto,
+    Task<PositionJobDto> CreateAsync(
+        CreatePositionJobDto createDto,
         CancellationToken ct
     );
 
-    Task<JobDto> GetByIdAsync(
-        Guid companyId,
+    Task<PositionJobDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<JobDto>> GetFilteredAsync(
-        Guid companyId,
-        JobParameters parameters,
+    Task<ListResponseModel<PositionJobDto>> GetFilteredAsync(
+        PositionJobParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<JobDto>> FilterByQAsync(
-        Guid companyId,
-        JobParameters parameters,
-        CancellationToken ct = default
-    );
-
-    Task<JobDto> PatchAsync(
-        Guid companyId,
+    Task<PositionJobDto> PatchAsync(
         Guid id,
-        JsonPatchDocument<PatchJobDto> patchDocument,
+        JsonPatchDocument<PatchPositionJobDto> patchDocument,
         CancellationToken ct
     );
 
     Task DeleteAsync(
-        Guid companyId,
         Guid id,
         CancellationToken ct
     );
