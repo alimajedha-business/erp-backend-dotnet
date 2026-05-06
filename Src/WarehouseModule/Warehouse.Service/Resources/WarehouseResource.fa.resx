@@ -267,6 +267,33 @@
   <data name="No" xml:space="preserve">
     <value>خیر</value>
   </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>رسید</value>
+  </data>
+  <data name="ReceiptType.AddToStock.NotNull" xml:space="preserve">
+    <value>وضعیت افزودن به موجودی برای رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptType.Code.Duplicate" xml:space="preserve">
+    <value>کد رسید قبلا ثبت شده است.</value>
+  </data>
+  <data name="ReceiptType.Code.NotEmpty" xml:space="preserve">
+    <value>کد رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="ReceiptType.Code.Numeric" xml:space="preserve">
+    <value>کد رسید باید عددی باشد.</value>
+  </data>
+  <data name="ReceiptType.Delete.HasRelatedEntities" xml:space="preserve">
+    <value>رسید به دلیل داشتن موجودیت‌های وابسته قابل حذف نیست.</value>
+  </data>
+  <data name="ReceiptType.Title.MaxLength" xml:space="preserve">
+    <value>عنوان رسید نمی‌تواند بیشتر از 50 کاراکتر باشد.</value>
+  </data>
+  <data name="ReceiptType.Title.MinLength" xml:space="preserve">
+    <value>عنوان رسید باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="ReceiptType.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان رسید نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="ShippingCompany" xml:space="preserve">
     <value>شرکت باربری</value>
   </data>
