@@ -375,4 +375,46 @@
   <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
     <value>مشخصه به دلیل داشتن قانون طبقه‌بندی قابل حذف نیست.</value>
   </data>
+  <data name="Item.Barcode.MaxLength" xml:space="preserve">
+    <value>بارکد کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Code.Duplicate" xml:space="preserve">
+    <value>کد کالا قبلا ثبت شده است.</value>
+  </data>
+  <data name="Item.Code.MaxLength" xml:space="preserve">
+    <value>کد کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Code.NotEmpty" xml:space="preserve">
+    <value>کد کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.Delete.HasInventoryLots" xml:space="preserve">
+    <value>کالا به دلیل داشتن بچ موجودی قابل حذف نیست.</value>
+  </data>
+  <data name="Item.ItemUnitOfMeasurements.MaxCount" xml:space="preserve">
+    <value>کالا می‌تواند حداکثر {0} واحد اندازه‌گیری داشته باشد.</value>
+  </data>
+  <data name="Item.Sku.MaxLength" xml:space="preserve">
+    <value>شناسه SKU کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Sku.MinLength" xml:space="preserve">
+    <value>شناسه SKU کالا باید حداقل 7 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Item.Sku.NotEmpty" xml:space="preserve">
+    <value>شناسه SKU کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.TechnicalNumber.MaxLength" xml:space="preserve">
+    <value>شماره فنی کالا نمی‌تواند بیشتر از 80 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Title.MaxLength" xml:space="preserve">
+    <value>عنوان کالا نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
+  <data name="Item.Title.MinLength" xml:space="preserve">
+    <value>عنوان کالا باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="Item.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان کالا نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
+    <value>عنوان انگلیسی کالا نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
+  </data>
 </root>

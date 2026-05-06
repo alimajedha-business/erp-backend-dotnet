@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 
+using Microsoft.AspNetCore.JsonPatch.Operations;
+
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -130,24 +132,31 @@ public class ItemPatchExample :
         patchDoc.Replace(x => x.TitleInEnglish, "New Item Title in English");
         patchDoc.Replace(x => x.TechnicalNumber, "12-Aed85-301FX");
         patchDoc.Replace(x => x.Barcode, "01051044136071");
-        patchDoc.Replace(x => x.IsActive, false);
-        patchDoc.Replace(x => x.PrimaryUnitOfMeasurementId, new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"));
-        patchDoc.Replace(x => x.ItemTypeId, new Guid("3f148ef5-bf43-4d43-8e3a-b25decc7d092"));
 
-        patchDoc.Replace(
-            x => x.SecondaryUnitOfMeasurementIds,
-            [
-                new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"),
-                new Guid("94e9eb2e-ab06-4ac6-92a1-fafa5c765d37")
-            ]
+        patchDoc.Operations.Add(
+            new Operation<PatchItemDto>(
+                "replace",
+                "/itemUnitOfMeasurements",
+                from: null,
+                value: new List<Guid>
+                {
+                    new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"),
+                    new Guid("94e9eb2e-ab06-4ac6-92a1-fafa5c765d37")
+                }
+            )
         );
 
-        patchDoc.Replace(
-            x => x.AttributeIds,
-            [
-                new Guid("47f6daae-73c0-4d04-aa71-2629056acb86"),
-                new Guid("87d8c665-2d17-44a5-ad91-1543dcef77c1")
-            ]
+        patchDoc.Operations.Add(
+            new Operation<PatchItemDto>(
+                "replace",
+                "/itemAttributes",
+                from: null,
+                value: new List<Guid>
+                {
+                    new Guid("47f6daae-73c0-4d04-aa71-2629056acb86"),
+                    new Guid("87d8c665-2d17-44a5-ad91-1543dcef77c1")
+                }
+            )
         );
 
         patchDoc.Replace(

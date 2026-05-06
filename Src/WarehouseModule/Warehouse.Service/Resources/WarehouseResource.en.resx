@@ -375,4 +375,46 @@
   <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
     <value>Attribute cannot be deleted because it has category attribute rules.</value>
   </data>
+  <data name="Item.Barcode.MaxLength" xml:space="preserve">
+    <value>Item barcode must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Code.Duplicate" xml:space="preserve">
+    <value>Item code already exists.</value>
+  </data>
+  <data name="Item.Code.MaxLength" xml:space="preserve">
+    <value>Item code must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Code.NotEmpty" xml:space="preserve">
+    <value>Item code could not be empty.</value>
+  </data>
+  <data name="Item.Delete.HasInventoryLots" xml:space="preserve">
+    <value>Item cannot be deleted because inventory lots are attached to it.</value>
+  </data>
+  <data name="Item.ItemUnitOfMeasurements.MaxCount" xml:space="preserve">
+    <value>Item can have up to {0} unit of measurement relations.</value>
+  </data>
+  <data name="Item.Sku.MaxLength" xml:space="preserve">
+    <value>Item SKU must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Sku.MinLength" xml:space="preserve">
+    <value>Item SKU must have at least 7 characters.</value>
+  </data>
+  <data name="Item.Sku.NotEmpty" xml:space="preserve">
+    <value>Item SKU could not be empty.</value>
+  </data>
+  <data name="Item.TechnicalNumber.MaxLength" xml:space="preserve">
+    <value>Item technical number must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Title.MaxLength" xml:space="preserve">
+    <value>Item title must not be longer than 250 characters.</value>
+  </data>
+  <data name="Item.Title.MinLength" xml:space="preserve">
+    <value>Item title must have at least 3 characters.</value>
+  </data>
+  <data name="Item.Title.NotEmpty" xml:space="preserve">
+    <value>Item title could not be empty.</value>
+  </data>
+  <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
+    <value>Item English title must not be longer than 250 characters.</value>
+  </data>
 </root>
