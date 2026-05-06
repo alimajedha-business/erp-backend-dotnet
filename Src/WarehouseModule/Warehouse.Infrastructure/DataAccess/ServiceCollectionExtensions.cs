@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICategoryAttributeRuleRepository, CategoryAttributeRuleRepository>();
         services.AddScoped<ICategoryLevelConstraintRepository, CategoryLevelConstraintRepository>();
+        services.AddScoped<IInventoryLotRepository, InventoryLotRepository>();
         services.AddScoped<IInventoryMovementTypeRepository, InventoryMovementTypeRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
