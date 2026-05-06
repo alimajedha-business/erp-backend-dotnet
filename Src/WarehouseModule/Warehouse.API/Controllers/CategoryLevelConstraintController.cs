@@ -52,7 +52,7 @@ public class CategoryLevelConstraintController(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryLevelConstraintParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,

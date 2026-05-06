@@ -70,7 +70,7 @@ public class CategoryController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] CategoryParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,

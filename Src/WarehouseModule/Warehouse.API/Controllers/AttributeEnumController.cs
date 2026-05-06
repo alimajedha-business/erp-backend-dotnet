@@ -63,7 +63,7 @@ public class AttributeEnumController(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromRoute] Guid attributeId,
         [FromQuery] AttributeEnumValueParameters parameters,

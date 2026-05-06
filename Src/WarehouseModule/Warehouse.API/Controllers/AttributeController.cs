@@ -61,7 +61,7 @@ public class AttributeController(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] AttributeParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
