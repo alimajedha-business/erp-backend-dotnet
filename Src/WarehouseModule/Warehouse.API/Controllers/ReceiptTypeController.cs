@@ -44,7 +44,7 @@ public class ReceiptTypeController(
     }
 
     [HttpGet("filter-by-q")]
-    public async Task<IActionResult> Get(
+    public async Task<IActionResult> GetByQ(
         [FromRoute] Guid companyId,
         [FromQuery] ReceiptTypeParameters parameters,
         CancellationToken ct
