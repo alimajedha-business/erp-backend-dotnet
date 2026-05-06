@@ -267,6 +267,33 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="RemittanceType" xml:space="preserve">
+    <value>Remittance Type</value>
+  </data>
+  <data name="RemittanceType.AddToStock.NotNull" xml:space="preserve">
+    <value>Remittance type add-to-stock flag is required.</value>
+  </data>
+  <data name="RemittanceType.Code.Duplicate" xml:space="preserve">
+    <value>Remittance type code already exists.</value>
+  </data>
+  <data name="RemittanceType.Code.NotEmpty" xml:space="preserve">
+    <value>Remittance type code could not be empty.</value>
+  </data>
+  <data name="RemittanceType.Code.Numeric" xml:space="preserve">
+    <value>Remittance type code must be numeric.</value>
+  </data>
+  <data name="RemittanceType.Delete.HasRelatedEntities" xml:space="preserve">
+    <value>Remittance type cannot be deleted because related entities are attached to it.</value>
+  </data>
+  <data name="RemittanceType.Title.MaxLength" xml:space="preserve">
+    <value>Remittance type title must not be longer than 50 characters.</value>
+  </data>
+  <data name="RemittanceType.Title.MinLength" xml:space="preserve">
+    <value>Remittance type title must have at least 3 characters.</value>
+  </data>
+  <data name="RemittanceType.Title.NotEmpty" xml:space="preserve">
+    <value>Remittance type title could not be empty.</value>
+  </data>
   <data name="Receipt" xml:space="preserve">
     <value>Receipt</value>
   </data>

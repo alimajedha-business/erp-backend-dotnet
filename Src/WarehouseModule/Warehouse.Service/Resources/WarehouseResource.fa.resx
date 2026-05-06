@@ -267,6 +267,33 @@
   <data name="No" xml:space="preserve">
     <value>خیر</value>
   </data>
+  <data name="RemittanceType" xml:space="preserve">
+    <value>نوع حواله</value>
+  </data>
+  <data name="RemittanceType.AddToStock.NotNull" xml:space="preserve">
+    <value>وضعیت افزودن به موجودی برای نوع حواله الزامی است.</value>
+  </data>
+  <data name="RemittanceType.Code.Duplicate" xml:space="preserve">
+    <value>کد نوع حواله قبلا ثبت شده است.</value>
+  </data>
+  <data name="RemittanceType.Code.NotEmpty" xml:space="preserve">
+    <value>کد نوع حواله نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="RemittanceType.Code.Numeric" xml:space="preserve">
+    <value>کد نوع حواله باید عددی باشد.</value>
+  </data>
+  <data name="RemittanceType.Delete.HasRelatedEntities" xml:space="preserve">
+    <value>نوع حواله به دلیل داشتن موجودیت‌های وابسته قابل حذف نیست.</value>
+  </data>
+  <data name="RemittanceType.Title.MaxLength" xml:space="preserve">
+    <value>عنوان نوع حواله نمی‌تواند بیشتر از 50 کاراکتر باشد.</value>
+  </data>
+  <data name="RemittanceType.Title.MinLength" xml:space="preserve">
+    <value>عنوان نوع حواله باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="RemittanceType.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان نوع حواله نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="Receipt" xml:space="preserve">
     <value>رسید</value>
   </data>

@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ItemAttribute>, ItemAttributeSchema>();
         services.AddSingleton<IFilterSchema<ItemType>, ItemTypeSchema>();
         services.AddSingleton<IFilterSchema<ItemUnitOfMeasurement>, ItemUnitOfMeasurementSchema>();
+        services.AddSingleton<IFilterSchema<RemittanceType>, RemittanceTypeSchema>();
         services.AddSingleton<IFilterSchema<ReceiptType>, ReceiptTypeSchema>();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
@@ -62,6 +63,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
+        services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
+        services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
