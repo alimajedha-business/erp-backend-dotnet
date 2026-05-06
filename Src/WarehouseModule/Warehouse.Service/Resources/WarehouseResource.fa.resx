@@ -372,4 +372,7 @@
   <data name="Yes" xml:space="preserve">
     <value>بلی</value>
   </data>
+  <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
+    <value>مشخصه به دلیل داشتن قانون طبقه‌بندی قابل حذف نیست.</value>
+  </data>
 </root>

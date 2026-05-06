@@ -10,7 +10,8 @@ namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class AttributeBusinessRuleValidator(
     IAttributeRepository attributeRepository,
-    IAttributeEnumValueRepository attributeEnumValueRepository
+    IAttributeEnumValueRepository enumValueRepository,
+    ICategoryAttributeRuleRepository categoryAttributeRepository
 ) : IAttributeBusinessRuleValidator
 {
     private static readonly HashSet<string> _allowedOrderFields = new(
@@ -21,8 +22,9 @@ public class AttributeBusinessRuleValidator(
     };
 
     private readonly IAttributeRepository _attributeRepository = attributeRepository;
-    private readonly IAttributeEnumValueRepository _attributeEnumValueRepository =
-        attributeEnumValueRepository;
+    private readonly IAttributeEnumValueRepository _enumRepository = enumValueRepository;
+    private readonly ICategoryAttributeRuleRepository _categoryAttributeRepository = 
+        categoryAttributeRepository;
 
     public void ValidateParameters(AttributeParameters parameters)
     {
@@ -86,6 +88,9 @@ public class AttributeBusinessRuleValidator(
 
         if (await HasEnumValuesAsync(id, ct))
             throw new AttributeHasEnumValuesException();
+
+        if (await HasCategoryAttributeRulesAsync(id, ct))
+            throw new AttributeHasCategoryAttributeRuleException();
     }
 
     public async Task ValidateDataTypeChangeAsync(
@@ -122,7 +127,18 @@ public class AttributeBusinessRuleValidator(
         CancellationToken ct
     )
     {
-        return _attributeEnumValueRepository.AnyAsync(e =>
+        return _enumRepository.AnyAsync(e =>
+            e.AttributeId == attributeId,
+            ct
+        );
+    }
+
+    private Task<bool> HasCategoryAttributeRulesAsync(
+        Guid attributeId,
+        CancellationToken ct
+    )
+    {
+        return _categoryAttributeRepository.AnyAsync(e =>
             e.AttributeId == attributeId,
             ct
         );

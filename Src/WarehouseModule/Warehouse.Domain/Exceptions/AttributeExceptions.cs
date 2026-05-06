@@ -29,3 +29,9 @@ public sealed class AttributeDataTypeCannotChangeFromEnumException()
 {
     public override string LocalizationKey => "Attribute.DataType.EnumHasValues";
 }
+
+public sealed class AttributeHasCategoryAttributeRuleException()
+    : BusinessRuleViolationException()
+{
+    public override string LocalizationKey => "Attribute.Delete.CategoryAttributeRule";
+}

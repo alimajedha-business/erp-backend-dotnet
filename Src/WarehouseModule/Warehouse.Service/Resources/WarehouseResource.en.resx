@@ -372,4 +372,7 @@
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
+  <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
+    <value>Attribute cannot be deleted because it has category attribute rules.</value>
+  </data>
 </root>
