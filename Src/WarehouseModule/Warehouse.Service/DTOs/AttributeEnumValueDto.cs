@@ -7,6 +7,12 @@ public record AttributeEnumValueDto(
     AttributeDto Attribute
 );
 
+public record AttributeEnumValueSlimDto(
+    Guid Id,
+    int Code,
+    string Label
+);
+
 public record AttributeEnumValueListDto(
     Guid Id,
     int Code,
@@ -18,7 +24,6 @@ public class CreateAttributeEnumValueDto
 {
     public required int Code { get; set; }
     public required string Label { get; set; }
-    public Guid AttributeId { get; set; }
 }
 
 public class PatchAttributeEnumValueDto

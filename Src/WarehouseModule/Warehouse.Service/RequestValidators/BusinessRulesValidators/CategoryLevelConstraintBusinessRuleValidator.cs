@@ -23,9 +23,10 @@ public class CategoryLevelConstraintBusinessRuleValidator(
     {
         var levelNo = createDto.LevelNo;
 
-        var levelExists = await _constraintRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.LevelNo == levelNo,
+        var levelExists = await _constraintRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.LevelNo == levelNo,
             ct
         );
 
@@ -36,9 +37,10 @@ public class CategoryLevelConstraintBusinessRuleValidator(
             return;
 
         var previousLevelNo = levelNo - 1;
-        var previousLevelExists = await _constraintRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.LevelNo == previousLevelNo,
+        var previousLevelExists = await _constraintRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.LevelNo == previousLevelNo,
             ct
         );
 
@@ -65,9 +67,10 @@ public class CategoryLevelConstraintBusinessRuleValidator(
             ct
         ) ?? throw new CategoryLevelConstraintNotFoundException();
 
-        var hasCategoriesAtLevel = await _categoryRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.LevelNo == categoryLevel.LevelNo,
+        var hasCategoriesAtLevel = await _categoryRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.LevelNo == categoryLevel.LevelNo,
             ct
         );
 
@@ -86,9 +89,10 @@ public class CategoryLevelConstraintBusinessRuleValidator(
         if (newCodeLength >= currentCodeLength)
             return;
 
-        var hasCategoriesAtLevel = await _categoryRepository.AnyAsync(e =>
-            e.CompanyId == companyId &&
-            e.LevelNo == levelNo,
+        var hasCategoriesAtLevel = await _categoryRepository.AnyAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.LevelNo == levelNo,
             ct
         );
 

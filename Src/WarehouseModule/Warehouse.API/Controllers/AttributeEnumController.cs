@@ -3,7 +3,10 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -27,6 +30,7 @@ public class AttributeEnumController(
     )
     {
         var dto = await _attributeEnumValueService.CreateAsync(
+            companyId,
             attributeId,
             createDto,
             ct
@@ -39,6 +43,45 @@ public class AttributeEnumController(
         );
     }
 
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromQuery] AttributeEnumValueParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _attributeEnumValueService.FilterByQAsync(
+            companyId,
+            attributeId,
+            parameters,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpPost("list")]
+    [SkipModelValidation]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid attributeId,
+        [FromQuery] AttributeEnumValueParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var attributes = await _attributeEnumValueService.GetFilteredAsync(
+            companyId,
+            attributeId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(attributes);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -48,6 +91,7 @@ public class AttributeEnumController(
     )
     {
         var enumsDto = await _attributeEnumValueService.GetByIdAsync(
+            companyId,
             attributeId,
             id,
             trackChanges: false,
@@ -64,7 +108,12 @@ public class AttributeEnumController(
         CancellationToken ct
     )
     {
-        var code = await _attributeEnumValueService.GetNextCode(attributeId, ct);
+        var code = await _attributeEnumValueService.GetNextCode(
+            companyId,
+            attributeId,
+            ct
+        );
+
         return Ok(code);
     }
 
@@ -79,6 +128,7 @@ public class AttributeEnumController(
     )
     {
         var dto = await _attributeEnumValueService.PatchAsync(
+            companyId,
             attributeId,
             id,
             patchDocument,
@@ -96,7 +146,7 @@ public class AttributeEnumController(
         CancellationToken ct
     )
     {
-        await _attributeEnumValueService.DeleteAsync(attributeId, id, ct);
+        await _attributeEnumValueService.DeleteAsync(companyId, attributeId, id, ct);
         return NoContent();
     }
 }

@@ -10,6 +10,7 @@ public class AttributeEnumMappingProfile : Profile
     public AttributeEnumMappingProfile()
     {
         CreateMap<AttributeEnumValue, AttributeEnumValueDto>();
+        CreateMap<AttributeEnumValue, AttributeEnumValueSlimDto>();
         CreateMap<AttributeEnumValue, AttributeEnumValueListDto>()
             .ForCtorParam(
                 nameof(AttributeEnumValueListDto.AttributeTitle),

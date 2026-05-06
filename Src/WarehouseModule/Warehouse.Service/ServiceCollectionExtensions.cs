@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
+        services.AddScoped<IAttributeBusinessRuleValidator, AttributeBusinessRuleValidator>();
         services.AddScoped<ICategoryBusinessRuleValidator, CategoryBusinessRuleValidator>();
         services.AddScoped<
             ICategoryLevelConstraintBusinessRuleValidator,
@@ -56,6 +57,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
         services.AddScoped<IInventoryMovementTypeService, InventoryMovementTypeService>();
+        services.AddScoped<IItemBusinessRuleValidator, ItemBusinessRuleValidator>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
@@ -63,6 +65,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
+        services.AddScoped<IWarehouseBusinessRuleValidator, WarehouseBusinessRuleValidator>();
+        services.AddScoped<
+            IWarehouseLocationBusinessRuleValidator,
+            WarehouseLocationBusinessRuleValidator
+        >();
         services.AddScoped<IWarehouseTypeBusinessRuleValidator, WarehouseTypeBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
 

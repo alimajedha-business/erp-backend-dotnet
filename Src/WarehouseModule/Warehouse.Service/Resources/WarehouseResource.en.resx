@@ -123,6 +123,39 @@
   <data name="AttributeEnumValue" xml:space="preserve">
     <value>Attribute Enum Value</value>
   </data>
+  <data name="Attribute.AttributeEntity.Invalid" xml:space="preserve">
+    <value>Attribute entity is invalid.</value>
+  </data>
+  <data name="Attribute.Code.Duplicate" xml:space="preserve">
+    <value>Attribute code already exists.</value>
+  </data>
+  <data name="Attribute.Code.NotEmpty" xml:space="preserve">
+    <value>Attribute code could not be empty.</value>
+  </data>
+  <data name="Attribute.Code.Numeric" xml:space="preserve">
+    <value>Attribute code must be numeric.</value>
+  </data>
+  <data name="Attribute.DataType.EnumHasValues" xml:space="preserve">
+    <value>Attribute data type cannot be changed from enum because enum values are attached to it.</value>
+  </data>
+  <data name="Attribute.DataType.Invalid" xml:space="preserve">
+    <value>Attribute data type is invalid.</value>
+  </data>
+  <data name="Attribute.Delete.HasEnumValues" xml:space="preserve">
+    <value>Attribute cannot be deleted because enum values are attached to it.</value>
+  </data>
+  <data name="Attribute.Delete.IsStatic" xml:space="preserve">
+    <value>Static attribute cannot be deleted.</value>
+  </data>
+  <data name="Attribute.Title.MaxLength" xml:space="preserve">
+    <value>Attribute title must not be longer than 50 characters.</value>
+  </data>
+  <data name="Attribute.Title.MinLength" xml:space="preserve">
+    <value>Attribute title must have at least 3 characters.</value>
+  </data>
+  <data name="Attribute.Title.NotEmpty" xml:space="preserve">
+    <value>Attribute title could not be empty.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
@@ -252,8 +285,68 @@
   <data name="Warehouse" xml:space="preserve">
     <value>Warehouse</value>
   </data>
+  <data name="Warehouse.Code.Duplicate" xml:space="preserve">
+    <value>Warehouse code already exists.</value>
+  </data>
+  <data name="Warehouse.Code.NotEmpty" xml:space="preserve">
+    <value>Warehouse code could not be empty.</value>
+  </data>
+  <data name="Warehouse.Code.Numeric" xml:space="preserve">
+    <value>Warehouse code must be numeric.</value>
+  </data>
+  <data name="Warehouse.CompanyUnit.NotEmpty" xml:space="preserve">
+    <value>Company unit is required.</value>
+  </data>
+  <data name="Warehouse.Delete.HasLocations" xml:space="preserve">
+    <value>Warehouse cannot be deleted because warehouse locations are attached to it.</value>
+  </data>
+  <data name="Warehouse.MaxMonetaryValue.Precision" xml:space="preserve">
+    <value>Maximum monetary value must have precision 22 and scale 4.</value>
+  </data>
+  <data name="Warehouse.Title.MaxLength" xml:space="preserve">
+    <value>Warehouse title must not be longer than 250 characters.</value>
+  </data>
+  <data name="Warehouse.Title.MinLength" xml:space="preserve">
+    <value>Warehouse title must have at least 3 characters.</value>
+  </data>
+  <data name="Warehouse.Title.NotEmpty" xml:space="preserve">
+    <value>Warehouse title could not be empty.</value>
+  </data>
+  <data name="Warehouse.Type.NotEmpty" xml:space="preserve">
+    <value>Warehouse type is required.</value>
+  </data>
   <data name="WarehouseLocation" xml:space="preserve">
     <value>Warehouse Location</value>
+  </data>
+  <data name="WarehouseLocation.Code.Duplicate" xml:space="preserve">
+    <value>Warehouse location code already exists.</value>
+  </data>
+  <data name="WarehouseLocation.Code.NotEmpty" xml:space="preserve">
+    <value>Warehouse location code could not be empty.</value>
+  </data>
+  <data name="WarehouseLocation.Code.Numeric" xml:space="preserve">
+    <value>Warehouse location code must be numeric.</value>
+  </data>
+  <data name="WarehouseLocation.Delete.HasChildren" xml:space="preserve">
+    <value>Warehouse location cannot be deleted because child locations are attached to it.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.LastLevelIf6" xml:space="preserve">
+    <value>The 6th level warehouse location cannot have child locations.</value>
+  </data>
+  <data name="WarehouseLocation.LevelNo.Range" xml:space="preserve">
+    <value>Warehouse location level number must be between 1 and 6.</value>
+  </data>
+  <data name="WarehouseLocation.Parent.NotInWarehouse" xml:space="preserve">
+    <value>The selected parent warehouse location must belong to the same warehouse.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MaxLength" xml:space="preserve">
+    <value>Warehouse location title must not be longer than 250 characters.</value>
+  </data>
+  <data name="WarehouseLocation.Title.MinLength" xml:space="preserve">
+    <value>Warehouse location title must have at least 3 characters.</value>
+  </data>
+  <data name="WarehouseLocation.Title.NotEmpty" xml:space="preserve">
+    <value>Warehouse location title could not be empty.</value>
   </data>
   <data name="WarehouseType.Code.Duplicate" xml:space="preserve">
     <value>Warehouse type code already exists.</value>
@@ -278,5 +371,50 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="Attribute.Delete.CategoryAttributeRule" xml:space="preserve">
+    <value>Attribute cannot be deleted because it has category attribute rules.</value>
+  </data>
+  <data name="Item.Barcode.MaxLength" xml:space="preserve">
+    <value>Item barcode must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Code.Duplicate" xml:space="preserve">
+    <value>Item code already exists.</value>
+  </data>
+  <data name="Item.Code.MaxLength" xml:space="preserve">
+    <value>Item code must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Code.NotEmpty" xml:space="preserve">
+    <value>Item code could not be empty.</value>
+  </data>
+  <data name="Item.Delete.HasInventoryLots" xml:space="preserve">
+    <value>Item cannot be deleted because inventory lots are attached to it.</value>
+  </data>
+  <data name="Item.ItemUnitOfMeasurements.MaxCount" xml:space="preserve">
+    <value>Item can have up to {0} unit of measurement relations.</value>
+  </data>
+  <data name="Item.Sku.MaxLength" xml:space="preserve">
+    <value>Item SKU must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Sku.MinLength" xml:space="preserve">
+    <value>Item SKU must have at least 7 characters.</value>
+  </data>
+  <data name="Item.Sku.NotEmpty" xml:space="preserve">
+    <value>Item SKU could not be empty.</value>
+  </data>
+  <data name="Item.TechnicalNumber.MaxLength" xml:space="preserve">
+    <value>Item technical number must not be longer than 80 characters.</value>
+  </data>
+  <data name="Item.Title.MaxLength" xml:space="preserve">
+    <value>Item title must not be longer than 250 characters.</value>
+  </data>
+  <data name="Item.Title.MinLength" xml:space="preserve">
+    <value>Item title must have at least 3 characters.</value>
+  </data>
+  <data name="Item.Title.NotEmpty" xml:space="preserve">
+    <value>Item title could not be empty.</value>
+  </data>
+  <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
+    <value>Item English title must not be longer than 250 characters.</value>
   </data>
 </root>
