@@ -20,6 +20,7 @@ namespace NGErp.Warehouse.Service.Services;
 
 public class ReceiptTypeFieldConfigurationService(
     IReceiptTypeFieldConfigurationRepository configurationRepository,
+    IReceiptTypeConfigurationRepository receiptTypeConfigurationRepository,
     IReceiptTypeFieldConfigurationBusinessRuleValidator businessRuleValidator,
     IValidator<CreateReceiptTypeFieldConfigurationDto> createValidator,
     IValidator<PatchReceiptTypeFieldConfigurationDto> patchValidator,
@@ -31,6 +32,8 @@ public class ReceiptTypeFieldConfigurationService(
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
     private readonly IReceiptTypeFieldConfigurationRepository _configurationRepository =
         configurationRepository;
+    private readonly IReceiptTypeConfigurationRepository _receiptTypeConfigurationRepository =
+        receiptTypeConfigurationRepository;
     private readonly IReceiptTypeFieldConfigurationBusinessRuleValidator _businessRuleValidator =
         businessRuleValidator;
     private readonly IValidator<CreateReceiptTypeFieldConfigurationDto> _createValidator =
@@ -47,11 +50,23 @@ public class ReceiptTypeFieldConfigurationService(
     {
         RequestBodyValidator.ThrowIfNull(createDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
-        await _businessRuleValidator.ValidateCreateAsync(companyId, receiptTypeId, createDto, ct);
+
+        var receiptTypeConfiguration = await GetReceiptTypeConfigurationOrThrowAsync(
+            companyId,
+            receiptTypeId,
+            ct
+        );
+
+        await _businessRuleValidator.ValidateCreateAsync(
+            companyId,
+            receiptTypeConfiguration.Id,
+            createDto,
+            ct
+        );
 
         var entity = _mapper.Map<ReceiptTypeFieldConfiguration>(createDto);
         entity.CompanyId = companyId;
-        entity.ReceiptTypeId = receiptTypeId;
+        entity.ReceiptTypeConfigurationId = receiptTypeConfiguration.Id;
 
         var created = await _configurationRepository.AddAsync(entity, ct);
 
@@ -125,15 +140,16 @@ public class ReceiptTypeFieldConfigurationService(
         CancellationToken ct
     )
     {
-        await GetSingleOrThrowAsync(companyId, receiptTypeId, id, trackChanges: false, ct);
-
-        await _configurationRepository.Remove(
-            e =>
-                e.CompanyId == companyId &&
-                e.ReceiptTypeId == receiptTypeId &&
-                e.Id == id,
+        var configuration = await GetSingleOrThrowAsync(
+            companyId,
+            receiptTypeId,
+            id,
+            trackChanges: true,
             ct
         );
+
+        _configurationRepository.Remove(configuration);
+        await _configurationRepository.SaveChangesAsync(ct);
     }
 
     private async Task<ReceiptTypeFieldConfiguration> GetSingleOrThrowAsync(
@@ -147,13 +163,30 @@ public class ReceiptTypeFieldConfigurationService(
         var entity = await _configurationRepository.SingleOrDefaultAsync(
             e =>
                 e.CompanyId == companyId &&
-                e.ReceiptTypeId == receiptTypeId &&
+                e.ReceiptTypeConfiguration.ReceiptTypeId == receiptTypeId &&
                 e.Id == id,
             trackChanges,
             ct
         );
 
         return entity ?? throw new ReceiptTypeFieldConfigurationNotFoundException();
+    }
+
+    private async Task<ReceiptTypeConfiguration> GetReceiptTypeConfigurationOrThrowAsync(
+        Guid companyId,
+        Guid receiptTypeId,
+        CancellationToken ct = default
+    )
+    {
+        var entity = await _receiptTypeConfigurationRepository.SingleOrDefaultAsync(
+            e =>
+                e.CompanyId == companyId &&
+                e.ReceiptTypeId == receiptTypeId,
+            trackChanges: false,
+            ct
+        );
+
+        return entity ?? throw new ReceiptTypeConfigurationNotFoundException();
     }
 
     private ReceiptTypeFieldConfigurationDto Localize(ReceiptTypeFieldConfigurationDto dto)

@@ -9,7 +9,7 @@ using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts
 namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class ReceiptTypeFieldConfigurationBusinessRuleValidator(
-    IReceiptTypeRepository receiptTypeRepository,
+    IReceiptTypeConfigurationRepository receiptTypeConfigurationRepository,
     IReceiptFieldDefinitionRepository fieldDefinitionRepository
 ) : IReceiptTypeFieldConfigurationBusinessRuleValidator
 {
@@ -22,7 +22,8 @@ public class ReceiptTypeFieldConfigurationBusinessRuleValidator(
         "isRequired"
     };
 
-    private readonly IReceiptTypeRepository _receiptTypeRepository = receiptTypeRepository;
+    private readonly IReceiptTypeConfigurationRepository _receiptTypeConfigurationRepository =
+        receiptTypeConfigurationRepository;
     private readonly IReceiptFieldDefinitionRepository _fieldDefinitionRepository =
         fieldDefinitionRepository;
 
@@ -33,12 +34,16 @@ public class ReceiptTypeFieldConfigurationBusinessRuleValidator(
 
     public async Task ValidateCreateAsync(
         Guid companyId,
-        Guid receiptTypeId,
+        Guid receiptTypeConfigurationId,
         CreateReceiptTypeFieldConfigurationDto createDto,
         CancellationToken ct
     )
     {
-        await ValidateReceiptTypeExistsAsync(companyId, receiptTypeId, ct);
+        await ValidateReceiptTypeConfigurationExistsAsync(
+            companyId,
+            receiptTypeConfigurationId,
+            ct
+        );
 
         var fieldDefinition = await GetFieldDefinitionAsync(
             companyId,
@@ -71,19 +76,19 @@ public class ReceiptTypeFieldConfigurationBusinessRuleValidator(
         ValidatePlacementRule(fieldDefinition.AllowedPlacement, patchDto.Placement!.Value);
     }
 
-    private async Task ValidateReceiptTypeExistsAsync(
+    private async Task ValidateReceiptTypeConfigurationExistsAsync(
         Guid companyId,
-        Guid receiptTypeId,
+        Guid receiptTypeConfigurationId,
         CancellationToken ct
     )
     {
-        var exists = await _receiptTypeRepository.AnyAsync(
-            e => e.CompanyId == companyId && e.Id == receiptTypeId,
+        var exists = await _receiptTypeConfigurationRepository.AnyAsync(
+            e => e.CompanyId == companyId && e.Id == receiptTypeConfigurationId,
             ct
         );
 
         if (!exists)
-            throw new ReceiptTypeNotFoundException();
+            throw new ReceiptTypeConfigurationNotFoundException();
     }
 
     private async Task<ReceiptFieldDefinition> GetFieldDefinitionAsync(

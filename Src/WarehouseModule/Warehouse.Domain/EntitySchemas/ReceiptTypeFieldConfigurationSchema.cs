@@ -10,7 +10,15 @@ public sealed class ReceiptTypeFieldConfigurationSchema :
         var filterSchema = new FilterSchema();
 
         filterSchema.Fields["receiptTypeId"] = new FilterFieldInfo(
-            PropertyName: nameof(Entities.ReceiptTypeFieldConfiguration.ReceiptTypeId),
+            PropertyName:
+                $"{nameof(Entities.ReceiptTypeFieldConfiguration.ReceiptTypeConfiguration)}.{nameof(Entities.ReceiptTypeConfiguration.ReceiptTypeId)}",
+            PropertyType: typeof(Guid),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["receiptTypeConfigurationId"] = new FilterFieldInfo(
+            PropertyName: nameof(Entities.ReceiptTypeFieldConfiguration.ReceiptTypeConfigurationId),
             PropertyType: typeof(Guid),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             { "eq", "ne" }

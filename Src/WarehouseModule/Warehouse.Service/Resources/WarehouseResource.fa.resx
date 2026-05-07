@@ -516,4 +516,19 @@
   <data name="Receipt.OtherCosts" xml:space="preserve">
     <value>سایر هزینه‌ها</value>
   </data>
+  <data name="ReceiptTypeConfiguration" xml:space="preserve">
+    <value>پیکربندی نوع رسید</value>
+  </data>
+  <data name="ReceiptTypeConfiguration.FieldConfigurations.FieldDefinition.Duplicate" xml:space="preserve">
+    <value>پیکربندی نوع رسید شامل تعریف فیلد تکراری است.</value>
+  </data>
+  <data name="ReceiptTypeConfiguration.FieldConfigurations.NotEmpty" xml:space="preserve">
+    <value>پیکربندی نوع رسید باید حداقل یک پیکربندی فیلد داشته باشد.</value>
+  </data>
+  <data name="ReceiptTypeConfiguration.ReceiptType.Duplicate" xml:space="preserve">
+    <value>برای این نوع رسید قبلا پیکربندی ثبت شده است.</value>
+  </data>
+  <data name="ReceiptTypeConfiguration.ReceiptType.NotEmpty" xml:space="preserve">
+    <value>نوع رسید نمی‌تواند خالی باشد.</value>
+  </data>
 </root>

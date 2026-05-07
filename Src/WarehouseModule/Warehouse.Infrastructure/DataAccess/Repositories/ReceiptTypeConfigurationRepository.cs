@@ -1,5 +1,6 @@
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+
+using System.Linq.Dynamic.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -11,12 +12,12 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
-public class ReceiptTypeFieldConfigurationRepository(MainDbContext context) :
-    RepositoryWithCompany<ReceiptTypeFieldConfiguration>(context),
-    IReceiptTypeFieldConfigurationRepository
+public class ReceiptTypeConfigurationRepository(MainDbContext context) :
+    RepositoryWithCompany<ReceiptTypeConfiguration>(context),
+    IReceiptTypeConfigurationRepository
 {
-    public override Task<ReceiptTypeFieldConfiguration?> SingleOrDefaultAsync(
-        Expression<Func<ReceiptTypeFieldConfiguration, bool>> predicate,
+    public override Task<ReceiptTypeConfiguration?> SingleOrDefaultAsync(
+        Expression<Func<ReceiptTypeConfiguration, bool>> predicate,
         bool trackChanges = true,
         CancellationToken ct = default
     )
@@ -25,7 +26,7 @@ public class ReceiptTypeFieldConfigurationRepository(MainDbContext context) :
         return WithIncludes(query).SingleOrDefaultAsync(predicate, ct);
     }
 
-    public override IQueryable<ReceiptTypeFieldConfiguration> FilterByQ(
+    public override IQueryable<ReceiptTypeConfiguration> FilterByQ(
         Guid companyId,
         RequestParameters requestParameters
     )
@@ -35,7 +36,7 @@ public class ReceiptTypeFieldConfigurationRepository(MainDbContext context) :
             .Filter(requestParameters);
     }
 
-    public override IQueryable<ReceiptTypeFieldConfiguration> GetFiltered(
+    public override IQueryable<ReceiptTypeConfiguration> GetFiltered(
         Guid companyId,
         RequestAdvancedFilters requestAdvancedFilters
     )
@@ -45,13 +46,13 @@ public class ReceiptTypeFieldConfigurationRepository(MainDbContext context) :
             .Filter(requestAdvancedFilters);
     }
 
-    private static IQueryable<ReceiptTypeFieldConfiguration> WithIncludes(
-        IQueryable<ReceiptTypeFieldConfiguration> query
+    private static IQueryable<ReceiptTypeConfiguration> WithIncludes(
+        IQueryable<ReceiptTypeConfiguration> query
     )
     {
         return query
-            .Include(e => e.ReceiptTypeConfiguration)
-                .ThenInclude(e => e.ReceiptType)
-            .Include(e => e.FieldDefinition);
+            .Include(e => e.ReceiptType)
+            .Include(e => e.FieldConfigurations)
+                .ThenInclude(e => e.FieldDefinition);
     }
 }

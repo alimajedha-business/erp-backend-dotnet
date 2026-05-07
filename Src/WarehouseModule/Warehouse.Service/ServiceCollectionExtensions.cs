@@ -42,6 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<RemittanceType>, RemittanceTypeSchema>();
         services.AddSingleton<IFilterSchema<ReceiptFieldDefinition>, ReceiptFieldDefinitionSchema>();
         services.AddSingleton<IFilterSchema<ReceiptType>, ReceiptTypeSchema>();
+        services.AddSingleton<IFilterSchema<ReceiptTypeConfiguration>, ReceiptTypeConfigurationSchema>();
         services.AddSingleton<
             IFilterSchema<ReceiptTypeFieldConfiguration>,
             ReceiptTypeFieldConfigurationSchema
@@ -72,6 +73,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptFieldDefinitionService, ReceiptFieldDefinitionService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
+        services.AddScoped<
+            IReceiptTypeConfigurationBusinessRuleValidator,
+            ReceiptTypeConfigurationBusinessRuleValidator
+        >();
+        services.AddScoped<IReceiptTypeConfigurationService, ReceiptTypeConfigurationService>();
         services.AddScoped<
             IReceiptTypeFieldConfigurationBusinessRuleValidator,
             ReceiptTypeFieldConfigurationBusinessRuleValidator

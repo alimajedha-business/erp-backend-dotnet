@@ -10,7 +10,7 @@ public interface IReceiptTypeFieldConfigurationBusinessRuleValidator
 
     Task ValidateCreateAsync(
         Guid companyId,
-        Guid receiptTypeId,
+        Guid receiptTypeConfigurationId,
         CreateReceiptTypeFieldConfigurationDto createDto,
         CancellationToken ct
     );

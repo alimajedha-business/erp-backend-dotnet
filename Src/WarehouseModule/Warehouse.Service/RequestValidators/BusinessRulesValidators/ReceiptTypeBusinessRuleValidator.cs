@@ -8,7 +8,8 @@ using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts
 namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class ReceiptTypeBusinessRuleValidator(
-    IReceiptTypeRepository receiptRepository
+    IReceiptTypeRepository receiptRepository,
+    IReceiptTypeConfigurationRepository configurationRepository
 ) : IReceiptTypeBusinessRuleValidator
 {
     private static readonly HashSet<string> _allowedOrderFields = new(
@@ -19,6 +20,8 @@ public class ReceiptTypeBusinessRuleValidator(
     };
 
     private readonly IReceiptTypeRepository _receiptRepository = receiptRepository;
+    private readonly IReceiptTypeConfigurationRepository _configurationRepository =
+        configurationRepository;
 
     public void ValidateParameters(ReceiptTypeParameters parameters)
     {
@@ -79,15 +82,19 @@ public class ReceiptTypeBusinessRuleValidator(
         if (!exists)
             throw new ReceiptTypeNotFoundException();
 
-        if (await HasRelatedEntitiesAsync(id, ct))
+        if (await HasRelatedEntitiesAsync(companyId, id, ct))
             throw new ReceiptTypeHasRelatedEntitiesException();
     }
 
-    private static Task<bool> HasRelatedEntitiesAsync(
+    private async Task<bool> HasRelatedEntitiesAsync(
+        Guid companyId,
         Guid receiptId,
         CancellationToken ct
     )
     {
-        return Task.FromResult(false);
+        return await _configurationRepository.AnyAsync(
+            e => e.CompanyId == companyId && e.ReceiptTypeId == receiptId,
+            ct
+        );
     }
 }
