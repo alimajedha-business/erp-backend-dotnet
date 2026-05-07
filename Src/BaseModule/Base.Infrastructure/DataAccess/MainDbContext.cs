@@ -97,6 +97,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<RemittanceType> RemittanceTypes { get; set; }
         public virtual DbSet<ReceiptFieldDefinition> ReceiptFieldDefinitions { get; set; }
         public virtual DbSet<ReceiptType> ReceiptTypes { get; set; }
+        public virtual DbSet<ReceiptTypeConfiguration> ReceiptTypeConfigurations { get; set; }
         public virtual DbSet<ReceiptTypeFieldConfiguration> ReceiptTypeFieldConfigurations { get; set; }
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
