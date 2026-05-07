@@ -14,13 +14,7 @@ public interface IReceiptFieldDefinitionService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<ReceiptFieldDefinitionSlimDto>> FilterByQAsync(
-        Guid companyId,
-        ReceiptFieldDefinitionParameters parameters,
-        CancellationToken ct = default
-    );
-
-    Task<ListResponseModel<ReceiptFieldDefinitionDto>> GetFilteredAsync(
+    Task<ListResponseModel<ReceiptFieldDefinitionListDto>> GetFilteredAsync(
         Guid companyId,
         ReceiptFieldDefinitionParameters parameters,
         FilterNodeDto? filterNodeDto = null,

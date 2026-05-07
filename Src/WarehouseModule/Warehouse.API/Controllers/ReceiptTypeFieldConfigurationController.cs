@@ -3,11 +3,8 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.API.ActionFilters;
-using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
-using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -51,49 +48,6 @@ public class ReceiptTypeFieldConfigurationController(
             new { companyId, receiptTypeId, id = dto.Id },
             dto
         );
-    }
-
-    [HttpGet("filter-by-q")]
-    public async Task<IActionResult> GetByQ(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid receiptTypeId,
-        [FromQuery] ReceiptTypeFieldConfigurationParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _configurationService.FilterByQAsync(
-            companyId,
-            receiptTypeId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
-    [HttpPost("list")]
-    [SkipModelValidation]
-    [SwaggerRequestExample(
-        typeof(object),
-        typeof(ReceiptTypeFieldConfigurationAdvancedSearchExample)
-    )]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid receiptTypeId,
-        [FromQuery] ReceiptTypeFieldConfigurationParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        var result = await _configurationService.GetFilteredAsync(
-            companyId,
-            receiptTypeId,
-            parameters,
-            filterNodeDto,
-            ct
-        );
-
-        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]

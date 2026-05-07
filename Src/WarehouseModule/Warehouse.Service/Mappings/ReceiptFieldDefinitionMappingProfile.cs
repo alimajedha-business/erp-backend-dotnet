@@ -23,6 +23,6 @@ public class ReceiptFieldDefinitionMappingProfile : Profile
                 )
             );
 
-        CreateMap<ReceiptFieldDefinition, ReceiptFieldDefinitionSlimDto>();
+        CreateMap<ReceiptFieldDefinition, ReceiptFieldDefinitionListDto>();
     }
 }

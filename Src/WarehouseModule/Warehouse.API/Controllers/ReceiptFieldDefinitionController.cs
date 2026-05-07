@@ -20,24 +20,7 @@ public class ReceiptFieldDefinitionController(
     IReceiptFieldDefinitionService fieldDefinitionService
 ) : ControllerBase
 {
-    private readonly IReceiptFieldDefinitionService _fieldDefinitionService =
-        fieldDefinitionService;
-
-    [HttpGet("filter-by-q")]
-    public async Task<IActionResult> GetByQ(
-        [FromRoute] Guid companyId,
-        [FromQuery] ReceiptFieldDefinitionParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _fieldDefinitionService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
+    private readonly IReceiptFieldDefinitionService _fieldDefinitionService = fieldDefinitionService;
 
     [HttpPost("list")]
     [SkipModelValidation]

@@ -498,4 +498,22 @@
   <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
     <value>عنوان انگلیسی کالا نمی‌تواند بیشتر از 250 کاراکتر باشد.</value>
   </data>
+  <data name="Receipt.PaymentDate" xml:space="preserve">
+    <value>تاریخ پرداخت</value>
+  </data>
+  <data name="Receipt.OrderNumber" xml:space="preserve">
+    <value>شماره سفارش</value>
+  </data>
+  <data name="Receipt.ShippingCost" xml:space="preserve">
+    <value>هزینه حمل و نقل</value>
+  </data>
+  <data name="Receipt.WarehouseLocation" xml:space="preserve">
+    <value>محل ذخیره در انبار</value>
+  </data>
+  <data name="Receipt.Discount" xml:space="preserve">
+    <value>تخفیف</value>
+  </data>
+  <data name="Receipt.OtherCosts" xml:space="preserve">
+    <value>سایر هزینه‌ها</value>
+  </data>
 </root>

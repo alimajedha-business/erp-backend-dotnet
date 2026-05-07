@@ -31,8 +31,8 @@ public record ReceiptFieldDefinitionDto(
     }
 }
 
-public record ReceiptFieldDefinitionSlimDto(
-    Guid Id,
+public record ReceiptFieldDefinitionListDto(
     string Key,
-    string Title
+    string Title,
+    ReceiptFieldPlacement AllowedPlacement
 );

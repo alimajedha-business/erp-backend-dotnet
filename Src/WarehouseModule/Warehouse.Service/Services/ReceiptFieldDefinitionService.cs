@@ -46,26 +46,7 @@ public class ReceiptFieldDefinitionService(
         return Localize(_mapper.Map<ReceiptFieldDefinitionDto>(fieldDefinition));
     }
 
-    public async Task<ListResponseModel<ReceiptFieldDefinitionSlimDto>> FilterByQAsync(
-        Guid companyId,
-        ReceiptFieldDefinitionParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        var query = _fieldDefinitionRepository.FilterByQ(companyId, parameters);
-        var res = await _fieldDefinitionRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<ReceiptFieldDefinitionSlimDto>(
-            results: _mapper
-                .Map<IReadOnlyList<ReceiptFieldDefinitionSlimDto>>(res.items)
-                .Select(Localize)
-                .ToList(),
-            totalCount: res.count,
-            parameters
-        );
-    }
-
-    public async Task<ListResponseModel<ReceiptFieldDefinitionDto>> GetFilteredAsync(
+    public async Task<ListResponseModel<ReceiptFieldDefinitionListDto>> GetFilteredAsync(
         Guid companyId,
         ReceiptFieldDefinitionParameters parameters,
         FilterNodeDto? filterNodeDto = null,
@@ -73,14 +54,16 @@ public class ReceiptFieldDefinitionService(
     )
     {
         var advancedFilters = _filterBuilder.Build<ReceiptFieldDefinition>(filterNodeDto);
-        var query = _fieldDefinitionRepository.GetFiltered(companyId, advancedFilters);
+        var query = _fieldDefinitionRepository
+            .GetFiltered(companyId, advancedFilters)
+            .Where(e => e.IsActive == true);
+
         var res = await _fieldDefinitionRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<ReceiptFieldDefinitionDto>(
-            results: _mapper
-                .Map<IReadOnlyList<ReceiptFieldDefinitionDto>>(res.items)
-                .Select(Localize)
-                .ToList(),
+        return new ListResponseModel<ReceiptFieldDefinitionListDto>(
+            results: [.. _mapper
+                .Map<IReadOnlyList<ReceiptFieldDefinitionListDto>>(res.items)
+                .Select(Localize)],
             totalCount: res.count,
             parameters
         );
@@ -106,7 +89,7 @@ public class ReceiptFieldDefinitionService(
         return dto with { Title = _localizer[dto.Title].Value };
     }
 
-    private ReceiptFieldDefinitionSlimDto Localize(ReceiptFieldDefinitionSlimDto dto)
+    private ReceiptFieldDefinitionListDto Localize(ReceiptFieldDefinitionListDto dto)
     {
         return dto with { Title = _localizer[dto.Title].Value };
     }

@@ -498,4 +498,22 @@
   <data name="Item.TitleInEnglish.MaxLength" xml:space="preserve">
     <value>Item English title must not be longer than 250 characters.</value>
   </data>
+  <data name="Receipt.PaymentDate" xml:space="preserve">
+    <value>Payment Date</value>
+  </data>
+  <data name="Receipt.OrderNumber" xml:space="preserve">
+    <value>Order Number</value>
+  </data>
+  <data name="Receipt.ShippingCost" xml:space="preserve">
+    <value>Shipping Cost</value>
+  </data>
+  <data name="Receipt.WarehouseLocation" xml:space="preserve">
+    <value>Warehouse Location</value>
+  </data>
+  <data name="Receipt.Discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Receipt.OtherCosts" xml:space="preserve">
+    <value>Other Costs</value>
+  </data>
 </root>

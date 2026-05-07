@@ -6,15 +6,12 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
-using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Resources;
@@ -82,57 +79,6 @@ public class ReceiptTypeFieldConfigurationService(
         );
 
         return Localize(_mapper.Map<ReceiptTypeFieldConfigurationDto>(configuration));
-    }
-
-    public async Task<ListResponseModel<ReceiptTypeFieldConfigurationListDto>> FilterByQAsync(
-        Guid companyId,
-        Guid receiptTypeId,
-        ReceiptTypeFieldConfigurationParameters parameters,
-        CancellationToken ct = default
-    )
-    {
-        _businessRuleValidator.ValidateParameters(parameters);
-
-        var query = _configurationRepository
-            .FilterByQ(companyId, parameters)
-            .Where(e => e.ReceiptTypeId == receiptTypeId);
-        var res = await _configurationRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<ReceiptTypeFieldConfigurationListDto>(
-            results: _mapper
-                .Map<IReadOnlyList<ReceiptTypeFieldConfigurationListDto>>(res.items)
-                .Select(Localize)
-                .ToList(),
-            totalCount: res.count,
-            parameters
-        );
-    }
-
-    public async Task<ListResponseModel<ReceiptTypeFieldConfigurationListDto>> GetFilteredAsync(
-        Guid companyId,
-        Guid receiptTypeId,
-        ReceiptTypeFieldConfigurationParameters parameters,
-        FilterNodeDto? filterNodeDto = null,
-        CancellationToken ct = default
-    )
-    {
-        _businessRuleValidator.ValidateParameters(parameters);
-
-        var advancedFilters =
-            _filterBuilder.Build<ReceiptTypeFieldConfiguration>(filterNodeDto);
-        var query = _configurationRepository
-            .GetFiltered(companyId, advancedFilters)
-            .Where(e => e.ReceiptTypeId == receiptTypeId);
-        var res = await _configurationRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<ReceiptTypeFieldConfigurationListDto>(
-            results: _mapper
-                .Map<IReadOnlyList<ReceiptTypeFieldConfigurationListDto>>(res.items)
-                .Select(Localize)
-                .ToList(),
-            totalCount: res.count,
-            parameters
-        );
     }
 
     public async Task<ReceiptTypeFieldConfigurationDto> PatchAsync(
