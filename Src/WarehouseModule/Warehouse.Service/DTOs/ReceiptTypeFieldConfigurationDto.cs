@@ -7,6 +7,7 @@ namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptTypeFieldConfigurationDto(
     Guid Id,
+    Guid ReceiptTypeConfigurationId,
     Guid ReceiptTypeId,
     Guid FieldDefinitionId,
     bool Exists,
@@ -26,6 +27,7 @@ public record ReceiptTypeFieldConfigurationDto(
 
 public record ReceiptTypeFieldConfigurationListDto(
     Guid Id,
+    Guid ReceiptTypeConfigurationId,
     Guid ReceiptTypeId,
     Guid FieldDefinitionId,
     string FieldDefinitionKey,

@@ -11,6 +11,10 @@ public class ReceiptTypeFieldConfigurationMappingProfile : Profile
     {
         CreateMap<ReceiptTypeFieldConfiguration, ReceiptTypeFieldConfigurationDto>()
             .ForCtorParam(
+                nameof(ReceiptTypeFieldConfigurationDto.ReceiptTypeId),
+                opt => opt.MapFrom(src => src.ReceiptTypeConfiguration.ReceiptTypeId)
+            )
+            .ForCtorParam(
                 nameof(ReceiptTypeFieldConfigurationDto.PlacementDescription),
                 opt => opt.MapFrom(src =>
                     ReceiptTypeFieldConfigurationDto.GetPlacementDescription(src.Placement)
@@ -18,6 +22,10 @@ public class ReceiptTypeFieldConfigurationMappingProfile : Profile
             );
 
         CreateMap<ReceiptTypeFieldConfiguration, ReceiptTypeFieldConfigurationListDto>()
+            .ForCtorParam(
+                nameof(ReceiptTypeFieldConfigurationListDto.ReceiptTypeId),
+                opt => opt.MapFrom(src => src.ReceiptTypeConfiguration.ReceiptTypeId)
+            )
             .ForCtorParam(
                 nameof(ReceiptTypeFieldConfigurationListDto.FieldDefinitionKey),
                 opt => opt.MapFrom(src => src.FieldDefinition.Key)
