@@ -68,9 +68,14 @@ public enum ReceiptFieldDataType
     Guid = 6
 }
 
-public class ReceiptFieldDataTypeConverter : JsonConverter<ReceiptFieldDataType>
+public class ReceiptFieldDataTypeConverter :
+    JsonConverter<ReceiptFieldDataType>
 {
-    public override ReceiptFieldDataType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override ReceiptFieldDataType Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var value = reader.GetString();
         return value switch
@@ -85,7 +90,11 @@ public class ReceiptFieldDataTypeConverter : JsonConverter<ReceiptFieldDataType>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, ReceiptFieldDataType value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        ReceiptFieldDataType value,
+        JsonSerializerOptions options
+    )
     {
         writer.WriteStringValue(GetDataTypeDescription(value));
     }
@@ -112,9 +121,14 @@ public enum ReceiptFieldPlacement
     HeaderOrDetail = Header | Detail
 }
 
-public class ReceiptFieldPlacementConverter : JsonConverter<ReceiptFieldPlacement>
+public class ReceiptFieldPlacementConverter :
+    JsonConverter<ReceiptFieldPlacement>
 {
-    public override ReceiptFieldPlacement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override ReceiptFieldPlacement Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var value = reader.GetString();
         return value switch
@@ -126,7 +140,11 @@ public class ReceiptFieldPlacementConverter : JsonConverter<ReceiptFieldPlacemen
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, ReceiptFieldPlacement value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        ReceiptFieldPlacement value,
+        JsonSerializerOptions options
+    )
     {
         writer.WriteStringValue(GetDataTypeDescription(value));
     }

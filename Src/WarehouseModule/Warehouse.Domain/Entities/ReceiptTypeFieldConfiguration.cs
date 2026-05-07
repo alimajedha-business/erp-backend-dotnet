@@ -58,9 +58,14 @@ public enum ReceiptConfiguredPlacement
     Detail = 2
 }
 
-public class ReceiptConfiguredPlacementConverter : JsonConverter<ReceiptConfiguredPlacement>
+public class ReceiptConfiguredPlacementConverter :
+    JsonConverter<ReceiptConfiguredPlacement>
 {
-    public override ReceiptConfiguredPlacement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override ReceiptConfiguredPlacement Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var value = reader.GetString();
         return value switch
@@ -71,7 +76,11 @@ public class ReceiptConfiguredPlacementConverter : JsonConverter<ReceiptConfigur
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, ReceiptConfiguredPlacement value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        ReceiptConfiguredPlacement value,
+        JsonSerializerOptions options
+    )
     {
         writer.WriteStringValue(GetDataTypeDescription(value));
     }
