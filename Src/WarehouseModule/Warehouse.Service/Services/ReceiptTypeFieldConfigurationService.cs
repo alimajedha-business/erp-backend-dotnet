@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.Services;
 using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.Exceptions;
@@ -20,7 +19,6 @@ using NGErp.Warehouse.Service.Service.Contracts;
 namespace NGErp.Warehouse.Service.Services;
 
 public class ReceiptTypeFieldConfigurationService(
-    IAdvancedFilterBuilder filterBuilder,
     IReceiptTypeFieldConfigurationRepository configurationRepository,
     IReceiptTypeFieldConfigurationBusinessRuleValidator businessRuleValidator,
     IValidator<CreateReceiptTypeFieldConfigurationDto> createValidator,
@@ -31,7 +29,6 @@ public class ReceiptTypeFieldConfigurationService(
 {
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IReceiptTypeFieldConfigurationRepository _configurationRepository =
         configurationRepository;
     private readonly IReceiptTypeFieldConfigurationBusinessRuleValidator _businessRuleValidator =
@@ -167,16 +164,6 @@ public class ReceiptTypeFieldConfigurationService(
             {
                 Title = _localizer[dto.FieldDefinition.Title].Value
             }
-        };
-    }
-
-    private ReceiptTypeFieldConfigurationListDto Localize(
-        ReceiptTypeFieldConfigurationListDto dto
-    )
-    {
-        return dto with
-        {
-            FieldDefinitionTitle = _localizer[dto.FieldDefinitionTitle].Value
         };
     }
 }
