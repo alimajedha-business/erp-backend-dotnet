@@ -20,7 +20,6 @@ public class ReceiptTypeFieldConfiguration :
     public bool Exists { get; set; }
     public bool IsRequired { get; set; }
     public ReceiptConfiguredPlacement Placement { get; set; }
-    public int DisplayOrder { get; set; }
 
     public ReceiptType ReceiptType { get; set; } = null!;
     public ReceiptFieldDefinition FieldDefinition { get; set; } = null!;
