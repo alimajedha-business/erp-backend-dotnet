@@ -297,6 +297,9 @@
   <data name="Receipt" xml:space="preserve">
     <value>Receipt</value>
   </data>
+  <data name="ReceiptFieldDefinition" xml:space="preserve">
+    <value>Receipt Field Definition</value>
+  </data>
   <data name="ReceiptType.AddToStock.NotNull" xml:space="preserve">
     <value>Receipt type add-to-stock flag is required.</value>
   </data>
@@ -320,6 +323,30 @@
   </data>
   <data name="ReceiptType.Title.NotEmpty" xml:space="preserve">
     <value>Receipt type title could not be empty.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration" xml:space="preserve">
+    <value>Receipt Type Field Configuration</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Exists.NotNull" xml:space="preserve">
+    <value>Receipt type field configuration exists flag is required.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.FieldDefinition.NotEmpty" xml:space="preserve">
+    <value>Receipt field definition is required.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.IsRequired.ExistsFalse" xml:space="preserve">
+    <value>Receipt type field configuration cannot be required when it does not exist.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.IsRequired.NotNull" xml:space="preserve">
+    <value>Receipt type field configuration required flag is required.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.Invalid" xml:space="preserve">
+    <value>Receipt type field configuration placement is invalid.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.NotAllowed" xml:space="preserve">
+    <value>Receipt type field configuration placement is not allowed for the selected field definition.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.NotNull" xml:space="preserve">
+    <value>Receipt type field configuration placement is required.</value>
   </data>
   <data name="ShippingCompany" xml:space="preserve">
     <value>Shipping Company</value>

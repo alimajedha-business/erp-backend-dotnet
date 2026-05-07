@@ -40,7 +40,12 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ItemType>, ItemTypeSchema>();
         services.AddSingleton<IFilterSchema<ItemUnitOfMeasurement>, ItemUnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<RemittanceType>, RemittanceTypeSchema>();
+        services.AddSingleton<IFilterSchema<ReceiptFieldDefinition>, ReceiptFieldDefinitionSchema>();
         services.AddSingleton<IFilterSchema<ReceiptType>, ReceiptTypeSchema>();
+        services.AddSingleton<
+            IFilterSchema<ReceiptTypeFieldConfiguration>,
+            ReceiptTypeFieldConfigurationSchema
+        >();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
@@ -65,7 +70,16 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
+        services.AddScoped<IReceiptFieldDefinitionService, ReceiptFieldDefinitionService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
+        services.AddScoped<
+            IReceiptTypeFieldConfigurationBusinessRuleValidator,
+            ReceiptTypeFieldConfigurationBusinessRuleValidator
+        >();
+        services.AddScoped<
+            IReceiptTypeFieldConfigurationService,
+            ReceiptTypeFieldConfigurationService
+        >();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();

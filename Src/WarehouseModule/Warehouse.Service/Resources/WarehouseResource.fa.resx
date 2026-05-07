@@ -297,6 +297,9 @@
   <data name="Receipt" xml:space="preserve">
     <value>رسید</value>
   </data>
+  <data name="ReceiptFieldDefinition" xml:space="preserve">
+    <value>تعریف فیلد رسید</value>
+  </data>
   <data name="ReceiptType.AddToStock.NotNull" xml:space="preserve">
     <value>وضعیت افزودن به موجودی برای رسید الزامی است.</value>
   </data>
@@ -320,6 +323,30 @@
   </data>
   <data name="ReceiptType.Title.NotEmpty" xml:space="preserve">
     <value>عنوان رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration" xml:space="preserve">
+    <value>پیکربندی فیلد نوع رسید</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Exists.NotNull" xml:space="preserve">
+    <value>وضعیت وجود داشتن فیلد در پیکربندی نوع رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.FieldDefinition.NotEmpty" xml:space="preserve">
+    <value>تعریف فیلد رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.IsRequired.ExistsFalse" xml:space="preserve">
+    <value>فیلدی که در پیکربندی نوع رسید وجود ندارد نمی‌تواند الزامی باشد.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.IsRequired.NotNull" xml:space="preserve">
+    <value>وضعیت الزامی بودن فیلد در پیکربندی نوع رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.Invalid" xml:space="preserve">
+    <value>محل قرارگیری فیلد در پیکربندی نوع رسید نامعتبر است.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.NotAllowed" xml:space="preserve">
+    <value>محل قرارگیری فیلد برای تعریف فیلد انتخاب‌شده مجاز نیست.</value>
+  </data>
+  <data name="ReceiptTypeFieldConfiguration.Placement.NotNull" xml:space="preserve">
+    <value>محل قرارگیری فیلد در پیکربندی نوع رسید الزامی است.</value>
   </data>
   <data name="ShippingCompany" xml:space="preserve">
     <value>شرکت باربری</value>
