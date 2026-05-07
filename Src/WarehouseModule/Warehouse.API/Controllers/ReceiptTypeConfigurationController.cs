@@ -2,11 +2,8 @@ using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.API.ActionFilters;
-using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
-using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -44,42 +41,6 @@ public class ReceiptTypeConfigurationController(
             new { companyId, id = dto.Id },
             dto
         );
-    }
-
-    [HttpGet("filter-by-q")]
-    public async Task<IActionResult> GetByQ(
-        [FromRoute] Guid companyId,
-        [FromQuery] ReceiptTypeConfigurationParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _configurationService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
-    [HttpPost("list")]
-    [SkipModelValidation]
-    [SwaggerRequestExample(typeof(FilterNodeDto), typeof(ReceiptTypeConfigurationAdvancedSearchExample))]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] ReceiptTypeConfigurationParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        var configurations = await _configurationService.GetFilteredAsync(
-            companyId,
-            parameters,
-            filterNodeDto,
-            ct
-        );
-
-        return Ok(configurations);
     }
 
     [HttpGet("{id:guid}")]

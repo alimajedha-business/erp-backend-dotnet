@@ -32,6 +32,7 @@ public record ReceiptFieldDefinitionDto(
 }
 
 public record ReceiptFieldDefinitionListDto(
+    Guid Id,
     string Key,
     string Title,
     ReceiptFieldPlacement AllowedPlacement
