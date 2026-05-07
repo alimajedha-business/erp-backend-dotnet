@@ -21,8 +21,7 @@ public class Receipt :
 
     public ReceiptType ReceiptType { get; set; } = null!;
 
-    public ICollection<ReceiptLine> Lines { get; set; } = [];
-    public ICollection<ReceiptFieldValue> FieldValues { get; set; } = [];
+    public ICollection<ReceiptLine> ReceiptLines { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Receipt> builder)
     {
@@ -39,5 +38,11 @@ public class Receipt :
             i.ReceiptTypeId,
             i.ReceiptDate
         });
+
+        builder
+            .HasOne(e => e.ReceiptType)
+            .WithMany()
+            .HasForeignKey(e => e.ReceiptTypeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

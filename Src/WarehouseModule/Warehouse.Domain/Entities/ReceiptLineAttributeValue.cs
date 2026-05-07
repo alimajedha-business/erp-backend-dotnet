@@ -40,5 +40,17 @@ public class ReceiptLineAttributeValue :
         builder
             .Property(e => e.DecimalValue)
             .HasPrecision(22, 4);
+
+        builder
+            .HasOne(e => e.ReceiptLine)
+            .WithMany()
+            .HasForeignKey(e => e.ReceiptLineId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(e => e.ItemAttribute)
+            .WithMany()
+            .HasForeignKey(e => e.ItemAttributeId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

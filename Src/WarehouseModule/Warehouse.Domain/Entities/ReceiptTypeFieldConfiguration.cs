@@ -39,12 +39,12 @@ public class ReceiptTypeFieldConfiguration :
         builder.HasOne(e => e.ReceiptType)
             .WithMany()
             .HasForeignKey(e => e.ReceiptTypeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(e => e.FieldDefinition)
             .WithMany()
             .HasForeignKey(e => e.FieldDefinitionId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 

@@ -49,5 +49,23 @@ public class ReceiptLine :
         builder
             .Property(e => e.TotalPrice)
             .HasPrecision(22, 4);
+
+        builder
+            .HasOne(e => e.Receipt)
+            .WithMany(e => e.ReceiptLines)
+            .HasForeignKey(e => e.ReceiptId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(e => e.Item)
+            .WithMany()
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(e => e.UnitOfMeasurement)
+            .WithMany()
+            .HasForeignKey(e => e.UnitOfMeasurementId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
