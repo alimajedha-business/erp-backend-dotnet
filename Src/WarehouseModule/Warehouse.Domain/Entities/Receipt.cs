@@ -17,7 +17,6 @@ public class Receipt :
     public required long Number { get; set; }
     public DateOnly ReceiptDate { get; set; }
     public Guid ReceiptTypeId { get; set; }
-    public ReceiptStatus Status { get; set; } = ReceiptStatus.Draft;
     public string? Description { get; set; }
 
     public ReceiptType ReceiptType { get; set; } = null!;
@@ -41,11 +40,4 @@ public class Receipt :
             i.ReceiptDate
         });
     }
-}
-
-public enum ReceiptStatus
-{
-    Draft = 1,
-    Registered = 2,
-    Cancelled = 3
 }
