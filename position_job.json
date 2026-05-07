@@ -2,22 +2,25 @@
   "entity": "PositionJob",
   "schema": "HCM",
   "module": "HCM",
-  "withCompany": false,
-  "baseClass": "BaseEntity",
   "route": "position-jobs",
+  "baseClass": "BaseEntityWithCompany",
   "status": false,
+  "dtoValidators": true,
+  "businessRuleValidators": true,
   "fields": [
     {
       "name": "PositionId",
       "type": "Guid",
       "required": true,
-      "relation": "Position"
+      "relation": "Position",
+      "index": true
     },
     {
       "name": "JobId",
       "type": "Guid",
       "required": true,
-      "relation": "Job"
+      "relation": "Job",
+      "index": true
     }
   ]
 }

@@ -7,7 +7,7 @@ using NGErp.General.Domain.Entities;
 namespace NGErp.HCM.Domain.Entities;
 
 public class PositionJob :
-    BaseEntity,
+    BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<PositionJob>
 {
     public Guid PositionId { get; set; }

@@ -14,7 +14,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/hcm/position-jobs")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/position-jobs")]
 public class PositionJobController(
     IPositionJobService positionJobService
 ) : ControllerBase
@@ -25,27 +25,29 @@ public class PositionJobController(
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
+        [FromRoute] Guid companyId,
         [FromBody] CreatePositionJobDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _positionJobService.CreateAsync(createDto, ct);
+        var dto = await _positionJobService.CreateAsync(companyId, createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
-            new { id = dto.Id },
+            new { companyId, id = dto.Id },
             dto
         );
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
+        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
         var dto = await _positionJobService.GetByIdAsync(
-            id,
+            companyId, id,
             trackChanges: true,
             ct
         );
@@ -56,13 +58,14 @@ public class PositionJobController(
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
         [FromQuery] PositionJobParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
         var result = await _positionJobService.GetFilteredAsync(
-            parameters,
+            companyId, parameters,
             filterNodeDto,
             ct
         );
@@ -72,24 +75,26 @@ public class PositionJobController(
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _positionJobService.DeleteAsync(id, ct);
+        await _positionJobService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 
     [HttpPatch("{id:guid}")]
     [Consumes("application/json-patch+json")]
     public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         [FromBody] JsonPatchDocument<PatchPositionJobDto> patchDocument,
         CancellationToken ct
     )
     {
         var dto = await _positionJobService.PatchAsync(
-            id,
+            companyId, id,
             patchDocument,
             ct
         );

@@ -12,12 +12,14 @@ using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.Repository.Contracts;
 using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.HCM.Service.Resources;
 
 namespace NGErp.HCM.Service.Services;
 
 public class PositionJobService(
     IPositionJobRepository positionJobRepository,
+    IPositionJobBusinessRuleValidator businessRuleValidator,
     IMapper mapper,
     IStringLocalizer<HCMResource> localizer,
     IAdvancedFilterBuilder filterBuilder
@@ -29,14 +31,19 @@ public class PositionJobService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IPositionJobRepository _positionJobRepository = positionJobRepository;
+    private readonly IPositionJobBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
 
 
     public async Task<PositionJobDto> CreateAsync(
+        Guid companyId,
         CreatePositionJobDto createDto,
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
+
         var entity = _mapper.Map<PositionJob>(createDto);
+        entity.CompanyId = companyId;
 
         var created = await _positionJobRepository.AddAsync(entity, ct);
 
@@ -45,23 +52,25 @@ public class PositionJobService(
     }
 
     public async Task<PositionJobDto> GetByIdAsync(
+        Guid companyId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(id, trackChanges, ct);
+        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
         return _mapper.Map<PositionJobDto>(entity);
     }
 
     public async Task<ListResponseModel<PositionJobDto>> GetFilteredAsync(
+        Guid companyId,
         PositionJobParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
         var advancedFilters = _filterBuilder.Build<PositionJob>(filterNodeDto);
-        var query = _positionJobRepository.GetFiltered(advancedFilters);
+        var query = _positionJobRepository.GetFiltered(companyId, advancedFilters);
         var res = await _positionJobRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<PositionJobDto>(
@@ -72,13 +81,14 @@ public class PositionJobService(
     }
 
     public virtual async Task<PositionJobDto> PatchAsync(
+        Guid companyId,
         Guid id,
         JsonPatchDocument<PatchPositionJobDto> patchDocument,
         CancellationToken ct
     )
     {
         var entity = await GetByIdOrThrowAsync(
-            id,
+            companyId, id,
             trackChanges: true,
             ct
         );
@@ -103,12 +113,15 @@ public class PositionJobService(
     }
 
     public async Task DeleteAsync(
+        Guid companyId,
         Guid id,
         CancellationToken ct
     )
     {
+        await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
+
         var entity = await GetByIdOrThrowAsync(
-            id,
+            companyId, id,
             trackChanges: true,
             ct
         );
@@ -118,6 +131,7 @@ public class PositionJobService(
     }
 
     private async Task<PositionJob> GetByIdOrThrowAsync(
+        Guid companyId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
