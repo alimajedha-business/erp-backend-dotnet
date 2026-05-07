@@ -54,5 +54,9 @@ public class ReceiptFieldValue :
         })
         .IsUnique()
         .HasFilter("[ReceiptLineId] IS NOT NULL");
+
+        builder
+            .Property(e => e.DecimalValue)
+            .HasPrecision(22, 4);
     }
 }

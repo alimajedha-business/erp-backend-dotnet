@@ -37,5 +37,17 @@ public class ReceiptLine :
 
         builder
             .HasIndex(i => new { i.CompanyId, i.ItemId});
+
+        builder
+            .Property(e => e.Quantity)
+            .HasPrecision(22, 4);
+
+        builder
+            .Property(e => e.UnitPrice)
+            .HasPrecision(22, 4);
+
+        builder
+            .Property(e => e.TotalPrice)
+            .HasPrecision(22, 4);
     }
 }

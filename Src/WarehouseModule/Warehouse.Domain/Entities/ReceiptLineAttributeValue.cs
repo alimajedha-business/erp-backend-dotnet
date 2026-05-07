@@ -36,5 +36,9 @@ public class ReceiptLineAttributeValue :
             i.ReceiptLineId,
             i.ItemAttributeId
         }).IsUnique();
+
+        builder
+            .Property(e => e.DecimalValue)
+            .HasPrecision(22, 4);
     }
 }
