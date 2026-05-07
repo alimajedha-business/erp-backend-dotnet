@@ -14,6 +14,9 @@ public class ReceiptType :
     public required string Title { get; set; }
     public required bool AddToStock { get; set; }
 
+    public ReceiptTypeConfiguration ReceiptTypeConfiguration { get; set; } =
+        new ReceiptTypeConfiguration();
+
     public void Map(EntityTypeBuilder<ReceiptType> builder)
     {
         builder

@@ -15,13 +15,13 @@ public class ReceiptTypeFieldConfiguration :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<ReceiptTypeFieldConfiguration>
 {
-    public Guid ReceiptTypeId { get; set; }
+    public Guid ReceiptTypeConfigurationId { get; set; }
     public Guid FieldDefinitionId { get; set; }
     public bool Exists { get; set; }
     public bool IsRequired { get; set; }
     public ReceiptConfiguredPlacement Placement { get; set; }
 
-    public ReceiptType ReceiptType { get; set; } = null!;
+    public ReceiptTypeConfiguration ReceiptTypeConfiguration { get; set; } = null!;
     public ReceiptFieldDefinition FieldDefinition { get; set; } = null!;
     
     public void Map(EntityTypeBuilder<ReceiptTypeFieldConfiguration> builder)
@@ -32,14 +32,14 @@ public class ReceiptTypeFieldConfiguration :
         builder.HasIndex(i => new
         {
             i.CompanyId,
-            i.ReceiptTypeId,
+            i.ReceiptTypeConfigurationId,
             i.FieldDefinitionId
         }).IsUnique();
 
-        builder.HasOne(e => e.ReceiptType)
-            .WithMany()
-            .HasForeignKey(e => e.ReceiptTypeId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(e => e.ReceiptTypeConfiguration)
+            .WithMany(e => e.FieldConfigurations)
+            .HasForeignKey(e => e.ReceiptTypeConfigurationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.FieldDefinition)
             .WithMany()
