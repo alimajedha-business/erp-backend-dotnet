@@ -71,6 +71,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
+        services.AddScoped<IReceiptBusinessRuleValidator, ReceiptBusinessRuleValidator>();
         services.AddScoped<IReceiptFieldDefinitionService, ReceiptFieldDefinitionService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
         services.AddScoped<
@@ -82,6 +83,7 @@ public static class ServiceCollectionExtensions
             IReceiptTypeFieldConfigurationService,
             ReceiptTypeFieldConfigurationService
         >();
+        services.AddScoped<IReceiptService, ReceiptService>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();

@@ -297,8 +297,53 @@
   <data name="Receipt" xml:space="preserve">
     <value>رسید</value>
   </data>
+  <data name="Receipt.FieldValue.ExactlyOneValue" xml:space="preserve">
+    <value>برای تعریف فیلد رسید '{0}' دقیقا یک مقدار باید وارد شود.</value>
+  </data>
+  <data name="Receipt.LineAttributeValue.ExactlyOneValue" xml:space="preserve">
+    <value>برای ویژگی کالای رسید '{0}' دقیقا یک مقدار باید وارد شود.</value>
+  </data>
+  <data name="Receipt.Number.NotEmpty" xml:space="preserve">
+    <value>شماره رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Receipt.ReceiptDate.NotEmpty" xml:space="preserve">
+    <value>تاریخ رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Receipt.ReceiptFieldValues.NotNull" xml:space="preserve">
+    <value>مقادیر فیلدهای رسید الزامی است.</value>
+  </data>
+  <data name="Receipt.ReceiptLines.NotEmpty" xml:space="preserve">
+    <value>رسید باید حداقل یک ردیف داشته باشد.</value>
+  </data>
+  <data name="Receipt.ReceiptLines.RowNumber.Duplicate" xml:space="preserve">
+    <value>رسید شامل شماره ردیف تکراری '{0}' است.</value>
+  </data>
+  <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
+    <value>نوع رسید نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="ReceiptFieldDefinition" xml:space="preserve">
     <value>تعریف فیلد رسید</value>
+  </data>
+  <data name="ReceiptFieldValue.FieldDefinition.NotEmpty" xml:space="preserve">
+    <value>تعریف فیلد رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptLine.AttributeValues.NotNull" xml:space="preserve">
+    <value>مقادیر ویژگی‌های ردیف رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptLine.FieldValues.NotNull" xml:space="preserve">
+    <value>مقادیر فیلدهای ردیف رسید الزامی است.</value>
+  </data>
+  <data name="ReceiptLine.Item.NotEmpty" xml:space="preserve">
+    <value>کالا الزامی است.</value>
+  </data>
+  <data name="ReceiptLine.Quantity.Positive" xml:space="preserve">
+    <value>مقدار باید بزرگتر از صفر باشد.</value>
+  </data>
+  <data name="ReceiptLine.UnitOfMeasurement.NotEmpty" xml:space="preserve">
+    <value>واحد اندازه‌گیری الزامی است.</value>
+  </data>
+  <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
+    <value>ویژگی کالا الزامی است.</value>
   </data>
   <data name="ReceiptType.AddToStock.NotNull" xml:space="preserve">
     <value>وضعیت افزودن به موجودی برای رسید الزامی است.</value>
