@@ -31,6 +31,10 @@ public class Job :
             .IsUnique()
             .HasDatabaseName("UX_Job_CompanyId_Code");
         builder
+            .HasIndex(e => new { e.CompanyId, e.Id })
+            .IsUnique()
+            .HasDatabaseName("UX_Job_CompanyId_Id");
+        builder
             .HasIndex(e => e.ParentId)
             .HasDatabaseName("IX_Job_Parent");
         builder

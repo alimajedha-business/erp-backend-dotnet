@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmployeeDependantService, EmployeeDependantService>();
         services.AddScoped<IJobService, JobService>();
         services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
+        services.AddScoped<IPositionJobBusinessRuleValidator, PositionJobBusinessRuleValidator>();
         services.AddScoped<IPositionJobService, PositionJobService>();
 
 

@@ -44,11 +44,15 @@ public class PositionJobService(
 
         var entity = _mapper.Map<PositionJob>(createDto);
         entity.CompanyId = companyId;
-
-        var created = await _positionJobRepository.AddAsync(entity, ct);
-
+        await _positionJobRepository.AddAsync(entity, ct);
         await _positionJobRepository.SaveChangesAsync(ct);
-        return _mapper.Map<PositionJobDto>(created);
+
+        return await GetByIdAsync(
+           companyId,
+           entity.Id,
+           trackChanges: false,
+           ct
+        );
     }
 
     public async Task<PositionJobDto> GetByIdAsync(
@@ -137,7 +141,7 @@ public class PositionJobService(
         CancellationToken ct = default
     )
     {
-        var entity = await _positionJobRepository.GetByIdAsync(id, trackChanges, ct);
+        var entity = await _positionJobRepository.GetByIdAsync(companyId, id, trackChanges, ct);
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 }

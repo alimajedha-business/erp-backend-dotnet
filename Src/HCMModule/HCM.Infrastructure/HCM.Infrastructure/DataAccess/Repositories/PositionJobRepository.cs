@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NGErp.Base.Infrastructure.DataAccess;
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Service.Repository.Contracts;
@@ -19,6 +20,23 @@ public class PositionJobRepository(MainDbContext context) :
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
         return await query
-            .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId, ct);
+            .Where(e => e.CompanyId == companyId && e.Id == id)
+            .Include(e => e.Job)
+            .Include(e => e.Position)
+            .SingleOrDefaultAsync(cancellationToken: ct);
     }
+    public override IQueryable<PositionJob> GetFiltered(
+       Guid companyId, RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        return _dbSet
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Include(e => e.Job)
+            .Include(e => e.Position)
+            .Filter(requestAdvancedFilters);
+    }
+
+
 }
+

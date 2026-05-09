@@ -36,12 +36,14 @@ public class PositionJob :
         builder
             .HasOne(e => e.Position)
             .WithMany()
-            .HasForeignKey(e => e.PositionId)
+            .HasForeignKey(e => new { e.CompanyId, e.PositionId })
+            .HasPrincipalKey(e => new { e.CompanyId, e.Id })
             .OnDelete(DeleteBehavior.NoAction);
         builder
             .HasOne(e => e.Job)
             .WithMany()
-            .HasForeignKey(e => e.JobId)
+            .HasForeignKey(e => new { e.CompanyId, e.JobId })
+            .HasPrincipalKey(e => new { e.CompanyId, e.Id })
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
