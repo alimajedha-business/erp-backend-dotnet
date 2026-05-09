@@ -25,11 +25,13 @@ public class ItemUnitOfMeasurement :
         builder
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemUnitOfMeasurements)
-            .HasForeignKey(e => e.ItemId);
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.UnitOfMeasurement)
             .WithMany(e => e.ItemUnitOfMeasurements)
-            .HasForeignKey(e => e.UnitOfMeasurementId);
+            .HasForeignKey(e => e.UnitOfMeasurementId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

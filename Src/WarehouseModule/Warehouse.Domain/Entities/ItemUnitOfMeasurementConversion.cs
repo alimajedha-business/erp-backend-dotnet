@@ -28,12 +28,12 @@ public class ItemUnitOfMeasurementConversion :
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemUnitOfMeasurementConversions)
             .HasForeignKey(e => e.ItemId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.UnitOfMeasurement)
             .WithMany(e => e.ItemUnitOfMeasurementConversions)
             .HasForeignKey(e => e.UnitOfMeasurementId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

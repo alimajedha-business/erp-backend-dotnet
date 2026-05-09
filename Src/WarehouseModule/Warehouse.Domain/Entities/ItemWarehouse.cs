@@ -46,11 +46,13 @@ public class ItemWarehouse :
         builder
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemWarehouses)
-            .HasForeignKey(e => e.ItemId);
+            .HasForeignKey(e => e.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.Warehouse)
             .WithMany(e => e.ItemWarehouses)
-            .HasForeignKey(e => e.WarehouseId);
+            .HasForeignKey(e => e.WarehouseId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
