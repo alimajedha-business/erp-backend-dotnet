@@ -22,15 +22,15 @@ public class ReceiptTypeConfigurationService(
     IStringLocalizer<WarehouseResource> localizer
 ) : IReceiptTypeConfigurationService
 {
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
     private readonly IReceiptTypeConfigurationRepository _configurationRepository =
         configurationRepository;
     private readonly IReceiptTypeConfigurationBusinessRuleValidator _businessRuleValidator =
         businessRuleValidator;
     private readonly IValidator<CreateReceiptTypeConfigurationDto> _createValidator =
         createValidator;
-    private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
-
+    
     public async Task CreateAsync(
         Guid companyId,
         CreateReceiptTypeConfigurationDto createDto,
@@ -43,11 +43,6 @@ public class ReceiptTypeConfigurationService(
 
         var entity = _mapper.Map<ReceiptTypeConfiguration>(createDto);
         entity.CompanyId = companyId;
-
-        foreach (var fieldConfiguration in entity.FieldConfigurations)
-        {
-            fieldConfiguration.CompanyId = companyId;
-        }
 
         await _configurationRepository.AddAsync(entity, ct);
         await _configurationRepository.SaveChangesAsync(ct);
