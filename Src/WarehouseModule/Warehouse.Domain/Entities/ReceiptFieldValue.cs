@@ -61,7 +61,7 @@ public class ReceiptFieldValue :
 
         builder
             .HasOne(e => e.ReceiptLine)
-            .WithMany()
+            .WithMany(e => e.ReceiptFieldValues)
             .HasForeignKey(e => e.ReceiptLineId)
             .OnDelete(DeleteBehavior.NoAction);
 

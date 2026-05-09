@@ -43,14 +43,14 @@ public class ReceiptLineAttributeValue :
 
         builder
             .HasOne(e => e.ReceiptLine)
-            .WithMany()
+            .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ReceiptLineId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.ItemAttribute)
-            .WithMany()
+            .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ItemAttributeId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -22,6 +22,7 @@ public class Receipt :
     public ReceiptType ReceiptType { get; set; } = null!;
 
     public ICollection<ReceiptLine> ReceiptLines { get; set; } = [];
+    public ICollection<ReceiptFieldValue> ReceiptFieldValues { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Receipt> builder)
     {

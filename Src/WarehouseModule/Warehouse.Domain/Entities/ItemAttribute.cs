@@ -15,6 +15,8 @@ public class ItemAttribute :
     public Item Item { get; set; } = default!;
     public Attribute Attribute { get; set; } = default!;
 
+    public ICollection<ReceiptLineAttributeValue> ReceiptLineAttributeValues { get; set; } = [];
+
     public void Map(EntityTypeBuilder<ItemAttribute> builder)
     {
         builder

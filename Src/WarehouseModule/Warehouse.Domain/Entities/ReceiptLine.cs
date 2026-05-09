@@ -26,6 +26,9 @@ public class ReceiptLine :
     public Item Item { get; set; } = null!;
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = null!;
 
+    public ICollection<ReceiptFieldValue> ReceiptFieldValues { get; set; } = [];
+    public ICollection<ReceiptLineAttributeValue> ReceiptLineAttributeValues { get; set; } = [];
+
     public void Map(EntityTypeBuilder<ReceiptLine> builder)
     {
         builder
