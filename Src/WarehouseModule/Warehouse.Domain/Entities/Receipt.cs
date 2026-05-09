@@ -14,7 +14,7 @@ public class Receipt :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<Receipt>
 {
-    public required long Number { get; set; }
+    public required string Number { get; set; }
     public DateOnly ReceiptDate { get; set; }
     public Guid ReceiptTypeId { get; set; }
     public string? Description { get; set; }
