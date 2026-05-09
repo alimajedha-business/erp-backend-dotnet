@@ -11,7 +11,6 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
-using NGErp.Warehouse.Service.Services;
 
 using Swashbuckle.AspNetCore.Filters;
 
