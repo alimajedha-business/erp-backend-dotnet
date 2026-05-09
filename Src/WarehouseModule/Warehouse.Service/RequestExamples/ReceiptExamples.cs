@@ -11,7 +11,7 @@ public class CreateReceiptExample :
     {
         return new CreateReceiptDto
         {
-            Number = "RC-1403-0001",
+            Number = 14030001,
             ReceiptDate = new DateOnly(2026, 5, 9),
             ReceiptTypeId = new Guid("8E79616C-27B1-495B-88D4-9D9D1B76F508"),
             Description = "Initial stock receipt",

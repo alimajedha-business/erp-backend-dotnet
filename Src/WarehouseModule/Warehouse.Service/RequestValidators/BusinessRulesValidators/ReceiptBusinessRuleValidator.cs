@@ -89,7 +89,7 @@ public class ReceiptBusinessRuleValidator(
         await ValidateNumberUniquenessAsync(
             companyId,
             excludedReceiptId,
-            dto.Number.Trim(),
+            dto.Number,
             ct
         );
 
@@ -109,7 +109,7 @@ public class ReceiptBusinessRuleValidator(
     private async Task ValidateNumberUniquenessAsync(
         Guid companyId,
         Guid? excludedReceiptId,
-        string number,
+        long number,
         CancellationToken ct
     )
     {

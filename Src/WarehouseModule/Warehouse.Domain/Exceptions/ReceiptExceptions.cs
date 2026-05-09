@@ -5,10 +5,10 @@ namespace NGErp.Warehouse.Domain.Exceptions;
 public sealed class ReceiptNotFoundException()
     : NotFoundException("Receipt");
 
-public sealed class ReceiptNumberAlreadyExistsException(string number)
+public sealed class ReceiptNumberAlreadyExistsException(long number)
     : DuplicateResourceException(number)
 {
-    public string Number { get; } = number;
+    public long Number { get; } = number;
     public override string LocalizationKey => "Receipt.Number.Duplicate";
 }
 

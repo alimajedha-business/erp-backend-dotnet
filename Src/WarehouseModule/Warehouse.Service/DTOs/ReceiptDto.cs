@@ -2,7 +2,7 @@
 
 public record ReceiptDto(
     Guid Id,
-    string Number,
+    long Number,
     DateOnly ReceiptDate,
     Guid ReceiptTypeId,
     string? Description,
@@ -12,7 +12,7 @@ public record ReceiptDto(
 
 public record ReceiptListDto(
     Guid Id,
-    string Number,
+    long Number,
     DateOnly ReceiptDate,
     Guid ReceiptTypeId,
     string ReceiptTypeTitle,
@@ -22,7 +22,7 @@ public record ReceiptListDto(
 
 public class CreateReceiptDto
 {
-    public string Number { get; set; } = default!;
+    public long Number { get; set; } = default!;
     public DateOnly ReceiptDate { get; set; }
     public Guid ReceiptTypeId { get; set; }
     public string? Description { get; set; }
@@ -33,7 +33,7 @@ public class CreateReceiptDto
 
 public class PatchReceiptDto
 {
-    public string? Number { get; set; }
+    public long? Number { get; set; }
     public DateOnly? ReceiptDate { get; set; }
     public Guid? ReceiptTypeId { get; set; }
     public string? Description { get; set; }

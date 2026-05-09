@@ -49,7 +49,7 @@ public class ReceiptService(
         var receipt = new Receipt
         {
             CompanyId = companyId,
-            Number = createDto.Number.Trim(),
+            Number = createDto.Number,
             ReceiptDate = createDto.ReceiptDate,
             ReceiptTypeId = createDto.ReceiptTypeId,
             Description = createDto.Description
@@ -138,7 +138,7 @@ public class ReceiptService(
             .Select(e => e.path.Trim('/').Split('/')[0])
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        receipt.Number = updateDto.Number.Trim();
+        receipt.Number = updateDto.Number;
         receipt.ReceiptDate = updateDto.ReceiptDate;
         receipt.ReceiptTypeId = updateDto.ReceiptTypeId;
         receipt.Description = updateDto.Description;
@@ -330,7 +330,7 @@ public class ReceiptService(
     {
         return new CreateReceiptDto
         {
-            Number = patchDto.Number!,
+            Number = patchDto.Number!.Value,
             ReceiptDate = patchDto.ReceiptDate!.Value,
             ReceiptTypeId = patchDto.ReceiptTypeId!.Value,
             Description = patchDto.Description,
