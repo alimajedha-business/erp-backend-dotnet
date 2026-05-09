@@ -81,6 +81,19 @@ public class ReceiptRepository(MainDbContext context) :
         await SaveChangesAsync(ct);
     }
 
+    public async Task<int> GetNextNumberAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var maxCode = await _dbSet
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .MaxAsync(e => (int?)e.Number, ct);
+
+        return (maxCode ?? 0) + 1;
+    }
+
     private static IQueryable<Receipt> WithIncludes(IQueryable<Receipt> query)
     {
         return query

@@ -168,6 +168,14 @@ public class ReceiptService(
         await _receiptRepository.DeleteReceiptGraphAsync(companyId, id, ct);
     }
 
+    public Task<int> GetNextNumber(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        return _receiptRepository.GetNextNumberAsync(companyId, ct);
+    }
+
     private static void AddHeaderFieldValues(
         Guid companyId,
         Receipt receipt,

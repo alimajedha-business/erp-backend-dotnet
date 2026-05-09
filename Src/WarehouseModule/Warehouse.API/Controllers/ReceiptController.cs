@@ -11,6 +11,7 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Services;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -84,6 +85,16 @@ public class ReceiptController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpGet("new-number")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _receiptService.GetNextNumber(companyId, ct);
+        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]

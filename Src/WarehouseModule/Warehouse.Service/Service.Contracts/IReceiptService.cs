@@ -41,4 +41,6 @@ public interface IReceiptService
         Guid id,
         CancellationToken ct
     );
+
+    Task<int> GetNextNumber(Guid companyId, CancellationToken ct);
 }

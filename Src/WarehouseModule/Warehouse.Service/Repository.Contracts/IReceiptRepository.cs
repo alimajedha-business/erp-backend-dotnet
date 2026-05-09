@@ -18,4 +18,6 @@ public interface IReceiptRepository : IRepositoryWithCompany<Receipt>
         Guid id,
         CancellationToken ct
     );
+
+    Task<int> GetNextNumberAsync(Guid companyId, CancellationToken ct);
 }
