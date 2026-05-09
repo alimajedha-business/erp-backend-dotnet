@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using AutoMapper;
 
 using FluentValidation;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
-using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
@@ -34,7 +31,7 @@ public class ReceiptTypeConfigurationService(
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
 
-    public async Task<ReceiptTypeConfigurationDto> CreateAsync(
+    public async Task CreateAsync(
         Guid companyId,
         CreateReceiptTypeConfigurationDto createDto,
         CancellationToken ct
@@ -52,73 +49,26 @@ public class ReceiptTypeConfigurationService(
             fieldConfiguration.CompanyId = companyId;
         }
 
-        var created = await _configurationRepository.AddAsync(entity, ct);
-
+        await _configurationRepository.AddAsync(entity, ct);
         await _configurationRepository.SaveChangesAsync(ct);
-        return await GetByIdAsync(companyId, created.Id, trackChanges: false, ct);
     }
 
-    public async Task<ReceiptTypeConfigurationDto> GetByIdAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
-        CancellationToken ct = default
-    )
-    {
-        var configuration = await GetSingleOrThrowAsync(
-            trackChanges,
-            e => e.CompanyId == companyId && e.Id == id,
-            ct
-        );
-
-        return Localize(_mapper.Map<ReceiptTypeConfigurationDto>(configuration));
-    }
-
-    public async Task<ReceiptTypeConfigurationDto> GetByReceiptTypeIdAsync(
+    public async Task<ReceiptTypeConfigurationDto?> GetByReceiptTypeIdAsync(
         Guid companyId,
         Guid receiptTypeId,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var configuration = await GetSingleOrThrowAsync(
-            trackChanges,
+        var configuration = await _configurationRepository.SingleOrDefaultAsync(
             e => e.CompanyId == companyId && e.ReceiptTypeId == receiptTypeId,
-            ct
-        );
-
-        return Localize(_mapper.Map<ReceiptTypeConfigurationDto>(configuration));
-    }
-
-    public async Task DeleteAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    )
-    {
-        var configuration = await GetSingleOrThrowAsync(
-            trackChanges: true,
-            e => e.CompanyId == companyId && e.Id == id,
-            ct
-        );
-
-        _configurationRepository.Remove(configuration);
-        await _configurationRepository.SaveChangesAsync(ct);
-    }
-
-    public async Task<ReceiptTypeConfiguration> GetSingleOrThrowAsync(
-        bool trackChanges,
-        Expression<Func<ReceiptTypeConfiguration, bool>> predicate,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _configurationRepository.SingleOrDefaultAsync(
-            predicate,
             trackChanges,
             ct
         );
 
-        return entity ?? throw new ReceiptTypeConfigurationNotFoundException();
+        return configuration != null
+            ? Localize(_mapper.Map<ReceiptTypeConfigurationDto>(configuration))
+            : null;
     }
 
     private ReceiptTypeConfigurationDto Localize(ReceiptTypeConfigurationDto dto)
