@@ -7,12 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NGErp.Base.Domain.Entities;
-using NGErp.General.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
 public class ReceiptTypeFieldConfiguration :
-    BaseEntityWithCompany,
+    BaseEntity,
     IBaseEntityTypeConfiguration<ReceiptTypeFieldConfiguration>
 {
     public Guid ReceiptTypeConfigurationId { get; set; }
@@ -31,7 +30,6 @@ public class ReceiptTypeFieldConfiguration :
 
         builder.HasIndex(i => new
         {
-            i.CompanyId,
             i.ReceiptTypeConfigurationId,
             i.FieldDefinitionId
         }).IsUnique();
