@@ -42,6 +42,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IRelativeTypeService, RelativeTypeService>();
         services.AddScoped<IEmployeeDependantService, EmployeeDependantService>();
+        services.AddScoped<IJobService, JobService>();
+        services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
+        services.AddScoped<IPositionJobBusinessRuleValidator, PositionJobBusinessRuleValidator>();
+        services.AddScoped<IPositionJobService, PositionJobService>();
+
 
         services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
         services.AddSingleton<IFilterSchema<EducationField>, EducationFieldSchema>();
@@ -53,9 +58,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<RelativeType>, RelativeTypeSchema>();
 
         
-        services.AddScoped<IJobService, JobService>();
-        services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
-
         return services;
     }
 }

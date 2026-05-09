@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRelativeTypeRepository, RelativeTypeRepository>();
         services.AddScoped<IJobRepository, JobRepository>();
         services.AddScoped<IEmployeeDependantRepository, EmployeeDependantRepository>();
+        services.AddScoped<IPositionJobRepository, PositionJobRepository>();
 
         return services;
     }

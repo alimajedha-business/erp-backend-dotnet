@@ -7,11 +7,11 @@ using NGErp.HCM.Service.Repository.Contracts;
 
 namespace NGErp.HCM.Infrastructure.DataAccess.Repositories;
 
-public class JobRepository(MainDbContext context) :
-    RepositoryWithCompany<Job>(context),
-    IJobRepository
-{ 
-    public async Task<Job?> GetByIdAsync(
+public class PositionJobRepository(MainDbContext context) :
+    RepositoryWithCompany<PositionJob>(context),
+    IPositionJobRepository
+{
+    public async Task<PositionJob?> GetByIdAsync(
         Guid companyId,
         Guid id,
         bool trackChanges = false,
@@ -19,34 +19,24 @@ public class JobRepository(MainDbContext context) :
     )
     {
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
-
         return await query
-            .Where(e => e.CompanyId == companyId)
-            .Where(e => e.Id == id)
-            .Include(e => e.JobCategory)
+            .Where(e => e.CompanyId == companyId && e.Id == id)
+            .Include(e => e.Job)
+            .Include(e => e.Position)
             .SingleOrDefaultAsync(cancellationToken: ct);
     }
-
-    public override IQueryable<Job> GetFiltered(
+    public override IQueryable<PositionJob> GetFiltered(
        Guid companyId, RequestAdvancedFilters requestAdvancedFilters
     )
     {
         return _dbSet
             .AsNoTracking()
             .Where(e => e.CompanyId == companyId)
-            .Include(e => e.JobCategory)
+            .Include(e => e.Job)
+            .Include(e => e.Position)
             .Filter(requestAdvancedFilters);
     }
 
-    public override IQueryable<Job> FilterByQ(
-        Guid companyId,
-        RequestParameters requestParameters
-    )
-    {
-        return _dbSet
-            .AsNoTracking()
-            .Where(e => e.CompanyId == companyId)
-            .Include(e => e.JobCategory)
-            .Filter(requestParameters);
-    }
+
 }
+

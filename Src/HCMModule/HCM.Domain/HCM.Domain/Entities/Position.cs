@@ -41,6 +41,10 @@ namespace NGErp.HCM.Domain.Entities
                 .HasIndex(i => new { i.CompanyId, i.Code })
                 .IsUnique()
                 .HasDatabaseName("UX_Position_CompanyId_Code");
+            builder
+                .HasIndex(i => new { i.CompanyId, i.Id })
+                .IsUnique()
+                .HasDatabaseName("UX_Position_CompanyId_Id");
         }
     }
 }

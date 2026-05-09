@@ -11,10 +11,10 @@ public enum RelationshipType
     Mother = 2,
     Brother = 3, 
     Sister = 4,
-    spouse = 5
+    spouse = 5,
+    child = 6,
+    other =7 
 }
-
-
 
 public class RelativeType : BaseEntity, IBaseEntityTypeConfiguration<RelativeType>
 {
@@ -27,7 +27,7 @@ public class RelativeType : BaseEntity, IBaseEntityTypeConfiguration<RelativeTyp
             .ToTable(nameof(RelativeType), "HCM", t =>
                 t.HasCheckConstraint(
                     "CK_RelativeType_Type",
-                    "[Type] BETWEEN 1 AND 5"
+                    "[Type] BETWEEN 1 AND 7"
                 ));
 
         builder

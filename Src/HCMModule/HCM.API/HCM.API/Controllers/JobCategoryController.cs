@@ -46,8 +46,7 @@ public class JobCategoryController(
     }
 
     [HttpGet("filter-by-q")]
-    public async Task<IActionResult> Get(
-        [FromQuery] JobCategoryParameters parameters,
+    public async Task<IActionResult> GetByQ( [FromQuery] JobCategoryParameters parameters,
         CancellationToken ct
     )
     {
@@ -61,7 +60,7 @@ public class JobCategoryController(
 
     [HttpPost("list")]
     [SkipModelValidation]
-    public async Task<IActionResult> GetAdvancedSearch(
+    public async Task<IActionResult> Get(
         [FromQuery] JobCategoryParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct

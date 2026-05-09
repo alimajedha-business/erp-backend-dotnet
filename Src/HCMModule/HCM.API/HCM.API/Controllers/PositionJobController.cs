@@ -14,23 +14,23 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/jobs")]
-public class JobController(
-    IJobService jobService
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/position-jobs")]
+public class PositionJobController(
+    IPositionJobService positionJobService
 ) : ControllerBase
 {
-    private readonly IJobService _jobService = jobService;
+    private readonly IPositionJobService _positionJobService = positionJobService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateJobDto createDto,
+        [FromBody] CreatePositionJobDto createDto,
         CancellationToken ct
     )
     {
-        var dto = await _jobService.CreateAsync(companyId, createDto, ct);
+        var dto = await _positionJobService.CreateAsync(companyId, createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -46,9 +46,8 @@ public class JobController(
         CancellationToken ct
     )
     {
-        var dto = await _jobService.GetByIdAsync(
-            companyId,
-            id,
+        var dto = await _positionJobService.GetByIdAsync(
+            companyId, id,
             trackChanges: true,
             ct
         );
@@ -56,34 +55,17 @@ public class JobController(
         return Ok(dto);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetByQ(
-        [FromRoute] Guid companyId,
-        [FromQuery] JobParameters parameters,
-        CancellationToken ct
-    )
-    {
-        var result = await _jobService.FilterByQAsync(
-            companyId,
-            parameters,
-            ct
-        );
-
-        return Ok(result);
-    }
-
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] JobParameters parameters,
+        [FromQuery] PositionJobParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )
     {
-        var result = await _jobService.GetFilteredAsync(
-            companyId,
-            parameters,
+        var result = await _positionJobService.GetFilteredAsync(
+            companyId, parameters,
             filterNodeDto,
             ct
         );
@@ -98,7 +80,7 @@ public class JobController(
         CancellationToken ct
     )
     {
-        await _jobService.DeleteAsync(companyId, id, ct);
+        await _positionJobService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 
@@ -107,13 +89,12 @@ public class JobController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchJobDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchPositionJobDto> patchDocument,
         CancellationToken ct
     )
     {
-        var dto = await _jobService.PatchAsync(
-            companyId,
-            id,
+        var dto = await _positionJobService.PatchAsync(
+            companyId, id,
             patchDocument,
             ct
         );
