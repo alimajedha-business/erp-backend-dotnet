@@ -9,6 +9,16 @@ public class ReceiptMappingProfile : Profile
 {
     public ReceiptMappingProfile()
     {
+        CreateMap<Receipt, ReceiptListDto>()
+            .ForCtorParam(
+                nameof(ReceiptListDto.ReceiptTypeTitle),
+                opt => opt.MapFrom(src => src.ReceiptType.Title)
+            )
+            .ForCtorParam(
+                nameof(ReceiptListDto.ReceiptLineCount),
+                opt => opt.MapFrom(src => src.ReceiptLines.Count)
+            );
+
         CreateMap<Receipt, ReceiptDto>();
         CreateMap<ReceiptLine, ReceiptLineDto>();
         CreateMap<ReceiptLineAttributeValue, ReceiptLineAttributeValueDto>();

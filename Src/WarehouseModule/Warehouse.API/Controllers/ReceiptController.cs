@@ -1,9 +1,15 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.DTOs;
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
+using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -43,6 +49,26 @@ public class ReceiptController(
         );
     }
 
+    [HttpPost("list")]
+    [SkipModelValidation]
+    [ProducesResponseType(typeof(ListResponseModel<ReceiptListDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] ReceiptParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+    )
+    {
+        var result = await _receiptService.GetFilteredAsync(
+            companyId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -58,5 +84,35 @@ public class ReceiptController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpPatch("{id:guid}")]
+    [Consumes("application/json-patch+json")]
+    public async Task<IActionResult> Patch(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<PatchReceiptDto> patchDocument,
+        CancellationToken ct
+    )
+    {
+        var dto = await _receiptService.PatchAsync(
+            companyId,
+            id,
+            patchDocument,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _receiptService.DeleteAsync(companyId, id, ct);
+        return NoContent();
     }
 }

@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ItemType>, ItemTypeSchema>();
         services.AddSingleton<IFilterSchema<ItemUnitOfMeasurement>, ItemUnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<RemittanceType>, RemittanceTypeSchema>();
+        services.AddSingleton<IFilterSchema<Receipt>, ReceiptSchema>();
         services.AddSingleton<IFilterSchema<ReceiptFieldDefinition>, ReceiptFieldDefinitionSchema>();
         services.AddSingleton<IFilterSchema<ReceiptType>, ReceiptTypeSchema>();
         services.AddSingleton<IFilterSchema<ReceiptTypeConfiguration>, ReceiptTypeConfigurationSchema>();

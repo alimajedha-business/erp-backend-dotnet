@@ -303,8 +303,26 @@
   <data name="Receipt.LineAttributeValue.ExactlyOneValue" xml:space="preserve">
     <value>Exactly one value must be filled for receipt item attribute '{0}'.</value>
   </data>
+  <data name="Receipt.LineAttributeValue.ItemAttribute.Duplicate" xml:space="preserve">
+    <value>Receipt line contains duplicate item attribute values.</value>
+  </data>
+  <data name="Receipt.FieldValue.DataTypeMismatch" xml:space="preserve">
+    <value>Receipt field value does not match the configured field data type.</value>
+  </data>
+  <data name="Receipt.FieldValue.FieldDefinition.Duplicate" xml:space="preserve">
+    <value>Receipt contains duplicate field definition values.</value>
+  </data>
+  <data name="Receipt.FieldValue.FieldDefinition.NotConfigured" xml:space="preserve">
+    <value>Receipt field definition is not configured for this receipt type and placement.</value>
+  </data>
+  <data name="Receipt.FieldValue.Required" xml:space="preserve">
+    <value>A required receipt field value is missing.</value>
+  </data>
   <data name="Receipt.Number.NotEmpty" xml:space="preserve">
     <value>Receipt number could not be empty.</value>
+  </data>
+  <data name="Receipt.Number.Duplicate" xml:space="preserve">
+    <value>Receipt number already exists.</value>
   </data>
   <data name="Receipt.ReceiptDate.NotEmpty" xml:space="preserve">
     <value>Receipt date could not be empty.</value>
@@ -341,6 +359,9 @@
   </data>
   <data name="ReceiptLine.UnitOfMeasurement.NotEmpty" xml:space="preserve">
     <value>Unit of measurement is required.</value>
+  </data>
+  <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
+    <value>Receipt line unit of measurement is not allowed for the selected item.</value>
   </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>Item attribute is required.</value>

@@ -303,8 +303,26 @@
   <data name="Receipt.LineAttributeValue.ExactlyOneValue" xml:space="preserve">
     <value>برای ویژگی کالای رسید '{0}' دقیقا یک مقدار باید وارد شود.</value>
   </data>
+  <data name="Receipt.LineAttributeValue.ItemAttribute.Duplicate" xml:space="preserve">
+    <value>سطر رسید شامل مقدار تکراری برای ویژگی کالا است.</value>
+  </data>
+  <data name="Receipt.FieldValue.DataTypeMismatch" xml:space="preserve">
+    <value>مقدار فیلد رسید با نوع داده پیکربندی‌شده مطابقت ندارد.</value>
+  </data>
+  <data name="Receipt.FieldValue.FieldDefinition.Duplicate" xml:space="preserve">
+    <value>رسید شامل مقدار تکراری برای تعریف فیلد است.</value>
+  </data>
+  <data name="Receipt.FieldValue.FieldDefinition.NotConfigured" xml:space="preserve">
+    <value>تعریف فیلد رسید برای این نوع رسید و محل قرارگیری پیکربندی نشده است.</value>
+  </data>
+  <data name="Receipt.FieldValue.Required" xml:space="preserve">
+    <value>مقدار یکی از فیلدهای الزامی رسید ثبت نشده است.</value>
+  </data>
   <data name="Receipt.Number.NotEmpty" xml:space="preserve">
     <value>شماره رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Receipt.Number.Duplicate" xml:space="preserve">
+    <value>شماره رسید تکراری است.</value>
   </data>
   <data name="Receipt.ReceiptDate.NotEmpty" xml:space="preserve">
     <value>تاریخ رسید نمی‌تواند خالی باشد.</value>
@@ -341,6 +359,9 @@
   </data>
   <data name="ReceiptLine.UnitOfMeasurement.NotEmpty" xml:space="preserve">
     <value>واحد اندازه‌گیری الزامی است.</value>
+  </data>
+  <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
+    <value>واحد اندازه‌گیری سطر رسید برای کالای انتخاب‌شده مجاز نیست.</value>
   </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>ویژگی کالا الزامی است.</value>
