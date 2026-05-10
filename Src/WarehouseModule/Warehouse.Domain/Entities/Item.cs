@@ -17,11 +17,9 @@ public class Item :
     public string Sku { get; set; } = default!;
     public string Barcode { get; set; } = default!;
     public bool IsActive { get; set; } = true;
-    public Guid PrimaryUnitOfMeasurementId { get; set; }
     public Guid ItemTypeId {  get; set; }
     public Guid CategoryId { get; set; }
 
-    public UnitOfMeasurement PrimaryUnitOfMeasurement { get; set; } = default!;
     public ItemType ItemType { get; set; } = default!;
     public Category Category { get; set; } = default!;
 
@@ -87,12 +85,6 @@ public class Item :
             .HasOne(e => e.ItemType)
             .WithMany()
             .HasForeignKey(e => e.ItemTypeId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder
-            .HasOne(e => e.PrimaryUnitOfMeasurement)
-            .WithMany()
-            .HasForeignKey(e => e.PrimaryUnitOfMeasurementId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
