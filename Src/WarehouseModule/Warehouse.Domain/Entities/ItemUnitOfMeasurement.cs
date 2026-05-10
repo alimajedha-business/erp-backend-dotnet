@@ -35,6 +35,26 @@ public class ItemUnitOfMeasurement :
             .HasKey(k => new { k.ItemId, k.UnitOfMeasurementId });
 
         builder
+            .Property(e => e.Weigh)
+            .HasPrecision(18, 4);
+
+        builder
+            .Property(e => e.Length)
+            .HasPrecision(18, 4);
+
+        builder
+            .Property(e => e.Width)
+            .HasPrecision(18, 4);
+
+        builder
+            .Property(e => e.Height)
+            .HasPrecision(18, 4);
+
+        builder
+            .Property(e => e.CubeVolume)
+            .HasPrecision(18, 4);
+
+        builder
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemUnitOfMeasurements)
             .HasForeignKey(e => e.ItemId)

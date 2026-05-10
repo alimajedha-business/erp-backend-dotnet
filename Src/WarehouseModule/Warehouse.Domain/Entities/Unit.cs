@@ -27,6 +27,10 @@ public class Unit :
             .ToTable(nameof(Unit), "Warehouse");
 
         builder
+            .Property(e => e.FactorToBase)
+            .HasPrecision(18, 4);
+
+        builder
             .HasIndex(e => new { e.Code })
             .IsUnique()
             .HasDatabaseName("UX_Unit_Code");
