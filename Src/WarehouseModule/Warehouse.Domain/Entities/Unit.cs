@@ -28,7 +28,7 @@ public class Unit :
 
         builder
             .Property(e => e.FactorToBase)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .HasIndex(e => new { e.Code })

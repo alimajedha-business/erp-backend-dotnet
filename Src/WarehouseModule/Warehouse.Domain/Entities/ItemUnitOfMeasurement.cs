@@ -36,23 +36,23 @@ public class ItemUnitOfMeasurement :
 
         builder
             .Property(e => e.Weigh)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .Property(e => e.Length)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .Property(e => e.Width)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .Property(e => e.Height)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .Property(e => e.CubeVolume)
-            .HasPrecision(18, 4);
+            .HasPrecision(28, 14);
 
         builder
             .HasOne(e => e.Item)
