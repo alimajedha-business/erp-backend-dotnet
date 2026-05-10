@@ -25,7 +25,7 @@ public interface IUnitOfMeasurementService
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<UnitOfMeasurementListDto>> GetFilteredAsync(
+    Task<ListResponseModel<UnitOfMeasurementDto>> GetFilteredAsync(
         UnitOfMeasurementParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
