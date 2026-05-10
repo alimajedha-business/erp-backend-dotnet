@@ -71,9 +71,14 @@ public enum AttributeDataType
     Enum = 6
 }
 
-public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
+public class AttributeDataTypeConverter :
+    JsonConverter<AttributeDataType>
 {
-    public override AttributeDataType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override AttributeDataType Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var value = reader.GetString();
         return value switch
@@ -88,7 +93,11 @@ public class AttributeDataTypeConverter : JsonConverter<AttributeDataType>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, AttributeDataType value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        AttributeDataType value,
+        JsonSerializerOptions options
+    )
     {
         writer.WriteStringValue(GetDataTypeDescription(value));
     }
@@ -111,9 +120,14 @@ public enum AttributeEntity
     Location = 2,
 }
 
-public class AttributeEntityConverter : JsonConverter<AttributeEntity>
+public class AttributeEntityConverter :
+    JsonConverter<AttributeEntity>
 {
-    public override AttributeEntity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override AttributeEntity Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var value = reader.GetString();
         return value switch
@@ -124,7 +138,11 @@ public class AttributeEntityConverter : JsonConverter<AttributeEntity>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, AttributeEntity value, JsonSerializerOptions options)
+    public override void Write(
+        Utf8JsonWriter writer,
+        AttributeEntity value,
+        JsonSerializerOptions options
+    )
     {
         writer.WriteStringValue(GetEntityDescription(value));
     }

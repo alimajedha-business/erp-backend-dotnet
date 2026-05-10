@@ -24,6 +24,6 @@ public class ItemWarehouseLocation :
             .HasOne(e => e.ItemWarehouse)
             .WithMany(e => e.ItemWarehouseLocations)
             .HasForeignKey(e => e.ItemWarehouseId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

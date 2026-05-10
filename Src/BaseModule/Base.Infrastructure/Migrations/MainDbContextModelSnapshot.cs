@@ -2743,6 +2743,352 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("MeasurementDimension", "Warehouse");
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Receipt", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("Number")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateOnly>("ReceiptDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("ReceiptTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ReceiptTypeId");
+
+                    b.HasIndex("CompanyId", "Number")
+                        .IsUnique();
+
+                    b.HasIndex("CompanyId", "ReceiptTypeId", "ReceiptDate");
+
+                    b.ToTable("Receipt", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptFieldDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<int>("AllowedPlacement")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DataType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("CompanyId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("ReceiptFieldDefinition", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptFieldValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<bool?>("BooleanValue")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DateTimeValue")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly?>("DateValue")
+                        .HasColumnType("date");
+
+                    b.Property<decimal?>("DecimalValue")
+                        .HasPrecision(22, 4)
+                        .HasColumnType("decimal(22,4)");
+
+                    b.Property<Guid>("FieldDefinitionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("IntValue")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReceiptLineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("FieldDefinitionId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ReceiptId", "FieldDefinitionId")
+                        .IsUnique()
+                        .HasFilter("[ReceiptLineId] IS NULL");
+
+                    b.HasIndex("ReceiptLineId", "FieldDefinitionId")
+                        .IsUnique()
+                        .HasFilter("[ReceiptLineId] IS NOT NULL");
+
+                    b.ToTable("ReceiptFieldValue", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(22, 4)
+                        .HasColumnType("decimal(22,4)");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RowNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("TotalPrice")
+                        .HasPrecision(22, 4)
+                        .HasColumnType("decimal(22,4)");
+
+                    b.Property<Guid>("UnitOfMeasurementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("UnitPrice")
+                        .HasPrecision(22, 4)
+                        .HasColumnType("decimal(22,4)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("UnitOfMeasurementId");
+
+                    b.HasIndex("CompanyId", "ItemId");
+
+                    b.HasIndex("ReceiptId", "RowNumber")
+                        .IsUnique();
+
+                    b.ToTable("ReceiptLine", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptLineAttributeValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<bool?>("BooleanValue")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DateTimeValue")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly?>("DateValue")
+                        .HasColumnType("date");
+
+                    b.Property<decimal?>("DecimalValue")
+                        .HasPrecision(22, 4)
+                        .HasColumnType("decimal(22,4)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ItemAttributeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReceiptLineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ItemAttributeId");
+
+                    b.HasIndex("ReceiptLineId", "ItemAttributeId")
+                        .IsUnique();
+
+                    b.ToTable("ReceiptLineAttributeValue", "Warehouse");
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2795,6 +3141,111 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasDatabaseName("UX_ReceiptType_Company_Code");
 
                     b.ToTable("ReceiptType", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptTypeConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReceiptTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ReceiptTypeId")
+                        .IsUnique();
+
+                    b.HasIndex("CompanyId", "ReceiptTypeId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_ReceiptTypeConfiguration_Company_ReceiptType");
+
+                    b.ToTable("ReceiptTypeConfiguration", "Warehouse");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptTypeFieldConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Exists")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("FieldDefinitionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Placement")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ReceiptTypeConfigurationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldDefinitionId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("ReceiptTypeConfigurationId", "FieldDefinitionId")
+                        .IsUnique();
+
+                    b.ToTable("ReceiptTypeFieldConfiguration", "Warehouse");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.RemittanceType", b =>
@@ -3755,13 +4206,13 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
                         .WithMany("ItemUnitOfMeasurementConversions")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
                         .WithMany("ItemUnitOfMeasurementConversions")
                         .HasForeignKey("UnitOfMeasurementId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -3793,7 +4244,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.ItemWarehouse", "ItemWarehouse")
                         .WithMany("ItemWarehouseLocations")
                         .HasForeignKey("ItemWarehouseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "WarehouseLocation")
@@ -3807,6 +4258,122 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("WarehouseLocation");
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Receipt", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptType", "ReceiptType")
+                        .WithMany()
+                        .HasForeignKey("ReceiptTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ReceiptType");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptFieldDefinition", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptFieldValue", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptFieldDefinition", "FieldDefinition")
+                        .WithMany()
+                        .HasForeignKey("FieldDefinitionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.Receipt", "Receipt")
+                        .WithMany("ReceiptFieldValues")
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptLine", "ReceiptLine")
+                        .WithMany("ReceiptFieldValues")
+                        .HasForeignKey("ReceiptLineId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("FieldDefinition");
+
+                    b.Navigation("Receipt");
+
+                    b.Navigation("ReceiptLine");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptLine", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.Receipt", "Receipt")
+                        .WithMany("ReceiptLines")
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", "UnitOfMeasurement")
+                        .WithMany()
+                        .HasForeignKey("UnitOfMeasurementId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Receipt");
+
+                    b.Navigation("UnitOfMeasurement");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptLineAttributeValue", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ItemAttribute", "ItemAttribute")
+                        .WithMany("ReceiptLineAttributeValues")
+                        .HasForeignKey("ItemAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptLine", "ReceiptLine")
+                        .WithMany("ReceiptLineAttributeValues")
+                        .HasForeignKey("ReceiptLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemAttribute");
+
+                    b.Navigation("ReceiptLine");
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptType", b =>
                 {
                     b.HasOne("NGErp.General.Domain.Entities.Company", null)
@@ -3814,6 +4381,42 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptTypeConfiguration", b =>
+                {
+                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptType", "ReceiptType")
+                        .WithOne("ReceiptTypeConfiguration")
+                        .HasForeignKey("NGErp.Warehouse.Domain.Entities.ReceiptTypeConfiguration", "ReceiptTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ReceiptType");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptTypeFieldConfiguration", b =>
+                {
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptFieldDefinition", "FieldDefinition")
+                        .WithMany()
+                        .HasForeignKey("FieldDefinitionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.ReceiptTypeConfiguration", "ReceiptTypeConfiguration")
+                        .WithMany("FieldConfigurations")
+                        .HasForeignKey("ReceiptTypeConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FieldDefinition");
+
+                    b.Navigation("ReceiptTypeConfiguration");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.RemittanceType", b =>
@@ -3925,9 +4528,39 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("ItemWarehouses");
                 });
 
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemAttribute", b =>
+                {
+                    b.Navigation("ReceiptLineAttributeValues");
+                });
+
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ItemWarehouse", b =>
                 {
                     b.Navigation("ItemWarehouseLocations");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.Receipt", b =>
+                {
+                    b.Navigation("ReceiptFieldValues");
+
+                    b.Navigation("ReceiptLines");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptLine", b =>
+                {
+                    b.Navigation("ReceiptFieldValues");
+
+                    b.Navigation("ReceiptLineAttributeValues");
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptType", b =>
+                {
+                    b.Navigation("ReceiptTypeConfiguration")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.ReceiptTypeConfiguration", b =>
+                {
+                    b.Navigation("FieldConfigurations");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.UnitOfMeasurement", b =>

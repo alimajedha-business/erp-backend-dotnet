@@ -3,7 +3,7 @@ using NGErp.Base.Domain.Exceptions;
 namespace NGErp.Warehouse.Domain.Exceptions;
 
 public sealed class ReceiptTypeNotFoundException()
-    : NotFoundException("Receipt");
+    : NotFoundException("ReceiptType");
 
 public sealed class ReceiptTypeCodeAlreadyExistsException(int code)
     : DuplicateResourceException(code)

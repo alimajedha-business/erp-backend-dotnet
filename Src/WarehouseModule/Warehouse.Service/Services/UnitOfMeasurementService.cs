@@ -10,6 +10,7 @@ using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -21,6 +22,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class UnitOfMeasurementService(
     IAdvancedFilterBuilder filterBuilder,
     IUnitOfMeasurementRepository uomRepository,
+    IItemRepository itemRepository,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
 ) : IUnitOfMeasurementService
@@ -31,6 +33,7 @@ public class UnitOfMeasurementService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IUnitOfMeasurementRepository _uomRepository = uomRepository;
+    private readonly IItemRepository _itemRepository = itemRepository;
 
     public async Task<UnitOfMeasurementDto> CreateAsync(
         CreateUnitOfMeasurementDto createDto,
@@ -127,6 +130,20 @@ public class UnitOfMeasurementService(
         CancellationToken ct
     )
     {
+        _ = await GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p => p.Id == id,
+            ct
+        );
+
+        var hasPrimaryItems = await _itemRepository.AnyAsync(
+            e => e.PrimaryUnitOfMeasurementId == id,
+            ct
+        );
+
+        if (hasPrimaryItems)
+            throw new UnitOfMeasurementHasItemsException();
+
         await _uomRepository.Remove(e => e.Id == id, ct);
     }
 
