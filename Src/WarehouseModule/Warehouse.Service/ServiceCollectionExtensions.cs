@@ -69,7 +69,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemBusinessRuleValidator, ItemBusinessRuleValidator>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
-        services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptBusinessRuleValidator, ReceiptBusinessRuleValidator>();
