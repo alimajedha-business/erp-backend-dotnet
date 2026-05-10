@@ -429,6 +429,9 @@
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>واحد اندازه‌گیری</value>
   </data>
+  <data name="UnitOfMeasurement.Delete.HasItems" xml:space="preserve">
+    <value>واحد اندازه‌گیری به دلیل ثبت کالا با این واحد به عنوان واحد اصلی قابل حذف نیست.</value>
+  </data>
   <data name="Warehouse" xml:space="preserve">
     <value>انبار</value>
   </data>

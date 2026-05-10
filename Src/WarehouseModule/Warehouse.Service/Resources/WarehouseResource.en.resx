@@ -429,6 +429,9 @@
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>Unit of Measurement</value>
   </data>
+  <data name="UnitOfMeasurement.Delete.HasItems" xml:space="preserve">
+    <value>Unit of measurement cannot be deleted because items are registered with it as their primary unit.</value>
+  </data>
   <data name="Warehouse" xml:space="preserve">
     <value>Warehouse</value>
   </data>
