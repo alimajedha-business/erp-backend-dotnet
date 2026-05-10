@@ -94,6 +94,10 @@ internal static class UpdateEntities
                         result.UpdatedEntityTypes++;
                 }
 
+                var modelName = entityTypeDefinition.Key.Replace("_", "").ToLowerInvariant();
+                if (await SyncContentTypeAsync(context, entityType, profile.Prefix, modelName))
+                    result.UpdatedEntityTypes++;
+
                 await SyncCommandsAsync(context, entityType, entityTypeDefinition, result);
             }
 
@@ -162,7 +166,7 @@ internal static class UpdateEntities
             entityType.IfNotCreator != definition.Attrs.IfNotCreator ||
             entityType.HasRestriction != definition.Attrs.HasRestriction ||
             entityType.Permissible != definition.Attrs.Permissible ||
-            entityType.HasConstraint;
+            entityType.HasConstraint != definition.Attrs.HasConstraint;
 
         entityType.NameFa = definition.NameFa;
         entityType.NameEn = definition.NameEn;
@@ -179,9 +183,40 @@ internal static class UpdateEntities
         entityType.IfNotCreator = definition.Attrs.IfNotCreator;
         entityType.HasRestriction = definition.Attrs.HasRestriction;
         entityType.Permissible = definition.Attrs.Permissible;
-        entityType.HasConstraint = false;
+        entityType.HasConstraint = definition.Attrs.HasConstraint;
 
         return changed;
+    }
+
+    static async Task<bool> SyncContentTypeAsync(
+        MainDbContext context,
+        EntityType entityType,
+        string appLabel,
+        string modelName
+    )
+    {
+        var contentType = await context.ContentTypes
+            .FirstOrDefaultAsync(ct => ct.AppLabel == appLabel && ct.Model == modelName);
+
+        if (contentType is null)
+        {
+            contentType = new ContentType
+            {
+                AppLabel = appLabel,
+                Model = modelName
+            };
+            context.ContentTypes.Add(contentType);
+            // Save changes immediately to get the identity ID
+            await context.SaveChangesAsync();
+        }
+
+        if (entityType.ContentTypeId != contentType.Id)
+        {
+            entityType.ContentTypeId = contentType.Id;
+            return true;
+        }
+
+        return false;
     }
 
     static async Task SyncCommandsAsync(
@@ -446,6 +481,7 @@ internal sealed class EntityTypeAttrs
     public bool Exportable { get; init; }
     public bool IfNotCreator { get; init; }
     public bool HasRestriction { get; init; }
+    public bool HasConstraint { get; init; }
     public bool Permissible { get; init; } = true;
 }
 

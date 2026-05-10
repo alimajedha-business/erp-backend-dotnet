@@ -57,6 +57,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<Module> Modules { get; set; }
         public virtual DbSet<EntityType> EntityTypes { get; set; }
         public virtual DbSet<EntityTypeCommand> EntityTypeCommands { get; set; }
+        public virtual DbSet<ContentType> ContentTypes { get; set; }
 
         #endregion General
 

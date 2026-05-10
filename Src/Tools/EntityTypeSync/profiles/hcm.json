@@ -1,154 +1,29 @@
 {
   "moduleId": 6,
   "prefix": "hcm",
-  "deleteStale": true,
+  "deleteStale": false,
   "entityTypes": [
-    {
-      "key": "DEPARTMENT",
-      "nameFa": "Department",
-      "nameEn": "Department",
-      "code": "H001",
-      "ordering": 10,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "POSITION",
-      "nameFa": "Position",
-      "nameEn": "Position",
-      "code": "H002",
-      "ordering": 20,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "ORGANIZATIONAL_STRUCTURE",
-      "nameFa": "Organizational Structure",
-      "nameEn": "Organizational Structure",
-      "code": "H003",
-      "ordering": 30,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "EMPLOYMENT_GROUP",
-      "nameFa": "Employment Group",
-      "nameEn": "Employment Group",
-      "code": "H004",
-      "ordering": 40,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "EMPLOYEE",
-      "nameFa": "Employee",
-      "nameEn": "Employee",
-      "code": "H005",
-      "ordering": 50,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "EMPLOYEE_EDUCATION",
-      "nameFa": "Employee Education",
-      "nameEn": "Employee Education",
-      "code": "H006",
-      "ordering": 60,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    },
-    {
-      "key": "EMPLOYEE_WORK_EXPERIENCE",
-      "nameFa": "Employee Work Experience",
-      "nameEn": "Employee Work Experience",
-      "code": "H007",
-      "ordering": 70,
-      "attrs": {
-        "readable": true,
-        "creatable": true,
-        "editable": true,
-        "deletable": true,
-        "loggable": true,
-        "printable": false,
-        "importable": false,
-        "exportable": true,
-        "ifNotCreator": false,
-        "hasRestriction": false,
-        "permissible": true
-      },
-      "commands": []
-    }
+    { "key": "DEPARTMENT", "nameFa": "مدیریت واحدهای سازمانی", "nameEn": "Department", "code": "H001", "ordering": 10, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "POSITION", "nameFa": "مدیریت پست‌های سازمانی", "nameEn": "Position", "code": "H002", "ordering": 20, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "ORGANIZATIONAL_STRUCTURE", "nameFa": "مدیریت ساختارهای سازمانی", "nameEn": "Organizational Structure", "code": "H003", "ordering": 30, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "ORGANIZATIONAL_STRUCTURE_ITEM", "nameFa": "مدیریت اقلام ساختار سازمانی", "nameEn": "Organizational Structure Item", "code": "H004", "ordering": 35, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "ORGANIZATION_NODE", "nameFa": "مدیریت گره‌های سازمانی", "nameEn": "Organization Node", "code": "H005", "ordering": 37, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYMENT_GROUP", "nameFa": "مدیریت گروه‌های استخدامی", "nameEn": "Employment Group", "code": "H006", "ordering": 40, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYMENT_GROUP_SPECIFICATION", "nameFa": "مدیریت مشخصات گروه‌های استخدامی", "nameEn": "Employment Group Specification", "code": "H007", "ordering": 45, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE", "nameFa": "مدیریت اطلاعات پرسنلی", "nameEn": "Employee", "code": "H008", "ordering": 50, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE_EDUCATION", "nameFa": "مدیریت سوابق تحصیلی پرسنل", "nameEn": "Employee Education", "code": "H009", "ordering": 60, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE_WORK_EXPERIENCE", "nameFa": "مدیریت سوابق کاری پرسنل", "nameEn": "Employee Work Experience", "code": "H010", "ordering": 70, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE_DEPENDANT", "nameFa": "مدیریت افراد تحت تکفل پرسنل", "nameEn": "Employee Dependant", "code": "H011", "ordering": 72, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE_RELATIVE", "nameFa": "مدیریت اطلاعات بستگان پرسنل", "nameEn": "Employee Relative", "code": "H013", "ordering": 74, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EMPLOYEE_WARRIOR_RECORD", "nameFa": "مدیریت سوابق ایثارگری پرسنل", "nameEn": "Employee Warrior Record", "code": "H015", "ordering": 76, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "JOB", "nameFa": "مدیریت تعاریف مشاغل", "nameEn": "Job", "code": "H017", "ordering": 80, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "JOB_CATEGORY", "nameFa": "مدیریت دسته‌بندی مشاغل پرسنلی", "nameEn": "Job Category", "code": "H018", "ordering": 85, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "POSITION_JOB", "nameFa": "مدیریت انتصاب مشاغل به پست‌ها", "nameEn": "Position Job", "code": "H019", "ordering": 90, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EDUCATIONAL_STATUS", "nameFa": "مدیریت وضعیت‌های تحصیلی پرسنل", "nameEn": "Educational Status", "code": "H020", "ordering": 100, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EDUCATION_FIELD", "nameFa": "مدیریت رشته‌های تحصیلی پرسنل", "nameEn": "Education Field", "code": "H021", "ordering": 105, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "EDUCATION_LEVEL", "nameFa": "مدیریت مقاطع تحصیلی پرسنل", "nameEn": "Education Level", "code": "H022", "ordering": 110, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "MARITAL_STATUS", "nameFa": "مدیریت انواع وضعیت تاهل", "nameEn": "Marital Status", "code": "H023", "ordering": 120, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "MILITARY_SERVICE_STATUS", "nameFa": "مدیریت انواع وضعیت نظام وظیفه", "nameEn": "Military Service Status", "code": "H024", "ordering": 130, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] },
+    { "key": "RELATIVE_TYPE", "nameFa": "مدیریت انواع نسبت‌های فامیلی", "nameEn": "Relative Type", "code": "H025", "ordering": 140, "attrs": { "permissible": true, "readable": true, "creatable": true, "editable": true, "deletable": true, "loggable": true, "exportable": true }, "commands": [] }
   ]
 }
