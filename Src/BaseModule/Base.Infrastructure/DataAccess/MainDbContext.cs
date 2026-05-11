@@ -85,9 +85,6 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<AttributeEnumValue> AttributeEnumValues { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<CategoryAttributeRule> CategoryAttributeRules { get; set; }
-        public virtual DbSet<InventoryLot> InventoryLots { get; set; }
-        public virtual DbSet<InventoryLotAttributeValue> InventoryLotValues { get; set; }
-        public virtual DbSet<InventoryMovement> InventoryMovements { get; set; }
         public virtual DbSet<InventoryMovementType> InventoryMovementTypes { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<ItemAttribute> ItemAttributes { get; set; }
