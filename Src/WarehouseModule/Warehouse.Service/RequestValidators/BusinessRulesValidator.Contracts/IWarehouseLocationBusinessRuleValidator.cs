@@ -36,4 +36,14 @@ public interface IWarehouseLocationBusinessRuleValidator
         CreateWarehouseLocationDto createDto,
         CancellationToken ct
     );
+
+    Task ValidatePreferredUnitsAsync(
+        CreateWarehouseLocationDto dto,
+        CancellationToken ct
+    );
+
+    Task ValidatePreferredUnitsAsync(
+        PatchWarehouseLocationDto dto,
+        CancellationToken ct
+    );
 }

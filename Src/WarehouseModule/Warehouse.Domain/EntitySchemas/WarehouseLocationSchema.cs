@@ -37,6 +37,76 @@ public sealed class WarehouseLocationSchema : IFilterSchema<WarehouseLocation>
             { "eq", "ne" }
         );
 
+        filterSchema.Fields["hasNextLevel"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.HasNextLevel),
+            PropertyType: typeof(bool),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["levelNo"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.LevelNo),
+            PropertyType: typeof(int),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["length"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.Length),
+            PropertyType: typeof(decimal?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["width"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.Width),
+            PropertyType: typeof(decimal?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["height"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.Height),
+            PropertyType: typeof(decimal?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["maxMass"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.MaxMass),
+            PropertyType: typeof(decimal?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["maxVolume"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.MaxVolume),
+            PropertyType: typeof(decimal?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne", "gt", "ge", "lt", "le" }
+        );
+
+        filterSchema.Fields["preferredMassUnitId"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.PreferredMassUnitId),
+            PropertyType: typeof(Guid?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["preferredLengthUnitId"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.PreferredLengthUnitId),
+            PropertyType: typeof(Guid?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
+        filterSchema.Fields["preferredVolumeUnitId"] = new FilterFieldInfo(
+            PropertyName: nameof(WarehouseLocation.PreferredVolumeUnitId),
+            PropertyType: typeof(Guid?),
+            AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "eq", "ne" }
+        );
+
         return filterSchema;
     }
 }

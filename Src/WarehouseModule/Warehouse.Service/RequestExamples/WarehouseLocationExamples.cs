@@ -20,7 +20,15 @@ public class WarehouseLocationCreateRequestExample :
             CanStoreItem = false,
             HasNextLevel = true,
             ParentLocationId = null,
-            LevelNo = 0,
+            LevelNo = 2,
+            Length = 12,
+            Width = 4,
+            Height = 3,
+            MaxMass = 2500,
+            MaxVolume = 144,
+            PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
+            PreferredLengthUnitId = new Guid("2AD8D6D2-36B3-452A-B1BB-80D86ACAE6E2"),
+            PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
         };
     }
 }
@@ -39,6 +47,14 @@ public class WarehouseLocationGetListResponseExample :
                     CanStoreItem: true,
                     HasNextLevel: true,
                     LevelNo: 2,
+                    Length: 12,
+                    Width: 4,
+                    Height: 3,
+                    MaxMass: 2500,
+                    MaxVolume: 144,
+                    PreferredMassUnit: null,
+                    PreferredLengthUnit: null,
+                    PreferredVolumeUnit: null,
                     WarehouseTitle: "انبار مواد اولیه"
                 )
             ],
@@ -87,6 +103,11 @@ public class WarehouseLocationPatchRequestExample :
         patchDoc.Replace(x => x.Title, "راهرو اصلی - ویرایش");
         patchDoc.Replace(x => x.CanStoreItem, true);
         patchDoc.Replace(x => x.HasNextLevel, false);
+        patchDoc.Replace(x => x.Length, 14);
+        patchDoc.Replace(x => x.Width, 4);
+        patchDoc.Replace(x => x.Height, 3);
+        patchDoc.Replace(x => x.MaxMass, 3000);
+        patchDoc.Replace(x => x.MaxVolume, 168);
 
         return patchDoc;
     }

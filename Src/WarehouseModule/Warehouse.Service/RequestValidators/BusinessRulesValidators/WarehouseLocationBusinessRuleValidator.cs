@@ -1,4 +1,8 @@
+using FluentValidation;
+using FluentValidation.Results;
+
 using NGErp.Base.Service.Validators;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -8,7 +12,8 @@ using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts
 namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class WarehouseLocationBusinessRuleValidator(
-    IWarehouseLocationRepository locationRepository
+    IWarehouseLocationRepository locationRepository,
+    IUnitRepository unitRepository
 ) : IWarehouseLocationBusinessRuleValidator
 {
     private static readonly HashSet<string> _allowedOrderFields = new(
@@ -19,6 +24,7 @@ public class WarehouseLocationBusinessRuleValidator(
     };
 
     private readonly IWarehouseLocationRepository _locationRepository = locationRepository;
+    private readonly IUnitRepository _unitRepository = unitRepository;
 
     public void ValidateParameters(WarehouseLocationParameters parameters)
     {
@@ -123,5 +129,194 @@ public class WarehouseLocationBusinessRuleValidator(
 
         if (hasChildren)
             throw new WarehouseLocationHasChildrenException();
+    }
+
+    public async Task ValidatePreferredUnitsAsync(
+        CreateWarehouseLocationDto dto,
+        CancellationToken ct
+    )
+    {
+        await ValidatePreferredUnitsAsync(
+            dto.PreferredMassUnitId,
+            dto.PreferredLengthUnitId,
+            dto.PreferredVolumeUnitId,
+            dto.MaxMass.HasValue,
+            dto.Length.HasValue || dto.Width.HasValue || dto.Height.HasValue,
+            dto.MaxVolume.HasValue,
+            ct
+        );
+    }
+
+    public async Task ValidatePreferredUnitsAsync(
+        PatchWarehouseLocationDto dto,
+        CancellationToken ct
+    )
+    {
+        await ValidatePreferredUnitsAsync(
+            dto.PreferredMassUnitId,
+            dto.PreferredLengthUnitId,
+            dto.PreferredVolumeUnitId,
+            dto.MaxMass.HasValue,
+            dto.Length.HasValue || dto.Width.HasValue || dto.Height.HasValue,
+            dto.MaxVolume.HasValue,
+            ct
+        );
+    }
+
+    private async Task ValidatePreferredUnitsAsync(
+        Guid? preferredMassUnitId,
+        Guid? preferredLengthUnitId,
+        Guid? preferredVolumeUnitId,
+        bool requiresMassUnit,
+        bool requiresLengthUnit,
+        bool requiresVolumeUnit,
+        CancellationToken ct
+    )
+    {
+        var unitIds = new[]
+            {
+                preferredMassUnitId,
+                preferredLengthUnitId,
+                preferredVolumeUnitId
+            }
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
+        if (unitIds.Length == 0)
+        {
+            await ValidateBaseUnitsExistAsync(
+                requiresMassUnit,
+                requiresLengthUnit,
+                requiresVolumeUnit,
+                ct
+            );
+            return;
+        }
+
+        var unitsById = await _unitRepository.GetByIdsAsync(unitIds, ct);
+        var missingIds = unitIds
+            .Where(id => !unitsById.ContainsKey(id))
+            .ToList();
+
+        if (missingIds.Count != 0)
+        {
+            throw new ValidationException(missingIds.Select(id =>
+                new ValidationFailure(
+                    nameof(CreateWarehouseLocationDto),
+                    $"Unit '{id}' was not found."
+                )
+            ));
+        }
+
+        ValidatePreferredUnitDimensions(
+            preferredMassUnitId,
+            preferredLengthUnitId,
+            preferredVolumeUnitId,
+            unitsById
+        );
+        await ValidateBaseUnitsExistAsync(
+            requiresMassUnit,
+            requiresLengthUnit,
+            requiresVolumeUnit,
+            ct
+        );
+    }
+
+    private async Task ValidateBaseUnitsExistAsync(
+        bool requiresMassUnit,
+        bool requiresLengthUnit,
+        bool requiresVolumeUnit,
+        CancellationToken ct
+    )
+    {
+        var requiredDimensions = new[]
+            {
+                requiresMassUnit ? UnitDimension.MASS : (UnitDimension?)null,
+                requiresLengthUnit ? UnitDimension.LENGTH : (UnitDimension?)null,
+                requiresVolumeUnit ? UnitDimension.VOLUME : (UnitDimension?)null
+            }
+            .Where(dimension => dimension.HasValue)
+            .Select(dimension => dimension!.Value)
+            .Distinct()
+            .ToArray();
+
+        if (requiredDimensions.Length == 0)
+            return;
+
+        var baseUnits = await _unitRepository.GetBaseUnitsByDimensionsAsync(
+            requiredDimensions,
+            ct
+        );
+
+        var missingDimensions = requiredDimensions
+            .Where(dimension => !baseUnits.ContainsKey(dimension))
+            .ToList();
+
+        if (missingDimensions.Count != 0)
+        {
+            throw new ValidationException(missingDimensions.Select(dimension =>
+                new ValidationFailure(
+                    nameof(CreateWarehouseLocationDto),
+                    $"Base unit for dimension '{dimension}' was not found."
+                )
+            ));
+        }
+    }
+
+    private static void ValidatePreferredUnitDimensions(
+        Guid? preferredMassUnitId,
+        Guid? preferredLengthUnitId,
+        Guid? preferredVolumeUnitId,
+        IReadOnlyDictionary<Guid, Unit> unitsById
+    )
+    {
+        var failures = new List<ValidationFailure>();
+
+        ValidatePreferredUnitDimension(
+            preferredMassUnitId,
+            UnitDimension.MASS,
+            nameof(CreateWarehouseLocationDto.PreferredMassUnitId),
+            unitsById,
+            failures
+        );
+        ValidatePreferredUnitDimension(
+            preferredLengthUnitId,
+            UnitDimension.LENGTH,
+            nameof(CreateWarehouseLocationDto.PreferredLengthUnitId),
+            unitsById,
+            failures
+        );
+        ValidatePreferredUnitDimension(
+            preferredVolumeUnitId,
+            UnitDimension.VOLUME,
+            nameof(CreateWarehouseLocationDto.PreferredVolumeUnitId),
+            unitsById,
+            failures
+        );
+
+        if (failures.Count != 0)
+            throw new ValidationException(failures);
+    }
+
+    private static void ValidatePreferredUnitDimension(
+        Guid? unitId,
+        UnitDimension expectedDimension,
+        string propertyName,
+        IReadOnlyDictionary<Guid, Unit> unitsById,
+        List<ValidationFailure> failures
+    )
+    {
+        if (!unitId.HasValue || !unitsById.TryGetValue(unitId.Value, out var unit))
+            return;
+
+        if (unit.UnitDimension != expectedDimension)
+        {
+            failures.Add(new ValidationFailure(
+                propertyName,
+                $"Unit '{unitId}' must have '{expectedDimension}' dimension."
+            ));
+        }
     }
 }

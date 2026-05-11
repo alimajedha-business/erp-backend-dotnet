@@ -48,6 +48,7 @@ public class WarehouseLocationService(
         RequestBodyValidator.ThrowIfNull(createLocationDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, createLocationDto, ct);
         await _businessRuleValidator.ValidateCreateAsync(warehouseId, createLocationDto, ct);
+        await _businessRuleValidator.ValidatePreferredUnitsAsync(createLocationDto, ct);
 
         var location = _mapper.Map<WarehouseLocation>(createLocationDto);
         location.WarehouseId = warehouseId;
@@ -55,7 +56,13 @@ public class WarehouseLocationService(
         var createdLocation = await _locationRepository.AddAsync(location, ct);
         await _locationRepository.SaveChangesAsync(ct);
 
-        return _mapper.Map<WarehouseLocationDto>(createdLocation);
+        var savedLocation = await _locationRepository.GetByIdAsync(
+            createdLocation.Id,
+            trackChanges: false,
+            ct
+        );
+
+        return _mapper.Map<WarehouseLocationDto>(savedLocation ?? createdLocation);
     }
 
     public async Task<WarehouseLocationDto> GetByIdAsync(
@@ -78,7 +85,7 @@ public class WarehouseLocationService(
         CancellationToken ct
     )
     {
-         return await _locationRepository.GetItemLocationsAsync(item, ct);
+        return await _locationRepository.GetItemLocationsAsync(item, ct);
     }
 
     public async Task<ListResponseModel<WarehouseLocationSlimDto>> FilterByQAsync(
@@ -168,6 +175,7 @@ public class WarehouseLocationService(
             throw new InvalidPatchDocumentException(errors);
 
         await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+        await _businessRuleValidator.ValidatePreferredUnitsAsync(patchDto, ct);
 
         if (codePatched && patchDto.Code.HasValue)
         {
@@ -194,7 +202,14 @@ public class WarehouseLocationService(
         _mapper.Map(patchDto, location);
 
         await _locationRepository.SaveChangesAsync(ct);
-        return _mapper.Map<WarehouseLocationDto>(location);
+
+        var updatedLocation = await _locationRepository.GetByIdAsync(
+            location.Id,
+            trackChanges: false,
+            ct
+        );
+
+        return _mapper.Map<WarehouseLocationDto>(updatedLocation ?? location);
     }
 
     public async Task DeleteAsync(
