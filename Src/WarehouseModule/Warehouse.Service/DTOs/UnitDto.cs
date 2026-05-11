@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Reflection;
-
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.DTOs;
@@ -12,17 +9,8 @@ public record UnitDto(
     string Symbol,
     decimal FactorToBase,
     bool IsBaseUnit,
-    UnitDimension UnitDimension,
-    string UnitDimensionTitle
-)
-{
-    public static string GetUnitDimensionDescription(UnitDimension value)
-    {
-        var field = value.GetType().GetField(value.ToString());
-        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
-        return attribute?.Description ?? value.ToString();
-    }
-}
+    UnitDimension UnitDimension
+);
 
 public record UnitSlimDto(
     Guid Id,
