@@ -14,10 +14,6 @@ public class UnitMappingProfile : Profile
                 nameof(UnitDto.UnitDimensionTitle),
                 opt => opt.MapFrom(src => UnitDto.GetUnitDimensionDescription(src.UnitDimension))
             );
-        CreateMap<Unit, UnitSlimDto>()
-            .ForCtorParam(
-                nameof(UnitSlimDto.UnitDimensionTitle),
-                opt => opt.MapFrom(src => UnitDto.GetUnitDimensionDescription(src.UnitDimension))
-            );
+        CreateMap<Unit, UnitSlimDto>();
     }
 }

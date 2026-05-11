@@ -29,6 +29,5 @@ public record UnitSlimDto(
     int Code,
     string Title,
     string Symbol,
-    UnitDimension UnitDimension,
-    string UnitDimensionTitle
+    UnitDimension UnitDimension
 );
