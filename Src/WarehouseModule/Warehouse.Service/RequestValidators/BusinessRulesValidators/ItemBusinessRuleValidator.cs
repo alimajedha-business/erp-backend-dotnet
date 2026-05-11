@@ -44,10 +44,7 @@ public class ItemBusinessRuleValidator(
             ct
         );
 
-        ValidateItemUnitOfMeasurementCount(
-            createDto.PrimaryUnitOfMeasurementId,
-            createDto.SecondaryUnitOfMeasurementIds
-        );
+        ValidateItemUnitOfMeasurementCount(createDto.ItemUnitOfMeasurements);
     }
 
     public async Task ValidateItemCodeUniquenessAsync(
@@ -75,12 +72,11 @@ public class ItemBusinessRuleValidator(
     }
 
     public void ValidateItemUnitOfMeasurementCount(
-        Guid primaryUnitOfMeasurementId,
-        IEnumerable<Guid>? secondaryUnitOfMeasurementIds
+        IEnumerable<CreateItemUnitOfMeasurementDto>? itemUnitOfMeasurements
     )
     {
-        var count = secondaryUnitOfMeasurementIds?
-            .Where(uomId => uomId != primaryUnitOfMeasurementId)
+        var count = itemUnitOfMeasurements?
+            .Select(e => e.UnitOfMeasurementId)
             .Distinct()
             .Count() ?? 0;
 

@@ -56,6 +56,20 @@ public class CreateItemValidator : AbstractValidator<CreateItemDto>
             .WithMessage(_localizer["Item.Sku.MinLength"].Value)
             .MaximumLength(80)
             .WithMessage(_localizer["Item.Sku.MaxLength"].Value);
+
+        RuleFor(p => p.ItemUnitOfMeasurements)
+            .NotEmpty();
+
+        RuleFor(p => p.ItemUnitOfMeasurements)
+            .Must(uoms => uoms.Select(e => e.UnitOfMeasurementId).Distinct().Count() == uoms.Count)
+            .WithMessage("Duplicate unitOfMeasurementId is not allowed.");
+
+        RuleFor(p => p.ItemUnitOfMeasurements)
+            .Must(uoms => uoms.Select(e => e.UnitOrder).Distinct().Count() == uoms.Count)
+            .WithMessage("Duplicate unitOrder is not allowed.");
+
+        RuleForEach(p => p.ItemUnitOfMeasurements)
+            .SetValidator(new CreateItemUnitOfMeasurementValidator());
     }
 }
 
@@ -99,6 +113,24 @@ public class PatchItemValidator : AbstractValidator<PatchItemDto>
             .MaximumLength(80)
             .WithMessage(_localizer["Item.Barcode.MaxLength"].Value)
             .When(p => p.Barcode is not null);
+
+        RuleFor(p => p.ItemUnitOfMeasurements)
+            .NotEmpty()
+            .When(p => p.ItemUnitOfMeasurements is not null);
+
+        RuleFor(p => p.ItemUnitOfMeasurements!)
+            .Must(uoms => uoms.Select(e => e.UnitOfMeasurementId).Distinct().Count() == uoms.Count)
+            .WithMessage("Duplicate unitOfMeasurementId is not allowed.")
+            .When(p => p.ItemUnitOfMeasurements is not null);
+
+        RuleFor(p => p.ItemUnitOfMeasurements!)
+            .Must(uoms => uoms.Select(e => e.UnitOrder).Distinct().Count() == uoms.Count)
+            .WithMessage("Duplicate unitOrder is not allowed.")
+            .When(p => p.ItemUnitOfMeasurements is not null);
+
+        RuleForEach(p => p.ItemUnitOfMeasurements)
+            .SetValidator(new CreateItemUnitOfMeasurementValidator())
+            .When(p => p.ItemUnitOfMeasurements is not null);
     }
 }
 
@@ -129,7 +161,6 @@ public static class PatchItemPolicy
         ["/itemAttributes"] = RequiredReplaceOnlyAllowEmpty,
         ["/attributeIds"] = RequiredReplaceOnlyAllowEmpty,
         ["/itemUnitOfMeasurements"] = RequiredReplaceOnlyAllowEmpty,
-        ["/secondaryUnitOfMeasurementIds"] = RequiredReplaceOnlyAllowEmpty,
         ["/itemWarehouses"] = RequiredReplaceOnlyAllowEmpty,
         ["/itemUnitOfMeasurementConversions"] = RequiredReplaceOnlyAllowEmpty,
         ["/unitConversions"] = RequiredReplaceOnlyAllowEmpty

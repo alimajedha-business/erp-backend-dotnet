@@ -300,11 +300,9 @@ public class ReceiptBusinessRuleValidator(
                 itemCache[line.ItemId] = item;
             }
 
-            var unitIsAllowed =
-                item.PrimaryUnitOfMeasurementId == line.UnitOfMeasurementId ||
-                item.ItemUnitOfMeasurements.Any(e =>
-                    e.UnitOfMeasurementId == line.UnitOfMeasurementId
-                );
+            var unitIsAllowed = item.ItemUnitOfMeasurements.Any(e =>
+                e.UnitOfMeasurementId == line.UnitOfMeasurementId
+            );
 
             if (!unitIsAllowed)
                 throw new ReceiptLineUnitOfMeasurementNotAllowedException(

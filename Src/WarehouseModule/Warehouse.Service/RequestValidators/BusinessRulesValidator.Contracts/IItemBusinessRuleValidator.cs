@@ -21,8 +21,7 @@ public interface IItemBusinessRuleValidator
     );
 
     void ValidateItemUnitOfMeasurementCount(
-        Guid primaryUnitOfMeasurementId,
-        IEnumerable<Guid>? secondaryUnitOfMeasurementIds
+        IEnumerable<CreateItemUnitOfMeasurementDto>? itemUnitOfMeasurements
     );
 
     Task ValidateDeleteAsync(

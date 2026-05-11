@@ -137,7 +137,7 @@ public class UnitOfMeasurementService(
         );
 
         var hasPrimaryItems = await _itemRepository.AnyAsync(
-            e => e.PrimaryUnitOfMeasurementId == id,
+            e => e.ItemUnitOfMeasurements.Any(iu => iu.UnitOfMeasurementId == id),
             ct
         );
 
