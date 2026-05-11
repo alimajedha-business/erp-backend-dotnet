@@ -11,12 +11,15 @@ public class ItemMappingProfile : Profile
     {
         CreateMap<Item, ItemListDto>()
             .ForCtorParam(
-                nameof(ItemListDto.ItemTypeTitle),
-                opt => opt.MapFrom(src => src.ItemType.Title)
+                nameof(ItemListDto.UnitOfMeasurementTitle),
+                opt => opt.MapFrom(src => src.ItemUnitOfMeasurements
+                    .OrderBy(x => x.UnitOrder)
+                    .Select(x => x.UnitOfMeasurement.Title)
+                    .FirstOrDefault() ?? string.Empty)
             )
             .ForCtorParam(
-                nameof(ItemListDto.PrimaryUnitOfMeasurementTitle),
-                opt => opt.MapFrom(src => src.PrimaryUnitOfMeasurement.Title)
+                nameof(ItemListDto.ItemTypeTitle),
+                opt => opt.MapFrom(src => src.ItemType.Title)
             )
             .ForCtorParam(
                 nameof(ItemListDto.CategoryTitle),
@@ -33,12 +36,6 @@ public class ItemMappingProfile : Profile
             .ForMember(
                 dst => dst.AttributeIds,
                 opt => opt.MapFrom(src => src.ItemAttributes.Select(x => x.AttributeId))
-            )
-            .ForMember(
-                dst => dst.SecondaryUnitOfMeasurementIds,
-                opt => opt.MapFrom(src => src.ItemUnitOfMeasurements
-                    .OrderBy(x => x.UnitOrder)
-                    .Select(x => x.UnitOfMeasurementId))
             )
             .ForMember(
                 dst => dst.ItemWarehouses,

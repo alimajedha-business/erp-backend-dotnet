@@ -12,11 +12,10 @@ public record ItemDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
     ItemTypeSlimDto ItemType,
     CategorySlimDto Category,
     List<AttributeSlimDto> Attributes,
-    List<UnitOfMeasurementSlimDto> SecondaryUnitOfMeasurements,
+    List<ItemUnitOfMeasurementDto> ItemUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
     Dictionary<string, ItemUnitConversionEquationDto> UnitConversions,
     bool IsActive
@@ -30,7 +29,7 @@ public record ItemListDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    string PrimaryUnitOfMeasurementTitle,
+    string UnitOfMeasurementTitle,
     string ItemTypeTitle,
     string CategoryTitle,
     bool IsActive
@@ -45,11 +44,10 @@ public class CreateItemDto
     public string Sku { get; set; } = default!;
     public string Barcode { get; set; } = default!;
     public bool IsActive { get; set; } = true;
-    public Guid PrimaryUnitOfMeasurementId { get; set; }
     public Guid ItemTypeId { get; set; }
     public Guid CategoryId { get; set; }
 
-    public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
+    public List<CreateItemUnitOfMeasurementDto> ItemUnitOfMeasurements { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
     public Dictionary<string, ItemUnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
@@ -75,10 +73,9 @@ public class PatchItemDto
     public string? TechnicalNumber { get; set; }
     public string? Barcode { get; set; }
     public bool? IsActive { get; set; }
-    public Guid? PrimaryUnitOfMeasurementId { get; set; }
     public Guid? ItemTypeId { get; set; }
 
-    public List<Guid>? SecondaryUnitOfMeasurementIds { get; set; }
+    public List<CreateItemUnitOfMeasurementDto>? ItemUnitOfMeasurements { get; set; }
     public List<Guid>? AttributeIds { get; set; }
     public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
     public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversions { get; set; }
@@ -92,18 +89,6 @@ public class PatchItemDto
         {
             if (value != null)
                 AttributeIds = value;
-        }
-    }
-
-    [JsonProperty("itemUnitOfMeasurements")]
-    [JsonPropertyName("itemUnitOfMeasurements")]
-    public List<Guid>? ItemUnitOfMeasurementsAlias
-    {
-        get => null; // never used for output
-        set
-        {
-            if (value != null)
-                SecondaryUnitOfMeasurementIds = value;
         }
     }
 
