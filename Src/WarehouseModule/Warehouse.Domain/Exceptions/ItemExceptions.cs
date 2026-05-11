@@ -18,9 +18,3 @@ public sealed class ItemUnitOfMeasurementCountExceededException(int maxCount)
     public int MaxCount { get; } = maxCount;
     public override string LocalizationKey => "Item.ItemUnitOfMeasurements.MaxCount";
 }
-
-public sealed class ItemHasInventoryLotsException()
-    : BusinessRuleViolationException()
-{
-    public override string LocalizationKey => "Item.Delete.HasInventoryLots";
-}
