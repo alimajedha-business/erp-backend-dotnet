@@ -9,7 +9,15 @@ public class UnitMappingProfile : Profile
 {
     public UnitMappingProfile()
     {
-        CreateMap<Unit, UnitDto>();
-        CreateMap<Unit, UnitSlimDto>();
+        CreateMap<Unit, UnitDto>()
+            .ForCtorParam(
+                nameof(UnitDto.UnitDimensionTitle),
+                opt => opt.MapFrom(src => UnitDto.GetUnitDimensionDescription(src.UnitDimension))
+            );
+        CreateMap<Unit, UnitSlimDto>()
+            .ForCtorParam(
+                nameof(UnitSlimDto.UnitDimensionTitle),
+                opt => opt.MapFrom(src => UnitDto.GetUnitDimensionDescription(src.UnitDimension))
+            );
     }
 }
