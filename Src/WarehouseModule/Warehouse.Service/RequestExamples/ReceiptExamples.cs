@@ -1,4 +1,6 @@
+using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.RequestFeatures;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -56,6 +58,28 @@ public class CreateReceiptExample :
                 }
             ]
         };
+    }
+}
+
+public class ReceiptsGetListExample : IExamplesProvider<ListResponseModel<ReceiptListDto>>
+{
+    public ListResponseModel<ReceiptListDto> GetExamples()
+    {
+        return new ListResponseModel<ReceiptListDto>(
+            results: [
+                new ReceiptListDto(
+                    Id: new Guid("11111111-2222-3333-4444-555555555555"),
+                    Number: 1000500,
+                    ReceiptDate: new DateOnly(2026, 05, 20),
+                    ReceiptTypeId: new Guid("11111111-2222-3333-4444-555555555555"),
+                    ReceiptTypeTitle: "رسید خرید داخلی",
+                    Description: "توضیح نوع رسید خرید داخلی",
+                    ReceiptLineCount: 2
+                )
+            ],
+            totalCount: 1,
+            requestParameters: new ItemParameters { Paginated = false }
+        );
     }
 }
 

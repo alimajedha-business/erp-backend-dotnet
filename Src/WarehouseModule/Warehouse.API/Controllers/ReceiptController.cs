@@ -52,6 +52,9 @@ public class ReceiptController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(ReceiptAdvancedSearchExample))]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ListResponseModel<ReceiptListDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ReceiptsGetListExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] ReceiptParameters parameters,

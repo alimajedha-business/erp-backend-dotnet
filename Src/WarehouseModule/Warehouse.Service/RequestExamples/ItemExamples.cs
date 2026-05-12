@@ -112,7 +112,7 @@ public class ItemAdvancedSearchExample : IExamplesProvider<object>
     }
 }
 
-public class GetItemsListExample : IExamplesProvider<ListResponseModel<ItemListDto>>
+public class ItemsGetListExample : IExamplesProvider<ListResponseModel<ItemListDto>>
 {
     public ListResponseModel<ItemListDto> GetExamples()
     {
