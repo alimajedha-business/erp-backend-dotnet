@@ -13,11 +13,11 @@ public class ItemUnitOfMeasurement :
     public Guid UnitOfMeasurementId { get; set; }
     public required int UnitOrder { get; set; }
 
-    public decimal? Weigh { get; set; }
+    public decimal? Weight { get; set; }
     public decimal? Length { get; set; }
     public decimal? Width { get; set; }
     public decimal? Height { get; set; }
-    public decimal? CubeVolume { get; set; }
+    public decimal? Volume { get; set; }
     public Guid? PreferredMassUnitId { get; set; }
     public Guid? PreferredLengthUnitId { get; set; }
     public Guid? PreferredVolumeUnitId { get; set; }
@@ -35,7 +35,7 @@ public class ItemUnitOfMeasurement :
             .HasKey(k => new { k.ItemId, k.UnitOfMeasurementId });
 
         builder
-            .Property(e => e.Weigh)
+            .Property(e => e.Weight)
             .HasPrecision(28, 14);
 
         builder
@@ -51,7 +51,7 @@ public class ItemUnitOfMeasurement :
             .HasPrecision(28, 14);
 
         builder
-            .Property(e => e.CubeVolume)
+            .Property(e => e.Volume)
             .HasPrecision(28, 14);
 
         builder
