@@ -872,11 +872,11 @@ public class ItemService(
         );
     }
 
-    private static UnitSlimDto? MapUnitSlimDto(Unit? unit)
+    private static UnitAsReferenceDto? MapUnitSlimDto(Unit? unit)
     {
         return unit is null
             ? null
-            : new UnitSlimDto(
+            : new UnitAsReferenceDto(
                 unit.Id,
                 unit.Code,
                 unit.Title,

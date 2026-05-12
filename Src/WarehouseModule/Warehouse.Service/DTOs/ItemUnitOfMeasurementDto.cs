@@ -8,9 +8,9 @@ public record ItemUnitOfMeasurementDto(
     decimal? Width,
     decimal? Height,
     decimal? Volume,
-    UnitSlimDto? PreferredMassUnit,
-    UnitSlimDto? PreferredLengthUnit,
-    UnitSlimDto? PreferredVolumeUnit
+    UnitAsReferenceDto? PreferredMassUnit,
+    UnitAsReferenceDto? PreferredLengthUnit,
+    UnitAsReferenceDto? PreferredVolumeUnit
 );
 
 public class CreateItemUnitOfMeasurementDto

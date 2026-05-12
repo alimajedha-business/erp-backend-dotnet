@@ -12,9 +12,9 @@ public record WarehouseLocationDto(
     decimal? Height,
     decimal? MaxMass,
     decimal? MaxVolume,
-    UnitSlimDto? PreferredMassUnit,
-    UnitSlimDto? PreferredLengthUnit,
-    UnitSlimDto? PreferredVolumeUnit,
+    UnitAsReferenceDto? PreferredMassUnit,
+    UnitAsReferenceDto? PreferredLengthUnit,
+    UnitAsReferenceDto? PreferredVolumeUnit,
     WarehouseSlimDto Warehouse
 );
 
@@ -36,9 +36,9 @@ public record WarehouseLocationListDto(
     decimal? Height,
     decimal? MaxMass,
     decimal? MaxVolume,
-    UnitSlimDto? PreferredMassUnit,
-    UnitSlimDto? PreferredLengthUnit,
-    UnitSlimDto? PreferredVolumeUnit,
+    UnitAsReferenceDto? PreferredMassUnit,
+    UnitAsReferenceDto? PreferredLengthUnit,
+    UnitAsReferenceDto? PreferredVolumeUnit,
     string WarehouseTitle
 );
 
