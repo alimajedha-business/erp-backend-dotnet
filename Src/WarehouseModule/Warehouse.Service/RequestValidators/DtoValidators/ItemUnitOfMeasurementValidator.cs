@@ -15,9 +15,9 @@ public class CreateItemUnitOfMeasurementValidator :
         RuleFor(p => p.UnitOrder)
             .GreaterThan(0);
 
-        RuleFor(p => p.Weigh)
+        RuleFor(p => p.Weight)
             .GreaterThan(0)
-            .When(p => p.Weigh.HasValue);
+            .When(p => p.Weight.HasValue);
 
         RuleFor(p => p.Length)
             .GreaterThan(0)
@@ -31,13 +31,13 @@ public class CreateItemUnitOfMeasurementValidator :
             .GreaterThan(0)
             .When(p => p.Height.HasValue);
 
-        RuleFor(p => p.CubeVolume)
+        RuleFor(p => p.Volume)
             .GreaterThan(0)
-            .When(p => p.CubeVolume.HasValue);
+            .When(p => p.Volume.HasValue);
 
         RuleFor(p => p.PreferredMassUnitId)
             .NotEmpty()
-            .When(p => p.Weigh.HasValue);
+            .When(p => p.Weight.HasValue);
 
         RuleFor(p => p.PreferredLengthUnitId)
             .NotEmpty()
@@ -45,6 +45,6 @@ public class CreateItemUnitOfMeasurementValidator :
 
         RuleFor(p => p.PreferredVolumeUnitId)
             .NotEmpty()
-            .When(p => p.CubeVolume.HasValue);
+            .When(p => p.Volume.HasValue);
     }
 }

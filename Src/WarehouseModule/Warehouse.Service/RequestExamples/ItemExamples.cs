@@ -30,8 +30,8 @@ public class CreateItemExample :
                 {
                     UnitOfMeasurementId = new Guid("94E9EB2E-AB06-4AC6-92A1-FAFA5C765D37"),
                     UnitOrder = 1,
-                    Weigh = 100,
-                    CubeVolume = 10,
+                    Weight = 100,
+                    Volume = 10,
                     PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
                     PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
                 },
@@ -39,8 +39,8 @@ public class CreateItemExample :
                 {
                     UnitOfMeasurementId = new Guid("50C174BF-F9D6-4347-B62E-78E97514C1CA"),
                     UnitOrder = 2,
-                    Weigh = 1200,
-                    CubeVolume = 120,
+                    Weight = 1200,
+                    Volume = 120,
                     PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
                     PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
                 }
@@ -162,8 +162,8 @@ public class ItemPatchExample :
                     {
                         UnitOfMeasurementId = new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"),
                         UnitOrder = 1,
-                        Weigh = 100,
-                        CubeVolume = 10,
+                        Weight = 100,
+                        Volume = 10,
                         PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
                         PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
                     },
@@ -171,8 +171,8 @@ public class ItemPatchExample :
                     {
                         UnitOfMeasurementId = new Guid("94e9eb2e-ab06-4ac6-92a1-fafa5c765d37"),
                         UnitOrder = 2,
-                        Weigh = 1200,
-                        CubeVolume = 120,
+                        Weight = 1200,
+                        Volume = 120,
                         PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
                         PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
                     }

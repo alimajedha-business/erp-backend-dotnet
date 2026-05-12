@@ -383,11 +383,11 @@ public class ItemService(
         {
             UnitOfMeasurementId = dto.UnitOfMeasurementId,
             UnitOrder = dto.UnitOrder,
-            Weigh = ConvertToBase(dto.Weigh, dto.PreferredMassUnitId, unitsById),
+            Weigh = ConvertToBase(dto.Weight, dto.PreferredMassUnitId, unitsById),
             Length = ConvertToBase(dto.Length, dto.PreferredLengthUnitId, unitsById),
             Width = ConvertToBase(dto.Width, dto.PreferredLengthUnitId, unitsById),
             Height = ConvertToBase(dto.Height, dto.PreferredLengthUnitId, unitsById),
-            CubeVolume = ConvertToBase(dto.CubeVolume, dto.PreferredVolumeUnitId, unitsById),
+            CubeVolume = ConvertToBase(dto.Volume, dto.PreferredVolumeUnitId, unitsById),
             PreferredMassUnitId = dto.PreferredMassUnitId,
             PreferredLengthUnitId = dto.PreferredLengthUnitId,
             PreferredVolumeUnitId = dto.PreferredVolumeUnitId
@@ -441,9 +441,9 @@ public class ItemService(
         var requiredDimensions = itemUnitOfMeasurements
             .SelectMany(dto => new[]
             {
-                dto.Weigh.HasValue ? UnitDimension.MASS : (UnitDimension?)null,
+                dto.Weight.HasValue ? UnitDimension.MASS : (UnitDimension?)null,
                 HasAnyLength(dto) ? UnitDimension.LENGTH : (UnitDimension?)null,
-                dto.CubeVolume.HasValue ? UnitDimension.VOLUME : (UnitDimension?)null
+                dto.Volume.HasValue ? UnitDimension.VOLUME : (UnitDimension?)null
             })
             .Where(dimension => dimension.HasValue)
             .Select(dimension => dimension!.Value)
@@ -952,7 +952,7 @@ public class ItemService(
         {
             UnitOfMeasurementId = itemUnitOfMeasurement.UnitOfMeasurementId,
             UnitOrder = itemUnitOfMeasurement.UnitOrder,
-            Weigh = ConvertFromBase(
+            Weight = ConvertFromBase(
                 itemUnitOfMeasurement.Weigh,
                 itemUnitOfMeasurement.PreferredMassUnit
             ),
@@ -968,7 +968,7 @@ public class ItemService(
                 itemUnitOfMeasurement.Height,
                 itemUnitOfMeasurement.PreferredLengthUnit
             ),
-            CubeVolume = ConvertFromBase(
+            Volume = ConvertFromBase(
                 itemUnitOfMeasurement.CubeVolume,
                 itemUnitOfMeasurement.PreferredVolumeUnit
             ),
@@ -1110,7 +1110,7 @@ public class ItemService(
     {
         existing.UnitOrder = requested.UnitOrder;
         existing.Weigh = ConvertToBase(
-            requested.Weigh,
+            requested.Weight,
             requested.PreferredMassUnitId,
             unitsById
         );
@@ -1130,7 +1130,7 @@ public class ItemService(
             unitsById
         );
         existing.CubeVolume = ConvertToBase(
-            requested.CubeVolume,
+            requested.Volume,
             requested.PreferredVolumeUnitId,
             unitsById
         );
