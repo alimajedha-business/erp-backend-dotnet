@@ -29,11 +29,20 @@ public class WarehouseLocationUsage :
             .HasDatabaseName("IX_WarehouseLocationUsage_WarehouseLocation");
 
         builder
+            .Property(e => e.RowVersion)
+            .IsRowVersion();
+
+        builder
             .Property(e => e.OccupiedMass)
             .HasPrecision(28, 14);
 
         builder
             .Property(e => e.OccupiedVolume)
             .HasPrecision(28, 14);
+
+        builder
+            .HasOne(e => e.WarehouseLocation)
+            .WithOne()
+            .HasForeignKey<WarehouseLocationUsage>(x => x.WarehouseLocationId);
     }
 }

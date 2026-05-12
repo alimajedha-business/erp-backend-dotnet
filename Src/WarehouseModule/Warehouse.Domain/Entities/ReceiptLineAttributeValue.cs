@@ -16,6 +16,7 @@ public class ReceiptLineAttributeValue :
 {
     public Guid ReceiptLineId { get; set; }
     public Guid ItemAttributeId { get; set; }
+
     public string? StringValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }

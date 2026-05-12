@@ -52,11 +52,11 @@ public class Attribute :
 [JsonConverter(typeof(AttributeDataTypeConverter))]
 public enum AttributeDataType
 {
-    [Description("Text")]
-    Text = 1,
+    [Description("String")]
+    String = 1,
 
-    [Description("Integer")]
-    Integer = 2,
+    [Description("Int")]
+    Int = 2,
 
     [Description("Decimal")]
     Decimal = 3,
@@ -83,8 +83,8 @@ public class AttributeDataTypeConverter :
         var value = reader.GetString();
         return value switch
         {
-            "Text" => AttributeDataType.Text,
-            "Integer" => AttributeDataType.Integer,
+            "String" => AttributeDataType.String,
+            "Int" => AttributeDataType.Int,
             "Decimal" => AttributeDataType.Decimal,
             "Date" => AttributeDataType.Date,
             "Boolean" => AttributeDataType.Boolean,
