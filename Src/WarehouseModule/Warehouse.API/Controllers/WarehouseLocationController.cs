@@ -68,8 +68,6 @@ public class WarehouseLocationController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseLocationAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseLocationListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseLocationGetListResponseExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid warehouseId,
         [FromQuery] WarehouseLocationParameters parameters,

@@ -57,8 +57,6 @@ public class CategoryItemController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
-    [ProducesResponseType(typeof(ListResponseModel<ItemListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(GetItemsListExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromRoute] Guid categoryId,

@@ -58,3 +58,47 @@ public class CreateReceiptExample :
         };
     }
 }
+
+public class ReceiptAdvancedSearchExample : IExamplesProvider<object>
+{
+    public object GetExamples()
+    {
+        return new
+        {
+            type = "group",
+            op = "or",
+            children = new object[]
+            {
+                new
+                {
+                    type = "condition",
+                    field = "receiptDate",
+                    @operator = "lt",
+                    value = "2026-10-11"
+                },
+                new
+                {
+                    type = "group",
+                    op = "or",
+                    children = new object[]
+                    {
+                        new
+                        {
+                            type = "condition",
+                            field = "number",
+                            @operator = "eq",
+                            value = "1001",
+                        },
+                        new
+                        {
+                            type = "condition",
+                            field = "receiptTypeId",
+                            @operator = "eq",
+                            value = new Guid()
+                        }
+                    }
+                }
+            }
+        };
+    }
+}
