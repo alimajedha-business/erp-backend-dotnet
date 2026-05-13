@@ -603,4 +603,91 @@
   <data name="Item.Sku.Duplicate" xml:space="preserve">
     <value>Item Sku already exists.</value>
   </data>
+  <data name="Unit.Acre" xml:space="preserve">
+    <value>Acre</value>
+  </data>
+  <data name="Unit.Centimeter" xml:space="preserve">
+    <value>Centimeter</value>
+  </data>
+  <data name="Unit.Cubic Centimeter" xml:space="preserve">
+    <value>Cubic Centimeter</value>
+  </data>
+  <data name="Unit.Cubic Foot" xml:space="preserve">
+    <value>Cubic Foot</value>
+  </data>
+  <data name="Unit.Cubic Meter" xml:space="preserve">
+    <value>Cubic Meter</value>
+  </data>
+  <data name="Unit.Dozen" xml:space="preserve">
+    <value>Dozen</value>
+  </data>
+  <data name="Unit.Each" xml:space="preserve">
+    <value>Each</value>
+  </data>
+  <data name="Unit.Foot" xml:space="preserve">
+    <value>Foot</value>
+  </data>
+  <data name="Unit.Gallon" xml:space="preserve">
+    <value>Gallon</value>
+  </data>
+  <data name="Unit.Gram" xml:space="preserve">
+    <value>Gram</value>
+  </data>
+  <data name="Unit.Gross" xml:space="preserve">
+    <value>Gross</value>
+  </data>
+  <data name="Unit.Hectare" xml:space="preserve">
+    <value>Hectare</value>
+  </data>
+  <data name="Unit.Inch" xml:space="preserve">
+    <value>Inch</value>
+  </data>
+  <data name="Unit.Kilogram" xml:space="preserve">
+    <value>Kilogram</value>
+  </data>
+  <data name="Unit.Kilometer" xml:space="preserve">
+    <value>Kilometer</value>
+  </data>
+  <data name="Unit.Liter" xml:space="preserve">
+    <value>Liter</value>
+  </data>
+  <data name="Unit.Meter" xml:space="preserve">
+    <value>Meter</value>
+  </data>
+  <data name="Unit.Metric Ton" xml:space="preserve">
+    <value>Metric Ton</value>
+  </data>
+  <data name="Unit.Mile" xml:space="preserve">
+    <value>Mile</value>
+  </data>
+  <data name="Unit.Milligram" xml:space="preserve">
+    <value>Milligram</value>
+  </data>
+  <data name="Unit.Milliliter" xml:space="preserve">
+    <value>Milliliter</value>
+  </data>
+  <data name="Unit.Millimeter" xml:space="preserve">
+    <value>Millimeter</value>
+  </data>
+  <data name="Unit.Ounce" xml:space="preserve">
+    <value>Ounce</value>
+  </data>
+  <data name="Unit.Pound" xml:space="preserve">
+    <value>Pound</value>
+  </data>
+  <data name="Unit.Score" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="Unit.Square Centimeter" xml:space="preserve">
+    <value>Square Centimeter</value>
+  </data>
+  <data name="Unit.Square Foot" xml:space="preserve">
+    <value>Square Foot</value>
+  </data>
+  <data name="Unit.Square Meter" xml:space="preserve">
+    <value>Square Meter</value>
+  </data>
+  <data name="Unit.Yard" xml:space="preserve">
+    <value>Yard</value>
+  </data>
 </root>

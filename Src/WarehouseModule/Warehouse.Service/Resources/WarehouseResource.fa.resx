@@ -603,4 +603,91 @@
   <data name="Item.Sku.Duplicate" xml:space="preserve">
     <value>شناسه یکتای کالا قبلا ثبت شده است.</value>
   </data>
+  <data name="Unit.Acre" xml:space="preserve">
+    <value>ایکر</value>
+  </data>
+  <data name="Unit.Centimeter" xml:space="preserve">
+    <value>سانتی متر</value>
+  </data>
+  <data name="Unit.Cubic Centimeter" xml:space="preserve">
+    <value>سانتی متر مکعب</value>
+  </data>
+  <data name="Unit.Cubic Foot" xml:space="preserve">
+    <value>فوت مکعب</value>
+  </data>
+  <data name="Unit.Cubic Meter" xml:space="preserve">
+    <value>متر مکعب</value>
+  </data>
+  <data name="Unit.Dozen" xml:space="preserve">
+    <value>دوجین</value>
+  </data>
+  <data name="Unit.Each" xml:space="preserve">
+    <value>عدد</value>
+  </data>
+  <data name="Unit.Foot" xml:space="preserve">
+    <value>فوت</value>
+  </data>
+  <data name="Unit.Gallon" xml:space="preserve">
+    <value>گالن</value>
+  </data>
+  <data name="Unit.Gram" xml:space="preserve">
+    <value>گرم</value>
+  </data>
+  <data name="Unit.Gross" xml:space="preserve">
+    <value>گروس</value>
+  </data>
+  <data name="Unit.Hectare" xml:space="preserve">
+    <value>هکتار</value>
+  </data>
+  <data name="Unit.Inch" xml:space="preserve">
+    <value>اینچ</value>
+  </data>
+  <data name="Unit.Kilogram" xml:space="preserve">
+    <value>کیلوگرم</value>
+  </data>
+  <data name="Unit.Kilometer" xml:space="preserve">
+    <value>کیلومتر</value>
+  </data>
+  <data name="Unit.Liter" xml:space="preserve">
+    <value>لیتر</value>
+  </data>
+  <data name="Unit.Meter" xml:space="preserve">
+    <value>متر</value>
+  </data>
+  <data name="Unit.Metric Ton" xml:space="preserve">
+    <value>تن متریک</value>
+  </data>
+  <data name="Unit.Mile" xml:space="preserve">
+    <value>مایل</value>
+  </data>
+  <data name="Unit.Milligram" xml:space="preserve">
+    <value>میلی گرم</value>
+  </data>
+  <data name="Unit.Milliliter" xml:space="preserve">
+    <value>میلی لیتر</value>
+  </data>
+  <data name="Unit.Millimeter" xml:space="preserve">
+    <value>میلی متر</value>
+  </data>
+  <data name="Unit.Ounce" xml:space="preserve">
+    <value>اونس</value>
+  </data>
+  <data name="Unit.Pound" xml:space="preserve">
+    <value>پوند</value>
+  </data>
+  <data name="Unit.Score" xml:space="preserve">
+    <value>بیست تایی</value>
+  </data>
+  <data name="Unit.Square Centimeter" xml:space="preserve">
+    <value>سانتی متر مربع</value>
+  </data>
+  <data name="Unit.Square Foot" xml:space="preserve">
+    <value>فوت مربع</value>
+  </data>
+  <data name="Unit.Square Meter" xml:space="preserve">
+    <value>متر مربع</value>
+  </data>
+  <data name="Unit.Yard" xml:space="preserve">
+    <value>یارد</value>
+  </data>
 </root>
