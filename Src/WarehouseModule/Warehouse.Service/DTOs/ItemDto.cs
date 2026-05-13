@@ -12,6 +12,14 @@ public record ItemDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
+    decimal? Weight,
+    decimal? Length,
+    decimal? Width,
+    decimal? Height,
+    decimal? Volume,
+    UnitAsReferenceDto? PreferredMassUnit,
+    UnitAsReferenceDto? PreferredLengthUnit,
+    UnitAsReferenceDto? PreferredVolumeUnit,
     ItemTypeSlimDto ItemType,
     CategorySlimDto Category,
     List<AttributeSlimDto> Attributes,
@@ -46,6 +54,14 @@ public class CreateItemDto
     public bool IsActive { get; set; } = true;
     public Guid ItemTypeId { get; set; }
     public Guid CategoryId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 
     public List<CreateItemUnitOfMeasurementDto> ItemUnitOfMeasurements { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
@@ -74,6 +90,14 @@ public class PatchItemDto
     public string? Barcode { get; set; }
     public bool? IsActive { get; set; }
     public Guid? ItemTypeId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 
     public List<CreateItemUnitOfMeasurementDto>? ItemUnitOfMeasurements { get; set; }
     public List<Guid>? AttributeIds { get; set; }
