@@ -44,6 +44,26 @@ public class InventoryBalance :
         }).IsUnique();
 
         builder
+            .Property(e => e.OnHandQuantity)
+            .HasPrecision(22, 14);
+
+        builder
+           .Property(e => e.ReservedQuantity)
+           .HasPrecision(22, 14);
+
+        builder
+           .Property(e => e.BlockedQuantity)
+           .HasPrecision(22, 14);
+
+        builder
+           .Property(e => e.OccupiedMass)
+           .HasPrecision(22, 14);
+
+        builder
+           .Property(e => e.OccupiedVolume)
+           .HasPrecision(22, 14);
+
+        builder
             .Property(e => e.RowVersion)
             .IsRowVersion();
     }

@@ -13,20 +13,8 @@ public class ItemUnitOfMeasurement :
     public Guid UnitOfMeasurementId { get; set; }
     public required int UnitOrder { get; set; }
 
-    public decimal? Weight { get; set; }
-    public decimal? Length { get; set; }
-    public decimal? Width { get; set; }
-    public decimal? Height { get; set; }
-    public decimal? Volume { get; set; }
-    public Guid? PreferredMassUnitId { get; set; }
-    public Guid? PreferredLengthUnitId { get; set; }
-    public Guid? PreferredVolumeUnitId { get; set; }
-
     public Item Item { get; set; } = default!;
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
-    public Unit? PreferredMassUnit { get; set; }
-    public Unit? PreferredLengthUnit { get; set; }
-    public Unit? PreferredVolumeUnit { get; set; }
 
     public ICollection<ReceiptLineMeasurementValue> ReceiptLineMeasurementValues { get; set; } = [];
 
@@ -41,26 +29,6 @@ public class ItemUnitOfMeasurement :
             .HasDatabaseName("UX_ItemUnitOfMeasurement_Item_Uom");
 
         builder
-            .Property(e => e.Weight)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Length)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Width)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Height)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Volume)
-            .HasPrecision(28, 14);
-
-        builder
             .HasOne(e => e.Item)
             .WithMany(e => e.ItemUnitOfMeasurements)
             .HasForeignKey(e => e.ItemId)
@@ -71,23 +39,5 @@ public class ItemUnitOfMeasurement :
             .WithMany(e => e.ItemUnitOfMeasurements)
             .HasForeignKey(e => e.UnitOfMeasurementId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder
-            .HasOne(e => e.PreferredMassUnit)
-            .WithMany()
-            .HasForeignKey(e => e.PreferredMassUnitId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder
-            .HasOne(e => e.PreferredLengthUnit)
-            .WithMany()
-            .HasForeignKey(e => e.PreferredLengthUnitId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder
-            .HasOne(e => e.PreferredVolumeUnit)
-            .WithMany()
-            .HasForeignKey(e => e.PreferredVolumeUnitId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }
