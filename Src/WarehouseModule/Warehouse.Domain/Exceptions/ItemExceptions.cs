@@ -12,6 +12,13 @@ public sealed class ItemCodeAlreadyExistsException(string code)
     public override string LocalizationKey => "Item.Code.Duplicate";
 }
 
+public sealed class ItemSkuAlreadyExistsException(string sku)
+    : DuplicateResourceException(sku)
+{
+    public string Sku { get; } = sku;
+    public override string LocalizationKey => "Item.Sku.Duplicate";
+}
+
 public sealed class ItemUnitOfMeasurementCountExceededException(int maxCount)
     : BusinessRuleViolationException(maxCount)
 {

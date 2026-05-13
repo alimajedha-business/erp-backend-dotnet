@@ -600,4 +600,7 @@
   <data name="ReceiptTypeConfiguration.ReceiptType.NotEmpty" xml:space="preserve">
     <value>نوع رسید نمی‌تواند خالی باشد.</value>
   </data>
+  <data name="Item.Sku.Duplicate" xml:space="preserve">
+    <value>شناسه یکتای کالا قبلا ثبت شده است.</value>
+  </data>
 </root>

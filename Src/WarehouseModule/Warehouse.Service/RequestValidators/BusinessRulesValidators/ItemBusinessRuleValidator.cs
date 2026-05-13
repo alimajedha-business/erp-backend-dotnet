@@ -41,6 +41,13 @@ public class ItemBusinessRuleValidator(
             ct
         );
 
+        await ValidateItemSkuUniquenessAsync(
+            companyId,
+            excludedItemId: null,
+            createDto.Sku,
+            ct
+        );
+
         ValidateItemUnitOfMeasurementCount(createDto.ItemUnitOfMeasurements);
     }
 
@@ -66,6 +73,30 @@ public class ItemBusinessRuleValidator(
 
         if (exists)
             throw new ItemCodeAlreadyExistsException(code);
+    }
+
+    private async Task ValidateItemSkuUniquenessAsync(
+        Guid companyId,
+        Guid? excludedItemId,
+        string sku,
+        CancellationToken ct
+    )
+    {
+        var exists = excludedItemId is null
+            ? await _itemRepository.AnyAsync(
+                e => e.CompanyId == companyId && e.Sku == sku,
+                ct
+            )
+            : await _itemRepository.AnyAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.Id != excludedItemId.Value &&
+                    e.Sku == sku,
+                ct
+            );
+
+        if (exists)
+            throw new ItemSkuAlreadyExistsException(sku);
     }
 
     public void ValidateItemUnitOfMeasurementCount(

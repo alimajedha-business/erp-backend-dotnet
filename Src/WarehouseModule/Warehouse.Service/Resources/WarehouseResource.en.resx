@@ -600,4 +600,7 @@
   <data name="ReceiptTypeConfiguration.ReceiptType.NotEmpty" xml:space="preserve">
     <value>Receipt type could not be empty.</value>
   </data>
+  <data name="Item.Sku.Duplicate" xml:space="preserve">
+    <value>Item Sku already exists.</value>
+  </data>
 </root>
