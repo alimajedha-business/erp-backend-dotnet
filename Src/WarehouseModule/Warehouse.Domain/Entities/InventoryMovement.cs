@@ -30,7 +30,7 @@ public class InventoryMovement :
             .ToTable(nameof(InventoryMovement), "Warehouse")
             .ToTable(t => t.HasCheckConstraint(
                 "CK_InventoryMovement_Qty",
-                "QuantityBase <> 0"
+                "Quantity <> 0"
             ));
 
         builder
