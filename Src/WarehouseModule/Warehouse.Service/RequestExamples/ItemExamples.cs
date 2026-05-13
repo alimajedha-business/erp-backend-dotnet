@@ -23,26 +23,22 @@ public class CreateItemExample :
             TechnicalNumber = "11-Aq985-0012",
             Barcode = "010011447140",
             Sku = "10040-14001-112-2020",
+            Weight = 100,
+            Volume = 10,
+            PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
+            PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B"),
             ItemTypeId = new Guid("3F148EF5-BF43-4D43-8E3A-B25DECC7D092"),
             CategoryId = new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72E"),
             ItemUnitOfMeasurements = [
                 new CreateItemUnitOfMeasurementDto
                 {
                     UnitOfMeasurementId = new Guid("94E9EB2E-AB06-4AC6-92A1-FAFA5C765D37"),
-                    UnitOrder = 1,
-                    Weight = 100,
-                    Volume = 10,
-                    PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
-                    PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
+                    UnitOrder = 1
                 },
                 new CreateItemUnitOfMeasurementDto
                 {
                     UnitOfMeasurementId = new Guid("50C174BF-F9D6-4347-B62E-78E97514C1CA"),
-                    UnitOrder = 2,
-                    Weight = 1200,
-                    Volume = 120,
-                    PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
-                    PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
+                    UnitOrder = 2
                 }
             ],
             AttributeIds = [
@@ -150,6 +146,16 @@ public class ItemPatchExample :
         patchDoc.Replace(x => x.TitleInEnglish, "New Item Title in English");
         patchDoc.Replace(x => x.TechnicalNumber, "12-Aed85-301FX");
         patchDoc.Replace(x => x.Barcode, "01051044136071");
+        patchDoc.Replace(x => x.Weight, 100);
+        patchDoc.Replace(x => x.Volume, 10);
+        patchDoc.Replace(
+            x => x.PreferredMassUnitId,
+            new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321")
+        );
+        patchDoc.Replace(
+            x => x.PreferredVolumeUnitId,
+            new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
+        );
 
         patchDoc.Operations.Add(
             new Operation<PatchItemDto>(
@@ -161,20 +167,12 @@ public class ItemPatchExample :
                     new()
                     {
                         UnitOfMeasurementId = new Guid("50c174bf-f9d6-4347-b62e-78e97514c1ca"),
-                        UnitOrder = 1,
-                        Weight = 100,
-                        Volume = 10,
-                        PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
-                        PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
+                        UnitOrder = 1
                     },
                     new()
                     {
                         UnitOfMeasurementId = new Guid("94e9eb2e-ab06-4ac6-92a1-fafa5c765d37"),
-                        UnitOrder = 2,
-                        Weight = 1200,
-                        Volume = 120,
-                        PreferredMassUnitId = new Guid("A4E51B4D-2069-4F7A-B7AC-17D883FD0321"),
-                        PreferredVolumeUnitId = new Guid("15C38183-F807-46B7-B3B1-7653D9D6360B")
+                        UnitOrder = 2
                     }
                 }
             )

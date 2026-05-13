@@ -11,7 +11,7 @@ public class ItemBusinessRuleValidator(
     IItemRepository itemRepository
 ) : IItemBusinessRuleValidator
 {
-    private const int MaxItemUnitOfMeasurementCount = 3;
+    private const int MaxItemUnitOfMeasurementCount = 4;
 
     private static readonly HashSet<string> _allowedOrderFields = new(
         StringComparer.OrdinalIgnoreCase
