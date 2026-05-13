@@ -17,17 +17,17 @@ public class ReceiptLine :
     public Guid ReceiptId { get; set; }
     public int RowNumber { get; set; }
     public Guid ItemId { get; set; }
-    public Guid UnitOfMeasurementId { get; set; }
-    public decimal Quantity { get; set; }
+    public Guid WarehouseLocationId { get; set; }
     public decimal? UnitPrice { get; set; }
     public decimal? TotalPrice { get; set; }
 
-    public Receipt Receipt { get; set; } = null!;
-    public Item Item { get; set; } = null!;
-    public UnitOfMeasurement UnitOfMeasurement { get; set; } = null!;
+    public Receipt Receipt { get; set; } = default!;
+    public Item Item { get; set; } = default!;
+    public WarehouseLocation WarehouseLocation { get; set; } = default!;
 
     public ICollection<ReceiptFieldValue> ReceiptFieldValues { get; set; } = [];
     public ICollection<ReceiptLineAttributeValue> ReceiptLineAttributeValues { get; set; } = [];
+    public ICollection<ReceiptLineMeasurementValue> ReceiptLineMeasurementValues { get; set; } = [];
 
     public void Map(EntityTypeBuilder<ReceiptLine> builder)
     {
@@ -39,11 +39,12 @@ public class ReceiptLine :
             .IsUnique();
 
         builder
-            .HasIndex(i => new { i.CompanyId, i.ItemId});
-
-        builder
-            .Property(e => e.Quantity)
-            .HasPrecision(22, 4);
+            .HasIndex(i => new
+            { 
+                i.CompanyId,
+                i.ItemId,
+                i.WarehouseLocationId
+            });
 
         builder
             .Property(e => e.UnitPrice)
@@ -66,9 +67,9 @@ public class ReceiptLine :
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
-            .HasOne(e => e.UnitOfMeasurement)
+            .HasOne(e => e.WarehouseLocation)
             .WithMany()
-            .HasForeignKey(e => e.UnitOfMeasurementId)
+            .HasForeignKey(e => e.WarehouseLocationId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -207,8 +207,6 @@ public class ReceiptService(
                 CompanyId = companyId,
                 RowNumber = lineDto.RowNumber,
                 ItemId = lineDto.ItemId,
-                UnitOfMeasurementId = lineDto.UnitOfMeasurementId,
-                Quantity = lineDto.Quantity,
                 UnitPrice = lineDto.UnitPrice,
                 TotalPrice = lineDto.TotalPrice,
                 Receipt = receipt
@@ -353,8 +351,6 @@ public class ReceiptService(
         {
             RowNumber = line.RowNumber,
             ItemId = line.ItemId,
-            UnitOfMeasurementId = line.UnitOfMeasurementId,
-            Quantity = line.Quantity,
             UnitPrice = line.UnitPrice,
             TotalPrice = line.TotalPrice,
             ReceiptLineAttributeValues = [.. line.ReceiptLineAttributeValues
