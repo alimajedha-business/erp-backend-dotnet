@@ -28,11 +28,17 @@ public class ItemUnitOfMeasurement :
     public Unit? PreferredLengthUnit { get; set; }
     public Unit? PreferredVolumeUnit { get; set; }
 
+    public ICollection<ReceiptLineMeasurementValue> ReceiptLineMeasurementValues { get; set; } = [];
+
     public void Map(EntityTypeBuilder<ItemUnitOfMeasurement> builder)
     {
         builder
-            .ToTable(nameof(ItemUnitOfMeasurement), "Warehouse")
-            .HasKey(k => new { k.ItemId, k.UnitOfMeasurementId });
+            .ToTable(nameof(ItemUnitOfMeasurement), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.ItemId, i.UnitOfMeasurementId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemUnitOfMeasurement_Item_Uom");
 
         builder
             .Property(e => e.Weight)

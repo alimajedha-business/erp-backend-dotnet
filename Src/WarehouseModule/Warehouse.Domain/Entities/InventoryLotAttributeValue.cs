@@ -27,8 +27,12 @@ public class InventoryLotAttributeValue :
     public void Map(EntityTypeBuilder<InventoryLotAttributeValue> builder)
     {
         builder
-            .ToTable(nameof(InventoryLotAttributeValue), "Warehouse")
-            .HasKey(k => new { k.LotId, k.AttributeId });
+            .ToTable(nameof(InventoryLotAttributeValue), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.LotId, i.AttributeId })
+            .IsUnique()
+            .HasDatabaseName("UX_InventoryLotAttributeValue_Lot_Attribute");
 
         builder
             .HasIndex(i => new { i.AttributeId, i.StringValue })
