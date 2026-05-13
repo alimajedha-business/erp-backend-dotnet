@@ -43,7 +43,7 @@ public class UnitService(
             ct
         );
 
-        return _mapper.Map<UnitDto>(unit);
+        return Localize(_mapper.Map<UnitDto>(unit));
     }
 
     public async Task<ListResponseModel<UnitSlimDto>> FilterByQAsync(
@@ -55,7 +55,9 @@ public class UnitService(
         var res = await _unitRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<UnitSlimDto>(
-            results: _mapper.Map<IReadOnlyList<UnitSlimDto>>(res.items),
+            results: [.. _mapper
+                .Map<IReadOnlyList<UnitSlimDto>>(res.items)
+                .Select(Localize)],
             totalCount: res.count,
             parameters
         );
@@ -72,7 +74,9 @@ public class UnitService(
         var res = await _unitRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<UnitDto>(
-            results: _mapper.Map<IReadOnlyList<UnitDto>>(res.items),
+            results: [.. _mapper
+                .Map<IReadOnlyList<UnitDto>>(res.items)
+                .Select(Localize)],
             totalCount: res.count,
             parameters
         );
@@ -91,5 +95,15 @@ public class UnitService(
         );
 
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
+    }
+
+    private UnitDto Localize(UnitDto dto)
+    {
+        return dto with { Title = _localizer[dto.Title].Value };
+    }
+
+    private UnitSlimDto Localize(UnitSlimDto dto)
+    {
+        return dto with { Title = _localizer[dto.Title].Value };
     }
 }
