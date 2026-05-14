@@ -15,8 +15,7 @@ public class ReceiptFieldValue :
     IBaseEntityTypeConfiguration<ReceiptFieldValue>
 {
     public Guid ReceiptId { get; set; }
-    public Receipt Receipt { get; set; } = null!;
-
+    
     // Null means header value.
     // Not null means detail/grid-row value.
     public Guid? ReceiptLineId { get; set; }
@@ -29,8 +28,9 @@ public class ReceiptFieldValue :
     public Guid? ReferenceId { get; set; }
     public bool? BooleanValue { get; set; }
 
-    public ReceiptFieldDefinition FieldDefinition { get; set; } = null!;
+    public Receipt Receipt { get; set; } = default!;
     public ReceiptLine? ReceiptLine { get; set; }
+    public ReceiptFieldDefinition FieldDefinition { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<ReceiptFieldValue> builder)
     {
@@ -60,10 +60,16 @@ public class ReceiptFieldValue :
             .HasPrecision(22, 4);
 
         builder
+            .HasOne(e => e.Receipt)
+            .WithMany(e => e.ReceiptFieldValues)
+            .HasForeignKey(e => e.ReceiptId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
             .HasOne(e => e.ReceiptLine)
             .WithMany(e => e.ReceiptFieldValues)
             .HasForeignKey(e => e.ReceiptLineId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.FieldDefinition)

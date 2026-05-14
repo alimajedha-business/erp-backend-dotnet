@@ -9,6 +9,12 @@ public class ReceiptLineMappingProfile : Profile
 {
     public ReceiptLineMappingProfile()
     {
-        CreateMap<CreateReceiptLineDto, ReceiptLine>();
+        CreateMap<CreateReceiptLineDto, ReceiptLine>()
+            .ForMember(d => d.ReceiptLineMeasurementValues, o => o.Ignore())
+            .ForMember(d => d.ReceiptLineAttributeValues, o => o.Ignore())
+            .ForMember(d => d.ReceiptFieldValues, o => o.Ignore());
+
+        CreateMap<ReceiptLineMeasurementValue, ReceiptLineMeasurementValueDto>();
+        CreateMap<CreateReceiptLineMeasurementValueDto, ReceiptLineMeasurementValue>();
     }
 }

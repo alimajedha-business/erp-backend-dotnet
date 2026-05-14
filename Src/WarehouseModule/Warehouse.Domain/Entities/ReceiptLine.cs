@@ -18,12 +18,25 @@ public class ReceiptLine :
     public int RowNumber { get; set; }
     public Guid ItemId { get; set; }
     public Guid WarehouseLocationId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
     public decimal? UnitPrice { get; set; }
     public decimal? TotalPrice { get; set; }
+
+    // Frequently used item attributes
+    public string? BatchNumber { get; set; }
+    public string? SerialNumber { get; set; }
+    public DateTime? ExpiryDate { get; set; }
+
+    public string? Description { get; set; }
 
     public Receipt Receipt { get; set; } = default!;
     public Item Item { get; set; } = default!;
     public WarehouseLocation WarehouseLocation { get; set; } = default!;
+    public Unit? PreferredMassUnit { get; set; }
+    public Unit? PreferredVolumeUnit { get; set; }
 
     public ICollection<ReceiptFieldValue> ReceiptFieldValues { get; set; } = [];
     public ICollection<ReceiptLineAttributeValue> ReceiptLineAttributeValues { get; set; } = [];
@@ -47,6 +60,14 @@ public class ReceiptLine :
             });
 
         builder
+            .Property(e => e.Weight)
+            .HasPrecision(28, 14);
+
+        builder
+            .Property(e => e.Volume)
+            .HasPrecision(28, 14);
+
+        builder
             .Property(e => e.UnitPrice)
             .HasPrecision(22, 4);
 
@@ -58,18 +79,18 @@ public class ReceiptLine :
             .HasOne(e => e.Receipt)
             .WithMany(e => e.ReceiptLines)
             .HasForeignKey(e => e.ReceiptId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(e => e.Item)
             .WithMany()
             .HasForeignKey(e => e.ItemId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(e => e.WarehouseLocation)
             .WithMany()
             .HasForeignKey(e => e.WarehouseLocationId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

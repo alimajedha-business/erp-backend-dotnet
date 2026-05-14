@@ -1,10 +1,13 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+﻿using NGErp.Warehouse.Domain.Entities;
+
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptDto(
     Guid Id,
     long Number,
     DateOnly ReceiptDate,
     Guid ReceiptTypeId,
+    ReceiptStatus Status,
     string? Description,
     IReadOnlyList<ReceiptLineDto> ReceiptLines,
     IReadOnlyList<ReceiptFieldValueDto> ReceiptFieldValues
@@ -16,6 +19,7 @@ public record ReceiptListDto(
     DateOnly ReceiptDate,
     Guid ReceiptTypeId,
     string ReceiptTypeTitle,
+    ReceiptStatus Status,
     string? Description,
     int ReceiptLineCount
 );

@@ -12,11 +12,6 @@ public class ReceiptLineMeasurementValue :
     public Guid ReceiptLineId { get; set; }
     public Guid ItemUnitOfMeasurementId { get; set; }
     public decimal Quantity { get; set; }
-    public decimal? Weight { get; set; }
-    public decimal? Length { get; set; }
-    public decimal? Width { get; set; }
-    public decimal? Height { get; set; }
-    public decimal? Volume { get; set; }
 
     public ReceiptLine ReceiptLine { get; set; } = default!;
     public ItemUnitOfMeasurement ItemUnitOfMeasurement { get; set; } = default!;
@@ -35,26 +30,6 @@ public class ReceiptLineMeasurementValue :
 
         builder
             .Property(e => e.Quantity)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Weight)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Length)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Width)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Height)
-            .HasPrecision(28, 14);
-
-        builder
-            .Property(e => e.Volume)
             .HasPrecision(28, 14);
 
         builder
