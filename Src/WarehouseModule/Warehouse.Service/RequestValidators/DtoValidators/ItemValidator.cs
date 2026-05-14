@@ -203,10 +203,27 @@ public static class PatchItemPolicy
     private static readonly PatchFieldRule RequiredReplaceOnly =
         PatchFieldRule.RequiredReplaceOnly();
 
-    private static readonly PatchFieldRule OptionalReplaceOrRemove =
-        PatchFieldRule.OptionalReplaceOrRemove();
+    private static readonly PatchFieldRule OptionalScalarValue =
+        new(
+            AllowNull: true,
+            AllowEmpty: true,
+            AllowRemove: true,
+            AllowedOperations: [
+                OperationType.Add,
+                OperationType.Replace,
+                OperationType.Remove
+            ]
+        );
 
-    private static readonly PatchFieldRule RequiredReplaceOnlyAllowEmpty =
+    private static readonly PatchFieldRule OptionalCollectionValue =
+        new(
+            AllowNull: false,
+            AllowEmpty: true,
+            AllowRemove: false,
+            AllowedOperations: [OperationType.Add, OperationType.Replace]
+        );
+
+    private static readonly PatchFieldRule RequiredCollectionValue =
         new(
             AllowNull: false,
             AllowEmpty: true,
@@ -219,23 +236,25 @@ public static class PatchItemPolicy
     {
         ["/code"] = RequiredReplaceOnly,
         ["/title"] = RequiredReplaceOnly,
-        ["/titleInEnglish"] = OptionalReplaceOrRemove,
-        ["/technicalNumber"] = OptionalReplaceOrRemove,
-        ["/barcode"] = OptionalReplaceOrRemove,
-        ["/weight"] = OptionalReplaceOrRemove,
-        ["/length"] = OptionalReplaceOrRemove,
-        ["/width"] = OptionalReplaceOrRemove,
-        ["/height"] = OptionalReplaceOrRemove,
-        ["/volume"] = OptionalReplaceOrRemove,
-        ["/preferredMassUnitId"] = OptionalReplaceOrRemove,
-        ["/preferredLengthUnitId"] = OptionalReplaceOrRemove,
-        ["/preferredVolumeUnitId"] = OptionalReplaceOrRemove,
-        ["/itemAttributes"] = RequiredReplaceOnlyAllowEmpty,
-        ["/attributeIds"] = RequiredReplaceOnlyAllowEmpty,
-        ["/itemUnitOfMeasurements"] = RequiredReplaceOnlyAllowEmpty,
-        ["/itemWarehouses"] = RequiredReplaceOnlyAllowEmpty,
-        ["/itemUnitOfMeasurementConversions"] = RequiredReplaceOnlyAllowEmpty,
-        ["/unitConversions"] = RequiredReplaceOnlyAllowEmpty
+        ["/titleInEnglish"] = OptionalScalarValue,
+        ["/technicalNumber"] = OptionalScalarValue,
+        ["/barcode"] = OptionalScalarValue,
+        ["/isActive"] = RequiredReplaceOnly,
+        ["/itemTypeId"] = RequiredReplaceOnly,
+        ["/weight"] = OptionalScalarValue,
+        ["/length"] = OptionalScalarValue,
+        ["/width"] = OptionalScalarValue,
+        ["/height"] = OptionalScalarValue,
+        ["/volume"] = OptionalScalarValue,
+        ["/preferredMassUnitId"] = OptionalScalarValue,
+        ["/preferredLengthUnitId"] = OptionalScalarValue,
+        ["/preferredVolumeUnitId"] = OptionalScalarValue,
+        ["/itemAttributes"] = OptionalCollectionValue,
+        ["/attributeIds"] = OptionalCollectionValue,
+        ["/itemUnitOfMeasurements"] = RequiredCollectionValue,
+        ["/itemWarehouses"] = OptionalCollectionValue,
+        ["/itemUnitOfMeasurementConversions"] = OptionalCollectionValue,
+        ["/unitConversions"] = OptionalCollectionValue
     };
 
     public static void Validate(JsonPatchDocument<PatchItemDto> patchDocument)
