@@ -232,30 +232,30 @@ public static class PatchItemPolicy
         );
 
     private static readonly Dictionary<string, PatchFieldRule> Rules =
-    new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["/code"] = RequiredReplaceOnly,
-        ["/title"] = RequiredReplaceOnly,
-        ["/titleInEnglish"] = OptionalScalarValue,
-        ["/technicalNumber"] = OptionalScalarValue,
-        ["/barcode"] = OptionalScalarValue,
-        ["/isActive"] = RequiredReplaceOnly,
-        ["/itemTypeId"] = RequiredReplaceOnly,
-        ["/weight"] = OptionalScalarValue,
-        ["/length"] = OptionalScalarValue,
-        ["/width"] = OptionalScalarValue,
-        ["/height"] = OptionalScalarValue,
-        ["/volume"] = OptionalScalarValue,
-        ["/preferredMassUnitId"] = OptionalScalarValue,
-        ["/preferredLengthUnitId"] = OptionalScalarValue,
-        ["/preferredVolumeUnitId"] = OptionalScalarValue,
-        ["/itemAttributes"] = OptionalCollectionValue,
-        ["/attributeIds"] = OptionalCollectionValue,
-        ["/itemUnitOfMeasurements"] = RequiredCollectionValue,
-        ["/itemWarehouses"] = OptionalCollectionValue,
-        ["/itemUnitOfMeasurementConversions"] = OptionalCollectionValue,
-        ["/unitConversions"] = OptionalCollectionValue
-    };
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["/code"] = RequiredReplaceOnly,
+            ["/title"] = RequiredReplaceOnly,
+            ["/titleInEnglish"] = OptionalScalarValue,
+            ["/technicalNumber"] = OptionalScalarValue,
+            ["/barcode"] = OptionalScalarValue,
+            ["/isActive"] = RequiredReplaceOnly,
+            ["/itemTypeId"] = RequiredReplaceOnly,
+            ["/weight"] = OptionalScalarValue,
+            ["/length"] = OptionalScalarValue,
+            ["/width"] = OptionalScalarValue,
+            ["/height"] = OptionalScalarValue,
+            ["/volume"] = OptionalScalarValue,
+            ["/preferredMassUnitId"] = OptionalScalarValue,
+            ["/preferredLengthUnitId"] = OptionalScalarValue,
+            ["/preferredVolumeUnitId"] = OptionalScalarValue,
+            ["/itemAttributes"] = OptionalCollectionValue,
+            ["/attributeIds"] = OptionalCollectionValue,
+            ["/itemUnitOfMeasurements"] = RequiredCollectionValue,
+            ["/itemWarehouses"] = OptionalCollectionValue,
+            ["/itemUnitOfMeasurementConversions"] = OptionalCollectionValue,
+            ["/unitConversions"] = OptionalCollectionValue
+        };
 
     public static void Validate(JsonPatchDocument<PatchItemDto> patchDocument)
     {
