@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using System.Collections;
 
 using NGErp.Base.Domain.Exceptions;
 
@@ -39,16 +40,34 @@ public static class PatchPolicyValidator
                 throw new InvalidPatchDocumentException(
                     $"Patch value for '{operation.path}' cannot be null.");
 
-            if (
-                operation.value is string text &&
-                string.IsNullOrWhiteSpace(text) &&
-                !rule.AllowEmpty
-            )
+            if (operation.value is not null && !rule.AllowEmpty && IsEmpty(operation.value))
             {
                 throw new InvalidPatchDocumentException(
                     $"Patch value for '{operation.path}' cannot be empty.");
             }
         }
+    }
+
+    private static bool IsEmpty(object value)
+    {
+        if (value is string text)
+            return string.IsNullOrWhiteSpace(text);
+
+        if (value is IEnumerable enumerable)
+        {
+            var enumerator = enumerable.GetEnumerator();
+
+            try
+            {
+                return !enumerator.MoveNext();
+            }
+            finally
+            {
+                (enumerator as IDisposable)?.Dispose();
+            }
+        }
+
+        return false;
     }
 
     public static bool HasProperty<TDto>(

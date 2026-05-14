@@ -215,7 +215,7 @@ public static class PatchItemPolicy
             ]
         );
 
-    private static readonly PatchFieldRule OptionalCollectionValue =
+    private static readonly PatchFieldRule OptionalCollectionAllowEmpty =
         new(
             AllowNull: false,
             AllowEmpty: true,
@@ -223,10 +223,10 @@ public static class PatchItemPolicy
             AllowedOperations: [OperationType.Add, OperationType.Replace]
         );
 
-    private static readonly PatchFieldRule RequiredCollectionValue =
+    private static readonly PatchFieldRule RequiredNonEmptyCollectionReplaceOnly =
         new(
             AllowNull: false,
-            AllowEmpty: true,
+            AllowEmpty: false,
             AllowRemove: false,
             AllowedOperations: [OperationType.Replace]
         );
@@ -249,12 +249,12 @@ public static class PatchItemPolicy
             ["/preferredMassUnitId"] = OptionalScalarValue,
             ["/preferredLengthUnitId"] = OptionalScalarValue,
             ["/preferredVolumeUnitId"] = OptionalScalarValue,
-            ["/itemAttributes"] = OptionalCollectionValue,
-            ["/attributeIds"] = OptionalCollectionValue,
-            ["/itemUnitOfMeasurements"] = RequiredCollectionValue,
-            ["/itemWarehouses"] = OptionalCollectionValue,
-            ["/itemUnitOfMeasurementConversions"] = OptionalCollectionValue,
-            ["/unitConversions"] = OptionalCollectionValue
+            ["/itemAttributes"] = OptionalCollectionAllowEmpty,
+            ["/attributeIds"] = OptionalCollectionAllowEmpty,
+            ["/itemUnitOfMeasurements"] = RequiredNonEmptyCollectionReplaceOnly,
+            ["/itemWarehouses"] = OptionalCollectionAllowEmpty,
+            ["/itemUnitOfMeasurementConversions"] = OptionalCollectionAllowEmpty,
+            ["/unitConversions"] = OptionalCollectionAllowEmpty
         };
 
     public static void Validate(JsonPatchDocument<PatchItemDto> patchDocument)
