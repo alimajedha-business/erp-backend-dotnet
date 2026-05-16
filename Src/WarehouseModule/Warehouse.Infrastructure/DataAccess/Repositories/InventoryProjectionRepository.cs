@@ -26,6 +26,8 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             .AsSplitQuery()
             .Include(e => e.ReceiptType)
             .Include(e => e.ReceiptLines)
+                .ThenInclude(e => e.WarehouseLocation)
+            .Include(e => e.ReceiptLines)
                 .ThenInclude(e => e.Item)
                     .ThenInclude(e => e.ItemUnitOfMeasurements)
             .Include(e => e.ReceiptLines)
@@ -46,8 +48,8 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         {
             var lot = await GetOrCreateLotAsync(companyId, line, ct);
             var quantity = GetPrimaryQuantity(line);
-            var mass = line.Weight ?? 0;
-            var volume = line.Volume ?? 0;
+            var mass = GetLineMass(line, quantity);
+            var volume = GetLineVolume(line, quantity);
             var direction = receipt.ReceiptType.AddToStock
                 ? InventoryMovementDirection.Inbound
                 : InventoryMovementDirection.Outbound;
@@ -84,6 +86,18 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 ct
             );
 
+            await ApplyInventoryBalanceDeltaAsync(
+                companyId,
+                line.ItemId,
+                line.WarehouseLocation.WarehouseId,
+                line.WarehouseLocationId,
+                lot.Id,
+                sign * quantity,
+                sign * mass,
+                sign * volume,
+                ct
+            );
+
             await ApplyLocationUsageDeltaAsync(
                 line.WarehouseLocationId,
                 sign * mass,
@@ -102,6 +116,8 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
     )
     {
         var movements = await _context.Set<InventoryMovement>()
+            .Include(e => e.ToLocation)
+            .Include(e => e.FromLocation)
             .Where(e => e.CompanyId == companyId && e.SourceDocumentId == receiptId)
             .ToListAsync(ct);
 
@@ -111,13 +127,33 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             var locationId = movement.Direction == InventoryMovementDirection.Inbound
                 ? movement.ToLocationId
                 : movement.FromLocationId;
+            var warehouseId = movement.Direction == InventoryMovementDirection.Inbound
+                ? movement.ToLocation?.WarehouseId
+                : movement.FromLocation?.WarehouseId;
 
-            if (locationId.HasValue)
+            if (locationId.HasValue && warehouseId.HasValue)
             {
                 await ApplyBalanceDeltaAsync(
                     companyId,
                     movement.LotId,
                     locationId.Value,
+                    sign * movement.Quantity,
+                    sign * movement.Mass,
+                    sign * movement.Volume,
+                    ct
+                );
+
+                var itemId = await _context.Set<InventoryLot>()
+                    .Where(e => e.Id == movement.LotId)
+                    .Select(e => e.ItemId)
+                    .SingleAsync(ct);
+
+                await ApplyInventoryBalanceDeltaAsync(
+                    companyId,
+                    itemId,
+                    warehouseId.Value,
+                    locationId.Value,
+                    movement.LotId,
                     sign * movement.Quantity,
                     sign * movement.Mass,
                     sign * movement.Volume,
@@ -224,6 +260,16 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         return line.ReceiptLineMeasurementValues.FirstOrDefault()?.Quantity ?? 1;
     }
 
+    private static decimal GetLineMass(ReceiptLine line, decimal primaryQuantity)
+    {
+        return line.Weight ?? (line.Item.Weight ?? 0) * primaryQuantity;
+    }
+
+    private static decimal GetLineVolume(ReceiptLine line, decimal primaryQuantity)
+    {
+        return line.Volume ?? (line.Item.Volume ?? 0) * primaryQuantity;
+    }
+
     private async Task ApplyBalanceDeltaAsync(
         Guid companyId,
         Guid lotId,
@@ -258,6 +304,48 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         balance.Quantity += quantityDelta;
         balance.Mass += massDelta;
         balance.Volume += volumeDelta;
+    }
+
+    private async Task ApplyInventoryBalanceDeltaAsync(
+        Guid companyId,
+        Guid itemId,
+        Guid warehouseId,
+        Guid warehouseLocationId,
+        Guid inventoryLotId,
+        decimal quantityDelta,
+        decimal massDelta,
+        decimal volumeDelta,
+        CancellationToken ct
+    )
+    {
+        var balance = await _context.Set<InventoryBalance>()
+            .SingleOrDefaultAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.ItemId == itemId &&
+                    e.WarehouseId == warehouseId &&
+                    e.WarehouseLocationId == warehouseLocationId &&
+                    e.InventoryLotId == inventoryLotId,
+                ct
+            );
+
+        if (balance is null)
+        {
+            balance = new InventoryBalance
+            {
+                CompanyId = companyId,
+                ItemId = itemId,
+                WarehouseId = warehouseId,
+                WarehouseLocationId = warehouseLocationId,
+                InventoryLotId = inventoryLotId
+            };
+
+            await _context.Set<InventoryBalance>().AddAsync(balance, ct);
+        }
+
+        balance.OnHandQuantity += quantityDelta;
+        balance.OccupiedMass += massDelta;
+        balance.OccupiedVolume += volumeDelta;
     }
 
     private async Task ApplyLocationUsageDeltaAsync(
