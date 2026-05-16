@@ -307,16 +307,16 @@
     <value>سطر رسید شامل مقدار تکراری برای ویژگی کالا است.</value>
   </data>
   <data name="Receipt.FieldValue.DataTypeMismatch" xml:space="preserve">
-    <value>مقدار فیلد رسید با نوع داده پیکربندی‌شده مطابقت ندارد.</value>
+    <value>مقدار فیلد رسید «{0}» باید با نوع داده پیکربندی‌شده «{1}» مطابقت داشته باشد.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.Duplicate" xml:space="preserve">
     <value>رسید شامل مقدار تکراری برای تعریف فیلد است.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.NotConfigured" xml:space="preserve">
-    <value>تعریف فیلد رسید برای این نوع رسید و محل قرارگیری پیکربندی نشده است.</value>
+    <value>فیلد رسید «{0}» برای محل قرارگیری «{1}» در این نوع رسید پیکربندی نشده است.</value>
   </data>
   <data name="Receipt.FieldValue.Required" xml:space="preserve">
-    <value>مقدار یکی از فیلدهای الزامی رسید ثبت نشده است.</value>
+    <value>مقدار فیلد الزامی رسید «{0}» ثبت نشده است.</value>
   </data>
   <data name="Receipt.Number.NotEmpty" xml:space="preserve">
     <value>شماره رسید نمی‌تواند خالی باشد.</value>
@@ -336,8 +336,35 @@
   <data name="Receipt.ReceiptLines.RowNumber.Duplicate" xml:space="preserve">
     <value>رسید شامل شماره ردیف تکراری '{0}' است.</value>
   </data>
+  <data name="Receipt.Line.ValidationFailed" xml:space="preserve">
+    <value>لطفا خطای ردیف(های) رسید را برطرف نمایید.</value>
+  </data>
   <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
     <value>نوع رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Detail" xml:space="preserve">
+    <value>جزئیات</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Header" xml:space="preserve">
+    <value>سربرگ</value>
+  </data>
+  <data name="ReceiptFieldDataType.Boolean" xml:space="preserve">
+    <value>منطقی</value>
+  </data>
+  <data name="ReceiptFieldDataType.Date" xml:space="preserve">
+    <value>تاریخ</value>
+  </data>
+  <data name="ReceiptFieldDataType.Decimal" xml:space="preserve">
+    <value>عدد اعشاری</value>
+  </data>
+  <data name="ReceiptFieldDataType.Guid" xml:space="preserve">
+    <value>شناسه</value>
+  </data>
+  <data name="ReceiptFieldDataType.Integer" xml:space="preserve">
+    <value>عدد صحیح</value>
+  </data>
+  <data name="ReceiptFieldDataType.Text" xml:space="preserve">
+    <value>متن</value>
   </data>
   <data name="ReceiptFieldDefinition" xml:space="preserve">
     <value>تعریف فیلد رسید</value>
@@ -361,7 +388,7 @@
     <value>واحد اندازه‌گیری الزامی است.</value>
   </data>
   <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
-    <value>واحد اندازه‌گیری سطر رسید برای کالای انتخاب‌شده مجاز نیست.</value>
+    <value>واحد اندازه‌گیری «{0}» برای کالای انتخاب‌شده در سطر رسید مجاز نیست.</value>
   </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>ویژگی کالا الزامی است.</value>

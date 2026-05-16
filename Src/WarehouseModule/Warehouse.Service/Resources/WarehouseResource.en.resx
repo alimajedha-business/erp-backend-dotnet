@@ -307,16 +307,16 @@
     <value>Receipt line contains duplicate item attribute values.</value>
   </data>
   <data name="Receipt.FieldValue.DataTypeMismatch" xml:space="preserve">
-    <value>Receipt field value does not match the configured field data type.</value>
+    <value>Receipt field '{0}' value must match the configured data type '{1}'.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.Duplicate" xml:space="preserve">
     <value>Receipt contains duplicate field definition values.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.NotConfigured" xml:space="preserve">
-    <value>Receipt field definition is not configured for this receipt type and placement.</value>
+    <value>Receipt field '{0}' is not configured for '{1}' placement in this receipt type.</value>
   </data>
   <data name="Receipt.FieldValue.Required" xml:space="preserve">
-    <value>A required receipt field value is missing.</value>
+    <value>A required receipt field value is missing: {0}.</value>
   </data>
   <data name="Receipt.Number.NotEmpty" xml:space="preserve">
     <value>Receipt number could not be empty.</value>
@@ -336,8 +336,35 @@
   <data name="Receipt.ReceiptLines.RowNumber.Duplicate" xml:space="preserve">
     <value>Receipt contains duplicate row number '{0}'.</value>
   </data>
+  <data name="Receipt.Line.ValidationFailed" xml:space="preserve">
+    <value>Please resolve the receipt line error(s).</value>
+  </data>
   <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
     <value>Receipt type could not be empty.</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Detail" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Header" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="ReceiptFieldDataType.Boolean" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="ReceiptFieldDataType.Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ReceiptFieldDataType.Decimal" xml:space="preserve">
+    <value>Decimal</value>
+  </data>
+  <data name="ReceiptFieldDataType.Guid" xml:space="preserve">
+    <value>Guid</value>
+  </data>
+  <data name="ReceiptFieldDataType.Integer" xml:space="preserve">
+    <value>Integer</value>
+  </data>
+  <data name="ReceiptFieldDataType.Text" xml:space="preserve">
+    <value>Text</value>
   </data>
   <data name="ReceiptFieldDefinition" xml:space="preserve">
     <value>Receipt Field Definition</value>
@@ -361,7 +388,7 @@
     <value>Unit of measurement is required.</value>
   </data>
   <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
-    <value>Receipt line unit of measurement is not allowed for the selected item.</value>
+    <value>Receipt line unit of measurement '{0}' is not allowed for the selected item.</value>
   </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>Item attribute is required.</value>

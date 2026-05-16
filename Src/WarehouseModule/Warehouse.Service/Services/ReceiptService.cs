@@ -207,10 +207,26 @@ public class ReceiptService(
                 CompanyId = companyId,
                 RowNumber = lineDto.RowNumber,
                 ItemId = lineDto.ItemId,
+                WarehouseLocationId = lineDto.WarehouseLocationId,
+                Weight = lineDto.Weight,
+                Volume = lineDto.Volume,
+                PreferredMassUnitId = lineDto.PreferredMassUnitId,
+                PreferredVolumeUnitId = lineDto.PreferredVolumeUnitId,
                 UnitPrice = lineDto.UnitPrice,
                 TotalPrice = lineDto.TotalPrice,
+                BatchNumber = lineDto.BatchNumber,
+                SerialNumber = lineDto.SerialNumber,
+                ExpiryDate = lineDto.ExpiryDate,
+                Description = lineDto.Description,
                 Receipt = receipt
             };
+
+            foreach (var measurementValueDto in lineDto.ReceiptLineMeasurementValues)
+            {
+                line.ReceiptLineMeasurementValues.Add(
+                    MapReceiptLineMeasurementValue(measurementValueDto, line)
+                );
+            }
 
             foreach (var attributeValueDto in lineDto.ReceiptLineAttributeValues)
             {
@@ -278,7 +294,11 @@ public class ReceiptService(
         var lineAttributeValues = receiptLines
             .SelectMany(e => e.ReceiptLineAttributeValues)
             .ToList();
+        var lineMeasurementValues = receiptLines
+            .SelectMany(e => e.ReceiptLineMeasurementValues)
+            .ToList();
 
+        _receiptRepository.RemoveReceiptLineMeasurementValues(lineMeasurementValues);
         _receiptRepository.RemoveReceiptLineAttributeValues(lineAttributeValues);
         _receiptRepository.RemoveReceiptFieldValues(lineFieldValues);
         _receiptRepository.RemoveReceiptLines(receiptLines);
@@ -351,8 +371,19 @@ public class ReceiptService(
         {
             RowNumber = line.RowNumber,
             ItemId = line.ItemId,
+            WarehouseLocationId = line.WarehouseLocationId,
+            Weight = line.Weight,
+            Volume = line.Volume,
+            PreferredMassUnitId = line.PreferredMassUnitId,
+            PreferredVolumeUnitId = line.PreferredVolumeUnitId,
             UnitPrice = line.UnitPrice,
             TotalPrice = line.TotalPrice,
+            BatchNumber = line.BatchNumber,
+            SerialNumber = line.SerialNumber,
+            ExpiryDate = line.ExpiryDate,
+            Description = line.Description,
+            ReceiptLineMeasurementValues = [.. line.ReceiptLineMeasurementValues
+                .Select(MapCreateReceiptLineMeasurementValueDto)],
             ReceiptLineAttributeValues = [.. line.ReceiptLineAttributeValues
                 .Select(MapCreateReceiptLineAttributeValueDto)],
             ReceiptFieldValues = [.. line.ReceiptFieldValues
@@ -390,6 +421,30 @@ public class ReceiptService(
             DateTimeValue = attributeValue.DateTimeValue,
             ReferenceId = attributeValue.ReferenceId,
             BooleanValue = attributeValue.BooleanValue
+        };
+    }
+
+    private static ReceiptLineMeasurementValue MapReceiptLineMeasurementValue(
+        CreateReceiptLineMeasurementValueDto dto,
+        ReceiptLine line
+    )
+    {
+        return new ReceiptLineMeasurementValue
+        {
+            ReceiptLine = line,
+            ItemUnitOfMeasurementId = dto.ItemUnitOfMeasurementId,
+            Quantity = dto.Quantity
+        };
+    }
+
+    private static CreateReceiptLineMeasurementValueDto MapCreateReceiptLineMeasurementValueDto(
+        ReceiptLineMeasurementValue measurementValue
+    )
+    {
+        return new CreateReceiptLineMeasurementValueDto
+        {
+            ItemUnitOfMeasurementId = measurementValue.ItemUnitOfMeasurementId,
+            Quantity = measurementValue.Quantity
         };
     }
 }

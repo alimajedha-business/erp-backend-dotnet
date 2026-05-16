@@ -99,11 +99,40 @@ public class ReceiptBusinessRuleValidator(
             ct
         );
 
-        ValidateDuplicateRows(dto);
-        ValidateDuplicateValues(dto);
-        ValidateValueObjects(dto);
-        await ValidateConfiguredFieldsAsync(companyId, dto, ct);
-        await ValidateItemsAndUnitsAsync(companyId, dto, ct);
+        ValidateDuplicateHeaderValues(dto.ReceiptFieldValues);
+        ValidateHeaderValueObjects(dto.ReceiptFieldValues);
+
+        var configuration = await _configurationRepository.SingleOrDefaultAsync(
+            e => e.CompanyId == companyId && e.ReceiptTypeId == dto.ReceiptTypeId,
+            trackChanges: false,
+            ct
+        ) ?? throw new ReceiptTypeConfigurationNotFoundException();
+
+        var configurations = configuration.FieldConfigurations
+            .ToDictionary(e => e.FieldDefinitionId);
+
+        var headerConfigurations = configurations.Values
+            .Where(e => e.Exists && e.Placement == ReceiptConfiguredPlacement.Header)
+            .ToDictionary(e => e.FieldDefinitionId);
+
+        var detailConfigurations = configurations.Values
+            .Where(e => e.Exists && e.Placement == ReceiptConfiguredPlacement.Detail)
+            .ToDictionary(e => e.FieldDefinitionId);
+
+        ValidateConfiguredFieldValues(
+            dto.ReceiptFieldValues,
+            configurations,
+            ReceiptConfiguredPlacement.Header
+        );
+        ValidateRequiredFields(dto.ReceiptFieldValues, headerConfigurations);
+
+        await ValidateReceiptLinesAsync(
+            companyId,
+            dto.ReceiptLines,
+            configurations,
+            detailConfigurations,
+            ct
+        );
     }
 
     private async Task ValidateNumberUniquenessAsync(
@@ -130,93 +159,171 @@ public class ReceiptBusinessRuleValidator(
             throw new ReceiptNumberAlreadyExistsException(number);
     }
 
-    private static void ValidateDuplicateRows(CreateReceiptDto createDto)
+    private async Task ValidateReceiptLinesAsync(
+        Guid companyId,
+        IReadOnlyCollection<CreateReceiptLineDto> lines,
+        IReadOnlyDictionary<Guid, ReceiptTypeFieldConfiguration> configurations,
+        IReadOnlyDictionary<Guid, ReceiptTypeFieldConfiguration> detailConfigurations,
+        CancellationToken ct
+    )
     {
-        var duplicate = createDto.ReceiptLines
-            .GroupBy(e => e.RowNumber)
-            .FirstOrDefault(e => e.Count() > 1);
+        var errors = new Dictionary<int, List<Exception>>();
 
-        if (duplicate is not null)
-            throw new ReceiptDuplicateRowNumberException(duplicate.Key);
+        AddDuplicateRowErrors(lines, errors);
+
+        foreach (var line in lines)
+        {
+            AddLineDuplicateValueErrors(line, errors);
+            AddLineValueObjectErrors(line, errors);
+            AddLineConfiguredFieldErrors(line, configurations, detailConfigurations, errors);
+        }
+
+        await AddLineItemAndUnitErrorsAsync(companyId, lines, errors, ct);
+
+        if (errors.Count > 0)
+        {
+            throw new ReceiptLineValidationException(
+                errors.ToDictionary(
+                    e => e.Key,
+                    e => (IReadOnlyList<Exception>)e.Value
+                )
+            );
+        }
     }
 
-    private static void ValidateDuplicateValues(CreateReceiptDto createDto)
+    private static void AddDuplicateRowErrors(
+        IReadOnlyCollection<CreateReceiptLineDto> lines,
+        Dictionary<int, List<Exception>> errors
+    )
     {
-        var duplicateHeaderField = createDto.ReceiptFieldValues
+        var duplicates = lines
+            .GroupBy(e => e.RowNumber)
+            .Where(e => e.Count() > 1);
+
+        foreach (var duplicate in duplicates)
+            AddLineError(errors, duplicate.Key, new ReceiptDuplicateRowNumberException(duplicate.Key));
+    }
+
+    private static void ValidateDuplicateHeaderValues(
+        IReadOnlyCollection<CreateReceiptFieldValueDto> fieldValues
+    )
+    {
+        var duplicateHeaderField = fieldValues
             .GroupBy(e => e.FieldDefinitionId)
             .FirstOrDefault(e => e.Count() > 1);
 
         if (duplicateHeaderField is not null)
             throw new ReceiptDuplicateFieldDefinitionException(duplicateHeaderField.Key);
-
-        foreach (var line in createDto.ReceiptLines)
-        {
-            var duplicateLineField = line.ReceiptFieldValues
-                .GroupBy(e => e.FieldDefinitionId)
-                .FirstOrDefault(e => e.Count() > 1);
-
-            if (duplicateLineField is not null)
-                throw new ReceiptDuplicateFieldDefinitionException(duplicateLineField.Key);
-
-            var duplicateAttribute = line.ReceiptLineAttributeValues
-                .GroupBy(e => e.ItemAttributeId)
-                .FirstOrDefault(e => e.Count() > 1);
-
-            if (duplicateAttribute is not null)
-                throw new ReceiptDuplicateLineAttributeException(duplicateAttribute.Key);
-        }
     }
 
-    private static void ValidateValueObjects(CreateReceiptDto createDto)
-    {
-        foreach (var headerValue in createDto.ReceiptFieldValues)
-            ValidateOnlyOneValueIsFilled(headerValue);
-
-        foreach (var line in createDto.ReceiptLines)
-        {
-            foreach (var attributeValue in line.ReceiptLineAttributeValues)
-                ValidateOnlyOneValueIsFilled(attributeValue);
-
-            foreach (var fieldValue in line.ReceiptFieldValues)
-                ValidateOnlyOneValueIsFilled(fieldValue);
-        }
-    }
-
-    private async Task ValidateConfiguredFieldsAsync(
-        Guid companyId,
-        CreateReceiptDto dto,
-        CancellationToken ct
+    private static void AddLineDuplicateValueErrors(
+        CreateReceiptLineDto line,
+        Dictionary<int, List<Exception>> errors
     )
     {
-        var configuration = await _configurationRepository.SingleOrDefaultAsync(
-            e => e.CompanyId == companyId && e.ReceiptTypeId == dto.ReceiptTypeId,
-            trackChanges: false,
-            ct
-        ) ?? throw new ReceiptTypeConfigurationNotFoundException();
+        var duplicateLineFields = line.ReceiptFieldValues
+            .GroupBy(e => e.FieldDefinitionId)
+            .Where(e => e.Count() > 1);
 
-        var headerConfigurations = configuration.FieldConfigurations
-            .Where(e => e.Exists && e.Placement == ReceiptConfiguredPlacement.Header)
-            .ToDictionary(e => e.FieldDefinitionId);
+        foreach (var duplicate in duplicateLineFields)
+            AddLineError(errors, line.RowNumber, new ReceiptDuplicateFieldDefinitionException(duplicate.Key));
 
-        var detailConfigurations = configuration.FieldConfigurations
-            .Where(e => e.Exists && e.Placement == ReceiptConfiguredPlacement.Detail)
-            .ToDictionary(e => e.FieldDefinitionId);
+        var duplicateAttributes = line.ReceiptLineAttributeValues
+            .GroupBy(e => e.ItemAttributeId)
+            .Where(e => e.Count() > 1);
 
-        ValidateConfiguredFieldValues(
-            dto.ReceiptFieldValues,
-            headerConfigurations,
-            ReceiptConfiguredPlacement.Header
-        );
-        ValidateRequiredFields(dto.ReceiptFieldValues, headerConfigurations);
+        foreach (var duplicate in duplicateAttributes)
+            AddLineError(errors, line.RowNumber, new ReceiptDuplicateLineAttributeException(duplicate.Key));
 
-        foreach (var line in dto.ReceiptLines)
+        var duplicateMeasurements = line.ReceiptLineMeasurementValues
+            .GroupBy(e => e.ItemUnitOfMeasurementId)
+            .Where(e => e.Count() > 1);
+
+        foreach (var duplicate in duplicateMeasurements)
         {
-            ValidateConfiguredFieldValues(
-                line.ReceiptFieldValues,
-                detailConfigurations,
-                ReceiptConfiguredPlacement.Detail
+            AddLineError(
+                errors,
+                line.RowNumber,
+                new ReceiptDuplicateLineMeasurementValueException(duplicate.Key)
             );
-            ValidateRequiredFields(line.ReceiptFieldValues, detailConfigurations);
+        }
+    }
+
+    private static void ValidateHeaderValueObjects(
+        IReadOnlyCollection<CreateReceiptFieldValueDto> fieldValues
+    )
+    {
+        foreach (var headerValue in fieldValues)
+            ValidateOnlyOneValueIsFilled(headerValue);
+    }
+
+    private static void AddLineValueObjectErrors(
+        CreateReceiptLineDto line,
+        Dictionary<int, List<Exception>> errors
+    )
+    {
+        foreach (var attributeValue in line.ReceiptLineAttributeValues)
+        {
+            if (!HasExactlyOneValue(attributeValue))
+            {
+                AddLineError(
+                    errors,
+                    line.RowNumber,
+                    new ReceiptLineAttributeValueMustHaveExactlyOneValueException(
+                        attributeValue.ItemAttributeId
+                    )
+                );
+            }
+        }
+
+        foreach (var fieldValue in line.ReceiptFieldValues)
+        {
+            if (!HasExactlyOneValue(fieldValue))
+            {
+                AddLineError(
+                    errors,
+                    line.RowNumber,
+                    new ReceiptFieldValueMustHaveExactlyOneValueException(
+                        fieldValue.FieldDefinitionId
+                    )
+                );
+            }
+        }
+    }
+
+    private static void AddLineConfiguredFieldErrors(
+        CreateReceiptLineDto line,
+        IReadOnlyDictionary<Guid, ReceiptTypeFieldConfiguration> configurations,
+        IReadOnlyDictionary<Guid, ReceiptTypeFieldConfiguration> detailConfigurations,
+        Dictionary<int, List<Exception>> errors
+    )
+    {
+        foreach (var fieldValue in line.ReceiptFieldValues)
+            AddConfiguredFieldValueErrorIfInvalid(
+                fieldValue,
+                configurations,
+                ReceiptConfiguredPlacement.Detail,
+                line.RowNumber,
+                errors
+            );
+
+        var provided = line.ReceiptFieldValues
+            .Select(e => e.FieldDefinitionId)
+            .ToHashSet();
+
+        var missingRequiredFields = detailConfigurations.Values
+            .Where(e => e.IsRequired && !provided.Contains(e.FieldDefinitionId));
+
+        foreach (var missing in missingRequiredFields)
+        {
+            AddLineError(
+                errors,
+                line.RowNumber,
+                new ReceiptRequiredFieldValueMissingException(
+                    missing.FieldDefinitionId,
+                    missing.FieldDefinition.Title
+                )
+            );
         }
     }
 
@@ -230,15 +337,67 @@ public class ReceiptBusinessRuleValidator(
         {
             if (!configurations.TryGetValue(fieldValue.FieldDefinitionId, out var configuration))
                 throw new ReceiptFieldDefinitionNotConfiguredException(
-                    fieldValue.FieldDefinitionId
+                    fieldValue.FieldDefinitionId,
+                    GetPlacementLocalizationKey(placement)
                 );
 
-            if (configuration.Placement != placement)
+            if (!configuration.Exists || configuration.Placement != placement)
                 throw new ReceiptFieldDefinitionNotConfiguredException(
-                    fieldValue.FieldDefinitionId
+                    fieldValue.FieldDefinitionId,
+                    configuration.FieldDefinition.Title,
+                    GetPlacementLocalizationKey(placement)
                 );
 
             ValidateFieldValueDataType(fieldValue, configuration.FieldDefinition);
+        }
+    }
+
+    private static void AddConfiguredFieldValueErrorIfInvalid(
+        CreateReceiptFieldValueDto fieldValue,
+        IReadOnlyDictionary<Guid, ReceiptTypeFieldConfiguration> configurations,
+        ReceiptConfiguredPlacement placement,
+        int rowNumber,
+        Dictionary<int, List<Exception>> errors
+    )
+    {
+        if (!configurations.TryGetValue(fieldValue.FieldDefinitionId, out var configuration))
+        {
+            AddLineError(
+                errors,
+                rowNumber,
+                new ReceiptFieldDefinitionNotConfiguredException(
+                    fieldValue.FieldDefinitionId,
+                    GetPlacementLocalizationKey(placement)
+                )
+            );
+            return;
+        }
+
+        if (!configuration.Exists || configuration.Placement != placement)
+        {
+            AddLineError(
+                errors,
+                rowNumber,
+                new ReceiptFieldDefinitionNotConfiguredException(
+                    fieldValue.FieldDefinitionId,
+                    configuration.FieldDefinition.Title,
+                    GetPlacementLocalizationKey(placement)
+                )
+            );
+            return;
+        }
+
+        if (!IsFieldValueDataTypeValid(fieldValue, configuration.FieldDefinition))
+        {
+            AddLineError(
+                errors,
+                rowNumber,
+                new ReceiptFieldValueDataTypeMismatchException(
+                    fieldValue.FieldDefinitionId,
+                    configuration.FieldDefinition.Title,
+                    GetDataTypeLocalizationKey(configuration.FieldDefinition.DataType)
+                )
+            );
         }
     }
 
@@ -256,7 +415,10 @@ public class ReceiptBusinessRuleValidator(
             .FirstOrDefault(e => !provided.Contains(e.FieldDefinitionId));
 
         if (missing is not null)
-            throw new ReceiptRequiredFieldValueMissingException(missing.FieldDefinitionId);
+            throw new ReceiptRequiredFieldValueMissingException(
+                missing.FieldDefinitionId,
+                missing.FieldDefinition.Title
+            );
     }
 
     private static void ValidateFieldValueDataType(
@@ -264,7 +426,20 @@ public class ReceiptBusinessRuleValidator(
         ReceiptFieldDefinition definition
     )
     {
-        var isValid = definition.DataType switch
+        if (!IsFieldValueDataTypeValid(dto, definition))
+            throw new ReceiptFieldValueDataTypeMismatchException(
+                dto.FieldDefinitionId,
+                definition.Title,
+                GetDataTypeLocalizationKey(definition.DataType)
+            );
+    }
+
+    private static bool IsFieldValueDataTypeValid(
+        CreateReceiptFieldValueDto dto,
+        ReceiptFieldDefinition definition
+    )
+    {
+        return definition.DataType switch
         {
             ReceiptFieldDataType.Text => dto.StringValue is not null,
             ReceiptFieldDataType.Integer => dto.IntValue is not null,
@@ -274,20 +449,24 @@ public class ReceiptBusinessRuleValidator(
             ReceiptFieldDataType.Guid => dto.ReferenceId is not null,
             _ => false
         };
-
-        if (!isValid)
-            throw new ReceiptFieldValueDataTypeMismatchException(dto.FieldDefinitionId);
     }
 
-    private async Task ValidateItemsAndUnitsAsync(
+    private static string GetPlacementLocalizationKey(ReceiptConfiguredPlacement placement) =>
+        $"ReceiptConfiguredPlacement.{placement}";
+
+    private static string GetDataTypeLocalizationKey(ReceiptFieldDataType dataType) =>
+        $"ReceiptFieldDataType.{dataType}";
+
+    private async Task AddLineItemAndUnitErrorsAsync(
         Guid companyId,
-        CreateReceiptDto dto,
+        IReadOnlyCollection<CreateReceiptLineDto> lines,
+        Dictionary<int, List<Exception>> errors,
         CancellationToken ct
     )
     {
         var itemCache = new Dictionary<Guid, Item>();
 
-        foreach (var line in dto.ReceiptLines)
+        foreach (var line in lines)
         {
             if (!itemCache.TryGetValue(line.ItemId, out var item))
             {
@@ -295,25 +474,64 @@ public class ReceiptBusinessRuleValidator(
                     e => e.CompanyId == companyId && e.Id == line.ItemId,
                     trackChanges: false,
                     ct
-                ) ?? throw new ItemNotFoundException();
+                );
+
+                if (item is null)
+                {
+                    AddLineError(errors, line.RowNumber, new ItemNotFoundException());
+                    continue;
+                }
 
                 itemCache[line.ItemId] = item;
             }
 
-            var unitIsAllowed = item.ItemUnitOfMeasurements.Any(e =>
-                e.UnitOfMeasurementId == line.UnitOfMeasurementId
-            );
+            var itemUnitOfMeasurementIds = item.ItemUnitOfMeasurements
+                .Select(e => e.Id)
+                .ToHashSet();
 
-            if (!unitIsAllowed)
-                throw new ReceiptLineUnitOfMeasurementNotAllowedException(
-                    line.UnitOfMeasurementId
+            foreach (var measurementValue in line.ReceiptLineMeasurementValues)
+            {
+                var unitIsAllowed = itemUnitOfMeasurementIds.Contains(
+                    measurementValue.ItemUnitOfMeasurementId
                 );
+
+                if (!unitIsAllowed)
+                    AddLineError(
+                        errors,
+                        line.RowNumber,
+                        new ReceiptLineUnitOfMeasurementNotAllowedException(
+                            line.RowNumber,
+                            measurementValue.ItemUnitOfMeasurementId
+                        )
+                    );
+            }
         }
+    }
+
+    private static void AddLineError(
+        Dictionary<int, List<Exception>> errors,
+        int rowNumber,
+        Exception exception
+    )
+    {
+        if (!errors.TryGetValue(rowNumber, out var rowErrors))
+        {
+            rowErrors = [];
+            errors[rowNumber] = rowErrors;
+        }
+
+        rowErrors.Add(exception);
     }
 
     private static void ValidateOnlyOneValueIsFilled(CreateReceiptFieldValueDto dto)
     {
-        var filledCount = new object?[]
+        if (!HasExactlyOneValue(dto))
+            throw new ReceiptFieldValueMustHaveExactlyOneValueException(dto.FieldDefinitionId);
+    }
+
+    private static bool HasExactlyOneValue(CreateReceiptFieldValueDto dto)
+    {
+        return new object?[]
         {
             dto.StringValue,
             dto.IntValue,
@@ -322,15 +540,12 @@ public class ReceiptBusinessRuleValidator(
             dto.DateTimeValue,
             dto.ReferenceId,
             dto.BooleanValue
-        }.Count(e => e is not null);
-
-        if (filledCount != 1)
-            throw new ReceiptFieldValueMustHaveExactlyOneValueException(dto.FieldDefinitionId);
+        }.Count(e => e is not null) == 1;
     }
 
-    private static void ValidateOnlyOneValueIsFilled(CreateReceiptLineAttributeValueDto dto)
+    private static bool HasExactlyOneValue(CreateReceiptLineAttributeValueDto dto)
     {
-        var filledCount = new object?[]
+        return new object?[]
         {
             dto.StringValue,
             dto.DecimalValue,
@@ -338,11 +553,6 @@ public class ReceiptBusinessRuleValidator(
             dto.DateTimeValue,
             dto.ReferenceId,
             dto.BooleanValue
-        }.Count(e => e is not null);
-
-        if (filledCount != 1)
-            throw new ReceiptLineAttributeValueMustHaveExactlyOneValueException(
-                dto.ItemAttributeId
-            );
+        }.Count(e => e is not null) == 1;
     }
 }

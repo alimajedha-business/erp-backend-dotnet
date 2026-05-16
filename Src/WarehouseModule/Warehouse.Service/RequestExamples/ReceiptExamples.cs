@@ -1,4 +1,5 @@
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
@@ -31,10 +32,20 @@ public class CreateReceiptExample :
                 {
                     RowNumber = 1,
                     ItemId = new Guid("EA128520-C888-43FD-8B54-03BB1D277BD6"),
-                    UnitOfMeasurementId = new Guid("943325AA-7E7D-4497-8919-B5C6B4F64C2C"),
-                    Quantity = 12,
+                    WarehouseLocationId = new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72E"),
+                    ReceiptLineMeasurementValues =
+                    [
+                        new CreateReceiptLineMeasurementValueDto
+                        {
+                            ItemUnitOfMeasurementId = new Guid("943325AA-7E7D-4497-8919-B5C6B4F64C2C"),
+                            Quantity = 12
+                        }
+                    ],
                     UnitPrice = 125000,
                     TotalPrice = 1500000,
+                    BatchNumber = "202256799",
+                    SerialNumber = "65879000020012",
+                    ExpiryDate = new DateTime(2026, 5, 29),
                     ReceiptLineAttributeValues =
                     [
                         new CreateReceiptLineAttributeValueDto
@@ -72,6 +83,7 @@ public class ReceiptsGetListExample : IExamplesProvider<ListResponseModel<Receip
                     Number: 1000500,
                     ReceiptDate: new DateOnly(2026, 05, 20),
                     ReceiptTypeId: new Guid("11111111-2222-3333-4444-555555555555"),
+                    Status: ReceiptStatus.Draft,
                     ReceiptTypeTitle: "رسید خرید داخلی",
                     Description: "توضیح نوع رسید خرید داخلی",
                     ReceiptLineCount: 2
