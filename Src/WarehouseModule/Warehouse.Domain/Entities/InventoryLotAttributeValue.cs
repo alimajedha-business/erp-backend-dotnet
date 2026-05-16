@@ -12,55 +12,60 @@ public class InventoryLotAttributeValue :
 {
     public Guid LotId { get; set; }
     public Guid AttributeId { get; set; }
-    public string? ValueText { get; set; }
-    public int? ValueInt { get; set; }
-    public decimal? ValueDecimal { get; set; }
-    public DateTime? ValueDate { get; set; }
-    public bool? ValueBoolean { get; set; }
-    public Guid? EnumValueId { get; set; }
 
-    public AttributeEnumValue? EnumValue { get; set; }
+    public string? StringValue { get; set; }
+    public int? IntValue { get; set; }
+    public decimal? DecimalValue { get; set; }
+    public DateTime? DateTimeValue { get; set; }
+    public bool? BooleanValue { get; set; }
+    public Guid? EnumReferenceId { get; set; }
+
     public InventoryLot Lot { get; set; } = default!;
     public Attribute Attribute { get; set; } = default!;
+    public AttributeEnumValue? EnumValue { get; set; }
 
     public void Map(EntityTypeBuilder<InventoryLotAttributeValue> builder)
     {
         builder
-            .ToTable(nameof(InventoryLotAttributeValue), "Warehouse")
-            .HasKey(k => new { k.LotId, k.AttributeId });
+            .ToTable(nameof(InventoryLotAttributeValue), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.ValueText })
+            .HasIndex(i => new { i.LotId, i.AttributeId })
+            .IsUnique()
+            .HasDatabaseName("UX_InventoryLotAttributeValue_Lot_Attribute");
+
+        builder
+            .HasIndex(i => new { i.AttributeId, i.StringValue })
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.ValueInt })
+            .HasIndex(i => new { i.AttributeId, i.IntValue })
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.ValueDecimal })
-                   .IncludeProperties(e => e.LotId);
-
-        builder
-            .HasIndex(i => new { i.AttributeId, i.ValueDate })
+            .HasIndex(i => new { i.AttributeId, i.DecimalValue })
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.ValueBoolean })
+            .HasIndex(i => new { i.AttributeId, i.DateTimeValue })
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.EnumValueId })
+            .HasIndex(i => new { i.AttributeId, i.BooleanValue })
             .IncludeProperties(e => e.LotId);
 
         builder
-            .Property(e => e.ValueDecimal)
+            .HasIndex(i => new { i.AttributeId, i.EnumReferenceId })
+            .IncludeProperties(e => e.LotId);
+
+        builder
+            .Property(e => e.DecimalValue)
             .HasPrecision(18, 6);
 
         builder
             .HasOne(e => e.EnumValue)
             .WithMany()
-            .HasForeignKey(e => e.EnumValueId);
+            .HasForeignKey(e => e.EnumReferenceId);
 
         builder
             .HasOne(e => e.Lot)

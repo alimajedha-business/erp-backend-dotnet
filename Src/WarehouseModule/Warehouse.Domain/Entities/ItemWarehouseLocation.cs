@@ -21,6 +21,11 @@ public class ItemWarehouseLocation :
             .ToTable(nameof(ItemWarehouseLocation), "Warehouse");
 
         builder
+            .HasIndex(i => new { i.ItemWarehouseId, i.WarehouseLocationId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemWarehouseLocation_ItemWarehouse_Location");
+
+        builder
             .HasOne(e => e.ItemWarehouse)
             .WithMany(e => e.ItemWarehouseLocations)
             .HasForeignKey(e => e.ItemWarehouseId)

@@ -16,6 +16,7 @@ public class ReceiptLineAttributeValue :
 {
     public Guid ReceiptLineId { get; set; }
     public Guid ItemAttributeId { get; set; }
+
     public string? StringValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }
@@ -45,12 +46,12 @@ public class ReceiptLineAttributeValue :
             .HasOne(e => e.ReceiptLine)
             .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ReceiptLineId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ItemAttribute)
             .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ItemAttributeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

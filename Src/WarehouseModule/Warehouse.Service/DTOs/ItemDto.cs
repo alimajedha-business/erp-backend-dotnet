@@ -12,11 +12,18 @@ public record ItemDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    UnitOfMeasurementSlimDto PrimaryUnitOfMeasurement,
+    decimal? Weight,
+    decimal? Length,
+    decimal? Width,
+    decimal? Height,
+    decimal? Volume,
+    SiUnitAsReferenceDto? PreferredMassUnit,
+    SiUnitAsReferenceDto? PreferredLengthUnit,
+    SiUnitAsReferenceDto? PreferredVolumeUnit,
     ItemTypeSlimDto ItemType,
     CategorySlimDto Category,
     List<AttributeSlimDto> Attributes,
-    List<UnitOfMeasurementSlimDto> SecondaryUnitOfMeasurements,
+    List<ItemUnitOfMeasurementDto> ItemUnitOfMeasurements,
     List<ItemWarehouseDto> ItemWarehouses,
     Dictionary<string, ItemUnitConversionEquationDto> UnitConversions,
     bool IsActive
@@ -30,7 +37,7 @@ public record ItemListDto(
     string TechnicalNumber,
     string Sku,
     string Barcode,
-    string PrimaryUnitOfMeasurementTitle,
+    string UnitOfMeasurementTitle,
     string ItemTypeTitle,
     string CategoryTitle,
     bool IsActive
@@ -45,11 +52,18 @@ public class CreateItemDto
     public string Sku { get; set; } = default!;
     public string Barcode { get; set; } = default!;
     public bool IsActive { get; set; } = true;
-    public Guid PrimaryUnitOfMeasurementId { get; set; }
     public Guid ItemTypeId { get; set; }
     public Guid CategoryId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 
-    public List<Guid> SecondaryUnitOfMeasurementIds { get; set; } = [];
+    public List<CreateItemUnitOfMeasurementDto> ItemUnitOfMeasurements { get; set; } = [];
     public List<Guid> AttributeIds { get; set; } = [];
     public List<CreateItemWarehouseDto> ItemWarehouses { get; set; } = [];
     public Dictionary<string, ItemUnitConversionEquationDto> ItemUnitOfMeasurementConversions { get; set; } = [];
@@ -75,10 +89,17 @@ public class PatchItemDto
     public string? TechnicalNumber { get; set; }
     public string? Barcode { get; set; }
     public bool? IsActive { get; set; }
-    public Guid? PrimaryUnitOfMeasurementId { get; set; }
     public Guid? ItemTypeId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 
-    public List<Guid>? SecondaryUnitOfMeasurementIds { get; set; }
+    public List<CreateItemUnitOfMeasurementDto>? ItemUnitOfMeasurements { get; set; }
     public List<Guid>? AttributeIds { get; set; }
     public List<CreateItemWarehouseDto>? ItemWarehouses { get; set; }
     public Dictionary<string, ItemUnitConversionEquationDto>? ItemUnitOfMeasurementConversions { get; set; }
@@ -92,18 +113,6 @@ public class PatchItemDto
         {
             if (value != null)
                 AttributeIds = value;
-        }
-    }
-
-    [JsonProperty("itemUnitOfMeasurements")]
-    [JsonPropertyName("itemUnitOfMeasurements")]
-    public List<Guid>? ItemUnitOfMeasurementsAlias
-    {
-        get => null; // never used for output
-        set
-        {
-            if (value != null)
-                SecondaryUnitOfMeasurementIds = value;
         }
     }
 

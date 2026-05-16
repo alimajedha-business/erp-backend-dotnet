@@ -51,6 +51,13 @@ public class ReceiptRepository(MainDbContext context) :
         _context.Set<ReceiptLineAttributeValue>().RemoveRange(attributeValues);
     }
 
+    public void RemoveReceiptLineMeasurementValues(
+        IEnumerable<ReceiptLineMeasurementValue> measurementValues
+    )
+    {
+        _context.Set<ReceiptLineMeasurementValue>().RemoveRange(measurementValues);
+    }
+
     public void RemoveReceiptLines(IEnumerable<ReceiptLine> receiptLines)
     {
         _context.Set<ReceiptLine>().RemoveRange(receiptLines);
@@ -73,6 +80,9 @@ public class ReceiptRepository(MainDbContext context) :
 
         RemoveReceiptLineAttributeValues(
             receipt.ReceiptLines.SelectMany(e => e.ReceiptLineAttributeValues)
+        );
+        RemoveReceiptLineMeasurementValues(
+            receipt.ReceiptLines.SelectMany(e => e.ReceiptLineMeasurementValues)
         );
         RemoveReceiptFieldValues(receipt.ReceiptFieldValues);
         RemoveReceiptLines(receipt.ReceiptLines);
@@ -102,7 +112,9 @@ public class ReceiptRepository(MainDbContext context) :
             .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
                 .ThenInclude(e => e.ReceiptFieldValues)
             .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
-                .ThenInclude(e => e.ReceiptLineAttributeValues);
+                .ThenInclude(e => e.ReceiptLineAttributeValues)
+            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+                .ThenInclude(e => e.ReceiptLineMeasurementValues);
     }
 
     private static IQueryable<Receipt> WithListIncludes(IQueryable<Receipt> query)

@@ -9,6 +9,10 @@ public class CreateItemUnitOfMeasurementValidator :
 {
     public CreateItemUnitOfMeasurementValidator()
     {
+        RuleFor(p => p.UnitOfMeasurementId)
+            .NotEmpty();
 
+        RuleFor(p => p.UnitOrder)
+            .GreaterThan(0);
     }
 }

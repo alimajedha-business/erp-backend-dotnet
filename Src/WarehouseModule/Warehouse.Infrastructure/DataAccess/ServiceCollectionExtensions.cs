@@ -18,11 +18,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICategoryAttributeRuleRepository, CategoryAttributeRuleRepository>();
         services.AddScoped<ICategoryLevelConstraintRepository, CategoryLevelConstraintRepository>();
-        services.AddScoped<IInventoryLotRepository, InventoryLotRepository>();
         services.AddScoped<IInventoryMovementTypeRepository, InventoryMovementTypeRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
-        services.AddScoped<IMeasurementDimensionRepository, MeasurementDimensionRepository>();
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
@@ -33,6 +31,7 @@ public static class ServiceCollectionExtensions
             ReceiptTypeFieldConfigurationRepository
         >();
         services.AddScoped<IShippingCompanyRepository, ShippingCompanyRepository>();
+        services.AddScoped<ISiUnitRepository, SiUnitRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();
         services.AddScoped<IWarehouseRepository, WarehouseRepository>();
         services.AddScoped<IWarehouseLocationRepository, WarehouseLocationRepository>();

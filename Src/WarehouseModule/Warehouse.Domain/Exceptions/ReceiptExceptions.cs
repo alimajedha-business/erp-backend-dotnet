@@ -33,30 +33,78 @@ public sealed class ReceiptDuplicateLineAttributeException(Guid itemAttributeId)
     public override string LocalizationKey => "Receipt.LineAttributeValue.ItemAttribute.Duplicate";
 }
 
-public sealed class ReceiptFieldDefinitionNotConfiguredException(Guid fieldDefinitionId)
-    : BusinessRuleViolationException(fieldDefinitionId)
+public sealed class ReceiptDuplicateLineMeasurementValueException(Guid itemUnitOfMeasurementId)
+    : BusinessRuleViolationException(itemUnitOfMeasurementId)
 {
-    public Guid FieldDefinitionId { get; } = fieldDefinitionId;
+    public Guid ItemUnitOfMeasurementId { get; } = itemUnitOfMeasurementId;
+    public override string LocalizationKey => "Receipt.LineMeasurementValue.ItemUnitOfMeasurement.Duplicate";
+}
+
+public sealed class ReceiptLineValidationException(
+    IReadOnlyDictionary<int, IReadOnlyList<Exception>> errors
+) : BusinessRuleViolationException()
+{
+    public IReadOnlyDictionary<int, IReadOnlyList<Exception>> Errors { get; } = errors;
+    public override string LocalizationKey => "Receipt.Line.ValidationFailed";
+}
+
+public sealed class ReceiptFieldDefinitionNotConfiguredException :
+    BusinessRuleViolationException
+{
+    public ReceiptFieldDefinitionNotConfiguredException(
+        Guid fieldDefinitionId,
+        string placement
+    ) : base(fieldDefinitionId, placement)
+    {
+        FieldDefinitionId = fieldDefinitionId;
+        Placement = placement;
+    }
+
+    public ReceiptFieldDefinitionNotConfiguredException(
+        Guid fieldDefinitionId,
+        string fieldDefinitionTitle,
+        string placement
+    ) : base(fieldDefinitionTitle, placement)
+    {
+        FieldDefinitionId = fieldDefinitionId;
+        FieldDefinitionTitle = fieldDefinitionTitle;
+        Placement = placement;
+    }
+
+    public Guid FieldDefinitionId { get; }
+    public string? FieldDefinitionTitle { get; }
+    public string Placement { get; }
     public override string LocalizationKey => "Receipt.FieldValue.FieldDefinition.NotConfigured";
 }
 
-public sealed class ReceiptRequiredFieldValueMissingException(Guid fieldDefinitionId)
-    : BusinessRuleViolationException(fieldDefinitionId)
+public sealed class ReceiptRequiredFieldValueMissingException(
+    Guid fieldDefinitionId,
+    string fieldDefinitionTitle
+) : BusinessRuleViolationException(fieldDefinitionTitle)
 {
     public Guid FieldDefinitionId { get; } = fieldDefinitionId;
+    public string FieldDefinitionTitle { get; } = fieldDefinitionTitle;
     public override string LocalizationKey => "Receipt.FieldValue.Required";
 }
 
-public sealed class ReceiptFieldValueDataTypeMismatchException(Guid fieldDefinitionId)
-    : BusinessRuleViolationException(fieldDefinitionId)
+public sealed class ReceiptFieldValueDataTypeMismatchException(
+    Guid fieldDefinitionId,
+    string fieldDefinitionTitle,
+    string dataType
+) : BusinessRuleViolationException(fieldDefinitionTitle, dataType)
 {
     public Guid FieldDefinitionId { get; } = fieldDefinitionId;
+    public string FieldDefinitionTitle { get; } = fieldDefinitionTitle;
+    public string DataType { get; } = dataType;
     public override string LocalizationKey => "Receipt.FieldValue.DataTypeMismatch";
 }
 
-public sealed class ReceiptLineUnitOfMeasurementNotAllowedException(Guid unitOfMeasurementId)
-    : BusinessRuleViolationException(unitOfMeasurementId)
+public sealed class ReceiptLineUnitOfMeasurementNotAllowedException(
+    int rowNumber,
+    Guid unitOfMeasurementId
+) : BusinessRuleViolationException(unitOfMeasurementId)
 {
+    public int RowNumber { get; } = rowNumber;
     public Guid UnitOfMeasurementId { get; } = unitOfMeasurementId;
     public override string LocalizationKey => "ReceiptLine.UnitOfMeasurement.NotAllowed";
 }

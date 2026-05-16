@@ -11,9 +11,9 @@ public sealed class ReceiptSchema : IFilterSchema<Receipt>
 
         filterSchema.Fields["number"] = new FilterFieldInfo(
             PropertyName: nameof(Receipt.Number),
-            PropertyType: typeof(string),
+            PropertyType: typeof(long),
             AllowedOps: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "eq", "ne", "startsWith", "contains", "endsWith" }
+            { "eq", "ne", "gt", "ge", "lt", "le" }
         );
 
         filterSchema.Fields["receiptDate"] = new FilterFieldInfo(

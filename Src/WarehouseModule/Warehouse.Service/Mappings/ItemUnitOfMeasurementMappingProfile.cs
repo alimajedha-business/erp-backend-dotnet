@@ -9,7 +9,11 @@ public class ItemUnitOfMeasurementMappingProfile : Profile
 {
     public ItemUnitOfMeasurementMappingProfile()
     {
-        CreateMap<ItemUnitOfMeasurement, ItemUnitOfMeasurementDto>();
+        CreateMap<ItemUnitOfMeasurement, ItemUnitOfMeasurementDto>()
+            .ForCtorParam(
+                nameof(ItemUnitOfMeasurementDto.UnitOfMeasurement),
+                opt => opt.MapFrom(src => src.UnitOfMeasurement)
+            );
         CreateMap<CreateItemUnitOfMeasurementDto, ItemUnitOfMeasurement>();
         CreateMap<PatchItemUnitOfMeasurementDto, ItemUnitOfMeasurement>().ReverseMap();
     }

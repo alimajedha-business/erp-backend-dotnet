@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using System.Linq.Expressions;
+
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.Base.Service.RequestFeatures;
@@ -23,7 +25,25 @@ public class WarehouseLocationRepository(MainDbContext context) :
         var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
         return query
             .Include(i => i.Warehouse)
+            .Include(i => i.PreferredMassUnit)
+            .Include(i => i.PreferredLengthUnit)
+            .Include(i => i.PreferredVolumeUnit)
             .FirstOrDefaultAsync(e => e.Id == id, ct);
+    }
+
+    public override async Task<WarehouseLocation?> SingleOrDefaultAsync(
+        Expression<Func<WarehouseLocation, bool>> predicate,
+        bool trackChanges = true,
+        CancellationToken ct = default
+    )
+    {
+        var query = trackChanges ? _dbSet : _dbSet.AsNoTracking();
+        return await query
+            .Include(i => i.Warehouse)
+            .Include(i => i.PreferredMassUnit)
+            .Include(i => i.PreferredLengthUnit)
+            .Include(i => i.PreferredVolumeUnit)
+            .SingleOrDefaultAsync(predicate, ct);
     }
 
     public async Task<List<WarehouseLocationNode>> GetItemLocationsAsync(
@@ -120,7 +140,10 @@ public class WarehouseLocationRepository(MainDbContext context) :
         var query = base.GetFiltered(requestAdvancedFilters);
         return query
             .Where(e => e.WarehouseId == warehouseId)
-            .Include(i => i.Warehouse);
+            .Include(i => i.Warehouse)
+            .Include(i => i.PreferredMassUnit)
+            .Include(i => i.PreferredLengthUnit)
+            .Include(i => i.PreferredVolumeUnit);
     }
 
     public async Task<int> GetNextCodeAsync(

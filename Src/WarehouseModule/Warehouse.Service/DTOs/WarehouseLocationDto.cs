@@ -7,6 +7,14 @@ public record WarehouseLocationDto(
     bool CanStoreItem,
     bool HasNextLevel,
     int LevelNo,
+    decimal? Length,
+    decimal? Width,
+    decimal? Height,
+    decimal? MaxMass,
+    decimal? MaxVolume,
+    SiUnitAsReferenceDto? PreferredMassUnit,
+    SiUnitAsReferenceDto? PreferredLengthUnit,
+    SiUnitAsReferenceDto? PreferredVolumeUnit,
     WarehouseSlimDto Warehouse
 );
 
@@ -23,6 +31,14 @@ public record WarehouseLocationListDto(
     bool CanStoreItem,
     bool HasNextLevel,
     int LevelNo,
+    decimal? Length,
+    decimal? Width,
+    decimal? Height,
+    decimal? MaxMass,
+    decimal? MaxVolume,
+    SiUnitAsReferenceDto? PreferredMassUnit,
+    SiUnitAsReferenceDto? PreferredLengthUnit,
+    SiUnitAsReferenceDto? PreferredVolumeUnit,
     string WarehouseTitle
 );
 
@@ -34,6 +50,14 @@ public class CreateWarehouseLocationDto
     public bool CanStoreItem { get; set; } = true;
     public bool HasNextLevel { get; set; } = false;
     public int LevelNo { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? MaxMass { get; set; }
+    public decimal? MaxVolume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 }
 
 public class PatchWarehouseLocationDto
@@ -43,6 +67,14 @@ public class PatchWarehouseLocationDto
     public bool? CanStoreItem { get; set; }
     public bool? HasNextLevel { get; set; }
     public int? LevelNo { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? MaxMass { get; set; }
+    public decimal? MaxVolume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 }
 
 public sealed record WarehouseLocationNode(

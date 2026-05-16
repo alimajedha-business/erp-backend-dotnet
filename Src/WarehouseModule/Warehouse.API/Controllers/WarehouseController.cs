@@ -72,8 +72,6 @@ public class WarehouseController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK,typeof(WarehouseGetListResponseExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] WarehouseParameters parameters,
@@ -94,8 +92,6 @@ public class WarehouseController(
     [HttpPost("excel")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseGetListResponseExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,
         [FromBody] FilterNodeDto? filterNodeDto,

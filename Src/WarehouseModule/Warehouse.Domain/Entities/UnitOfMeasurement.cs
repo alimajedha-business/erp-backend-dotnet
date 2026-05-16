@@ -12,9 +12,6 @@ public class UnitOfMeasurement :
     public required int Code { get; set; }
     public required string Title { get; set; }
     public required string Symbol { get; set; }
-    public Guid MeasurementDimensionId { get; set; }
-
-    public MeasurementDimension MeasurementDimension { get; set; } = default!;
 
     public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
     public ICollection<ItemUnitOfMeasurementConversion> ItemUnitOfMeasurementConversions { get; set; } = [];
@@ -23,11 +20,6 @@ public class UnitOfMeasurement :
     {
         builder
             .ToTable(nameof(UnitOfMeasurement), "Warehouse");
-
-        builder
-            .HasIndex(i => new { i.MeasurementDimensionId, i.Title })
-            .IsUnique()
-            .HasDatabaseName("UX_Uom_Dimension_Title");
 
         builder
             .HasIndex(i => new { i.Code })
@@ -41,11 +33,5 @@ public class UnitOfMeasurement :
         builder
             .Property(e => e.Symbol)
             .HasMaxLength(20);
-
-        builder
-            .HasOne(e => e.MeasurementDimension)
-            .WithMany()
-            .HasForeignKey(e => e.MeasurementDimensionId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

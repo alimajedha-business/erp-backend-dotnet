@@ -1,12 +1,10 @@
 using Asp.Versioning;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -68,8 +66,6 @@ public class WarehouseLocationController(
     [HttpPost("list")]
     [SkipModelValidation]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseLocationAdvancedSearchRequestExample))]
-    [ProducesResponseType(typeof(ListResponseModel<WarehouseLocationListDto>), StatusCodes.Status200OK)]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseLocationGetListResponseExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid warehouseId,
         [FromQuery] WarehouseLocationParameters parameters,

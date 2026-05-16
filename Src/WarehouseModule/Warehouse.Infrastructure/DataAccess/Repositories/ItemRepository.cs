@@ -28,7 +28,9 @@ public class ItemRepository(MainDbContext context) :
         return await query
             .Include(i => i.ItemType)
             .Include(i => i.Category)
-            .Include(i => i.PrimaryUnitOfMeasurement)
+            .Include(i => i.PreferredMassUnit)
+            .Include(i => i.PreferredLengthUnit)
+            .Include(i => i.PreferredVolumeUnit)
             .Include(i => i.ItemAttributes)
                 .ThenInclude(i => i.Attribute)
             .Include(i => i.ItemUnitOfMeasurements.OrderBy(o => o.UnitOrder))
@@ -40,6 +42,18 @@ public class ItemRepository(MainDbContext context) :
                 .ThenInclude(i => i.WarehouseLocation)
             .Include(i => i.ItemUnitOfMeasurementConversions)
             .SingleOrDefaultAsync(predicate, ct);
+    }
+
+    public override IQueryable<Item> GetFiltered(
+        Guid companyId,
+        RequestAdvancedFilters requestAdvancedFilters
+    )
+    {
+        return base.GetFiltered(companyId, requestAdvancedFilters)
+            .Include(i => i.ItemType)
+            .Include(i => i.Category)
+            .Include(i => i.ItemUnitOfMeasurements.OrderBy(o => o.UnitOrder))
+                .ThenInclude(i => i.UnitOfMeasurement);
     }
 
     public async Task<ListQueryResult<Item>> GetCategoryAllAsync(
@@ -104,7 +118,8 @@ public class ItemRepository(MainDbContext context) :
             .Where(e => leafIds.Contains(e.CategoryId))
             .Include(i => i.ItemType)
             .Include(i => i.Category)
-            .Include(i => i.PrimaryUnitOfMeasurement)
+            .Include(i => i.ItemUnitOfMeasurements.OrderBy(o => o.UnitOrder))
+                .ThenInclude(i => i.UnitOfMeasurement)
             .Filter(requestAdvancedFilters);
 
         var totalCount = await query.CountAsync(ct);

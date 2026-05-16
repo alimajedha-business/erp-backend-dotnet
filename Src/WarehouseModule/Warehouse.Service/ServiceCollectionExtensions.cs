@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
             ReceiptTypeFieldConfigurationSchema
         >();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
+        services.AddSingleton<IFilterSchema<SiUnit>, SiUnitSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
         services.AddSingleton<IFilterSchema<WarehouseLocation>, WarehouseLocationSchema>();
@@ -69,7 +70,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemBusinessRuleValidator, ItemBusinessRuleValidator>();
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
-        services.AddScoped<IMeasurementDimensionService, MeasurementDimensionService>();
         services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptBusinessRuleValidator, ReceiptBusinessRuleValidator>();
@@ -87,6 +87,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReceiptService, ReceiptService>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
+        services.AddScoped<ISiUnitService, SiUnitService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();

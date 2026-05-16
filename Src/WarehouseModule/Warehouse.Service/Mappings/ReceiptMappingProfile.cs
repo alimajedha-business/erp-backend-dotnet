@@ -22,6 +22,7 @@ public class ReceiptMappingProfile : Profile
         CreateMap<Receipt, ReceiptDto>();
         CreateMap<ReceiptLine, ReceiptLineDto>();
         CreateMap<ReceiptLineAttributeValue, ReceiptLineAttributeValueDto>();
+        CreateMap<ReceiptLineMeasurementValue, ReceiptLineMeasurementValueDto>();
         CreateMap<ReceiptFieldValue, ReceiptFieldValueDto>();
 
         CreateMap<CreateReceiptDto, Receipt>()
@@ -30,10 +31,12 @@ public class ReceiptMappingProfile : Profile
             .ForMember(d => d.ReceiptFieldValues, o => o.Ignore());
 
         CreateMap<CreateReceiptLineDto, ReceiptLine>()
+            .ForMember(d => d.ReceiptLineMeasurementValues, o => o.Ignore())
             .ForMember(d => d.ReceiptLineAttributeValues, o => o.Ignore())
             .ForMember(d => d.ReceiptFieldValues, o => o.Ignore());
 
         CreateMap<CreateReceiptLineAttributeValueDto, ReceiptLineAttributeValue>();
+        CreateMap<CreateReceiptLineMeasurementValueDto, ReceiptLineMeasurementValue>();
 
         CreateMap<CreateReceiptFieldValueDto, ReceiptFieldValue>();
     }

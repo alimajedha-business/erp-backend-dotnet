@@ -36,6 +36,38 @@ public class CreateWarehouseLocationValidator : AbstractValidator<CreateWarehous
         RuleFor(p => p.LevelNo)
             .InclusiveBetween(1, 6)
             .WithMessage(_localizer["WarehouseLocation.LevelNo.Range"].Value);
+
+        RuleFor(p => p.Length)
+            .GreaterThan(0)
+            .When(p => p.Length.HasValue);
+
+        RuleFor(p => p.Width)
+            .GreaterThan(0)
+            .When(p => p.Width.HasValue);
+
+        RuleFor(p => p.Height)
+            .GreaterThan(0)
+            .When(p => p.Height.HasValue);
+
+        RuleFor(p => p.MaxMass)
+            .GreaterThan(0)
+            .When(p => p.MaxMass.HasValue);
+
+        RuleFor(p => p.MaxVolume)
+            .GreaterThan(0)
+            .When(p => p.MaxVolume.HasValue);
+
+        RuleFor(p => p.PreferredMassUnitId)
+            .NotEmpty()
+            .When(p => p.MaxMass.HasValue);
+
+        RuleFor(p => p.PreferredLengthUnitId)
+            .NotEmpty()
+            .When(p => p.Length.HasValue || p.Width.HasValue || p.Height.HasValue);
+
+        RuleFor(p => p.PreferredVolumeUnitId)
+            .NotEmpty()
+            .When(p => p.MaxVolume.HasValue);
     }
 }
 
@@ -69,6 +101,38 @@ public class PatchWarehouseLocationValidator : AbstractValidator<PatchWarehouseL
             .InclusiveBetween(1, 6)
             .WithMessage(_localizer["WarehouseLocation.LevelNo.Range"].Value)
             .When(p => p.LevelNo is not null);
+
+        RuleFor(p => p.Length)
+            .GreaterThan(0)
+            .When(p => p.Length.HasValue);
+
+        RuleFor(p => p.Width)
+            .GreaterThan(0)
+            .When(p => p.Width.HasValue);
+
+        RuleFor(p => p.Height)
+            .GreaterThan(0)
+            .When(p => p.Height.HasValue);
+
+        RuleFor(p => p.MaxMass)
+            .GreaterThan(0)
+            .When(p => p.MaxMass.HasValue);
+
+        RuleFor(p => p.MaxVolume)
+            .GreaterThan(0)
+            .When(p => p.MaxVolume.HasValue);
+
+        RuleFor(p => p.PreferredMassUnitId)
+            .NotEmpty()
+            .When(p => p.MaxMass.HasValue);
+
+        RuleFor(p => p.PreferredLengthUnitId)
+            .NotEmpty()
+            .When(p => p.Length.HasValue || p.Width.HasValue || p.Height.HasValue);
+
+        RuleFor(p => p.PreferredVolumeUnitId)
+            .NotEmpty()
+            .When(p => p.MaxVolume.HasValue);
     }
 }
 
@@ -81,7 +145,15 @@ public static class PatchWarehouseLocationPolicy
         ["/title"] = PatchFieldRule.RequiredReplaceOnly(),
         ["/levelNo"] = PatchFieldRule.RequiredReplaceOnly(),
         ["/canStoreItem"] = PatchFieldRule.RequiredReplaceOnly(),
-        ["/hasNextLevel"] = PatchFieldRule.RequiredReplaceOnly()
+        ["/hasNextLevel"] = PatchFieldRule.RequiredReplaceOnly(),
+        ["/length"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/width"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/height"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/maxMass"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/maxVolume"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/preferredMassUnitId"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/preferredLengthUnitId"] = PatchFieldRule.OptionalReplaceOrRemove(),
+        ["/preferredVolumeUnitId"] = PatchFieldRule.OptionalReplaceOrRemove()
     };
 
     public static void Validate(JsonPatchDocument<PatchWarehouseLocationDto> patchDocument)

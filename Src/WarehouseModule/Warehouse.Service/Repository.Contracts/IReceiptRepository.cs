@@ -11,6 +11,10 @@ public interface IReceiptRepository : IRepositoryWithCompany<Receipt>
         IEnumerable<ReceiptLineAttributeValue> attributeValues
     );
 
+    void RemoveReceiptLineMeasurementValues(
+        IEnumerable<ReceiptLineMeasurementValue> measurementValues
+    );
+
     void RemoveReceiptLines(IEnumerable<ReceiptLine> receiptLines);
 
     Task DeleteReceiptGraphAsync(

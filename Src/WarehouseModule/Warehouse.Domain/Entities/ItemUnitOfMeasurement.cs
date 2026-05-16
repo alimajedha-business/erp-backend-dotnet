@@ -16,11 +16,17 @@ public class ItemUnitOfMeasurement :
     public Item Item { get; set; } = default!;
     public UnitOfMeasurement UnitOfMeasurement { get; set; } = default!;
 
+    public ICollection<ReceiptLineMeasurementValue> ReceiptLineMeasurementValues { get; set; } = [];
+
     public void Map(EntityTypeBuilder<ItemUnitOfMeasurement> builder)
     {
         builder
-            .ToTable(nameof(ItemUnitOfMeasurement), "Warehouse")
-            .HasKey(k => new { k.ItemId, k.UnitOfMeasurementId });
+            .ToTable(nameof(ItemUnitOfMeasurement), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.ItemId, i.UnitOfMeasurementId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemUnitOfMeasurement_Item_Uom");
 
         builder
             .HasOne(e => e.Item)

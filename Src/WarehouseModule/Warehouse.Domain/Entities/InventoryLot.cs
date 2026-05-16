@@ -10,11 +10,17 @@ public class InventoryLot :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryLot>
 {
-    public required byte[] DimHash { get; set; }
-    public required string Serial { get; set; }
     public Guid ItemId { get; set; }
 
+    // Hash of stock-dimension attribute values:
+    // expiry date, batch number, serial, color, size, etc.
+    public required byte[] StockKeyHash { get; set; }
+    public string? LotNumber { get; set; }
+    public string? SerialNumber { get; set; }
+
     public Item Item { get; set; } = default!;
+
+    public ICollection<InventoryLotAttributeValue> AttributeValues { get; set; } = [];
 
     public void Map(EntityTypeBuilder<InventoryLot> builder)
     {
@@ -22,7 +28,7 @@ public class InventoryLot :
             .ToTable(nameof(InventoryLot), "Warehouse");
 
         builder
-           .HasIndex(i => new { i.ItemId, i.Serial, i.DimHash })
+           .HasIndex(i => new { i.ItemId, i.SerialNumber, i.StockKeyHash })
            .IsUnique()
            .HasDatabaseName("UX_InvLot_Item_DimHash");
 
@@ -31,7 +37,7 @@ public class InventoryLot :
             .HasDatabaseName("IX_InventoryLot_Item");
 
         builder
-            .Property(e => e.DimHash)
+            .Property(e => e.StockKeyHash)
             .HasMaxLength(32);
 
         builder

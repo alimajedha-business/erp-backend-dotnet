@@ -27,6 +27,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class ItemService(
     IAdvancedFilterBuilder filterBuilder,
     IItemRepository itemRepository,
+    ISiUnitRepository unitRepository,
     IItemBusinessRuleValidator businessRuleValidator,
     IValidator<CreateItemDto> createValidator,
     IValidator<PatchItemDto> patchValidator,
@@ -41,6 +42,7 @@ public class ItemService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IItemRepository _itemRepository = itemRepository;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IItemBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
     private readonly IValidator<CreateItemDto> _createValidator = createValidator;
     private readonly IValidator<PatchItemDto> _patchValidator = patchValidator;
@@ -68,12 +70,12 @@ public class ItemService(
             Sku = createItemDto.Sku,
             Barcode = createItemDto.Barcode,
             IsActive = createItemDto.IsActive,
-            PrimaryUnitOfMeasurementId = createItemDto.PrimaryUnitOfMeasurementId,
             ItemTypeId = createItemDto.ItemTypeId
         };
 
+        await SetItemMeasurementValuesAsync(item, createItemDto, ct);
         AddItemAttributes(item, createItemDto.AttributeIds);
-        AddSecondaryUnits(item, createItemDto.SecondaryUnitOfMeasurementIds);
+        AddItemUnitOfMeasurements(item, createItemDto.ItemUnitOfMeasurements);
         AddItemWarehouses(item, createItemDto.ItemWarehouses);
         AddItemUnitOfMeasurementConversions(
             item,
@@ -202,6 +204,9 @@ public class ItemService(
 
         var updateDto = BuildCreateDto(patchDto, item);
         await RequestBodyValidator.ValidateAsync(_createValidator, updateDto, ct);
+        _businessRuleValidator.ValidateItemUnitOfMeasurementCount(
+            updateDto.ItemUnitOfMeasurements
+        );
 
         var patchedPaths = patchDocument.Operations
             .Select(e => e.path.Trim('/').Split('/')[0])
@@ -217,25 +222,14 @@ public class ItemService(
             );
         }
 
-        if (
-            patchedPaths.Contains(nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)) ||
-            patchedPaths.Contains("itemUnitOfMeasurements")
-        )
-        {
-            _businessRuleValidator.ValidateItemUnitOfMeasurementCount(
-                updateDto.PrimaryUnitOfMeasurementId,
-                updateDto.SecondaryUnitOfMeasurementIds
-            );
-        }
-
         item.Code = updateDto.Code;
         item.Title = updateDto.Title;
         item.TitleInEnglish = updateDto.TitleInEnglish;
         item.TechnicalNumber = updateDto.TechnicalNumber;
         item.Barcode = updateDto.Barcode;
         item.IsActive = updateDto.IsActive;
-        item.PrimaryUnitOfMeasurementId = updateDto.PrimaryUnitOfMeasurementId;
         item.ItemTypeId = updateDto.ItemTypeId;
+        await SetItemMeasurementValuesAsync(item, updateDto, ct);
 
         if (
             patchedPaths.Contains(nameof(PatchItemDto.AttributeIds)) ||
@@ -245,12 +239,14 @@ public class ItemService(
             ReplaceItemAttributes(item, updateDto.AttributeIds);
         }
 
-        if (
-            patchedPaths.Contains(nameof(PatchItemDto.SecondaryUnitOfMeasurementIds)) ||
-            patchedPaths.Contains("itemUnitOfMeasurements")
-        )
+        if (patchedPaths.Contains(nameof(PatchItemDto.ItemUnitOfMeasurements)))
         {
-            ReplaceSecondaryUnits(item, updateDto.SecondaryUnitOfMeasurementIds);
+            ReplaceItemUnitOfMeasurements(
+                item,
+                updateDto.ItemUnitOfMeasurements
+            );
+
+            RemoveUnitConversionsForMissingUnits(item);
         }
 
         if (patchedPaths.Contains(nameof(PatchItemDto.ItemWarehouses)))
@@ -330,23 +326,14 @@ public class ItemService(
         }
     }
 
-    private static void AddSecondaryUnits(
+    private static void AddItemUnitOfMeasurements(
         Item item,
-        IEnumerable<Guid> secondaryUnitOfMeasurementIds
+        IReadOnlyCollection<CreateItemUnitOfMeasurementDto> itemUnitOfMeasurements
     )
     {
-        var unitOfMeasurementIds = secondaryUnitOfMeasurementIds
-            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
-            .Distinct()
-            .ToList();
-
-        for (var index = 0; index < unitOfMeasurementIds.Count; index++)
+        foreach (var dto in itemUnitOfMeasurements.OrderBy(e => e.UnitOrder))
         {
-            item.ItemUnitOfMeasurements.Add(new ItemUnitOfMeasurement
-            {
-                UnitOfMeasurementId = unitOfMeasurementIds[index],
-                UnitOrder = index + 2
-            });
+            item.ItemUnitOfMeasurements.Add(MapItemUnitOfMeasurement(dto));
         }
     }
 
@@ -382,6 +369,217 @@ public class ItemService(
                     WarehouseLocationId = locationId
                 })]
         };
+    }
+
+    private static ItemUnitOfMeasurement MapItemUnitOfMeasurement(
+        CreateItemUnitOfMeasurementDto dto
+    )
+    {
+        return new ItemUnitOfMeasurement
+        {
+            UnitOfMeasurementId = dto.UnitOfMeasurementId,
+            UnitOrder = dto.UnitOrder
+        };
+    }
+
+    private async Task<IReadOnlyDictionary<Guid, SiUnit>> LoadPreferredUnitsAsync(
+        CreateItemDto itemDto,
+        CancellationToken ct
+    )
+    {
+        var unitIds = new[]
+            {
+                itemDto.PreferredMassUnitId,
+                itemDto.PreferredLengthUnitId,
+                itemDto.PreferredVolumeUnitId
+            }
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
+        if (unitIds.Length == 0)
+            return new Dictionary<Guid, SiUnit>();
+
+        var unitsById = await _unitRepository.GetByIdsAsync(unitIds, ct);
+        var missingIds = unitIds
+            .Where(id => !unitsById.ContainsKey(id))
+            .ToList();
+
+        if (missingIds.Count != 0)
+        {
+            throw new ValidationException(missingIds.Select(id =>
+                new ValidationFailure(
+                    nameof(CreateItemDto),
+                    $"SiUnit '{id}' was not found."
+                )
+            ));
+        }
+
+        ValidatePreferredUnitDimensions(itemDto, unitsById);
+        return unitsById;
+    }
+
+    private async Task ValidateBaseUnitsExistAsync(
+        CreateItemDto itemDto,
+        CancellationToken ct
+    )
+    {
+        var requiredDimensions = new[]
+            {
+                itemDto.Weight.HasValue ? UnitDimension.MASS : (UnitDimension?)null,
+                HasAnyLength(itemDto) ? UnitDimension.LENGTH : (UnitDimension?)null,
+                itemDto.Volume.HasValue ? UnitDimension.VOLUME : (UnitDimension?)null
+            }
+            .Where(dimension => dimension.HasValue)
+            .Select(dimension => dimension!.Value)
+            .Distinct()
+            .ToArray();
+
+        if (requiredDimensions.Length == 0)
+            return;
+
+        var baseUnits = await _unitRepository.GetBaseUnitsByDimensionsAsync(
+            requiredDimensions,
+            ct
+        );
+
+        var missingDimensions = requiredDimensions
+            .Where(dimension => !baseUnits.ContainsKey(dimension))
+            .ToList();
+
+        if (missingDimensions.Count != 0)
+        {
+            throw new ValidationException(missingDimensions.Select(dimension =>
+                new ValidationFailure(
+                    nameof(CreateItemDto),
+                    $"Base unit for dimension '{dimension}' was not found."
+                )
+            ));
+        }
+    }
+
+    private static void ValidatePreferredUnitDimensions(
+        CreateItemDto itemDto,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
+    )
+    {
+        var failures = new List<ValidationFailure>();
+
+        ValidatePreferredUnitDimension(
+            itemDto.PreferredMassUnitId,
+            UnitDimension.MASS,
+            nameof(CreateItemDto.PreferredMassUnitId),
+            unitsById,
+            failures
+        );
+        ValidatePreferredUnitDimension(
+            itemDto.PreferredLengthUnitId,
+            UnitDimension.LENGTH,
+            nameof(CreateItemDto.PreferredLengthUnitId),
+            unitsById,
+            failures
+        );
+        ValidatePreferredUnitDimension(
+            itemDto.PreferredVolumeUnitId,
+            UnitDimension.VOLUME,
+            nameof(CreateItemDto.PreferredVolumeUnitId),
+            unitsById,
+            failures
+        );
+
+        if (failures.Count != 0)
+            throw new ValidationException(failures);
+    }
+
+    private static void ValidatePreferredUnitDimension(
+        Guid? unitId,
+        UnitDimension expectedDimension,
+        string propertyName,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById,
+        List<ValidationFailure> failures
+    )
+    {
+        if (!unitId.HasValue || !unitsById.TryGetValue(unitId.Value, out var unit))
+            return;
+
+        if (unit.UnitDimension != expectedDimension)
+        {
+            failures.Add(new ValidationFailure(
+                propertyName,
+                $"SiUnit '{unitId}' must have '{expectedDimension}' dimension."
+            ));
+        }
+    }
+
+    private static bool HasAnyLength(CreateItemDto dto)
+    {
+        return dto.Length.HasValue || dto.Width.HasValue || dto.Height.HasValue;
+    }
+
+    private async Task SetItemMeasurementValuesAsync(
+        Item item,
+        CreateItemDto itemDto,
+        CancellationToken ct
+    )
+    {
+        var unitsById = await LoadPreferredUnitsAsync(itemDto, ct);
+        await ValidateBaseUnitsExistAsync(itemDto, ct);
+
+        item.Weight = ConvertToBase(
+            itemDto.Weight,
+            itemDto.PreferredMassUnitId,
+            unitsById
+        );
+        item.Length = ConvertToBase(
+            itemDto.Length,
+            itemDto.PreferredLengthUnitId,
+            unitsById
+        );
+        item.Width = ConvertToBase(
+            itemDto.Width,
+            itemDto.PreferredLengthUnitId,
+            unitsById
+        );
+        item.Height = ConvertToBase(
+            itemDto.Height,
+            itemDto.PreferredLengthUnitId,
+            unitsById
+        );
+        item.Volume = ConvertToBase(
+            itemDto.Volume,
+            itemDto.PreferredVolumeUnitId,
+            unitsById
+        );
+        item.PreferredMassUnitId = itemDto.PreferredMassUnitId;
+        item.PreferredLengthUnitId = itemDto.PreferredLengthUnitId;
+        item.PreferredVolumeUnitId = itemDto.PreferredVolumeUnitId;
+    }
+
+    private static decimal? ConvertToBase(
+        decimal? value,
+        Guid? unitId,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
+    )
+    {
+        if (!value.HasValue)
+            return null;
+
+        if (!unitId.HasValue || !unitsById.TryGetValue(unitId.Value, out var unit))
+            return value;
+
+        return value.Value * unit.FactorToBase;
+    }
+
+    private static decimal? ConvertFromBase(decimal? value, SiUnit? preferredUnit)
+    {
+        if (!value.HasValue || preferredUnit is null)
+            return value;
+
+        if (preferredUnit.FactorToBase == 0)
+            return value;
+
+        return value.Value / preferredUnit.FactorToBase;
     }
 
     private static void ValidateDuplicateWarehouses(
@@ -510,7 +708,7 @@ public class ItemService(
 
         if (!match.Success)
         {
-            throw new ValidationException("Unit Error");
+            throw new ValidationException("SiUnit Error");
         }
 
         return int.Parse(match.Groups[1].Value);
@@ -558,7 +756,7 @@ public class ItemService(
         throw new ValidationException([
             new ValidationFailure(
                 nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
-                $"Unit conversion cycle detected: {string.Join(" -> ", cycle)}."
+                $"SiUnit conversion cycle detected: {string.Join(" -> ", cycle)}."
             )
         ]);
     }
@@ -617,11 +815,29 @@ public class ItemService(
             item.TechnicalNumber,
             item.Sku,
             item.Barcode,
-            new UnitOfMeasurementSlimDto(
-                item.PrimaryUnitOfMeasurementId,
-                item.PrimaryUnitOfMeasurement.Code,
-                item.PrimaryUnitOfMeasurement.Title
+            ConvertFromBase(
+                item.Weight,
+                item.PreferredMassUnit
             ),
+            ConvertFromBase(
+                item.Length,
+                item.PreferredLengthUnit
+            ),
+            ConvertFromBase(
+                item.Width,
+                item.PreferredLengthUnit
+            ),
+            ConvertFromBase(
+                item.Height,
+                item.PreferredLengthUnit
+            ),
+            ConvertFromBase(
+                item.Volume,
+                item.PreferredVolumeUnit
+            ),
+            MapSiUnitSlimDto(item.PreferredMassUnit),
+            MapSiUnitSlimDto(item.PreferredLengthUnit),
+            MapSiUnitSlimDto(item.PreferredVolumeUnit),
             new ItemTypeSlimDto(
                 item.ItemTypeId,
                 item.ItemType.Code,
@@ -639,11 +855,8 @@ public class ItemService(
                     ia.Attribute.Title
                 ))],
             [.. item.ItemUnitOfMeasurements
-                .Select(ium => new UnitOfMeasurementSlimDto(
-                    ium.UnitOfMeasurement.Id,
-                    ium.UnitOfMeasurement.Code,
-                    ium.UnitOfMeasurement.Title
-                ))],
+                .OrderBy(ium => ium.UnitOrder)
+                .Select(MapItemUnitOfMeasurementDto)],
             [.. item.ItemWarehouses
                 .Select(iw => new ItemWarehouseDto(
                     new WarehouseSlimDto(
@@ -667,6 +880,33 @@ public class ItemService(
         );
     }
 
+    private static ItemUnitOfMeasurementDto MapItemUnitOfMeasurementDto(
+        ItemUnitOfMeasurement itemUnitOfMeasurement
+    )
+    {
+        return new ItemUnitOfMeasurementDto(
+            new UnitOfMeasurementSlimDto(
+                itemUnitOfMeasurement.UnitOfMeasurement.Id,
+                itemUnitOfMeasurement.UnitOfMeasurement.Code,
+                itemUnitOfMeasurement.UnitOfMeasurement.Title
+            ),
+            itemUnitOfMeasurement.UnitOrder
+        );
+    }
+
+    private static SiUnitAsReferenceDto? MapSiUnitSlimDto(SiUnit? unit)
+    {
+        return unit is null
+            ? null
+            : new SiUnitAsReferenceDto(
+                unit.Id,
+                unit.Code,
+                unit.Title,
+                unit.Symbol,
+                unit.UnitDimension
+            );
+    }
+
     private static PatchItemDto BuildPatchDto(Item item)
     {
         return new PatchItemDto
@@ -677,13 +917,35 @@ public class ItemService(
             TechnicalNumber = item.TechnicalNumber,
             Barcode = item.Barcode,
             IsActive = item.IsActive,
-            PrimaryUnitOfMeasurementId = item.PrimaryUnitOfMeasurementId,
             ItemTypeId = item.ItemTypeId,
+            Weight = ConvertFromBase(
+                item.Weight,
+                item.PreferredMassUnit
+            ),
+            Length = ConvertFromBase(
+                item.Length,
+                item.PreferredLengthUnit
+            ),
+            Width = ConvertFromBase(
+                item.Width,
+                item.PreferredLengthUnit
+            ),
+            Height = ConvertFromBase(
+                item.Height,
+                item.PreferredLengthUnit
+            ),
+            Volume = ConvertFromBase(
+                item.Volume,
+                item.PreferredVolumeUnit
+            ),
+            PreferredMassUnitId = item.PreferredMassUnitId,
+            PreferredLengthUnitId = item.PreferredLengthUnitId,
+            PreferredVolumeUnitId = item.PreferredVolumeUnitId,
             AttributeIds = [.. item.ItemAttributes
                 .Select(e => e.AttributeId)],
-            SecondaryUnitOfMeasurementIds = [.. item.ItemUnitOfMeasurements
+            ItemUnitOfMeasurements = [.. item.ItemUnitOfMeasurements
                 .OrderBy(e => e.UnitOrder)
-                .Select(e => e.UnitOfMeasurementId)],
+                .Select(MapCreateItemUnitOfMeasurementDto)],
             ItemWarehouses = [.. item.ItemWarehouses
                 .Select(MapCreateItemWarehouseDto)],
             ItemUnitOfMeasurementConversions = BuildUnitConversionsByOrder(item)
@@ -704,10 +966,17 @@ public class ItemService(
             Sku = item.Sku,
             Barcode = patchDto.Barcode!,
             IsActive = patchDto.IsActive!.Value,
-            PrimaryUnitOfMeasurementId = patchDto.PrimaryUnitOfMeasurementId!.Value,
             ItemTypeId = patchDto.ItemTypeId!.Value,
             CategoryId = item.CategoryId,
-            SecondaryUnitOfMeasurementIds = patchDto.SecondaryUnitOfMeasurementIds ?? [],
+            Weight = patchDto.Weight,
+            Length = patchDto.Length,
+            Width = patchDto.Width,
+            Height = patchDto.Height,
+            Volume = patchDto.Volume,
+            PreferredMassUnitId = patchDto.PreferredMassUnitId,
+            PreferredLengthUnitId = patchDto.PreferredLengthUnitId,
+            PreferredVolumeUnitId = patchDto.PreferredVolumeUnitId,
+            ItemUnitOfMeasurements = patchDto.ItemUnitOfMeasurements ?? [],
             AttributeIds = patchDto.AttributeIds ?? [],
             ItemWarehouses = patchDto.ItemWarehouses ?? [],
             ItemUnitOfMeasurementConversions = patchDto.ItemUnitOfMeasurementConversions ?? []
@@ -728,18 +997,24 @@ public class ItemService(
         };
     }
 
+    private static CreateItemUnitOfMeasurementDto MapCreateItemUnitOfMeasurementDto(
+        ItemUnitOfMeasurement itemUnitOfMeasurement
+    )
+    {
+        return new CreateItemUnitOfMeasurementDto
+        {
+            UnitOfMeasurementId = itemUnitOfMeasurement.UnitOfMeasurementId,
+            UnitOrder = itemUnitOfMeasurement.UnitOrder
+        };
+    }
+
     private static Dictionary<string, ItemUnitConversionEquationDto> BuildUnitConversionsByOrder(Item item)
     {
-        var unitOrderById = new Dictionary<Guid, int>
-        {
-            [item.PrimaryUnitOfMeasurementId] = 1
-        };
-
-        foreach (var itemUnitOfMeasurement in item.ItemUnitOfMeasurements)
-        {
-            unitOrderById[itemUnitOfMeasurement.UnitOfMeasurementId] =
-                itemUnitOfMeasurement.UnitOrder;
-        }
+        var unitOrderById = item.ItemUnitOfMeasurements
+            .ToDictionary(
+                itemUnitOfMeasurement => itemUnitOfMeasurement.UnitOfMeasurementId,
+                itemUnitOfMeasurement => itemUnitOfMeasurement.UnitOrder
+            );
 
         return item.ItemUnitOfMeasurementConversions
             .Where(conversion => unitOrderById.ContainsKey(conversion.UnitOfMeasurementId))
@@ -752,14 +1027,10 @@ public class ItemService(
 
     private static List<Guid> BuildUnitOfMeasurementIdsByOrder(Item item)
     {
-        return [
-            item.PrimaryUnitOfMeasurementId,
-            .. item.ItemUnitOfMeasurements
-                .OrderBy(x => x.UnitOrder)
-                .Select(x => x.UnitOfMeasurementId)
-                .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
-                .Distinct()
-        ];
+        return [.. item.ItemUnitOfMeasurements
+            .OrderBy(x => x.UnitOrder)
+            .Select(x => x.UnitOfMeasurementId)
+            .Distinct()];
     }
 
     private static string BuildLocationPath(
@@ -819,17 +1090,18 @@ public class ItemService(
         }
     }
 
-    private static void ReplaceSecondaryUnits(
+    private static void ReplaceItemUnitOfMeasurements(
         Item item,
-        IEnumerable<Guid> requestedUomIds
+        IReadOnlyCollection<CreateItemUnitOfMeasurementDto> requestedItemUnitOfMeasurements
     )
     {
-        var requested = requestedUomIds
-            .Where(uomId => uomId != item.PrimaryUnitOfMeasurementId)
-            .Distinct()
+        var requested = requestedItemUnitOfMeasurements
+            .OrderBy(e => e.UnitOrder)
             .ToList();
 
-        var requestedSet = requested.ToHashSet();
+        var requestedSet = requested
+            .Select(e => e.UnitOfMeasurementId)
+            .ToHashSet();
 
         var toRemove = item.ItemUnitOfMeasurements
             .Where(x => !requestedSet.Contains(x.UnitOfMeasurementId))
@@ -843,26 +1115,40 @@ public class ItemService(
         var existingByUomId = item.ItemUnitOfMeasurements
             .ToDictionary(x => x.UnitOfMeasurementId);
 
-        for (var index = 0; index < requested.Count; index++)
+        foreach (var dto in requested)
         {
-            var uomId = requested[index];
-            var unitOrder = index + 2;
-
-            if (existingByUomId.TryGetValue(uomId, out var existing))
+            if (existingByUomId.TryGetValue(dto.UnitOfMeasurementId, out var existing))
             {
-                if (existing.UnitOrder != unitOrder)
-                {
-                    existing.UnitOrder = unitOrder;
-                }
+                UpdateItemUnitOfMeasurement(existing, dto);
 
                 continue;
             }
 
-            item.ItemUnitOfMeasurements.Add(new ItemUnitOfMeasurement
-            {
-                UnitOfMeasurementId = uomId,
-                UnitOrder = unitOrder
-            });
+            item.ItemUnitOfMeasurements.Add(MapItemUnitOfMeasurement(dto));
+        }
+    }
+
+    private static void UpdateItemUnitOfMeasurement(
+        ItemUnitOfMeasurement existing,
+        CreateItemUnitOfMeasurementDto requested
+    )
+    {
+        existing.UnitOrder = requested.UnitOrder;
+    }
+
+    private static void RemoveUnitConversionsForMissingUnits(Item item)
+    {
+        var currentUnitOfMeasurementIds = item.ItemUnitOfMeasurements
+            .Select(e => e.UnitOfMeasurementId)
+            .ToHashSet();
+
+        var toRemove = item.ItemUnitOfMeasurementConversions
+            .Where(e => !currentUnitOfMeasurementIds.Contains(e.UnitOfMeasurementId))
+            .ToList();
+
+        foreach (var conversion in toRemove)
+        {
+            item.ItemUnitOfMeasurementConversions.Remove(conversion);
         }
     }
 

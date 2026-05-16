@@ -20,8 +20,12 @@ public class ItemAttribute :
     public void Map(EntityTypeBuilder<ItemAttribute> builder)
     {
         builder
-            .ToTable(nameof(ItemAttribute), "Warehouse")
-            .HasKey(k => new { k.ItemId, k.AttributeId });
+            .ToTable(nameof(ItemAttribute), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.ItemId, i.AttributeId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemAttribute_Item_Attribute");
 
         builder
             .HasOne(e => e.Item)

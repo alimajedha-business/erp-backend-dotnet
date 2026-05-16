@@ -17,13 +17,22 @@ public class Item :
     public string Sku { get; set; } = default!;
     public string Barcode { get; set; } = default!;
     public bool IsActive { get; set; } = true;
-    public Guid PrimaryUnitOfMeasurementId { get; set; }
     public Guid ItemTypeId {  get; set; }
     public Guid CategoryId { get; set; }
+    public decimal? Weight { get; set; }
+    public decimal? Length { get; set; }
+    public decimal? Width { get; set; }
+    public decimal? Height { get; set; }
+    public decimal? Volume { get; set; }
+    public Guid? PreferredMassUnitId { get; set; }
+    public Guid? PreferredLengthUnitId { get; set; }
+    public Guid? PreferredVolumeUnitId { get; set; }
 
-    public UnitOfMeasurement PrimaryUnitOfMeasurement { get; set; } = default!;
     public ItemType ItemType { get; set; } = default!;
     public Category Category { get; set; } = default!;
+    public SiUnit? PreferredMassUnit { get; set; }
+    public SiUnit? PreferredLengthUnit { get; set; }
+    public SiUnit? PreferredVolumeUnit { get; set; }
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
     public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];
@@ -78,6 +87,26 @@ public class Item :
             .HasDefaultValue(true);
 
         builder
+            .Property(e => e.Weight)
+            .HasPrecision(28, 14);
+
+        builder
+            .Property(e => e.Length)
+            .HasPrecision(28, 14);
+
+        builder
+            .Property(e => e.Width)
+            .HasPrecision(28, 14);
+
+        builder
+            .Property(e => e.Height)
+            .HasPrecision(28, 14);
+
+        builder
+            .Property(e => e.Volume)
+            .HasPrecision(28, 14);
+
+        builder
             .HasOne(e => e.Category)
             .WithMany()
             .HasForeignKey(e => e.CategoryId)
@@ -90,9 +119,21 @@ public class Item :
             .OnDelete(DeleteBehavior.NoAction);
 
         builder
-            .HasOne(e => e.PrimaryUnitOfMeasurement)
+            .HasOne(e => e.PreferredMassUnit)
             .WithMany()
-            .HasForeignKey(e => e.PrimaryUnitOfMeasurementId)
+            .HasForeignKey(e => e.PreferredMassUnitId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(e => e.PreferredLengthUnit)
+            .WithMany()
+            .HasForeignKey(e => e.PreferredLengthUnitId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(e => e.PreferredVolumeUnit)
+            .WithMany()
+            .HasForeignKey(e => e.PreferredVolumeUnitId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

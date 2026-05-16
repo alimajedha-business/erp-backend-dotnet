@@ -24,8 +24,12 @@ public class ItemWarehouse :
     public void Map(EntityTypeBuilder<ItemWarehouse> builder)
     {
         builder
-            .ToTable(nameof(ItemWarehouse), "Warehouse")
-            .HasKey(k => new { k.ItemId, k.WarehouseId });
+            .ToTable(nameof(ItemWarehouse), "Warehouse");
+
+        builder
+            .HasIndex(i => new { i.ItemId, i.WarehouseId })
+            .IsUnique()
+            .HasDatabaseName("UX_ItemWarehouse_Item_Warehouse");
 
         builder
             .Property(e => e.ReorderPoint)

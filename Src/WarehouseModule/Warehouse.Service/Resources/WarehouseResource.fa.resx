@@ -307,16 +307,16 @@
     <value>سطر رسید شامل مقدار تکراری برای ویژگی کالا است.</value>
   </data>
   <data name="Receipt.FieldValue.DataTypeMismatch" xml:space="preserve">
-    <value>مقدار فیلد رسید با نوع داده پیکربندی‌شده مطابقت ندارد.</value>
+    <value>مقدار فیلد رسید «{0}» باید با نوع داده پیکربندی‌شده «{1}» مطابقت داشته باشد.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.Duplicate" xml:space="preserve">
     <value>رسید شامل مقدار تکراری برای تعریف فیلد است.</value>
   </data>
   <data name="Receipt.FieldValue.FieldDefinition.NotConfigured" xml:space="preserve">
-    <value>تعریف فیلد رسید برای این نوع رسید و محل قرارگیری پیکربندی نشده است.</value>
+    <value>فیلد رسید «{0}» برای محل قرارگیری «{1}» در این نوع رسید پیکربندی نشده است.</value>
   </data>
   <data name="Receipt.FieldValue.Required" xml:space="preserve">
-    <value>مقدار یکی از فیلدهای الزامی رسید ثبت نشده است.</value>
+    <value>مقدار فیلد الزامی رسید «{0}» ثبت نشده است.</value>
   </data>
   <data name="Receipt.Number.NotEmpty" xml:space="preserve">
     <value>شماره رسید نمی‌تواند خالی باشد.</value>
@@ -336,8 +336,35 @@
   <data name="Receipt.ReceiptLines.RowNumber.Duplicate" xml:space="preserve">
     <value>رسید شامل شماره ردیف تکراری '{0}' است.</value>
   </data>
+  <data name="Receipt.Line.ValidationFailed" xml:space="preserve">
+    <value>لطفا خطای ردیف(های) رسید را برطرف نمایید.</value>
+  </data>
   <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
     <value>نوع رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Detail" xml:space="preserve">
+    <value>جزئیات</value>
+  </data>
+  <data name="ReceiptConfiguredPlacement.Header" xml:space="preserve">
+    <value>سربرگ</value>
+  </data>
+  <data name="ReceiptFieldDataType.Boolean" xml:space="preserve">
+    <value>منطقی</value>
+  </data>
+  <data name="ReceiptFieldDataType.Date" xml:space="preserve">
+    <value>تاریخ</value>
+  </data>
+  <data name="ReceiptFieldDataType.Decimal" xml:space="preserve">
+    <value>عدد اعشاری</value>
+  </data>
+  <data name="ReceiptFieldDataType.Guid" xml:space="preserve">
+    <value>شناسه</value>
+  </data>
+  <data name="ReceiptFieldDataType.Integer" xml:space="preserve">
+    <value>عدد صحیح</value>
+  </data>
+  <data name="ReceiptFieldDataType.Text" xml:space="preserve">
+    <value>متن</value>
   </data>
   <data name="ReceiptFieldDefinition" xml:space="preserve">
     <value>تعریف فیلد رسید</value>
@@ -361,7 +388,7 @@
     <value>واحد اندازه‌گیری الزامی است.</value>
   </data>
   <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
-    <value>واحد اندازه‌گیری سطر رسید برای کالای انتخاب‌شده مجاز نیست.</value>
+    <value>واحد اندازه‌گیری «{0}» برای کالای انتخاب‌شده در سطر رسید مجاز نیست.</value>
   </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>ویژگی کالا الزامی است.</value>
@@ -425,6 +452,9 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>عنوان</value>
+  </data>
+  <data name="SiUnit" xml:space="preserve">
+    <value>واحد SI</value>
   </data>
   <data name="UnitOfMeasurement" xml:space="preserve">
     <value>واحد اندازه‌گیری</value>
@@ -576,9 +606,6 @@
   <data name="Receipt.ShippingCost" xml:space="preserve">
     <value>هزینه حمل و نقل</value>
   </data>
-  <data name="Receipt.WarehouseLocation" xml:space="preserve">
-    <value>محل ذخیره در انبار</value>
-  </data>
   <data name="Receipt.Discount" xml:space="preserve">
     <value>تخفیف</value>
   </data>
@@ -599,5 +626,95 @@
   </data>
   <data name="ReceiptTypeConfiguration.ReceiptType.NotEmpty" xml:space="preserve">
     <value>نوع رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="Item.Sku.Duplicate" xml:space="preserve">
+    <value>شناسه یکتای کالا قبلا ثبت شده است.</value>
+  </data>
+  <data name="Unit.Acre" xml:space="preserve">
+    <value>ایکر</value>
+  </data>
+  <data name="Unit.Centimeter" xml:space="preserve">
+    <value>سانتی متر</value>
+  </data>
+  <data name="Unit.Cubic Centimeter" xml:space="preserve">
+    <value>سانتی متر مکعب</value>
+  </data>
+  <data name="Unit.Cubic Foot" xml:space="preserve">
+    <value>فوت مکعب</value>
+  </data>
+  <data name="Unit.Cubic Meter" xml:space="preserve">
+    <value>متر مکعب</value>
+  </data>
+  <data name="Unit.Dozen" xml:space="preserve">
+    <value>دوجین</value>
+  </data>
+  <data name="Unit.Each" xml:space="preserve">
+    <value>عدد</value>
+  </data>
+  <data name="Unit.Foot" xml:space="preserve">
+    <value>فوت</value>
+  </data>
+  <data name="Unit.Gallon" xml:space="preserve">
+    <value>گالن</value>
+  </data>
+  <data name="Unit.Gram" xml:space="preserve">
+    <value>گرم</value>
+  </data>
+  <data name="Unit.Gross" xml:space="preserve">
+    <value>گروس</value>
+  </data>
+  <data name="Unit.Hectare" xml:space="preserve">
+    <value>هکتار</value>
+  </data>
+  <data name="Unit.Inch" xml:space="preserve">
+    <value>اینچ</value>
+  </data>
+  <data name="Unit.Kilogram" xml:space="preserve">
+    <value>کیلوگرم</value>
+  </data>
+  <data name="Unit.Kilometer" xml:space="preserve">
+    <value>کیلومتر</value>
+  </data>
+  <data name="Unit.Liter" xml:space="preserve">
+    <value>لیتر</value>
+  </data>
+  <data name="Unit.Meter" xml:space="preserve">
+    <value>متر</value>
+  </data>
+  <data name="Unit.Metric Ton" xml:space="preserve">
+    <value>تن متریک</value>
+  </data>
+  <data name="Unit.Mile" xml:space="preserve">
+    <value>مایل</value>
+  </data>
+  <data name="Unit.Milligram" xml:space="preserve">
+    <value>میلی گرم</value>
+  </data>
+  <data name="Unit.Milliliter" xml:space="preserve">
+    <value>میلی لیتر</value>
+  </data>
+  <data name="Unit.Millimeter" xml:space="preserve">
+    <value>میلی متر</value>
+  </data>
+  <data name="Unit.Ounce" xml:space="preserve">
+    <value>اونس</value>
+  </data>
+  <data name="Unit.Pound" xml:space="preserve">
+    <value>پوند</value>
+  </data>
+  <data name="Unit.Score" xml:space="preserve">
+    <value>بیست تایی</value>
+  </data>
+  <data name="Unit.Square Centimeter" xml:space="preserve">
+    <value>سانتی متر مربع</value>
+  </data>
+  <data name="Unit.Square Foot" xml:space="preserve">
+    <value>فوت مربع</value>
+  </data>
+  <data name="Unit.Square Meter" xml:space="preserve">
+    <value>متر مربع</value>
+  </data>
+  <data name="Unit.Yard" xml:space="preserve">
+    <value>یارد</value>
   </data>
 </root>

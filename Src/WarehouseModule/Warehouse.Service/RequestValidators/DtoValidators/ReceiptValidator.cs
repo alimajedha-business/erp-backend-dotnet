@@ -91,68 +91,6 @@ public class PatchReceiptValidator : AbstractValidator<PatchReceiptDto>
     }
 }
 
-public class CreateReceiptLineValidator : AbstractValidator<CreateReceiptLineDto>
-{
-    public CreateReceiptLineValidator(
-        IStringLocalizer<WarehouseResource> localizer
-    )
-    {
-        RuleFor(e => e.ItemId)
-            .NotEmpty()
-            .WithMessage(localizer["ReceiptLine.Item.NotEmpty"].Value);
-
-        RuleFor(e => e.UnitOfMeasurementId)
-            .NotEmpty()
-            .WithMessage(localizer["ReceiptLine.UnitOfMeasurement.NotEmpty"].Value);
-
-        RuleFor(e => e.Quantity)
-            .GreaterThan(0)
-            .WithMessage(localizer["ReceiptLine.Quantity.Positive"].Value);
-
-        RuleFor(e => e.ReceiptLineAttributeValues)
-            .NotNull()
-            .WithMessage(localizer["ReceiptLine.AttributeValues.NotNull"].Value);
-
-        RuleFor(e => e.ReceiptFieldValues)
-            .NotNull()
-            .WithMessage(localizer["ReceiptLine.FieldValues.NotNull"].Value);
-
-        RuleForEach(e => e.ReceiptLineAttributeValues)
-            .SetValidator(new CreateReceiptLineAttributeValueValidator(localizer))
-            .When(e => e.ReceiptLineAttributeValues is not null);
-
-        RuleForEach(e => e.ReceiptFieldValues)
-            .SetValidator(new CreateReceiptFieldValueValidator(localizer))
-            .When(e => e.ReceiptFieldValues is not null);
-    }
-}
-
-public class CreateReceiptFieldValueValidator :
-    AbstractValidator<CreateReceiptFieldValueDto>
-{
-    public CreateReceiptFieldValueValidator(
-        IStringLocalizer<WarehouseResource> localizer
-    )
-    {
-        RuleFor(e => e.FieldDefinitionId)
-            .NotEmpty()
-            .WithMessage(localizer["ReceiptFieldValue.FieldDefinition.NotEmpty"].Value);
-    }
-}
-
-public class CreateReceiptLineAttributeValueValidator :
-    AbstractValidator<CreateReceiptLineAttributeValueDto>
-{
-    public CreateReceiptLineAttributeValueValidator(
-        IStringLocalizer<WarehouseResource> localizer
-    )
-    {
-        RuleFor(e => e.ItemAttributeId)
-            .NotEmpty()
-            .WithMessage(localizer["ReceiptLineAttributeValue.ItemAttribute.NotEmpty"].Value);
-    }
-}
-
 public static class PatchReceiptPolicy
 {
     private static readonly PatchFieldRule RequiredReplaceOnly =

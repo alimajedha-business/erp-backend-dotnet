@@ -8,11 +8,10 @@ using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts
 namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class ItemBusinessRuleValidator(
-    IItemRepository itemRepository,
-    IInventoryLotRepository inventoryLotRepository
+    IItemRepository itemRepository
 ) : IItemBusinessRuleValidator
 {
-    private const int MaxItemUnitOfMeasurementCount = 3;
+    private const int MaxItemUnitOfMeasurementCount = 4;
 
     private static readonly HashSet<string> _allowedOrderFields = new(
         StringComparer.OrdinalIgnoreCase
@@ -23,8 +22,6 @@ public class ItemBusinessRuleValidator(
     };
 
     private readonly IItemRepository _itemRepository = itemRepository;
-    private readonly IInventoryLotRepository _inventoryLotRepository =
-        inventoryLotRepository;
 
     public void ValidateParameters(ItemParameters parameters)
     {
@@ -44,10 +41,14 @@ public class ItemBusinessRuleValidator(
             ct
         );
 
-        ValidateItemUnitOfMeasurementCount(
-            createDto.PrimaryUnitOfMeasurementId,
-            createDto.SecondaryUnitOfMeasurementIds
+        await ValidateItemSkuUniquenessAsync(
+            companyId,
+            excludedItemId: null,
+            createDto.Sku,
+            ct
         );
+
+        ValidateItemUnitOfMeasurementCount(createDto.ItemUnitOfMeasurements);
     }
 
     public async Task ValidateItemCodeUniquenessAsync(
@@ -74,13 +75,36 @@ public class ItemBusinessRuleValidator(
             throw new ItemCodeAlreadyExistsException(code);
     }
 
-    public void ValidateItemUnitOfMeasurementCount(
-        Guid primaryUnitOfMeasurementId,
-        IEnumerable<Guid>? secondaryUnitOfMeasurementIds
+    private async Task ValidateItemSkuUniquenessAsync(
+        Guid companyId,
+        Guid? excludedItemId,
+        string sku,
+        CancellationToken ct
     )
     {
-        var count = secondaryUnitOfMeasurementIds?
-            .Where(uomId => uomId != primaryUnitOfMeasurementId)
+        var exists = excludedItemId is null
+            ? await _itemRepository.AnyAsync(
+                e => e.CompanyId == companyId && e.Sku == sku,
+                ct
+            )
+            : await _itemRepository.AnyAsync(
+                e =>
+                    e.CompanyId == companyId &&
+                    e.Id != excludedItemId.Value &&
+                    e.Sku == sku,
+                ct
+            );
+
+        if (exists)
+            throw new ItemSkuAlreadyExistsException(sku);
+    }
+
+    public void ValidateItemUnitOfMeasurementCount(
+        IEnumerable<CreateItemUnitOfMeasurementDto>? itemUnitOfMeasurements
+    )
+    {
+        var count = itemUnitOfMeasurements?
+            .Select(e => e.UnitOfMeasurementId)
             .Distinct()
             .Count() ?? 0;
 
@@ -107,15 +131,5 @@ public class ItemBusinessRuleValidator(
 
         if (!exists)
             throw new ItemNotFoundException();
-
-        var hasInventoryLots = await _inventoryLotRepository.AnyAsync(
-            e =>
-                e.CompanyId == companyId &&
-                e.ItemId == id,
-            ct
-        );
-
-        if (hasInventoryLots)
-            throw new ItemHasInventoryLotsException();
     }
 }

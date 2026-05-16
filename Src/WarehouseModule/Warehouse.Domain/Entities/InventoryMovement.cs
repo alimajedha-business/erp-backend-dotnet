@@ -10,9 +10,10 @@ public class InventoryMovement :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<InventoryMovement>
 {
+    public Guid? SourceDocumentId { get; set; }
+    public Guid? SourceDocumentLineId { get; set; }
     public required DateTime MovementDate { get; set; }
-    public Guid ReferenceDocId { get; set; } = default!;
-    public decimal QuantityBase { get; set; }
+    public decimal Quantity { get; set; }
     public Guid MovementTypeId { get; set; } = default!;
     public Guid LotId { get; set; } = default!;
     public Guid FromLocationId { get; set; } = default!;
@@ -29,7 +30,7 @@ public class InventoryMovement :
             .ToTable(nameof(InventoryMovement), "Warehouse")
             .ToTable(t => t.HasCheckConstraint(
                 "CK_InventoryMovement_Qty",
-                "QuantityBase <> 0"
+                "Quantity <> 0"
             ));
 
         builder
@@ -42,12 +43,12 @@ public class InventoryMovement :
 
         builder
             .HasIndex(i => new { i.FromLocationId })
-            .IncludeProperties(e => e.QuantityBase)
+            .IncludeProperties(e => e.Quantity)
             .HasDatabaseName("IX_InventoryMovement_FromLocation");
 
         builder
             .HasIndex(i => new { i.ToLocationId })
-            .IncludeProperties(e => e.QuantityBase)
+            .IncludeProperties(e => e.Quantity)
             .HasDatabaseName("IX_InventoryMovement_ToLocation");
 
         builder
@@ -55,7 +56,7 @@ public class InventoryMovement :
             .HasPrecision(3);
 
         builder
-            .Property(e => e.QuantityBase)
+            .Property(e => e.Quantity)
             .HasPrecision(23, 8);
 
         builder

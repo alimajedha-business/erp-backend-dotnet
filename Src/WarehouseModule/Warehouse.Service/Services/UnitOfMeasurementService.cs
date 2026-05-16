@@ -77,7 +77,7 @@ public class UnitOfMeasurementService(
         );
     }
 
-    public async Task<ListResponseModel<UnitOfMeasurementListDto>> GetFilteredAsync(
+    public async Task<ListResponseModel<UnitOfMeasurementDto>> GetFilteredAsync(
         UnitOfMeasurementParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
@@ -87,8 +87,8 @@ public class UnitOfMeasurementService(
         var query = _uomRepository.GetFiltered(advancedFilters);
         var res = await _uomRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<UnitOfMeasurementListDto>(
-            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementListDto>>(res.items),
+        return new ListResponseModel<UnitOfMeasurementDto>(
+            results: _mapper.Map<IReadOnlyList<UnitOfMeasurementDto>>(res.items),
             totalCount: res.count,
             parameters
         );
@@ -137,7 +137,7 @@ public class UnitOfMeasurementService(
         );
 
         var hasPrimaryItems = await _itemRepository.AnyAsync(
-            e => e.PrimaryUnitOfMeasurementId == id,
+            e => e.ItemUnitOfMeasurements.Any(iu => iu.UnitOfMeasurementId == id),
             ct
         );
 
