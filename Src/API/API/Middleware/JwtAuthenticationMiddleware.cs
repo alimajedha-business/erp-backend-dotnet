@@ -71,7 +71,7 @@ namespace NGErp.API.Middleware
         private string? ExtractTokenFromCookie(HttpContext context)
         {
             // Try common cookie names
-            var cookieNames = new[] { "access_token", "jwt_token", "token", "auth_token", "sessionid" };
+            var cookieNames = new[] { "access", "access_token", "jwt_token", "token", "auth_token", "sessionid" };
             
             foreach (var cookieName in cookieNames)
             {

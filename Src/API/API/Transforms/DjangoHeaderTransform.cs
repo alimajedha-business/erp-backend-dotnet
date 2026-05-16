@@ -43,31 +43,42 @@ namespace NGErp.API.Transforms
                 // Forward Authorization header properly
                 // YARP automatically copies most headers, but we need to ensure Authorization is correct
                 var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
+                var token = string.Empty;
+
                 if (!string.IsNullOrEmpty(authHeader))
+                {
+                    // Clean up the header value and ensure proper format
+                    var cleanedHeader = authHeader.Trim();
+                    if (cleanedHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        token = cleanedHeader.Substring(7).Trim();
+                    }
+                    else
+                    {
+                        token = cleanedHeader;
+                    }
+                }
+                else
+                {
+                    // Try to get from cookies if header is missing
+                    var cookieNames = new[] { "access", "access_token", "jwt_token", "token", "auth_token", "refresh", "sessionid" };
+                    foreach (var cookieName in cookieNames)
+                    {
+                        if (httpContext.Request.Cookies.TryGetValue(cookieName, out var cookieToken) && !string.IsNullOrEmpty(cookieToken))
+                        {
+                            token = cookieToken;
+                            break;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(token))
                 {
                     // Remove any existing Authorization header from proxy request
                     transformContext.ProxyRequest.Headers.Remove("Authorization");
                     
-                    // Clean up the header value and ensure proper format
-                    var cleanedHeader = authHeader.Trim();
-                    
                     // Django expects: "Bearer <token>" - exactly one space
-                    if (cleanedHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Extract just the token part
-                        var token = cleanedHeader.Substring(7).Trim(); // Remove "Bearer " and trim
-                        
-                        // Re-add with proper formatting
-                        if (!string.IsNullOrEmpty(token))
-                        {
-                            transformContext.ProxyRequest.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
-                        }
-                    }
-                    else
-                    {
-                        // If no "Bearer " prefix, add it
-                        transformContext.ProxyRequest.Headers.TryAddWithoutValidation("Authorization", $"Bearer {cleanedHeader}");
-                    }
+                    transformContext.ProxyRequest.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
                 }
 
                 await Task.CompletedTask;

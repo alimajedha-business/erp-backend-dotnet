@@ -1,9 +1,12 @@
-﻿using System.Globalization;
+using System.Globalization;
+using System.Text;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using NGErp.Base.API.ActionFilters;
@@ -53,8 +56,38 @@ public static class ServiceExtensions
         services.AddGeneralInfrastructureServices(configuration);
         services.AddWarehouseInfrastructureServices(configuration);
         services.AddHCMInfrastructureServices(configuration);
+        services.ConfigureAuthentication(configuration);
 
         return services;
+    }
+
+    public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"] ?? "django-insecure-ngerp-secret-key";
+
+        // Register authentication schemes to satisfy the Authorization system's challenge/forbid requirements.
+        // We set DefaultAuthenticateScheme to null because custom middleware handles token validation,
+        // but we MUST have a default challenge/forbid scheme.
+        services.AddAuthentication(options =>
+        {
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                ValidateIssuer = jwtSettings.GetValue<bool>("ValidateIssuer", false),
+                ValidateAudience = jwtSettings.GetValue<bool>("ValidateAudience", false),
+                ValidateLifetime = jwtSettings.GetValue<bool>("ValidateLifetime", true),
+                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = jwtSettings.GetValue<bool>("ValidateIssuer", false) ? jwtSettings["Issuer"] : null,
+                ValidAudience = jwtSettings.GetValue<bool>("ValidateAudience", false) ? jwtSettings["Audience"] : null
+            };
+        });
     }
 
     public static IServiceCollection ConfigureControllers(this IServiceCollection services)

@@ -6,6 +6,7 @@ using NGErp.Base.Domain.Entities;
 using NGErp.Base.Service.Services;
 using NGErp.General.Domain.Entities;
 using NGErp.HCM.Domain.Entities;
+using NGErp.Shared.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Base.Infrastructure.DataAccess
@@ -16,7 +17,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
     ) : ApplicationContext(
             options,
             typeof(Company),
-            [typeof(Department), typeof(Category), typeof(Period)]
+            [typeof(Department), typeof(Category), typeof(Period), typeof(Role)]
         )
     {
         private readonly ICurrentUserService _currentUserService = currentUserService;
@@ -55,9 +56,16 @@ namespace NGErp.Base.Infrastructure.DataAccess
 
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Module> Modules { get; set; }
+        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EntityType> EntityTypes { get; set; }
         public virtual DbSet<EntityTypeCommand> EntityTypeCommands { get; set; }
         public virtual DbSet<ContentType> ContentTypes { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<RolePermission> RolePermissions { get; set; }
+        public virtual DbSet<RolePermissionCommand> RolePermissionCommands { get; set; }
+        public virtual DbSet<RolePermissionConstraint> RolePermissionConstraints { get; set; }
+        public virtual DbSet<RoleMember> RoleMembers { get; set; }
+        public virtual DbSet<CompanyUnit> CompanyUnits { get; set; }
 
         #endregion General
 
@@ -74,6 +82,12 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<OrganizationNode> OrganizationNodes { get; set; }
         public virtual DbSet<EmploymentGroup> EmploymentGroups { get; set; }
         public virtual DbSet<EmploymentGroupSpecification> EmploymentGroupSpecifications { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<EmployeeEducation> EmployeeEducations { get; set; }
+        public virtual DbSet<EmployeeWorkExperience> EmployeeWorkExperiences { get; set; }
+        public virtual DbSet<EmployeeRelative> EmployeeRelatives { get; set; }
+        public virtual DbSet<EmployeeDependant> EmployeeDependants { get; set; }
+        public virtual DbSet<EmployeeWarriorRecord> EmployeeWarriorRecords { get; set; }
         public virtual DbSet<JobCategory> JobCategories { get; set; }
         public virtual DbSet<Job> Jobs { get; set; }
         public virtual DbSet<PositionJob> PositionJobs { get; set; }

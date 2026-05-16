@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NGErp.Base.Infrastructure.Authorization;
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Infrastructure.Services;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.Services;
 
 namespace NGErp.Base.Infrastructure
@@ -21,6 +24,11 @@ namespace NGErp.Base.Infrastructure
             });
 
             services.AddScoped<TokenValidationService>();
+
+            // Authorization Integration
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+
             return services;
         }
     }

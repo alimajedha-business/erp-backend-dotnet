@@ -34,11 +34,26 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICur
     {
         get
         {
-            var authHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+            var context = _httpContextAccessor.HttpContext;
+            if (context == null) return null;
+
+            // 1. Try Authorization Header
+            var authHeader = context.Request.Headers["Authorization"].ToString();
             if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
                 return authHeader["Bearer ".Length..].Trim();
             }
+
+            // 2. Try Cookies
+            var cookieNames = new[] { "access", "access_token", "jwt_token", "token", "auth_token", "refresh", "sessionid" };
+            foreach (var cookieName in cookieNames)
+            {
+                if (context.Request.Cookies.TryGetValue(cookieName, out var token) && !string.IsNullOrEmpty(token))
+                {
+                    return token;
+                }
+            }
+
             return null;
         }
     }

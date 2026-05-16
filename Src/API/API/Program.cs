@@ -78,7 +78,7 @@ try
     app.UseHttpMetrics();
     
     app.UseApiGateway();
-    //app.UseAuthentication();
+    app.UseAuthentication();
     app.UseAuthorization();  
     app.MapControllers();
     app.MapReverseProxy();
