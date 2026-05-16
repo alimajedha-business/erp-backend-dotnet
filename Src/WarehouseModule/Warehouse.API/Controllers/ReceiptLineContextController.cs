@@ -2,6 +2,7 @@ using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -16,14 +17,21 @@ public class ReceiptLineContextController(
 {
     private readonly IReceiptLineContextService _receiptLineContextService = receiptLineContextService;
 
-    [HttpGet("items/{itemId:guid}/context")]
+    [HttpPost("items/{itemId:guid}/context")]
     public async Task<IActionResult> GetItemContext(
         [FromRoute] Guid companyId,
         [FromRoute] Guid itemId,
+        [FromBody] ReceiptLineItemContextRequestDto? requestDto,
         CancellationToken ct
     )
     {
-        var dto = await _receiptLineContextService.GetAsync(companyId, itemId, ct);
+        var dto = await _receiptLineContextService.GetAsync(
+            companyId,
+            itemId,
+            requestDto ?? new ReceiptLineItemContextRequestDto(null, []),
+            ct
+        );
+
         return Ok(dto);
     }
 }
