@@ -24,6 +24,7 @@ public class ReceiptService(
     IAdvancedFilterBuilder filterBuilder,
     IReceiptRepository receiptRepository,
     IReceiptBusinessRuleValidator businessRuleValidator,
+    IReceiptInventoryProjectionService receiptInventoryProjectionService,
     IValidator<CreateReceiptDto> createValidator,
     IValidator<PatchReceiptDto> patchValidator,
     IMapper mapper
@@ -33,6 +34,8 @@ public class ReceiptService(
     private readonly IMapper _mapper = mapper;
     private readonly IReceiptRepository _receiptRepository = receiptRepository;
     private readonly IReceiptBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IReceiptInventoryProjectionService _receiptInventoryProjectionService =
+        receiptInventoryProjectionService;
     private readonly IValidator<CreateReceiptDto> _createValidator = createValidator;
     private readonly IValidator<PatchReceiptDto> _patchValidator = patchValidator;
 
@@ -154,6 +157,27 @@ public class ReceiptService(
         }
 
         await _receiptRepository.SaveChangesAsync(ct);
+        await _receiptInventoryProjectionService.RebuildAsync(companyId, receipt, ct);
+
+        return await GetByIdAsync(companyId, id, trackChanges: false, ct);
+    }
+
+    public async Task<ReceiptDto> PostAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    )
+    {
+        var receipt = await _receiptRepository.SingleOrDefaultAsync(
+            e => e.CompanyId == companyId && e.Id == id,
+            trackChanges: true,
+            ct
+        ) ?? throw new ReceiptNotFoundException();
+
+        receipt.Status = ReceiptStatus.Posted;
+
+        await _receiptRepository.SaveChangesAsync(ct);
+        await _receiptInventoryProjectionService.RebuildAsync(companyId, receipt, ct);
 
         return await GetByIdAsync(companyId, id, trackChanges: false, ct);
     }
@@ -165,6 +189,7 @@ public class ReceiptService(
     )
     {
         await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
+        await _receiptInventoryProjectionService.RemoveAsync(companyId, id, ct);
         await _receiptRepository.DeleteReceiptGraphAsync(companyId, id, ct);
     }
 
