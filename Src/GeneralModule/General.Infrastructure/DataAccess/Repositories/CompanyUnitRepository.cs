@@ -2,6 +2,7 @@
 using NGErp.Base.Infrastructure.DataAccess.Repositories;
 using NGErp.General.Domain.Entities;
 using NGErp.General.Service.Repository.Contracts;
+using NGErp.Shared.Domain.Entities;
 
 namespace NGErp.General.Infrastructure.DataAccess.Repositories;
 

@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using System.Text.Json;
-
 using Microsoft.EntityFrameworkCore;
-
+using NGErp.Base.Domain.EntityTypeRegistration;
 using NGErp.Base.Infrastructure.DataAccess;
 using NGErp.Base.Service.Services;
 using NGErp.General.Domain.Entities;
@@ -14,448 +12,277 @@ internal static class UpdateEntities
     public static async Task Main(string[] args)
     {
         var options = ToolOptions.Parse(args);
-        var profilesPath = Path.GetFullPath(options.ProfilesPath ?? Path.Combine(AppContext.BaseDirectory, "profiles"));
         var connectionString = options.ConnectionString ?? ReadConnectionStringFromEnvironmentOrAppSettings();
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new InvalidOperationException(
-                "Connection string not found. Pass --connection, set NGERP_CONNECTION_STRING, or keep Src/API/API/appsettings.Development.json available."
-            );
+            throw new InvalidOperationException("Connection string not found.");
         }
 
-        var jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true
-        };
+        // Force load assemblies by referencing a type from each module
+        _ = typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile);
+        _ = typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile);
 
-        var profiles = await ReadProfilesAsync(profilesPath, jsonOptions);
-        Validate(profiles);
-
+        var profiles = DiscoverProfiles();
+        
         var dbOptions = new DbContextOptionsBuilder<MainDbContext>()
             .UseSqlServer(connectionString)
             .Options;
-
-        await using var context = new MainDbContext(dbOptions, new ScriptCurrentUserService());
-        await using var transaction = await context.Database.BeginTransactionAsync();
 
         var result = new SyncResult();
 
         foreach (var profile in profiles)
         {
-            var module = await context.Modules
-                .FirstOrDefaultAsync(m => m.Id == profile.ModuleId);
+            Console.WriteLine($"Syncing module: {profile.Prefix} (ID: {profile.ModuleId})");
+            
+            await using var context = new MainDbContext(dbOptions, new ScriptCurrentUserService());
+            await using var transaction = await context.Database.BeginTransactionAsync();
 
-            if (module is null)
+            try
             {
-                result.MissingModules.Add($"{profile.Prefix} ({profile.ModuleId})");
-                continue;
-            }
-
-            result.SyncedModules.Add($"{module.Prefix} ({module.Id})");
-
-            var existingEntityTypes = await context.EntityTypes
-                .Include(entityType => entityType.Commands)
-                .Where(entityType => entityType.ModuleId == profile.ModuleId)
-                .ToListAsync();
-
-            var profileKeys = profile.EntityTypes
-                .Select(entityType => entityType.Key)
-                .ToHashSet(StringComparer.Ordinal);
-
-            foreach (var entityTypeDefinition in profile.EntityTypes)
-            {
-                var entityType = existingEntityTypes
-                    .FirstOrDefault(entityType => entityType.Key == entityTypeDefinition.Key);
-
-                if (entityType is null)
+                var module = await context.Modules.FirstOrDefaultAsync(m => m.Id == profile.ModuleId);
+                if (module is null)
                 {
-                    entityType = new EntityType
+                    result.MissingModules.Add($"{profile.Prefix} ({profile.ModuleId})");
+                    continue;
+                }
+
+                if (module.Prefix != profile.Prefix)
+                {
+                    Console.WriteLine($"Updating module prefix from '{module.Prefix}' to '{profile.Prefix}'");
+                    module.Prefix = profile.Prefix;
+                }
+
+                result.SyncedModules.Add($"{module.Prefix} ({module.Id})");
+
+                var existingEntityTypes = await context.EntityTypes
+                    .Include(et => et.Commands)
+                    .Where(et => et.ModuleId == profile.ModuleId)
+                    .ToListAsync();
+
+                var definitions = profile.GetDefinitions().ToList();
+                var profileKeys = definitions.Select(d => d.Key).ToHashSet(StringComparer.Ordinal);
+
+                if (profile.DeleteStale)
+                {
+                    foreach (var stale in existingEntityTypes.Where(et => !profileKeys.Contains(et.Key)).ToList())
                     {
-                        Id = Guid.NewGuid(),
-                        ModuleId = profile.ModuleId,
-                        Key = entityTypeDefinition.Key,
-                        NameFa = entityTypeDefinition.NameFa,
-                        NameEn = entityTypeDefinition.NameEn,
-                        Code = entityTypeDefinition.Code,
-                        Module = module
-                    };
-
-                    context.EntityTypes.Add(entityType);
-                    existingEntityTypes.Add(entityType);
-                    result.AddedEntityTypes++;
-                    Apply(entityType, entityTypeDefinition);
+                        await DeleteReferencesAsync(context, stale);
+                        context.EntityTypes.Remove(stale);
+                        result.RemovedEntityTypes++;
+                    }
+                    await context.SaveChangesAsync();
                 }
-                else
+
+                foreach (var definition in definitions)
                 {
-                    if (Apply(entityType, entityTypeDefinition))
+                    var entityType = existingEntityTypes.FirstOrDefault(et => et.Key == definition.Key);
+
+                    if (entityType is null)
+                    {
+                        // Check if an entity type with same NameFa exists for this module
+                        var duplicate = await context.EntityTypes
+                            .FirstOrDefaultAsync(et => et.ModuleId == profile.ModuleId && et.NameFa == definition.NameFa);
+                        
+                        if (duplicate != null)
+                        {
+                            Console.WriteLine($"[WRN] Conflict for '{definition.Key}': NameFa '{definition.NameFa}' is already used by '{duplicate.Key}'. Skipping.");
+                            continue;
+                        }
+
+                        entityType = new EntityType
+                        {
+                            Id = Guid.NewGuid(),
+                            ModuleId = profile.ModuleId,
+                            Key = definition.Key,
+                            NameFa = definition.NameFa,
+                            NameEn = definition.NameEn,
+                            Code = definition.Code,
+                            Module = module
+                        };
+                        context.EntityTypes.Add(entityType);
+                        result.AddedEntityTypes++;
+                    }
+                    
+                    if (Apply(entityType, definition))
                         result.UpdatedEntityTypes++;
+
+                    var modelName = definition.Key.Replace("_", "").ToLowerInvariant();
+                    await SyncContentTypeAsync(context, entityType, profile.Prefix, modelName);
+                    await SyncCommandsAsync(context, entityType, definition, result);
                 }
 
-                await SyncCommandsAsync(context, entityType, entityTypeDefinition, result);
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
-
-            if (!profile.DeleteStale)
-                continue;
-
-            foreach (var staleEntityType in existingEntityTypes.Where(entityType => !profileKeys.Contains(entityType.Key)).ToList())
+            catch (Exception ex)
             {
-                await DeleteRolePermissionReferencesAsync(context, staleEntityType);
-                context.EntityTypes.Remove(staleEntityType);
-                result.RemovedEntityTypes++;
+                await transaction.RollbackAsync();
+                var message = ex.InnerException?.Message ?? ex.Message;
+                Console.WriteLine($"[ERR] Failed to sync module {profile.Prefix}: {message}");
             }
         }
 
-        await context.SaveChangesAsync();
-        await transaction.CommitAsync();
-
-        Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
     }
 
-    static async Task<IReadOnlyList<EntityTypeProfile>> ReadProfilesAsync(
-        string profilesPath,
-        JsonSerializerOptions jsonOptions
-    )
+    static List<IEntityTypeModuleProfile> DiscoverProfiles()
     {
-        var files = File.Exists(profilesPath)
-            ? [profilesPath]
-            : Directory.Exists(profilesPath)
-                ? Directory.GetFiles(profilesPath, "*.json").OrderBy(path => path).ToArray()
-                : throw new FileNotFoundException("Entity type profile path was not found.", profilesPath);
-
-        if (files.Length == 0)
-            throw new InvalidOperationException($"No entity type profile JSON files found in {profilesPath}.");
-
-        var profiles = new List<EntityTypeProfile>();
-
-        foreach (var file in files)
+        var interfaceType = typeof(IEntityTypeModuleProfile);
+        var profiles = new List<IEntityTypeModuleProfile>();
+        
+        // Get all assemblies including the current one and all referenced ones
+        var assemblies = new HashSet<System.Reflection.Assembly>
         {
-            var profile = JsonSerializer.Deserialize<EntityTypeProfile>(
-                await File.ReadAllTextAsync(file),
-                jsonOptions
-            ) ?? throw new InvalidOperationException($"Entity type profile JSON is empty: {file}");
+            typeof(UpdateEntities).Assembly,
+            typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile).Assembly,
+            typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile).Assembly
+        };
 
-            profile.SourceFile = file;
-            profiles.Add(profile);
+        foreach (var assembly in assemblies)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                if (interfaceType.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                {
+                    profiles.Add((IEntityTypeModuleProfile)Activator.CreateInstance(type)!);
+                }
+            }
         }
-
+        
         return profiles;
     }
 
     static bool Apply(EntityType entityType, EntityTypeDefinition definition)
     {
-        var changed =
-            entityType.NameFa != definition.NameFa ||
-            entityType.NameEn != definition.NameEn ||
-            entityType.Code != definition.Code ||
-            entityType.Ordering != definition.Ordering ||
-            entityType.Readable != definition.Attrs.Readable ||
-            entityType.Creatable != definition.Attrs.Creatable ||
-            entityType.Editable != definition.Attrs.Editable ||
-            entityType.Deletable != definition.Attrs.Deletable ||
-            entityType.Loggable != definition.Attrs.Loggable ||
-            entityType.Printable != definition.Attrs.Printable ||
-            entityType.Importable != definition.Attrs.Importable ||
-            entityType.Exportable != definition.Attrs.Exportable ||
-            entityType.IfNotCreator != definition.Attrs.IfNotCreator ||
-            entityType.HasRestriction != definition.Attrs.HasRestriction ||
-            entityType.Permissible != definition.Attrs.Permissible ||
-            entityType.HasConstraint;
+        bool changed = entityType.NameFa != definition.NameFa || 
+                       entityType.NameEn != definition.NameEn ||
+                       entityType.Code != definition.Code ||
+                       entityType.Ordering != definition.Ordering ||
+                       entityType.Readable != definition.Attributes.Readable ||
+                       entityType.Creatable != definition.Attributes.Creatable ||
+                       entityType.Editable != definition.Attributes.Editable ||
+                       entityType.Deletable != definition.Attributes.Deletable ||
+                       entityType.Loggable != definition.Attributes.Loggable ||
+                       entityType.Printable != definition.Attributes.Printable ||
+                       entityType.Importable != definition.Attributes.Importable ||
+                       entityType.Exportable != definition.Attributes.Exportable ||
+                       entityType.IfNotCreator != definition.Attributes.IfNotCreator ||
+                       entityType.HasRestriction != definition.Attributes.HasRestriction ||
+                       entityType.Permissible != definition.Attributes.Permissible;
 
         entityType.NameFa = definition.NameFa;
         entityType.NameEn = definition.NameEn;
         entityType.Code = definition.Code;
         entityType.Ordering = definition.Ordering;
-        entityType.Readable = definition.Attrs.Readable;
-        entityType.Creatable = definition.Attrs.Creatable;
-        entityType.Editable = definition.Attrs.Editable;
-        entityType.Deletable = definition.Attrs.Deletable;
-        entityType.Loggable = definition.Attrs.Loggable;
-        entityType.Printable = definition.Attrs.Printable;
-        entityType.Importable = definition.Attrs.Importable;
-        entityType.Exportable = definition.Attrs.Exportable;
-        entityType.IfNotCreator = definition.Attrs.IfNotCreator;
-        entityType.HasRestriction = definition.Attrs.HasRestriction;
-        entityType.Permissible = definition.Attrs.Permissible;
-        entityType.HasConstraint = false;
+        entityType.Readable = definition.Attributes.Readable;
+        entityType.Creatable = definition.Attributes.Creatable;
+        entityType.Editable = definition.Attributes.Editable;
+        entityType.Deletable = definition.Attributes.Deletable;
+        entityType.Loggable = definition.Attributes.Loggable;
+        entityType.Printable = definition.Attributes.Printable;
+        entityType.Importable = definition.Attributes.Importable;
+        entityType.Exportable = definition.Attributes.Exportable;
+        entityType.IfNotCreator = definition.Attributes.IfNotCreator;
+        entityType.HasRestriction = definition.Attributes.HasRestriction;
+        entityType.Permissible = definition.Attributes.Permissible;
 
         return changed;
     }
 
-    static async Task SyncCommandsAsync(
-        MainDbContext context,
-        EntityType entityType,
-        EntityTypeDefinition definition,
-        SyncResult result
-    )
+    static async Task SyncContentTypeAsync(MainDbContext context, EntityType entityType, string appLabel, string modelName)
     {
-        var commandKeys = definition.Commands
-            .Select(command => command.Key)
-            .ToHashSet(StringComparer.Ordinal);
-
-        foreach (var commandDefinition in definition.Commands)
+        var contentType = await context.ContentTypes.FirstOrDefaultAsync(ct => ct.AppLabel == appLabel && ct.Model == modelName);
+        if (contentType is null)
         {
-            var command = entityType.Commands
-                .FirstOrDefault(entityTypeCommand => entityTypeCommand.Key == commandDefinition.Key);
+            contentType = new ContentType { AppLabel = appLabel, Model = modelName };
+            context.ContentTypes.Add(contentType);
+            await context.SaveChangesAsync();
+        }
+        entityType.ContentTypeId = contentType.Id;
+    }
 
+    static async Task SyncCommandsAsync(MainDbContext context, EntityType entityType, EntityTypeDefinition definition, SyncResult result)
+    {
+        var commandKeys = definition.Commands.Select(c => c.Key).ToHashSet();
+        foreach (var cmdDef in definition.Commands)
+        {
+            var command = entityType.Commands.FirstOrDefault(c => c.Key == cmdDef.Key);
             if (command is null)
             {
-                command = new EntityTypeCommand
-                {
-                    Id = Guid.NewGuid(),
-                    EntityType = entityType,
-                    Key = commandDefinition.Key,
-                    NameFa = commandDefinition.NameFa,
-                    NameEn = commandDefinition.NameEn
+                command = new EntityTypeCommand 
+                { 
+                    Id = Guid.NewGuid(), 
+                    EntityType = entityType, 
+                    Key = cmdDef.Key,
+                    NameFa = cmdDef.NameFa,
+                    NameEn = cmdDef.NameEn
                 };
-
-                entityType.Commands.Add(command);
                 context.EntityTypeCommands.Add(command);
                 result.AddedCommands++;
             }
             else
             {
-                if (
-                    command.NameFa != commandDefinition.NameFa ||
-                    command.NameEn != commandDefinition.NameEn ||
-                    command.Ordering != commandDefinition.Ordering ||
-                    command.Permissible != commandDefinition.Permissible
-                )
+                if (command.NameFa != cmdDef.NameFa || command.NameEn != cmdDef.NameEn || command.Ordering != cmdDef.Ordering || command.Permissible != cmdDef.Permissible)
                 {
                     result.UpdatedCommands++;
                 }
             }
 
-            command.NameFa = commandDefinition.NameFa;
-            command.NameEn = commandDefinition.NameEn;
-            command.Ordering = commandDefinition.Ordering;
-            command.Permissible = commandDefinition.Permissible;
+            command.NameFa = cmdDef.NameFa;
+            command.NameEn = cmdDef.NameEn;
+            command.Ordering = cmdDef.Ordering;
+            command.Permissible = cmdDef.Permissible;
         }
 
-        foreach (var staleCommand in entityType.Commands.Where(command => !commandKeys.Contains(command.Key)).ToList())
+        foreach (var stale in entityType.Commands.Where(c => !commandKeys.Contains(c.Key)).ToList())
         {
-            await DeleteRolePermissionReferencesAsync(context, staleCommand);
-            context.EntityTypeCommands.Remove(staleCommand);
+            await context.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM shared.role_permission_commands WHERE entity_type_command_id = {stale.Id}");
+            context.EntityTypeCommands.Remove(stale);
             result.RemovedCommands++;
         }
     }
 
-    static async Task DeleteRolePermissionReferencesAsync(MainDbContext context, EntityType entityType)
+    static async Task DeleteReferencesAsync(MainDbContext context, EntityType entityType)
     {
-        await context.Database.ExecuteSqlInterpolatedAsync($@"
-DELETE FROM general.entity_type_dependencies
-WHERE entity_type_id = {entityType.Id}
-   OR required_entity_type_id = {entityType.Id};
-");
-
-        await context.Database.ExecuteSqlInterpolatedAsync($@"
-DELETE rpc
-FROM shared.role_permission_commands AS rpc
-INNER JOIN general.entity_type_commands AS etc
-    ON etc.id = rpc.entity_type_command_id
-WHERE etc.entity_type_id = {entityType.Id};
-");
-
-        await context.Database.ExecuteSqlInterpolatedAsync($@"
-DELETE FROM shared.role_permission_commands
-WHERE entity_type_id = {entityType.Id};
-");
-
-        await context.Database.ExecuteSqlInterpolatedAsync($@"
-DELETE FROM shared.role_permissions
-WHERE entity_type_id = {entityType.Id};
-");
-    }
-
-    static async Task DeleteRolePermissionReferencesAsync(MainDbContext context, EntityTypeCommand command)
-    {
-        await context.Database.ExecuteSqlInterpolatedAsync($@"
-DELETE FROM shared.role_permission_commands
-WHERE entity_type_command_id = {command.Id};
-");
-    }
-
-    static void Validate(IReadOnlyList<EntityTypeProfile> profiles)
-    {
-        var duplicateProfiles = profiles
-            .GroupBy(profile => profile.ModuleId)
-            .Where(group => group.Count() > 1)
-            .Select(group => group.Key.ToString())
-            .ToList();
-
-        if (duplicateProfiles.Count > 0)
-            throw new InvalidOperationException($"Duplicate profile module IDs: {string.Join(", ", duplicateProfiles)}");
-
-        foreach (var profile in profiles)
-        {
-            if (string.IsNullOrWhiteSpace(profile.Prefix))
-                throw new InvalidOperationException($"Profile {profile.SourceFile} must have a prefix.");
-
-            if (!DjangoModuleIds.All.Contains(profile.ModuleId))
-                throw new InvalidOperationException(
-                    $"Profile {profile.SourceFile} has invalid moduleId {profile.ModuleId}. Valid Django module IDs are: {string.Join(", ", DjangoModuleIds.All)}."
-                );
-
-            var duplicateEntityTypeKeys = profile.EntityTypes
-                .GroupBy(entityType => entityType.Key, StringComparer.Ordinal)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key)
-                .ToList();
-
-            if (duplicateEntityTypeKeys.Count > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Profile {profile.Prefix} has duplicate entity type keys: {string.Join(", ", duplicateEntityTypeKeys)}"
-                );
-            }
-
-            foreach (var entityType in profile.EntityTypes)
-            {
-                ValidateUppercaseKey(entityType.Key, $"entity type in profile {profile.Prefix}");
-
-                if (!entity_types.DeclaredKeys.Contains(entityType.Key))
-                    throw new InvalidOperationException($"Entity type key {entityType.Key} is not declared in entity_types.cs.");
-
-                if (string.IsNullOrWhiteSpace(entityType.Code) || entityType.Code.Length > 4)
-                    throw new InvalidOperationException($"Entity type {entityType.Key} must have a non-empty code with at most 4 characters.");
-
-                var duplicateCommandKeys = entityType.Commands
-                    .GroupBy(command => command.Key, StringComparer.Ordinal)
-                    .Where(group => group.Count() > 1)
-                    .Select(group => group.Key)
-                    .ToList();
-
-                if (duplicateCommandKeys.Count > 0)
-                {
-                    throw new InvalidOperationException(
-                        $"Entity type {entityType.Key} has duplicate command keys: {string.Join(", ", duplicateCommandKeys)}"
-                    );
-                }
-
-                foreach (var command in entityType.Commands)
-                {
-                    ValidateUppercaseKey(command.Key, $"command in entity type {entityType.Key}");
-                }
-            }
-        }
-    }
-
-    static void ValidateUppercaseKey(string key, string context)
-    {
-        if (string.IsNullOrWhiteSpace(key))
-            throw new InvalidOperationException($"Missing key for {context}.");
-
-        if (key != key.ToUpperInvariant())
-            throw new InvalidOperationException($"Key {key} for {context} must be uppercase.");
+        await context.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM general.menu_items WHERE entity_type_id = {entityType.Id}");
+        await context.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM shared.role_permissions WHERE entity_type_id = {entityType.Id}");
+        await context.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM shared.role_permission_commands WHERE entity_type_id = {entityType.Id}");
+        await context.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM general.entity_type_dependencies WHERE entity_type_id = {entityType.Id} OR required_entity_type_id = {entityType.Id}");
     }
 
     static string? ReadConnectionStringFromEnvironmentOrAppSettings()
     {
-        var fromEnvironment = Environment.GetEnvironmentVariable("NGERP_CONNECTION_STRING")
-            ?? Environment.GetEnvironmentVariable("ConnectionStrings__NGERPDatabase");
-
-        if (!string.IsNullOrWhiteSpace(fromEnvironment))
-            return fromEnvironment;
-
         var appSettingsPath = FindFileUpwards(Path.Combine("Src", "API", "API", "appsettings.Development.json"));
-        if (appSettingsPath is null)
-            return null;
-
-        using var document = JsonDocument.Parse(File.ReadAllText(appSettingsPath));
-        return document.RootElement
-            .GetProperty("ConnectionStrings")
-            .GetProperty("NGERPDatabase")
-            .GetString();
+        if (appSettingsPath == null) return null;
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(appSettingsPath));
+        return document.RootElement.GetProperty("ConnectionStrings").GetProperty("NGERPDatabase").GetString();
     }
 
     static string? FindFileUpwards(string relativePath)
     {
         var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
-
-        while (directory is not null)
+        while (directory != null)
         {
             var candidate = Path.Combine(directory.FullName, relativePath);
-            if (File.Exists(candidate))
-                return candidate;
-
+            if (File.Exists(candidate)) return candidate;
             directory = directory.Parent;
         }
-
         return null;
     }
 }
 
-internal sealed record ToolOptions(string? ProfilesPath, string? ConnectionString)
+internal sealed record ToolOptions(string? ConnectionString)
 {
     public static ToolOptions Parse(string[] args)
     {
-        string? profilesPath = null;
         string? connectionString = null;
-
         for (var i = 0; i < args.Length; i++)
         {
-            switch (args[i])
-            {
-                case "--profiles" when i + 1 < args.Length:
-                case "--profile" when i + 1 < args.Length:
-                    profilesPath = args[++i];
-                    break;
-                case "--connection" when i + 1 < args.Length:
-                    connectionString = args[++i];
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unknown or incomplete argument: {args[i]}");
-            }
+            if (args[i] == "--connection" && i + 1 < args.Length) connectionString = args[++i];
         }
-
-        return new ToolOptions(profilesPath, connectionString);
+        return new ToolOptions(connectionString);
     }
-}
-
-internal sealed class EntityTypeProfile
-{
-    public long ModuleId { get; init; }
-    public string Prefix { get; init; } = string.Empty;
-    public bool DeleteStale { get; init; } = true;
-    public IReadOnlyList<EntityTypeDefinition> EntityTypes { get; init; } = [];
-    public string? SourceFile { get; set; }
-}
-
-internal sealed class EntityTypeDefinition
-{
-    public string Key { get; init; } = string.Empty;
-    public string NameFa { get; init; } = string.Empty;
-    public string NameEn { get; init; } = string.Empty;
-    public string Code { get; init; } = string.Empty;
-    public short? Ordering { get; init; }
-    public EntityTypeAttrs Attrs { get; init; } = new();
-    public IReadOnlyList<EntityTypeCommandDefinition> Commands { get; init; } = [];
-}
-
-internal sealed class EntityTypeAttrs
-{
-    public bool Readable { get; init; }
-    public bool Creatable { get; init; }
-    public bool Editable { get; init; }
-    public bool Deletable { get; init; }
-    public bool Loggable { get; init; }
-    public bool Printable { get; init; }
-    public bool Importable { get; init; }
-    public bool Exportable { get; init; }
-    public bool IfNotCreator { get; init; }
-    public bool HasRestriction { get; init; }
-    public bool Permissible { get; init; } = true;
-}
-
-internal sealed class EntityTypeCommandDefinition
-{
-    public string Key { get; init; } = string.Empty;
-    public string NameFa { get; init; } = string.Empty;
-    public string NameEn { get; init; } = string.Empty;
-    public short? Ordering { get; init; }
-    public bool Permissible { get; init; } = true;
 }
 
 internal sealed class SyncResult
@@ -470,21 +297,6 @@ internal sealed class SyncResult
     public int RemovedCommands { get; set; }
 }
 
-internal static class DjangoModuleIds
-{
-    public const long General = 1;
-    public const long Shared = 2;
-    public const long Accounting = 3;
-    public const long Store = 4;
-    public const long ProjectManagement = 5;
-    public const long Payroll = 6;
-    public const long Treasury = 7;
-    public const long File = 8;
-
-    public static IReadOnlySet<long> All { get; } =
-        new HashSet<long> { General, Shared, Accounting, Store, ProjectManagement, Payroll, Treasury, File };
-}
-
 internal sealed class ScriptCurrentUserService : ICurrentUserService
 {
     public string? UserId => null;
@@ -494,4 +306,3 @@ internal sealed class ScriptCurrentUserService : ICurrentUserService
     public bool IsAuthenticated => false;
     public ClaimsPrincipal? User => null;
 }
-

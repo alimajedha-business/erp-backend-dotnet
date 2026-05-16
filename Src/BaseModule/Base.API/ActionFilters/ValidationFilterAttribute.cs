@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.ErrorModels;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.Resources;
 
 namespace NGErp.Base.API.ActionFilters;
@@ -65,7 +66,6 @@ public class ValidationFilterAttribute(
     /// The filter skips validation when:
     /// <list type="bullet">
     /// <item>The request method does not support body validation.</item>
-    /// <item>The endpoint is decorated with <c>SkipModelValidationAttribute</c>.</item>
     /// <item>No body-bound parameter is defined for the action.</item>
     /// <item>No FluentValidation validator is registered for the body DTO type.</item>
     /// </list>
@@ -89,7 +89,8 @@ public class ValidationFilterAttribute(
         // Allow endpoints to explicitly opt out of model validation.
         var skipValidation = context.ActionDescriptor
             .EndpointMetadata
-            .Any(x => x is SkipModelValidationAttribute);
+            .Any(x => x is InherentlyActionAttribute inherent && 
+                     (inherent.ActionType == ActionType.Read || inherent.ActionType == ActionType.Export));
 
         if (skipValidation)
         {

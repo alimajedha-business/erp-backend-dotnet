@@ -9,12 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="profiles\*.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
     <ProjectReference Include="..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
+    <ProjectReference Include="..\..\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
+    <ProjectReference Include="..\..\WarehouseModule\Warehouse.Service\NGErp.Warehouse.Service.csproj" />
   </ItemGroup>
 
 </Project>

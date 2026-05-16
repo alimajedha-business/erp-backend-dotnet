@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -56,7 +57,7 @@ public class ShippingCompanyController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(ShippingCompanyAdvancedSearchExample))]
     public async Task<IActionResult> Get(
         [FromQuery] ShippingCompanyParameters parameters,
