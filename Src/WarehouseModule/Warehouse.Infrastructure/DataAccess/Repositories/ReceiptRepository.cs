@@ -8,6 +8,7 @@ using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts;
+using NGErp.Warehouse.Service.Repository.Contracts.Models;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
 
@@ -102,6 +103,34 @@ public class ReceiptRepository(MainDbContext context) :
             .MaxAsync(e => (int?)e.Number, ct);
 
         return (maxCode ?? 0) + 1;
+    }
+
+    public async Task<IReadOnlyList<WarehouseLocationOccupancy>> GetLocationOccupanciesAsync(
+        Guid companyId,
+        IReadOnlyCollection<Guid> warehouseLocationIds,
+        Guid? excludedReceiptId,
+        CancellationToken ct
+    )
+    {
+        if (warehouseLocationIds.Count == 0)
+            return [];
+
+        var query = _context.Set<ReceiptLine>()
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .Where(e => warehouseLocationIds.Contains(e.WarehouseLocationId));
+
+        if (excludedReceiptId.HasValue)
+            query = query.Where(e => e.ReceiptId != excludedReceiptId.Value);
+
+        return await query
+            .GroupBy(e => e.WarehouseLocationId)
+            .Select(e => new WarehouseLocationOccupancy(
+                e.Key,
+                e.Sum(line => line.Weight ?? 0),
+                e.Sum(line => line.Volume ?? 0)
+            ))
+            .ToListAsync(ct);
     }
 
     private static IQueryable<Receipt> WithIncludes(IQueryable<Receipt> query)
