@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
+    <ProjectReference Include="..\..\SharedModule\Shared.Domain\NGErp.Shared.Domain.csproj" />
     </ItemGroup>
 
 </Project>

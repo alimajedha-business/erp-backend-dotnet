@@ -2,6 +2,7 @@
 
 using NGErp.General.Domain.Entities;
 using NGErp.General.Service.DTOs;
+using NGErp.Shared.Domain.Entities;
 
 namespace NGErp.General.Service.Mappings
 {

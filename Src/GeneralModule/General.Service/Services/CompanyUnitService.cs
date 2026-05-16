@@ -7,6 +7,7 @@ using NGErp.Base.Domain.Exceptions;
 using NGErp.General.Service.DTOs;
 using NGErp.General.Service.Repository.Contracts;
 using NGErp.General.Service.Resources;
+using NGErp.Shared.Domain.Entities;
 
 namespace NGErp.General.Service.Services;
 
