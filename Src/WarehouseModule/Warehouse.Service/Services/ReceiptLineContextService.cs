@@ -1,16 +1,24 @@
-using NGErp.Warehouse.Domain.Entities;
+using AutoMapper;
+
+using Microsoft.Extensions.Localization;
+
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
+using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class ReceiptLineContextService(
     IItemRepository itemRepository,
-    IReceiptRepository receiptRepository
+    IReceiptRepository receiptRepository,
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : IReceiptLineContextService
 {
+    private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer<WarehouseResource> _localizer = localizer;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IReceiptRepository _receiptRepository = receiptRepository;
 
@@ -67,10 +75,10 @@ public class ReceiptLineContextService(
             if (!locationIds.Contains(reservation.WarehouseLocationId))
                 continue;
 
-            var existing = occupancyByLocation.GetValueOrDefault(reservation.WarehouseLocationId);
+            var (OccupiedMass, OccupiedVolume) = occupancyByLocation.GetValueOrDefault(reservation.WarehouseLocationId);
             occupancyByLocation[reservation.WarehouseLocationId] = (
-                existing.OccupiedMass + (reservation.OccupiedMass ?? 0),
-                existing.OccupiedVolume + (reservation.OccupiedVolume ?? 0)
+                OccupiedMass + (reservation.OccupiedMass ?? 0),
+                OccupiedVolume + (reservation.OccupiedVolume ?? 0)
             );
         }
 
@@ -80,9 +88,9 @@ public class ReceiptLineContextService(
             ItemTitle: item.Title,
             UnitWeight: item.Weight,
             UnitVolume: item.Volume,
-            PreferredMassUnitId: item.PreferredMassUnitId,
-            PreferredVolumeUnitId: item.PreferredVolumeUnitId,
-            UnitOfMeasurements: item.ItemUnitOfMeasurements
+            PreferredMassUnit: Localize(_mapper.Map<SiUnitAsReferenceDto>(item.PreferredMassUnit)),
+            PreferredVolumeUnit: Localize(_mapper.Map<SiUnitAsReferenceDto>(item.PreferredVolumeUnit)),
+            UnitOfMeasurements: [.. item.ItemUnitOfMeasurements
                 .OrderBy(e => e.UnitOrder)
                 .Select(e => new ReceiptLineItemUnitOfMeasurementContextDto(
                     ItemUnitOfMeasurementId: e.Id,
@@ -91,9 +99,8 @@ public class ReceiptLineContextService(
                     Symbol: e.UnitOfMeasurement.Symbol,
                     UnitOrder: e.UnitOrder,
                     IsPrimary: e.UnitOrder == 1
-                ))
-                .ToList(),
-            Locations: locations
+                ))],
+            Locations: [.. locations
                 .Select(location =>
                 {
                     var occupancy = occupancyByLocation.GetValueOrDefault(
@@ -120,9 +127,8 @@ public class ReceiptLineContextService(
                             ? location.MaxVolume.Value - occupancy.OccupiedVolume
                             : null
                     );
-                })
-                .ToList(),
-            Attributes: item.ItemAttributes
+                })],
+            Attributes: [.. item.ItemAttributes
                 .OrderBy(e => e.Attribute.Code)
                 .Select(e => new ReceiptLineItemAttributeContextDto(
                     ItemAttributeId: e.Id,
@@ -133,8 +139,7 @@ public class ReceiptLineContextService(
                     IsRequired: e.Attribute.IsRequired,
                     IsStockDimension: e.Attribute.IsStockDimension,
                     IsStatic: e.Attribute.IsStatic
-                ))
-                .ToList()
+                ))]
         );
     }
 
@@ -150,4 +155,9 @@ public class ReceiptLineContextService(
         Guid? PreferredMassUnitId,
         Guid? PreferredVolumeUnitId
     );
+
+    private SiUnitAsReferenceDto Localize(SiUnitAsReferenceDto dto)
+    {
+        return dto with { Title = _localizer[dto.Title].Value };
+    }
 }

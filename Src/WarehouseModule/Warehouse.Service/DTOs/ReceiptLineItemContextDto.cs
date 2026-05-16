@@ -8,8 +8,8 @@ public record ReceiptLineItemContextDto(
     string ItemTitle,
     decimal? UnitWeight,
     decimal? UnitVolume,
-    Guid? PreferredMassUnitId,
-    Guid? PreferredVolumeUnitId,
+    SiUnitAsReferenceDto? PreferredMassUnit,
+    SiUnitAsReferenceDto? PreferredVolumeUnit,
     IReadOnlyList<ReceiptLineItemUnitOfMeasurementContextDto> UnitOfMeasurements,
     IReadOnlyList<ReceiptLineItemLocationContextDto> Locations,
     IReadOnlyList<ReceiptLineItemAttributeContextDto> Attributes
