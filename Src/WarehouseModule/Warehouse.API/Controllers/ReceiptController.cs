@@ -118,6 +118,17 @@ public class ReceiptController(
         return Ok(dto);
     }
 
+    [HttpPost("{id:guid}/post")]
+    public async Task<IActionResult> Post(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _receiptService.PostAsync(companyId, id, ct);
+        return Ok(dto);
+    }
+
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid companyId,
