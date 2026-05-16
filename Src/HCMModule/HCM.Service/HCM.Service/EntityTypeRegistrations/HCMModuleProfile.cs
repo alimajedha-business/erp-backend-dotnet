@@ -13,7 +13,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
     {
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.MODULE_ENTITY, 
+            Key = EntityTypes.ModuleEntity, 
             NameFa = "موجودیت ماژول", 
             NameEn = "Module Entity", 
             Code = "0001", 
@@ -25,13 +25,13 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
             },
             Commands = new List<EntityTypeCommandDefinition>
             {
-                new() { Key = EntityTypeCommands.MODULE_ENTITY_VIEW, NameFa = "مشاهده", NameEn = "View" }
+                new() { Key = EntityTypeCommands.ModuleEntityView, NameFa = "مشاهده", NameEn = "View" }
             }
         };
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.DEPARTMENT, 
+            Key = EntityTypes.Department, 
             NameFa = "واحد سازمانی", 
             NameEn = "Department", 
             Code = "0002", 
@@ -46,7 +46,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.POSITION, 
+            Key = EntityTypes.Position, 
             NameFa = "پست سازمانی", 
             NameEn = "Position", 
             Code = "0003", 
@@ -61,7 +61,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.ORGANIZATIONAL_STRUCTURE, 
+            Key = EntityTypes.OrganizationalStructure, 
             NameFa = "ساختار سازمانی", 
             NameEn = "Organizational Structure", 
             Code = "0004", 
@@ -76,7 +76,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.ORGANIZATIONAL_STRUCTURE_ITEM, 
+            Key = EntityTypes.OrganizationalStructureItem, 
             NameFa = "آیتم ساختار سازمانی", 
             NameEn = "Organizational Structure Item", 
             Code = "0005", 
@@ -91,7 +91,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.ORGANIZATION_NODE, 
+            Key = EntityTypes.OrganizationNode, 
             NameFa = "گره سازمانی", 
             NameEn = "Organization Node", 
             Code = "0006", 
@@ -106,7 +106,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYMENT_GROUP, 
+            Key = EntityTypes.EmploymentGroup, 
             NameFa = "گروه استخدامی", 
             NameEn = "Employment Group", 
             Code = "0007", 
@@ -121,7 +121,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYMENT_GROUP_SPECIFICATION, 
+            Key = EntityTypes.EmploymentGroupSpecification, 
             NameFa = "مشخصات گروه استخدامی", 
             NameEn = "Employment Group Specification", 
             Code = "0008", 
@@ -136,7 +136,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE, 
+            Key = EntityTypes.Employee, 
             NameFa = "کارمند", 
             NameEn = "Employee", 
             Code = "0009", 
@@ -151,7 +151,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE_EDUCATION, 
+            Key = EntityTypes.EmployeeEducation, 
             NameFa = "تحصیلات کارمند", 
             NameEn = "Employee Education", 
             Code = "0010", 
@@ -166,7 +166,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE_WORK_EXPERIENCE, 
+            Key = EntityTypes.EmployeeWorkExperience, 
             NameFa = "سوابق کاری کارمند", 
             NameEn = "Employee Work Experience", 
             Code = "0011", 
@@ -181,7 +181,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE_DEPENDANT, 
+            Key = EntityTypes.EmployeeDependant, 
             NameFa = "افراد تحت تکفل کارمند", 
             NameEn = "Employee Dependant", 
             Code = "0012", 
@@ -196,7 +196,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE_RELATIVE, 
+            Key = EntityTypes.EmployeeRelative, 
             NameFa = "بستگان کارمند", 
             NameEn = "Employee Relative", 
             Code = "0013", 
@@ -211,7 +211,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EMPLOYEE_WARRIOR_RECORD, 
+            Key = EntityTypes.EmployeeWarriorRecord, 
             NameFa = "سوابق ایثارگری کارمند", 
             NameEn = "Employee Warrior Record", 
             Code = "0014", 
@@ -226,7 +226,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.JOB, 
+            Key = EntityTypes.Job, 
             NameFa = "شغل", 
             NameEn = "Job", 
             Code = "0015", 
@@ -241,7 +241,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.JOB_CATEGORY, 
+            Key = EntityTypes.JobCategory, 
             NameFa = "دسته بندی شغل", 
             NameEn = "Job Category", 
             Code = "0016", 
@@ -256,7 +256,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.POSITION_JOB, 
+            Key = EntityTypes.PositionJob, 
             NameFa = "شغل پست", 
             NameEn = "Position Job", 
             Code = "0017", 
@@ -271,7 +271,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EDUCATIONAL_STATUS, 
+            Key = EntityTypes.EducationalStatus, 
             NameFa = "وضعیت تحصیلی", 
             NameEn = "Educational Status", 
             Code = "0018", 
@@ -286,7 +286,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EDUCATION_FIELD, 
+            Key = EntityTypes.EducationField, 
             NameFa = "رشته تحصیلی", 
             NameEn = "Education Field", 
             Code = "0019", 
@@ -301,7 +301,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.EDUCATION_LEVEL, 
+            Key = EntityTypes.EducationLevel, 
             NameFa = "مقطع تحصیلی", 
             NameEn = "Education Level", 
             Code = "0020", 
@@ -316,7 +316,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.MARITAL_STATUS, 
+            Key = EntityTypes.MaritalStatus, 
             NameFa = "وضعیت تاهل", 
             NameEn = "Marital Status", 
             Code = "0021", 
@@ -331,7 +331,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.MILITARY_SERVICE_STATUS, 
+            Key = EntityTypes.MilitaryServiceStatus, 
             NameFa = "وضعیت خدمت سربازی", 
             NameEn = "Military Service Status", 
             Code = "0022", 
@@ -346,7 +346,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition 
         { 
-            Key = EntityTypes.RELATIVE_TYPE, 
+            Key = EntityTypes.RelativeType, 
             NameFa = "نوع نسبت", 
             NameEn = "Relative Type", 
             Code = "0023", 

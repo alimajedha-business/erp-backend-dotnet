@@ -13,7 +13,6 @@
     <ProjectReference Include="..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
     <ProjectReference Include="..\..\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
     <ProjectReference Include="..\..\WarehouseModule\Warehouse.Service\NGErp.Warehouse.Service.csproj" />
-    <ProjectReference Include="..\..\PayrollModule\Payroll.Service\Payroll.Service\NGErp.Payroll.Service.csproj" />
   </ItemGroup>
 
 </Project>

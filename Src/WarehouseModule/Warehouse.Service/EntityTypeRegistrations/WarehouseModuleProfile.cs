@@ -13,20 +13,20 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
     {
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.MODULE_ENTITY,
+            Key = EntityTypes.ModuleEntity,
             NameFa = "موجودیت ماژول",
             NameEn = "Module Entity",
             Code = "0001",
             Attributes = new EntityTypeAttributes { Readable = false, Creatable = false, Editable = false, Deletable = false, Loggable = false, Printable = false, Importable = false, Exportable = false, IfNotCreator = false, HasRestriction = false, Permissible = true },
             Commands = new List<EntityTypeCommandDefinition>
             {
-                new() { Key = EntityTypeCommands.MODULE_ENTITY_VIEW, NameFa = "مشاهده", NameEn = "View" }
+                new() { Key = EntityTypeCommands.ModuleEntityView, NameFa = "مشاهده", NameEn = "View" }
             }
         };
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.WAREHOUSE_TYPE,
+            Key = EntityTypes.WarehouseType,
             NameFa = "نوع انبار",
             NameEn = "Warehouse Type",
             Code = "0002",
@@ -36,7 +36,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.WAREHOUSE,
+            Key = EntityTypes.Warehouse,
             NameFa = "انبار",
             NameEn = "Warehouse",
             Code = "0003",
@@ -46,7 +46,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.WAREHOUSE_LOCATION,
+            Key = EntityTypes.WarehouseLocation,
             NameFa = "محل انبار",
             NameEn = "Warehouse Location",
             Code = "0004",
@@ -56,7 +56,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.UNIT_OF_MEASUREMENT,
+            Key = EntityTypes.UnitOfMeasurement,
             NameFa = "واحد اندازه‌گیری",
             NameEn = "Unit Of Measurement",
             Code = "0005",
@@ -66,7 +66,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.SHIPPING_COMPANY,
+            Key = EntityTypes.ShippingCompany,
             NameFa = "شرکت حمل و نقل",
             NameEn = "Shipping Company",
             Code = "0006",
@@ -76,7 +76,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.MEASUREMENT_DIMENSION,
+            Key = EntityTypes.MeasurementDimension,
             NameFa = "بعد اندازه‌گیری",
             NameEn = "Measurement Dimension",
             Code = "0007",
@@ -86,7 +86,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_TYPE,
+            Key = EntityTypes.ItemType,
             NameFa = "نوع کالا",
             NameEn = "Item Type",
             Code = "0008",
@@ -96,7 +96,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM,
+            Key = EntityTypes.Item,
             NameFa = "کالا",
             NameEn = "Item",
             Code = "0009",
@@ -106,7 +106,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_ATTRIBUTE,
+            Key = EntityTypes.ItemAttribute,
             NameFa = "ویژگی کالا",
             NameEn = "Item Attribute",
             Code = "0010",
@@ -116,7 +116,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_UNIT_OF_MEASUREMENT,
+            Key = EntityTypes.ItemUnitOfMeasurement,
             NameFa = "واحد اندازه‌گیری کالا",
             NameEn = "Item Unit Of Measurement",
             Code = "0011",
@@ -126,7 +126,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_UNIT_OF_MEASUREMENT_CONVERSION,
+            Key = EntityTypes.ItemUnitOfMeasurementConversion,
             NameFa = "تبدیل واحد کالا",
             NameEn = "Item Unit Conversion",
             Code = "0012",
@@ -136,7 +136,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_WAREHOUSE,
+            Key = EntityTypes.ItemWarehouse,
             NameFa = "کالای انبار",
             NameEn = "Item Warehouse",
             Code = "0013",
@@ -146,7 +146,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ITEM_WAREHOUSE_LOCATION,
+            Key = EntityTypes.ItemWarehouseLocation,
             NameFa = "محل کالای انبار",
             NameEn = "Item Warehouse Location",
             Code = "0014",
@@ -156,7 +156,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.INVENTORY_MOVEMENT_TYPE,
+            Key = EntityTypes.InventoryMovementType,
             NameFa = "نوع حرکت موجودی",
             NameEn = "Inventory Movement Type",
             Code = "0015",
@@ -166,7 +166,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.INVENTORY_MOVEMENT,
+            Key = EntityTypes.InventoryMovement,
             NameFa = "حرکت موجودی",
             NameEn = "Inventory Movement",
             Code = "0016",
@@ -176,7 +176,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.INVENTORY_LOT,
+            Key = EntityTypes.InventoryLot,
             NameFa = "بچ موجودی",
             NameEn = "Inventory Lot",
             Code = "0017",
@@ -186,7 +186,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.INVENTORY_LOT_ATTRIBUTE_VALUE,
+            Key = EntityTypes.InventoryLotAttributeValue,
             NameFa = "مقدار ویژگی بچ موجودی",
             NameEn = "Inventory Lot Attr Value",
             Code = "0018",
@@ -196,7 +196,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.CATEGORY,
+            Key = EntityTypes.Category,
             NameFa = "دسته بندی",
             NameEn = "Category",
             Code = "0019",
@@ -206,7 +206,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.CATEGORY_LEVEL_CONSTRAINT,
+            Key = EntityTypes.CategoryLevelConstraint,
             NameFa = "محدودیت سطح دسته بندی",
             NameEn = "Category Level Constraint",
             Code = "0020",
@@ -216,7 +216,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ATTRIBUTE,
+            Key = EntityTypes.Attribute,
             NameFa = "ویژگی",
             NameEn = "Attribute",
             Code = "0021",
@@ -226,7 +226,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ATTRIBUTE_ENUM_VALUE,
+            Key = EntityTypes.AttributeEnumValue,
             NameFa = "مقدار شمارشی ویژگی",
             NameEn = "Attribute Enum Value",
             Code = "0022",
@@ -236,7 +236,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.CATEGORY_ATTRIBUTE_RULE,
+            Key = EntityTypes.CategoryAttributeRule,
             NameFa = "قانون ویژگی دسته بندی",
             NameEn = "Category Attr Rule",
             Code = "0023",
@@ -246,7 +246,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.RECEIPT_TYPE,
+            Key = EntityTypes.ReceiptType,
             NameFa = "نوع رسید",
             NameEn = "Receipt Type",
             Code = "0024",
@@ -256,7 +256,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.REMITTANCE_TYPE,
+            Key = EntityTypes.RemittanceType,
             NameFa = "نوع حواله",
             NameEn = "Remittance Type",
             Code = "0025",

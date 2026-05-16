@@ -22,7 +22,6 @@ internal static class UpdateEntities
         // Force load assemblies by referencing a type from each module
         _ = typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile);
         _ = typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile);
-        _ = typeof(Payroll.Service.EntityTypeRegistrations.PayrollModuleProfile);
 
         var profiles = DiscoverProfiles();
         
@@ -137,8 +136,7 @@ internal static class UpdateEntities
         {
             typeof(UpdateEntities).Assembly,
             typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile).Assembly,
-            typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile).Assembly,
-            typeof(Payroll.Service.EntityTypeRegistrations.PayrollModuleProfile).Assembly
+            typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile).Assembly
         };
 
         foreach (var assembly in assemblies)
