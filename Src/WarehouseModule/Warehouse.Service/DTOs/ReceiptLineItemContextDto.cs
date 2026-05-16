@@ -15,10 +15,11 @@ public record ReceiptLineItemContextDto(
     IReadOnlyList<ReceiptLineItemAttributeContextDto> Attributes
 );
 
-public record ReceiptLineItemContextRequestDto(
-    Guid? CurrentReceiptId,
-    IReadOnlyList<ReceiptLineLocationReservationDto> CurrentReceiptLines
-);
+public class ReceiptLineItemContextRequestDto
+{
+    public Guid? CurrentReceiptId { get; set; }
+    public IReadOnlyList<ReceiptLineLocationReservationDto> CurrentReceiptLines { get; set; } = [];
+}
 
 public record ReceiptLineLocationReservationDto(
     int RowNumber,
