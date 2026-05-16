@@ -179,6 +179,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
 
         var lot = new InventoryLot
         {
+            Id = Guid.NewGuid(),
             CompanyId = companyId,
             ItemId = line.ItemId,
             StockKeyHash = stockKeyHash,
