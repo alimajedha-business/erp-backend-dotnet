@@ -74,6 +74,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptBusinessRuleValidator, ReceiptBusinessRuleValidator>();
         services.AddScoped<IReceiptFieldDefinitionService, ReceiptFieldDefinitionService>();
+        services.AddScoped<IReceiptLineContextService, ReceiptLineContextService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
         services.AddScoped<
             IReceiptTypeConfigurationBusinessRuleValidator,
