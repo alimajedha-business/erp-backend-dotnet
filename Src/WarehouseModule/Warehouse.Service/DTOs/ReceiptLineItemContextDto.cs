@@ -15,6 +15,18 @@ public record ReceiptLineItemContextDto(
     IReadOnlyList<ReceiptLineItemAttributeContextDto> Attributes
 );
 
+public record ReceiptLineItemContextRequestDto(
+    Guid? CurrentReceiptId,
+    IReadOnlyList<ReceiptLineLocationReservationDto> CurrentReceiptLines
+);
+
+public record ReceiptLineLocationReservationDto(
+    int RowNumber,
+    Guid WarehouseLocationId,
+    decimal? OccupiedMass,
+    decimal? OccupiedVolume
+);
+
 public record ReceiptLineItemUnitOfMeasurementContextDto(
     Guid ItemUnitOfMeasurementId,
     Guid UnitOfMeasurementId,
@@ -34,7 +46,11 @@ public record ReceiptLineItemLocationContextDto(
     decimal? MaxMass,
     decimal? MaxVolume,
     Guid? PreferredMassUnitId,
-    Guid? PreferredVolumeUnitId
+    Guid? PreferredVolumeUnitId,
+    decimal OccupiedMass,
+    decimal OccupiedVolume,
+    decimal? AvailableMass,
+    decimal? AvailableVolume
 );
 
 public record ReceiptLineItemAttributeContextDto(
