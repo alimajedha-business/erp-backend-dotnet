@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.DTOs;
@@ -68,7 +69,7 @@ public class CategoryController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
@@ -88,7 +89,7 @@ public class CategoryController(
     }
 
     [HttpPost("excel")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Export)]
     [SwaggerRequestExample(typeof(object), typeof(CategoryAdvancedSearchExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,

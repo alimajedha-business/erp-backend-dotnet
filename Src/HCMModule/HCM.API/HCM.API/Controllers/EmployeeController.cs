@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
@@ -9,10 +10,12 @@ using NGErp.HCM.Service.Services;
 
 namespace NGErp.HCM.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employees")]
+[HasPermission("EMPLOYEE")]
 public class EmployeeController(
     IEmployeeService employeeService,
     IEmployeeEducationService employeeEducationService,
@@ -69,7 +72,7 @@ public class EmployeeController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
         [FromQuery] EmployeeParamaters parameters,
@@ -145,7 +148,7 @@ public class EmployeeController(
     }
 
     [HttpPost("{employeeId:guid}/educations/list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetEducations(
         [FromRoute] Guid companyId,
         [FromRoute] Guid employeeId,
@@ -252,7 +255,7 @@ public class EmployeeController(
     }
 
     [HttpPost("{employeeId:guid}/work-experiences/list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetWorkExperiences(
         [FromRoute] Guid companyId,
         [FromRoute] Guid employeeId,
@@ -359,7 +362,7 @@ public class EmployeeController(
     }
 
     [HttpPost("{employeeId:guid}/warrior-records/list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetWarriorRecords(
         [FromRoute] Guid companyId,
         [FromRoute] Guid employeeId,
@@ -466,7 +469,7 @@ public class EmployeeController(
     }
 
     [HttpPost("{employeeId:guid}/relatives/list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetRelatives(
         [FromRoute] Guid companyId,
         [FromRoute] Guid employeeId,
@@ -567,7 +570,7 @@ public class EmployeeController(
     }
 
     [HttpPost("{employeeId:guid}/dependants/list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetDependants(
         [FromRoute] Guid companyId,
         [FromRoute] Guid employeeId,

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
@@ -70,7 +71,7 @@ public class WarehouseController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
     [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
     [SwaggerResponseExample(StatusCodes.Status200OK,typeof(WarehouseGetListResponseExample))]
@@ -92,7 +93,7 @@ public class WarehouseController(
     }
 
     [HttpPost("excel")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Export)]
     [SwaggerRequestExample(typeof(object), typeof(WarehouseAdvancedSearchRequestExample))]
     [ProducesResponseType(typeof(ListResponseModel<WarehouseListDto>), StatusCodes.Status200OK)]
     [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WarehouseGetListResponseExample))]

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -27,7 +28,7 @@ public class ItemController(
     private readonly IExcelExportService _excelExportService = excelExportService;
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
@@ -47,7 +48,7 @@ public class ItemController(
     }
 
     [HttpPost("excel")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Export)]
     [SwaggerRequestExample(typeof(object), typeof(ItemAdvancedSearchExample))]
     public async Task<IActionResult> ExportToExcel(
         [FromRoute] Guid companyId,
