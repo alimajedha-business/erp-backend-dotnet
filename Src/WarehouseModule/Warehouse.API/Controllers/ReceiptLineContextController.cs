@@ -28,7 +28,7 @@ public class ReceiptLineContextController(
         var dto = await _receiptLineContextService.GetAsync(
             companyId,
             itemId,
-            requestDto ?? new ReceiptLineItemContextRequestDto(null, []),
+            requestDto ?? new ReceiptLineItemContextRequestDto(),
             ct
         );
 
