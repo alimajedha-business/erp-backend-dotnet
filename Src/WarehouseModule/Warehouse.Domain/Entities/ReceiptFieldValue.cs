@@ -75,6 +75,6 @@ public class ReceiptFieldValue :
             .HasOne(e => e.FieldDefinition)
             .WithMany()
             .HasForeignKey(e => e.FieldDefinitionId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

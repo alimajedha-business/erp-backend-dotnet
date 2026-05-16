@@ -46,12 +46,12 @@ public class ReceiptLineAttributeValue :
             .HasOne(e => e.ReceiptLine)
             .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ReceiptLineId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ItemAttribute)
             .WithMany(e => e.ReceiptLineAttributeValues)
             .HasForeignKey(e => e.ItemAttributeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

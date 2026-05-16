@@ -79,7 +79,7 @@ public class ReceiptLine :
             .HasOne(e => e.Receipt)
             .WithMany(e => e.ReceiptLines)
             .HasForeignKey(e => e.ReceiptId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.Item)

@@ -36,12 +36,12 @@ public class ReceiptLineMeasurementValue :
             .HasOne(e => e.ReceiptLine)
             .WithMany(e => e.ReceiptLineMeasurementValues)
             .HasForeignKey(e => e.ReceiptLineId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(e => e.ItemUnitOfMeasurement)
             .WithMany(e => e.ReceiptLineMeasurementValues)
             .HasForeignKey(e => e.ItemUnitOfMeasurementId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
