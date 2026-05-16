@@ -30,9 +30,9 @@ public class Item :
 
     public ItemType ItemType { get; set; } = default!;
     public Category Category { get; set; } = default!;
-    public Unit? PreferredMassUnit { get; set; }
-    public Unit? PreferredLengthUnit { get; set; }
-    public Unit? PreferredVolumeUnit { get; set; }
+    public SiUnit? PreferredMassUnit { get; set; }
+    public SiUnit? PreferredLengthUnit { get; set; }
+    public SiUnit? PreferredVolumeUnit { get; set; }
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
     public ICollection<ItemUnitOfMeasurement> ItemUnitOfMeasurements { get; set; } = [];

@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 
 using NGErp.Base.Service.Validators;
@@ -13,7 +13,7 @@ namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class WarehouseLocationBusinessRuleValidator(
     IWarehouseLocationRepository locationRepository,
-    IUnitRepository unitRepository
+    ISiUnitRepository unitRepository
 ) : IWarehouseLocationBusinessRuleValidator
 {
     private static readonly HashSet<string> _allowedOrderFields = new(
@@ -24,7 +24,7 @@ public class WarehouseLocationBusinessRuleValidator(
     };
 
     private readonly IWarehouseLocationRepository _locationRepository = locationRepository;
-    private readonly IUnitRepository _unitRepository = unitRepository;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
 
     public void ValidateParameters(WarehouseLocationParameters parameters)
     {
@@ -205,7 +205,7 @@ public class WarehouseLocationBusinessRuleValidator(
             throw new ValidationException(missingIds.Select(id =>
                 new ValidationFailure(
                     nameof(CreateWarehouseLocationDto),
-                    $"Unit '{id}' was not found."
+                    $"SiUnit '{id}' was not found."
                 )
             ));
         }
@@ -269,7 +269,7 @@ public class WarehouseLocationBusinessRuleValidator(
         Guid? preferredMassUnitId,
         Guid? preferredLengthUnitId,
         Guid? preferredVolumeUnitId,
-        IReadOnlyDictionary<Guid, Unit> unitsById
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
     )
     {
         var failures = new List<ValidationFailure>();
@@ -304,7 +304,7 @@ public class WarehouseLocationBusinessRuleValidator(
         Guid? unitId,
         UnitDimension expectedDimension,
         string propertyName,
-        IReadOnlyDictionary<Guid, Unit> unitsById,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById,
         List<ValidationFailure> failures
     )
     {
@@ -315,7 +315,7 @@ public class WarehouseLocationBusinessRuleValidator(
         {
             failures.Add(new ValidationFailure(
                 propertyName,
-                $"Unit '{unitId}' must have '{expectedDimension}' dimension."
+                $"SiUnit '{unitId}' must have '{expectedDimension}' dimension."
             ));
         }
     }

@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
             ReceiptTypeFieldConfigurationSchema
         >();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
-        services.AddSingleton<IFilterSchema<Unit>, UnitSchema>();
+        services.AddSingleton<IFilterSchema<SiUnit>, SiUnitSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Domain.Entities.Warehouse>, WarehouseSchema>();
         services.AddSingleton<IFilterSchema<WarehouseLocation>, WarehouseLocationSchema>();
@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReceiptService, ReceiptService>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
-        services.AddScoped<IUnitService, UnitService>();
+        services.AddScoped<ISiUnitService, SiUnitService>();
         services.AddScoped<IUnitOfMeasurementService, UnitOfMeasurementService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();

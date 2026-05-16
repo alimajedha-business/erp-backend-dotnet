@@ -1,4 +1,4 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +12,16 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/warehouse/units")]
-public class UnitController(
-    IUnitService unitService
+[Route("api/v{version:apiVersion}/warehouse/si-units")]
+public class SiUnitController(
+    ISiUnitService unitService
 ) : ControllerBase
 {
-    private readonly IUnitService _unitService = unitService;
+    private readonly ISiUnitService _unitService = unitService;
 
     [HttpGet("filter-by-q")]
     public async Task<IActionResult> Get(
-        [FromQuery] UnitParameters parameters,
+        [FromQuery] SiUnitParameters parameters,
         CancellationToken ct
     )
     {
@@ -32,7 +32,7 @@ public class UnitController(
     [HttpPost("list")]
     [SkipModelValidation]
     public async Task<IActionResult> Get(
-        [FromQuery] UnitParameters parameters,
+        [FromQuery] SiUnitParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
     )

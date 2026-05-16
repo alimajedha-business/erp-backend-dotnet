@@ -35,8 +35,8 @@ public class ReceiptLine :
     public Receipt Receipt { get; set; } = default!;
     public Item Item { get; set; } = default!;
     public WarehouseLocation WarehouseLocation { get; set; } = default!;
-    public Unit? PreferredMassUnit { get; set; }
-    public Unit? PreferredVolumeUnit { get; set; }
+    public SiUnit? PreferredMassUnit { get; set; }
+    public SiUnit? PreferredVolumeUnit { get; set; }
 
     public ICollection<ReceiptFieldValue> ReceiptFieldValues { get; set; } = [];
     public ICollection<ReceiptLineAttributeValue> ReceiptLineAttributeValues { get; set; } = [];

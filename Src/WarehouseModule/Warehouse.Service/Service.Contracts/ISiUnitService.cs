@@ -1,25 +1,25 @@
-using NGErp.Base.Service.DTOs;
+﻿using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Service.Contracts;
 
-public interface IUnitService
+public interface ISiUnitService
 {
-    Task<UnitDto> GetByIdAsync(
+    Task<SiUnitDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<UnitSlimDto>> FilterByQAsync(
-        UnitParameters parameters,
+    Task<ListResponseModel<SiUnitSlimDto>> FilterByQAsync(
+        SiUnitParameters parameters,
         CancellationToken ct = default
     );
 
-    Task<ListResponseModel<UnitDto>> GetFilteredAsync(
-        UnitParameters parameters,
+    Task<ListResponseModel<SiUnitDto>> GetFilteredAsync(
+        SiUnitParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );

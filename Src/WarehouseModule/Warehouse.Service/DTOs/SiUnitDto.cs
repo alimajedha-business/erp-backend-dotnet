@@ -1,11 +1,11 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.DTOs;
 
-public record UnitDto(
+public record SiUnitDto(
     Guid Id,
     int Code,
     string Title,
@@ -24,7 +24,7 @@ public record UnitDto(
     }
 }
 
-public record UnitSlimDto(
+public record SiUnitSlimDto(
     Guid Id,
     int Code,
     string Title,
@@ -32,7 +32,7 @@ public record UnitSlimDto(
     string UnitDimensionTitle
 );
 
-public record UnitAsReferenceDto(
+public record SiUnitAsReferenceDto(
     Guid Id,
     int Code,
     string Title,

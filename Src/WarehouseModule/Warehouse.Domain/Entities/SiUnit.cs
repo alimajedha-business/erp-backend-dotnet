@@ -10,9 +10,9 @@ using NGErp.Base.Domain.Entities;
 
 namespace NGErp.Warehouse.Domain.Entities;
 
-public class Unit :
+public class SiUnit :
     BaseEntity,
-    IBaseEntityTypeConfiguration<Unit>
+    IBaseEntityTypeConfiguration<SiUnit>
 {
     public int Code { get; set; }
     public required string Title { get; set; }
@@ -21,10 +21,10 @@ public class Unit :
     public bool IsBaseUnit { get; set; }
     public UnitDimension UnitDimension { get; set; }
 
-    public void Map(EntityTypeBuilder<Unit> builder)
+    public void Map(EntityTypeBuilder<SiUnit> builder)
     {
         builder
-            .ToTable(nameof(Unit), "Warehouse");
+            .ToTable(nameof(SiUnit), "Warehouse");
 
         builder
             .Property(e => e.FactorToBase)
@@ -33,7 +33,7 @@ public class Unit :
         builder
             .HasIndex(e => new { e.Code })
             .IsUnique()
-            .HasDatabaseName("UX_Unit_Code");
+            .HasDatabaseName("UX_SiUnit_Code");
     }
 }
 

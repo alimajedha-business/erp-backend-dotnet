@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 using AutoMapper;
 
@@ -17,21 +17,21 @@ using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
 
-public class UnitService(
+public class SiUnitService(
     IAdvancedFilterBuilder filterBuilder,
-    IUnitRepository unitRepository,
+    ISiUnitRepository unitRepository,
     IMapper mapper,
     IStringLocalizer<WarehouseResource> localizer
-) : IUnitService
+) : ISiUnitService
 {
-    private readonly string _key = "Unit";
+    private readonly string _key = "SiUnit";
 
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
-    private readonly IUnitRepository _unitRepository = unitRepository;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IMapper _mapper = mapper;
     private readonly IStringLocalizer _localizer = localizer;
 
-    public async Task<UnitDto> GetByIdAsync(
+    public async Task<SiUnitDto> GetByIdAsync(
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
@@ -43,48 +43,48 @@ public class UnitService(
             ct
         );
 
-        return Localize(_mapper.Map<UnitDto>(unit));
+        return Localize(_mapper.Map<SiUnitDto>(unit));
     }
 
-    public async Task<ListResponseModel<UnitSlimDto>> FilterByQAsync(
-        UnitParameters parameters,
+    public async Task<ListResponseModel<SiUnitSlimDto>> FilterByQAsync(
+        SiUnitParameters parameters,
         CancellationToken ct = default
     )
     {
         var query = _unitRepository.FilterByQ(parameters);
         var res = await _unitRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<UnitSlimDto>(
+        return new ListResponseModel<SiUnitSlimDto>(
             results: [.. _mapper
-                .Map<IReadOnlyList<UnitSlimDto>>(res.items)
+                .Map<IReadOnlyList<SiUnitSlimDto>>(res.items)
                 .Select(Localize)],
             totalCount: res.count,
             parameters
         );
     }
 
-    public async Task<ListResponseModel<UnitDto>> GetFilteredAsync(
-        UnitParameters parameters,
+    public async Task<ListResponseModel<SiUnitDto>> GetFilteredAsync(
+        SiUnitParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     )
     {
-        var advancedFilters = _filterBuilder.Build<Unit>(filterNodeDto);
+        var advancedFilters = _filterBuilder.Build<SiUnit>(filterNodeDto);
         var query = _unitRepository.GetFiltered(advancedFilters);
         var res = await _unitRepository.GetResponseListAsync(query, parameters, ct);
 
-        return new ListResponseModel<UnitDto>(
+        return new ListResponseModel<SiUnitDto>(
             results: [.. _mapper
-                .Map<IReadOnlyList<UnitDto>>(res.items)
+                .Map<IReadOnlyList<SiUnitDto>>(res.items)
                 .Select(Localize)],
             totalCount: res.count,
             parameters
         );
     }
 
-    private async Task<Unit> GetSingleOrThrowAsync(
+    private async Task<SiUnit> GetSingleOrThrowAsync(
         bool trackChanges,
-        Expression<Func<Unit, bool>> predicate,
+        Expression<Func<SiUnit, bool>> predicate,
         CancellationToken ct = default
     )
     {
@@ -97,12 +97,12 @@ public class UnitService(
         return entity ?? throw new NotFoundException(_localizer[_key].Value);
     }
 
-    private UnitDto Localize(UnitDto dto)
+    private SiUnitDto Localize(SiUnitDto dto)
     {
         return dto with { Title = _localizer[dto.Title].Value };
     }
 
-    private UnitSlimDto Localize(UnitSlimDto dto)
+    private SiUnitSlimDto Localize(SiUnitSlimDto dto)
     {
         return dto with { Title = _localizer[dto.Title].Value };
     }

@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
             ReceiptTypeFieldConfigurationRepository
         >();
         services.AddScoped<IShippingCompanyRepository, ShippingCompanyRepository>();
-        services.AddScoped<IUnitRepository, UnitRepository>();
+        services.AddScoped<ISiUnitRepository, SiUnitRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();
         services.AddScoped<IWarehouseRepository, WarehouseRepository>();
         services.AddScoped<IWarehouseLocationRepository, WarehouseLocationRepository>();

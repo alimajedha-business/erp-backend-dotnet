@@ -27,7 +27,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class ItemService(
     IAdvancedFilterBuilder filterBuilder,
     IItemRepository itemRepository,
-    IUnitRepository unitRepository,
+    ISiUnitRepository unitRepository,
     IItemBusinessRuleValidator businessRuleValidator,
     IValidator<CreateItemDto> createValidator,
     IValidator<PatchItemDto> patchValidator,
@@ -42,7 +42,7 @@ public class ItemService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IItemRepository _itemRepository = itemRepository;
-    private readonly IUnitRepository _unitRepository = unitRepository;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IItemBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
     private readonly IValidator<CreateItemDto> _createValidator = createValidator;
     private readonly IValidator<PatchItemDto> _patchValidator = patchValidator;
@@ -382,7 +382,7 @@ public class ItemService(
         };
     }
 
-    private async Task<IReadOnlyDictionary<Guid, Unit>> LoadPreferredUnitsAsync(
+    private async Task<IReadOnlyDictionary<Guid, SiUnit>> LoadPreferredUnitsAsync(
         CreateItemDto itemDto,
         CancellationToken ct
     )
@@ -399,7 +399,7 @@ public class ItemService(
             .ToArray();
 
         if (unitIds.Length == 0)
-            return new Dictionary<Guid, Unit>();
+            return new Dictionary<Guid, SiUnit>();
 
         var unitsById = await _unitRepository.GetByIdsAsync(unitIds, ct);
         var missingIds = unitIds
@@ -411,7 +411,7 @@ public class ItemService(
             throw new ValidationException(missingIds.Select(id =>
                 new ValidationFailure(
                     nameof(CreateItemDto),
-                    $"Unit '{id}' was not found."
+                    $"SiUnit '{id}' was not found."
                 )
             ));
         }
@@ -461,7 +461,7 @@ public class ItemService(
 
     private static void ValidatePreferredUnitDimensions(
         CreateItemDto itemDto,
-        IReadOnlyDictionary<Guid, Unit> unitsById
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
     )
     {
         var failures = new List<ValidationFailure>();
@@ -496,7 +496,7 @@ public class ItemService(
         Guid? unitId,
         UnitDimension expectedDimension,
         string propertyName,
-        IReadOnlyDictionary<Guid, Unit> unitsById,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById,
         List<ValidationFailure> failures
     )
     {
@@ -507,7 +507,7 @@ public class ItemService(
         {
             failures.Add(new ValidationFailure(
                 propertyName,
-                $"Unit '{unitId}' must have '{expectedDimension}' dimension."
+                $"SiUnit '{unitId}' must have '{expectedDimension}' dimension."
             ));
         }
     }
@@ -559,7 +559,7 @@ public class ItemService(
     private static decimal? ConvertToBase(
         decimal? value,
         Guid? unitId,
-        IReadOnlyDictionary<Guid, Unit> unitsById
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
     )
     {
         if (!value.HasValue)
@@ -571,7 +571,7 @@ public class ItemService(
         return value.Value * unit.FactorToBase;
     }
 
-    private static decimal? ConvertFromBase(decimal? value, Unit? preferredUnit)
+    private static decimal? ConvertFromBase(decimal? value, SiUnit? preferredUnit)
     {
         if (!value.HasValue || preferredUnit is null)
             return value;
@@ -708,7 +708,7 @@ public class ItemService(
 
         if (!match.Success)
         {
-            throw new ValidationException("Unit Error");
+            throw new ValidationException("SiUnit Error");
         }
 
         return int.Parse(match.Groups[1].Value);
@@ -756,7 +756,7 @@ public class ItemService(
         throw new ValidationException([
             new ValidationFailure(
                 nameof(CreateItemDto.ItemUnitOfMeasurementConversions),
-                $"Unit conversion cycle detected: {string.Join(" -> ", cycle)}."
+                $"SiUnit conversion cycle detected: {string.Join(" -> ", cycle)}."
             )
         ]);
     }
@@ -835,9 +835,9 @@ public class ItemService(
                 item.Volume,
                 item.PreferredVolumeUnit
             ),
-            MapUnitSlimDto(item.PreferredMassUnit),
-            MapUnitSlimDto(item.PreferredLengthUnit),
-            MapUnitSlimDto(item.PreferredVolumeUnit),
+            MapSiUnitSlimDto(item.PreferredMassUnit),
+            MapSiUnitSlimDto(item.PreferredLengthUnit),
+            MapSiUnitSlimDto(item.PreferredVolumeUnit),
             new ItemTypeSlimDto(
                 item.ItemTypeId,
                 item.ItemType.Code,
@@ -894,11 +894,11 @@ public class ItemService(
         );
     }
 
-    private static UnitAsReferenceDto? MapUnitSlimDto(Unit? unit)
+    private static SiUnitAsReferenceDto? MapSiUnitSlimDto(SiUnit? unit)
     {
         return unit is null
             ? null
-            : new UnitAsReferenceDto(
+            : new SiUnitAsReferenceDto(
                 unit.Id,
                 unit.Code,
                 unit.Title,

@@ -27,9 +27,9 @@ public class WarehouseLocation :
 
     public WarehouseLocation? ParentLocation { get; set; }
     public Warehouse Warehouse { get; set; } = default!;
-    public Unit? PreferredMassUnit { get; set; }
-    public Unit? PreferredLengthUnit { get; set; }
-    public Unit? PreferredVolumeUnit { get; set; }
+    public SiUnit? PreferredMassUnit { get; set; }
+    public SiUnit? PreferredLengthUnit { get; set; }
+    public SiUnit? PreferredVolumeUnit { get; set; }
 
     public ICollection<WarehouseLocation> SubLocations { get; set; } = [];
 
