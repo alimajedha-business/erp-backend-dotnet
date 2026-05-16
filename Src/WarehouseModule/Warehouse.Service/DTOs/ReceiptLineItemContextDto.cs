@@ -17,6 +17,10 @@ public record ReceiptLineItemContextDto(
 
 public class ReceiptLineItemContextRequestDto
 {
+    /* Current receipt is excluded when editing:
+     * When currentReceiptId is provided, the query excludes that receipt’s saved lines. 
+     * Then the frontend’s current dialog lines are added back as reserved occupancy.
+     * This prevents double-counting while editing an existing receipt. */
     public Guid? CurrentReceiptId { get; set; }
     public IReadOnlyList<ReceiptLineLocationReservationDto> CurrentReceiptLines { get; set; } = [];
 }
