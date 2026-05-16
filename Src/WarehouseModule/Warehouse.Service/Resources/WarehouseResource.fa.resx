@@ -603,9 +603,6 @@
   <data name="Receipt.ShippingCost" xml:space="preserve">
     <value>هزینه حمل و نقل</value>
   </data>
-  <data name="Receipt.WarehouseLocation" xml:space="preserve">
-    <value>محل ذخیره در انبار</value>
-  </data>
   <data name="Receipt.Discount" xml:space="preserve">
     <value>تخفیف</value>
   </data>
