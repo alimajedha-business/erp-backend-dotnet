@@ -7,6 +7,7 @@ public interface IReceiptLineContextService
     Task<ReceiptLineItemContextDto> GetAsync(
         Guid companyId,
         Guid itemId,
+        ReceiptLineItemContextRequestDto requestDto,
         CancellationToken ct
     );
 }
