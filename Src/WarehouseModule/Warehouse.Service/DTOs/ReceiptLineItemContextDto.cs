@@ -23,6 +23,20 @@ public class ReceiptLineItemContextRequestDto
      * This prevents double-counting while editing an existing receipt. */
     public Guid? CurrentReceiptId { get; set; }
     public IReadOnlyList<ReceiptLineLocationReservationDto> CurrentReceiptLines { get; set; } = [];
+
+    /* example:
+     *  {
+          "currentReceiptId": "optional-existing-receipt-guid",
+          "currentReceiptLines": [
+            {
+              "rowNumber": 1,
+              "warehouseLocationId": "location-guid",
+              "occupiedMass": 12.5,
+              "occupiedVolume": 3.25
+            }
+          ]
+        }
+    */
 }
 
 public record ReceiptLineLocationReservationDto(
