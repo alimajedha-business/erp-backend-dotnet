@@ -104,7 +104,7 @@ public class ReceiptLineContextService(
             Locations: [.. locations
                 .Select(location =>
                 {
-                    var occupancy = occupancyByLocation.GetValueOrDefault(
+                    var (OccupiedMass, OccupiedVolume) = occupancyByLocation.GetValueOrDefault(
                         location.WarehouseLocationId
                     );
 
@@ -119,13 +119,13 @@ public class ReceiptLineContextService(
                         MaxVolume: location.MaxVolume,
                         PreferredMassUnitId: location.PreferredMassUnitId,
                         PreferredVolumeUnitId: location.PreferredVolumeUnitId,
-                        OccupiedMass: occupancy.OccupiedMass,
-                        OccupiedVolume: occupancy.OccupiedVolume,
+                        OccupiedMass: OccupiedMass,
+                        OccupiedVolume: OccupiedVolume,
                         AvailableMass: location.MaxMass.HasValue
-                            ? location.MaxMass.Value - occupancy.OccupiedMass
+                            ? location.MaxMass.Value - OccupiedMass
                             : null,
                         AvailableVolume: location.MaxVolume.HasValue
-                            ? location.MaxVolume.Value - occupancy.OccupiedVolume
+                            ? location.MaxVolume.Value - OccupiedVolume
                             : null
                     );
                 })],
