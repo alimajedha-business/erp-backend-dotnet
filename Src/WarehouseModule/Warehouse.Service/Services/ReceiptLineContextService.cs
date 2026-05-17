@@ -2,6 +2,7 @@ using AutoMapper;
 
 using Microsoft.Extensions.Localization;
 
+using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -86,8 +87,8 @@ public class ReceiptLineContextService(
             ItemId: item.Id,
             ItemCode: item.Code,
             ItemTitle: item.Title,
-            UnitWeight: item.Weight,
-            UnitVolume: item.Volume,
+            UnitWeight: ConvertFromBase(item.Weight, item.PreferredMassUnit),
+            UnitVolume: ConvertFromBase(item.Volume, item.PreferredVolumeUnit),
             PreferredMassUnit: Localize(_mapper.Map<SiUnitAsReferenceDto>(item.PreferredMassUnit)),
             PreferredVolumeUnit: Localize(_mapper.Map<SiUnitAsReferenceDto>(item.PreferredVolumeUnit)),
             UnitOfMeasurements: [.. item.ItemUnitOfMeasurements
@@ -155,6 +156,17 @@ public class ReceiptLineContextService(
         Guid? PreferredMassUnitId,
         Guid? PreferredVolumeUnitId
     );
+
+    private static decimal? ConvertFromBase(decimal? value, SiUnit? preferredUnit)
+    {
+        if (!value.HasValue || preferredUnit is null)
+            return value;
+
+        if (preferredUnit.FactorToBase == 0)
+            return value;
+
+        return value.Value / preferredUnit.FactorToBase;
+    }
 
     private SiUnitAsReferenceDto Localize(SiUnitAsReferenceDto dto)
     {
