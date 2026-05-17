@@ -55,7 +55,8 @@ public class ReceiptService(
             Number = createDto.Number,
             ReceiptDate = createDto.ReceiptDate,
             ReceiptTypeId = createDto.ReceiptTypeId,
-            Description = createDto.Description
+            Description = createDto.Description,
+            Status = ReceiptStatus.Draft
         };
 
         AddHeaderFieldValues(companyId, receipt, createDto.ReceiptFieldValues);
@@ -173,6 +174,9 @@ public class ReceiptService(
             trackChanges: true,
             ct
         ) ?? throw new ReceiptNotFoundException();
+
+        if (receipt.Status == ReceiptStatus.Posted)
+            return await GetByIdAsync(companyId, id, trackChanges: false, ct);
 
         receipt.Status = ReceiptStatus.Posted;
 

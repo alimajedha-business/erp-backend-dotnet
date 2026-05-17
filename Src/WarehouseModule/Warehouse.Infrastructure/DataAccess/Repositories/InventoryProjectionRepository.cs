@@ -372,7 +372,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         usage.OccupiedVolume += volumeDelta;
     }
 
-    private static IReadOnlyList<StockDimensionValue> GetStockDimensionValues(ReceiptLine line)
+    private static List<StockDimensionValue> GetStockDimensionValues(ReceiptLine line)
     {
         var values = new List<StockDimensionValue>();
 
@@ -412,9 +412,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 EnumReferenceId: e.ReferenceId
             )));
 
-        return values
-            .OrderBy(e => e.Name)
-            .ToList();
+        return [.. values.OrderBy(e => e.Name)];
     }
 
     private static byte[] ComputeStockKeyHash(IReadOnlyList<StockDimensionValue> dimensions)
