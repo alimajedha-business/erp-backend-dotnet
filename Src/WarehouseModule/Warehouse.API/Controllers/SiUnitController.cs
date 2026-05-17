@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
@@ -30,7 +30,7 @@ public class SiUnitController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> Get(
         [FromQuery] SiUnitParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,

@@ -2,7 +2,7 @@ using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -23,7 +23,7 @@ public class ReceiptFieldDefinitionController(
     private readonly IReceiptFieldDefinitionService _fieldDefinitionService = fieldDefinitionService;
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(ReceiptFieldDefinitionAdvancedSearchExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
