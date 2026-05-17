@@ -201,8 +201,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             .Include(e => e.AttributeValues)
             .Where(e =>
                 e.CompanyId == companyId &&
-                e.ItemId == line.ItemId &&
-                e.SerialNumber == line.SerialNumber
+                e.ItemId == line.ItemId
             )
             .ToListAsync(ct);
 
@@ -218,9 +217,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             Id = Guid.NewGuid(),
             CompanyId = companyId,
             ItemId = line.ItemId,
-            StockKeyHash = stockKeyHash,
-            LotNumber = line.BatchNumber,
-            SerialNumber = line.SerialNumber
+            StockKeyHash = stockKeyHash
         };
 
         foreach (var dimension in stockDimensions.Where(e => e.AttributeId.HasValue))
