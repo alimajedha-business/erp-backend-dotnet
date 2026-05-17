@@ -25,17 +25,27 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         var receipt = await _context.Set<Receipt>()
             .AsSplitQuery()
             .Include(e => e.ReceiptType)
+
             .Include(e => e.ReceiptLines)
                 .ThenInclude(e => e.WarehouseLocation)
+
             .Include(e => e.ReceiptLines)
                 .ThenInclude(e => e.Item)
                     .ThenInclude(e => e.ItemUnitOfMeasurements)
+
+            .Include(e => e.ReceiptLines)
+                .ThenInclude(e => e.Item)
+                    .ThenInclude(e => e.ItemAttributes)
+                        .ThenInclude(e => e.Attribute)
+
             .Include(e => e.ReceiptLines)
                 .ThenInclude(e => e.ReceiptLineMeasurementValues)
+
             .Include(e => e.ReceiptLines)
                 .ThenInclude(e => e.ReceiptLineAttributeValues)
                     .ThenInclude(e => e.ItemAttribute)
                         .ThenInclude(e => e.Attribute)
+
             .SingleOrDefaultAsync(
                 e => e.CompanyId == companyId && e.Id == receiptId,
                 ct
@@ -220,12 +230,12 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             StockKeyHash = stockKeyHash
         };
 
-        foreach (var dimension in stockDimensions.Where(e => e.AttributeId.HasValue))
+        foreach (var dimension in stockDimensions)
         {
             lot.AttributeValues.Add(new InventoryLotAttributeValue
             {
                 CompanyId = companyId,
-                AttributeId = dimension.AttributeId!.Value,
+                AttributeId = dimension.AttributeId,
                 StringValue = dimension.StringValue,
                 DecimalValue = dimension.DecimalValue,
                 DateTimeValue = dimension.DateTimeValue,
@@ -373,43 +383,83 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
     {
         var values = new List<StockDimensionValue>();
 
-        if (!string.IsNullOrWhiteSpace(line.BatchNumber))
-        {
-            values.Add(StockDimensionValue.Static(
-                "BatchNumber",
-                stringValue: line.BatchNumber
-            ));
-        }
+        AddStaticStockDimensions(line, values);
+        AddDynamicStockDimensions(line, values);
 
-        if (!string.IsNullOrWhiteSpace(line.SerialNumber))
-        {
-            values.Add(StockDimensionValue.Static(
-                "SerialNumber",
-                stringValue: line.SerialNumber
-            ));
-        }
+        return [.. values.OrderBy(e => e.Name)];
+    }
 
-        if (line.ExpiryDate.HasValue)
-        {
-            values.Add(StockDimensionValue.Static(
-                "ExpiryDate",
-                dateTimeValue: line.ExpiryDate.Value
-            ));
-        }
+    private static void AddStaticStockDimensions(
+        ReceiptLine line,
+        List<StockDimensionValue> values
+    )
+    {
+        var staticItemAttributes = line.Item.ItemAttributes
+            .Where(e =>
+                e.Attribute.IsStatic &&
+                e.Attribute.IsStockDimension)
+            .ToList();
 
+        foreach (var itemAttribute in staticItemAttributes)
+        {
+            var attribute = itemAttribute.Attribute;
+
+            switch (attribute.StaticKey)
+            {
+                case StaticAttributeKeys.BatchNumber:
+                    if (!string.IsNullOrWhiteSpace(line.BatchNumber))
+                    {
+                        values.Add(new StockDimensionValue(
+                            Name: attribute.Code.ToString(),
+                            AttributeId: attribute.Id,
+                            StringValue: line.BatchNumber.Trim()
+                        ));
+                    }
+                    break;
+
+                case StaticAttributeKeys.SerialNumber:
+                    if (!string.IsNullOrWhiteSpace(line.SerialNumber))
+                    {
+                        values.Add(new StockDimensionValue(
+                            Name: attribute.Code.ToString(),
+                            AttributeId: attribute.Id,
+                            StringValue: line.SerialNumber.Trim()
+                        ));
+                    }
+                    break;
+
+                case StaticAttributeKeys.ExpiryDate:
+                    if (line.ExpiryDate.HasValue)
+                    {
+                        values.Add(new StockDimensionValue(
+                            Name: attribute.Code.ToString(),
+                            AttributeId: attribute.Id,
+                            DateTimeValue: line.ExpiryDate.Value
+                        ));
+                    }
+                    break;
+            }
+        }
+    }
+
+    private static void AddDynamicStockDimensions(
+    ReceiptLine line,
+    List<StockDimensionValue> values
+)
+    {
         values.AddRange(line.ReceiptLineAttributeValues
-            .Where(e => e.ItemAttribute.Attribute.IsStockDimension)
-            .Select(e => new StockDimensionValue(
-                Name: e.ItemAttribute.AttributeId.ToString(),
+            .Where(e =>
+                !e.ItemAttribute.Attribute.IsStatic &&
+                e.ItemAttribute.Attribute.IsStockDimension
+            ).Select(e => new StockDimensionValue(
+                Name: e.ItemAttribute.Attribute.Code.ToString(),
                 AttributeId: e.ItemAttribute.AttributeId,
-                StringValue: e.StringValue,
+                StringValue: e.StringValue?.Trim(),
                 DecimalValue: e.DecimalValue,
                 DateTimeValue: e.DateTimeValue ?? e.DateValue?.ToDateTime(TimeOnly.MinValue),
                 BooleanValue: e.BooleanValue,
                 EnumReferenceId: e.ReferenceId
             )));
-
-        return [.. values.OrderBy(e => e.Name)];
     }
 
     private static byte[] ComputeStockKeyHash(IReadOnlyList<StockDimensionValue> dimensions)
@@ -427,27 +477,20 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         return SHA256.HashData(Encoding.UTF8.GetBytes(json));
     }
 
-    private record StockDimensionValue(
+    private static class StaticAttributeKeys
+    {
+        public const string BatchNumber = "sys_batch_number";
+        public const string SerialNumber = "sys_serial_number";
+        public const string ExpiryDate = "sys_expiry_date";
+    }
+
+    private sealed record StockDimensionValue(
         string Name,
-        Guid? AttributeId = null,
+        Guid AttributeId,
         string? StringValue = null,
         decimal? DecimalValue = null,
         DateTime? DateTimeValue = null,
         bool? BooleanValue = null,
         Guid? EnumReferenceId = null
-    )
-    {
-        public static StockDimensionValue Static(
-            string name,
-            string? stringValue = null,
-            DateTime? dateTimeValue = null
-        )
-        {
-            return new StockDimensionValue(
-                Name: name,
-                StringValue: stringValue,
-                DateTimeValue: dateTimeValue
-            );
-        }
-    }
+    );
 }
