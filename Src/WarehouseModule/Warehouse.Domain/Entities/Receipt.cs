@@ -22,7 +22,7 @@ public class Receipt :
     public long Number { get; set; }
     public DateOnly ReceiptDate { get; set; }
     public Guid ReceiptTypeId { get; set; }
-    public ReceiptStatus Status { get; set; } = ReceiptStatus.Posted;
+    public ReceiptStatus Status { get; set; } = ReceiptStatus.Draft;
     public string? Description { get; set; }
 
     public ReceiptType ReceiptType { get; set; } = null!;
