@@ -42,6 +42,10 @@ public class Attribute :
             .HasMaxLength(50);
 
         builder
+            .Property(e => e.StaticKey)
+            .HasMaxLength(50);
+
+        builder
             .Property(e => e.IsRequired)
             .HasDefaultValue(false);
 
