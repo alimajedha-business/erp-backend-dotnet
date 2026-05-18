@@ -20,7 +20,7 @@ public class InventoryLotAttributeValue :
     public bool? BooleanValue { get; set; }
     public Guid? EnumReferenceId { get; set; }
 
-    public InventoryLot Lot { get; set; } = default!;
+    public InventoryLot InventoryLot { get; set; } = default!;
     public Attribute Attribute { get; set; } = default!;
     public AttributeEnumValue? EnumValue { get; set; }
 
@@ -68,8 +68,8 @@ public class InventoryLotAttributeValue :
             .HasForeignKey(e => e.EnumReferenceId);
 
         builder
-            .HasOne(e => e.Lot)
-            .WithMany()
+            .HasOne(e => e.InventoryLot)
+            .WithMany(e => e.AttributeValues)
             .HasForeignKey(e => e.LotId)
             .OnDelete(DeleteBehavior.NoAction);
 

@@ -15,8 +15,6 @@ public class InventoryLot :
     // Hash of stock-dimension attribute values:
     // expiry date, batch number, serial, color, size, etc.
     public required byte[] StockKeyHash { get; set; }
-    public string? LotNumber { get; set; }
-    public string? SerialNumber { get; set; }
 
     public Item Item { get; set; } = default!;
 
@@ -28,7 +26,7 @@ public class InventoryLot :
             .ToTable(nameof(InventoryLot), "Warehouse");
 
         builder
-           .HasIndex(i => new { i.ItemId, i.SerialNumber, i.StockKeyHash })
+           .HasIndex(i => new { i.ItemId, i.StockKeyHash })
            .IsUnique()
            .HasDatabaseName("UX_InvLot_Item_DimHash");
 

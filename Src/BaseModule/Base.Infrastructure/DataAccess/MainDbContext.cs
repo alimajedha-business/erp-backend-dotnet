@@ -100,6 +100,11 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<AttributeEnumValue> AttributeEnumValues { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<CategoryAttributeRule> CategoryAttributeRules { get; set; }
+        public virtual DbSet<InventoryBalance> InventoryBalances { get; set; }
+        public virtual DbSet<InventoryLot> InventoryLots { get; set; }
+        public virtual DbSet<InventoryLotAttributeValue> InventoryLotAttributeValues { get; set; }
+        public virtual DbSet<InventoryLotLocationBalance> InventoryLotLocationBalances { get; set; }
+        public virtual DbSet<InventoryMovement> InventoryMovements { get; set; }
         public virtual DbSet<InventoryMovementType> InventoryMovementTypes { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<ItemAttribute> ItemAttributes { get; set; }
@@ -115,6 +120,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<Warehouse.Domain.Entities.Warehouse> Warehouses { get; set; }
         public virtual DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+        public virtual DbSet<WarehouseLocationUsage> WarehouseLocationUsages { get; set; }
         public virtual DbSet<WarehouseType> WarehouseTypes { get; set; }
 
         #endregion Warehouse

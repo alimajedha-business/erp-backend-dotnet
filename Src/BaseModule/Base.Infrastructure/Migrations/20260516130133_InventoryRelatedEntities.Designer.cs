@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260516130133_InventoryRelatedEntities")]
+    partial class InventoryRelatedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1744,11 +1747,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("StaticKey")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("TimeZone")
                         .HasColumnType("nvarchar(50)");
 
@@ -2117,8 +2115,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("LotNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("StockKeyHash")
                         .IsRequired()
@@ -2142,9 +2146,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("ItemId")
                         .HasDatabaseName("IX_InventoryLot_Item");
 
-                    b.HasIndex("ItemId", "StockKeyHash")
+                    b.HasIndex("ItemId", "SerialNumber", "StockKeyHash")
                         .IsUnique()
-                        .HasDatabaseName("UX_InvLot_Item_DimHash");
+                        .HasDatabaseName("UX_InvLot_Item_DimHash")
+                        .HasFilter("[SerialNumber] IS NOT NULL");
 
                     b.ToTable("InventoryLot", "Warehouse");
                 });
@@ -2186,6 +2191,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<int?>("IntValue")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("InventoryLotId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -2211,6 +2219,8 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("EnumReferenceId");
+
+                    b.HasIndex("InventoryLotId");
 
                     b.HasIndex("IsDeleted");
 
@@ -4466,8 +4476,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("EnumReferenceId");
 
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "InventoryLot")
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", null)
                         .WithMany("AttributeValues")
+                        .HasForeignKey("InventoryLotId");
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
+                        .WithMany()
                         .HasForeignKey("LotId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -4476,7 +4490,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Navigation("EnumValue");
 
-                    b.Navigation("InventoryLot");
+                    b.Navigation("Lot");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLotLocationBalance", b =>

@@ -6,6 +6,7 @@ using NGErp.API.Services;
 using NGErp.Base.Domain.ErrorModels;
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Infrastructure.Logging;
+using NGErp.Base.Service.Services;
 
 namespace NGErp.API.Extensions
 {
@@ -55,7 +56,7 @@ namespace NGErp.API.Extensions
                     {
                         Title = localizedMessage,
                         TraceId = context.TraceIdentifier,
-                        Details = BuildErrorDetails(ex, isDevelopment)
+                        Details = BuildErrorDetails(ex, isDevelopment, localizer)
                     };
 
                     await context.Response.WriteAsJsonAsync(errorResponse);
@@ -63,8 +64,27 @@ namespace NGErp.API.Extensions
             });
         }
 
-        private static Dictionary<string, string[]> BuildErrorDetails(Exception ex, bool isDevelopment)
+        private static object BuildErrorDetails(
+            Exception ex,
+            bool isDevelopment,
+            IExceptionLocalizer localizer
+        )
         {
+            if (ex is ListValidationException listValidationException)
+            {
+                return listValidationException.Errors
+                    .OrderBy(e => e.Key)
+                    .ToDictionary(
+                        e => e.Key,
+                        e => e.Value
+                            .Select(lineError => new ErrorDetail(
+                                GetErrorCode(lineError),
+                                localizer.Localize(lineError)
+                            ))
+                            .ToArray()
+                    );
+            }
+
             if (ex is ValidationException validationException)
             {
                 var errors = validationException.Errors
@@ -97,6 +117,28 @@ namespace NGErp.API.Extensions
                         ? [ex.InnerException != null ? ex.InnerException.Message : ex.Message]
                         : []
                 }
+            };
+        }
+
+        private static string GetErrorCode(Exception ex)
+        {
+            return ex switch
+            {
+                BusinessRuleViolationException businessRuleViolation =>
+                    businessRuleViolation.LocalizationKey,
+                DuplicateResourceException duplicateResource =>
+                    duplicateResource.LocalizationKey,
+                BadRequestException badRequest =>
+                    badRequest.LocalizationKey,
+                NotFoundException notFound =>
+                    notFound.LocalizationKey,
+                ForeignKeyConstraintException foreignKeyConstraint =>
+                    foreignKeyConstraint.LocalizationKey,
+                CheckConstraintException checkConstraint =>
+                    checkConstraint.LocalizationKey,
+                ValidationException =>
+                    "ValidationFailed",
+                _ => ex.GetType().Name
             };
         }
     }

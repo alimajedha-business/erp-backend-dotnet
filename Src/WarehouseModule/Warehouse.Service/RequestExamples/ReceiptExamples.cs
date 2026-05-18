@@ -46,6 +46,10 @@ public class CreateReceiptExample :
                     BatchNumber = "202256799",
                     SerialNumber = "65879000020012",
                     ExpiryDate = new DateTime(2026, 5, 29),
+                    Weight = 10,
+                    Volume = 100,
+                    PreferredMassUnitId = new Guid(),
+                    PreferredVolumeUnitId = new Guid(),
                     ReceiptLineAttributeValues =
                     [
                         new CreateReceiptLineAttributeValueDto

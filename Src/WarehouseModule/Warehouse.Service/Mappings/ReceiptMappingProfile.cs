@@ -2,6 +2,7 @@
 
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.Service.Mappings;
 
@@ -20,7 +21,15 @@ public class ReceiptMappingProfile : Profile
             );
 
         CreateMap<Receipt, ReceiptDto>();
-        CreateMap<ReceiptLine, ReceiptLineDto>();
+        CreateMap<ReceiptLine, ReceiptLineDto>()
+            .ForCtorParam(
+                nameof(ReceiptLineDto.Weight),
+                opt => opt.MapFrom(src => MeasurementUnitConverter.ConvertFromBase(src.Weight, src.PreferredMassUnit))
+            )
+            .ForCtorParam(
+                nameof(ReceiptLineDto.Volume),
+                opt => opt.MapFrom(src => MeasurementUnitConverter.ConvertFromBase(src.Volume, src.PreferredVolumeUnit))
+            );
         CreateMap<ReceiptLineAttributeValue, ReceiptLineAttributeValueDto>();
         CreateMap<ReceiptLineMeasurementValue, ReceiptLineMeasurementValueDto>();
         CreateMap<ReceiptFieldValue, ReceiptFieldValueDto>();

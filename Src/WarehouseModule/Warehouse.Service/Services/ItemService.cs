@@ -202,15 +202,16 @@ public class ItemService(
 
         await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
 
-        var updateDto = BuildCreateDto(patchDto, item);
-        await RequestBodyValidator.ValidateAsync(_createValidator, updateDto, ct);
-        _businessRuleValidator.ValidateItemUnitOfMeasurementCount(
-            updateDto.ItemUnitOfMeasurements
-        );
-
         var patchedPaths = patchDocument.Operations
             .Select(e => e.path.Trim('/').Split('/')[0])
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var updateDto = BuildCreateDto(patchDto, item);
+        await RequestBodyValidator.ValidateAsync(_createValidator, updateDto, ct);
+        await PreserveUnpatchedMeasurementValuesAsync(updateDto, item, patchedPaths, ct);
+        _businessRuleValidator.ValidateItemUnitOfMeasurementCount(
+            updateDto.ItemUnitOfMeasurements
+        );
 
         if (patchedPaths.Contains(nameof(PatchItemDto.Code)))
         {
@@ -556,31 +557,74 @@ public class ItemService(
         item.PreferredVolumeUnitId = itemDto.PreferredVolumeUnitId;
     }
 
-    private static decimal? ConvertToBase(
-        decimal? value,
+    private async Task PreserveUnpatchedMeasurementValuesAsync(
+        CreateItemDto updateDto,
+        Item item,
+        ISet<string> patchedPaths,
+        CancellationToken ct
+    )
+    {
+        var unitsById = await LoadPreferredUnitsAsync(updateDto, ct);
+
+        if (!patchedPaths.Contains(nameof(PatchItemDto.Weight)))
+        {
+            updateDto.Weight = ConvertFromBase(
+                item.Weight,
+                GetUnit(updateDto.PreferredMassUnitId, unitsById)
+            );
+        }
+
+        if (!patchedPaths.Contains(nameof(PatchItemDto.Length)))
+        {
+            updateDto.Length = ConvertFromBase(
+                item.Length,
+                GetUnit(updateDto.PreferredLengthUnitId, unitsById)
+            );
+        }
+
+        if (!patchedPaths.Contains(nameof(PatchItemDto.Width)))
+        {
+            updateDto.Width = ConvertFromBase(
+                item.Width,
+                GetUnit(updateDto.PreferredLengthUnitId, unitsById)
+            );
+        }
+
+        if (!patchedPaths.Contains(nameof(PatchItemDto.Height)))
+        {
+            updateDto.Height = ConvertFromBase(
+                item.Height,
+                GetUnit(updateDto.PreferredLengthUnitId, unitsById)
+            );
+        }
+
+        if (!patchedPaths.Contains(nameof(PatchItemDto.Volume)))
+        {
+            updateDto.Volume = ConvertFromBase(
+                item.Volume,
+                GetUnit(updateDto.PreferredVolumeUnitId, unitsById)
+            );
+        }
+    }
+
+    private static SiUnit? GetUnit(
         Guid? unitId,
         IReadOnlyDictionary<Guid, SiUnit> unitsById
     )
     {
-        if (!value.HasValue)
-            return null;
-
-        if (!unitId.HasValue || !unitsById.TryGetValue(unitId.Value, out var unit))
-            return value;
-
-        return value.Value * unit.FactorToBase;
+        return unitId.HasValue && unitsById.TryGetValue(unitId.Value, out var unit)
+            ? unit
+            : null;
     }
+
+    private static decimal? ConvertToBase(
+        decimal? value,
+        Guid? unitId,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById
+    ) => MeasurementUnitConverter.ConvertToBase(value, unitId, unitsById);
 
     private static decimal? ConvertFromBase(decimal? value, SiUnit? preferredUnit)
-    {
-        if (!value.HasValue || preferredUnit is null)
-            return value;
-
-        if (preferredUnit.FactorToBase == 0)
-            return value;
-
-        return value.Value / preferredUnit.FactorToBase;
-    }
+        => MeasurementUnitConverter.ConvertFromBase(value, preferredUnit);
 
     private static void ValidateDuplicateWarehouses(
         IReadOnlyCollection<CreateItemWarehouseDto> itemWarehouses,
