@@ -26,4 +26,17 @@ public class ReceiptSourceOfSupplyRepository(MainDbContext context) :
                 ct
             );
     }
+
+    public async Task<int> GetNextCodeAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var maxCode = await _dbSet
+            .AsNoTracking()
+            .Where(e => e.CompanyId == companyId)
+            .MaxAsync(e => (int?)e.Code, ct);
+
+        return (maxCode ?? 0) + 1;
+    }
 }

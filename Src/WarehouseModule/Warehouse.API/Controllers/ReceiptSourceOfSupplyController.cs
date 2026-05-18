@@ -8,6 +8,7 @@ using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Services;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -65,6 +66,17 @@ public class ReceiptSourceOfSupplyController(
         );
 
         return Ok(result);
+    }
+
+
+    [HttpGet("new-code")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _receiptSourceOfSupplyService.GetNextCode(companyId, ct);
+        return Ok(code);
     }
 
     [HttpGet("{id:guid}")]

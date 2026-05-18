@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using AutoMapper;
 
 using FluentValidation;
@@ -11,6 +13,7 @@ using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -156,6 +159,11 @@ public class ReceiptSourceOfSupplyService(
 
         _receiptSourceOfSupplyRepository.Remove(entity);
         await _receiptSourceOfSupplyRepository.SaveChangesAsync(ct);
+    }
+
+    public Task<int> GetNextCode(Guid companyId, CancellationToken ct)
+    {
+        return _receiptSourceOfSupplyRepository.GetNextCodeAsync(companyId, ct);
     }
 
     private async Task<ReceiptSourceOfSupply> GetByIdOrThrowAsync(

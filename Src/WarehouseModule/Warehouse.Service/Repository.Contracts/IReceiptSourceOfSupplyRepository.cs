@@ -11,4 +11,9 @@ public interface IReceiptSourceOfSupplyRepository :
         Guid receiptSourceOfSupplyId,
         CancellationToken ct
     );
+
+    Task<int> GetNextCodeAsync(
+        Guid companyId,
+        CancellationToken ct
+    );
 }

@@ -46,4 +46,6 @@ public interface IReceiptSourceOfSupplyService
         Guid id,
         CancellationToken ct
     );
+
+    Task<int> GetNextCode(Guid companyId, CancellationToken ct);
 }
