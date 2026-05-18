@@ -7,7 +7,6 @@ using NGErp.Base.Domain.ErrorModels;
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Infrastructure.Logging;
 using NGErp.Base.Service.Services;
-using NGErp.Warehouse.Domain.Exceptions;
 
 namespace NGErp.API.Extensions
 {
@@ -71,9 +70,9 @@ namespace NGErp.API.Extensions
             IExceptionLocalizer localizer
         )
         {
-            if (ex is ReceiptLineValidationException receiptLineValidationException)
+            if (ex is ListValidationException listValidationException)
             {
-                return receiptLineValidationException.Errors
+                return listValidationException.Errors
                     .OrderBy(e => e.Key)
                     .ToDictionary(
                         e => e.Key,

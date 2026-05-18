@@ -42,9 +42,8 @@ public sealed class ReceiptDuplicateLineMeasurementValueException(Guid itemUnitO
 
 public sealed class ReceiptLineValidationException(
     IReadOnlyDictionary<int, IReadOnlyList<Exception>> errors
-) : BusinessRuleViolationException()
+) : ListValidationException(errors)
 {
-    public IReadOnlyDictionary<int, IReadOnlyList<Exception>> Errors { get; } = errors;
     public override string LocalizationKey => "Receipt.Line.ValidationFailed";
 }
 
