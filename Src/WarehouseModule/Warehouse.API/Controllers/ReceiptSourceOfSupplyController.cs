@@ -39,20 +39,14 @@ public class ReceiptSourceOfSupplyController(
         );
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromQuery] ReceiptSourceOfSupplyParameters parameters,
         CancellationToken ct
     )
     {
-        var dto = await _receiptSourceOfSupplyService.GetByIdAsync(
-            companyId, id,
-            trackChanges: true,
-            ct
-        );
-
-        return Ok(dto);
+        var result = await _receiptSourceOfSupplyService.FilterByQAsync(parameters, ct);
+        return Ok(result);
     }
 
     [HttpPost("list")]
@@ -73,15 +67,20 @@ public class ReceiptSourceOfSupplyController(
         return Ok(result);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
     )
     {
-        await _receiptSourceOfSupplyService.DeleteAsync(companyId, id, ct);
-        return NoContent();
+        var dto = await _receiptSourceOfSupplyService.GetByIdAsync(
+            companyId, id,
+            trackChanges: true,
+            ct
+        );
+
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]
@@ -100,5 +99,16 @@ public class ReceiptSourceOfSupplyController(
         );
 
         return Ok(dto);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        await _receiptSourceOfSupplyService.DeleteAsync(companyId, id, ct);
+        return NoContent();
     }
 }

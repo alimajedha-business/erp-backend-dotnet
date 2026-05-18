@@ -14,6 +14,7 @@ using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
+using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
@@ -23,6 +24,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class ReceiptSourceOfSupplyService(
     IAdvancedFilterBuilder filterBuilder,
     IReceiptSourceOfSupplyRepository receiptSourceOfSupplyRepository,
+    IReceiptSourceOfSupplyBusinessRuleValidator businessRuleValidator,
     IValidator<CreateReceiptSourceOfSupplyDto> createValidator,
     IValidator<PatchReceiptSourceOfSupplyDto> patchValidator,
     IMapper mapper,
@@ -35,6 +37,7 @@ public class ReceiptSourceOfSupplyService(
     private readonly IStringLocalizer _localizer = localizer;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IReceiptSourceOfSupplyRepository _receiptSourceOfSupplyRepository = receiptSourceOfSupplyRepository;
+    private readonly IReceiptSourceOfSupplyBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
     private readonly IValidator<CreateReceiptSourceOfSupplyDto> _createValidator = createValidator;
     private readonly IValidator<PatchReceiptSourceOfSupplyDto> _patchValidator = patchValidator;
 
@@ -46,6 +49,7 @@ public class ReceiptSourceOfSupplyService(
     {
         RequestBodyValidator.ThrowIfNull(createDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
+        await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
 
         var entity = _mapper.Map<ReceiptSourceOfSupply>(createDto);
         entity.CompanyId = companyId;
@@ -67,6 +71,23 @@ public class ReceiptSourceOfSupplyService(
         return _mapper.Map<ReceiptSourceOfSupplyDto>(entity);
     }
 
+    public async Task<ListResponseModel<ReceiptSourceOfSupplySlimDto>> FilterByQAsync(
+        ReceiptSourceOfSupplyParameters parameters,
+        CancellationToken ct = default
+    )
+    {
+        _businessRuleValidator.ValidateParameters(parameters);
+
+        var query = _receiptSourceOfSupplyRepository.FilterByQ(parameters);
+        var res = await _receiptSourceOfSupplyRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<ReceiptSourceOfSupplySlimDto>(
+            results: _mapper.Map<IReadOnlyList<ReceiptSourceOfSupplySlimDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
     public async Task<ListResponseModel<ReceiptSourceOfSupplyDto>> GetFilteredAsync(
         Guid companyId,
         ReceiptSourceOfSupplyParameters parameters,
@@ -74,6 +95,8 @@ public class ReceiptSourceOfSupplyService(
         CancellationToken ct = default
     )
     {
+        _businessRuleValidator.ValidateParameters(parameters);
+
         var advancedFilters = _filterBuilder.Build<ReceiptSourceOfSupply>(filterNodeDto);
         var query = _receiptSourceOfSupplyRepository.GetFiltered(companyId, advancedFilters);
         var res = await _receiptSourceOfSupplyRepository.GetResponseListAsync(query, parameters, ct);

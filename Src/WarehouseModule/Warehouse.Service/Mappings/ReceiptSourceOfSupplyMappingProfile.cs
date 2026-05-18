@@ -10,6 +10,7 @@ public class ReceiptSourceOfSupplyMappingProfile : Profile
     public ReceiptSourceOfSupplyMappingProfile()
     {
         CreateMap<ReceiptSourceOfSupply, ReceiptSourceOfSupplyDto>();
+        CreateMap<ReceiptSourceOfSupply, ReceiptSourceOfSupplySlimDto>();
         CreateMap<CreateReceiptSourceOfSupplyDto, ReceiptSourceOfSupply>();
         CreateMap<PatchReceiptSourceOfSupplyDto, ReceiptSourceOfSupply>().ReverseMap();
     }

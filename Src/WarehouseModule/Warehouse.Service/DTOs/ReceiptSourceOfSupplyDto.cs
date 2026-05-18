@@ -7,6 +7,12 @@ public record ReceiptSourceOfSupplyDto(
     bool IsActive
 );
 
+public record ReceiptSourceOfSupplySlimDto(
+    Guid Id,
+    int Code,
+    string Title
+);
+
 public class CreateReceiptSourceOfSupplyDto
 {
     public int? Code { get; set; }

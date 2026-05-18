@@ -22,6 +22,11 @@ public interface IReceiptSourceOfSupplyService
         CancellationToken ct = default
     );
 
+    Task<ListResponseModel<ReceiptSourceOfSupplySlimDto>> FilterByQAsync(
+        ReceiptSourceOfSupplyParameters parameters,
+        CancellationToken ct = default
+    );
+
     Task<ListResponseModel<ReceiptSourceOfSupplyDto>> GetFilteredAsync(
         Guid companyId,
         ReceiptSourceOfSupplyParameters parameters,
