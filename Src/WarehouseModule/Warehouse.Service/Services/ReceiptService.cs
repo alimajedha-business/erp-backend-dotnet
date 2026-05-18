@@ -23,6 +23,7 @@ namespace NGErp.Warehouse.Service.Services;
 public class ReceiptService(
     IAdvancedFilterBuilder filterBuilder,
     IReceiptRepository receiptRepository,
+    ISiUnitRepository unitRepository,
     IReceiptBusinessRuleValidator businessRuleValidator,
     IReceiptInventoryProjectionService receiptInventoryProjectionService,
     IValidator<CreateReceiptDto> createValidator,
@@ -33,6 +34,7 @@ public class ReceiptService(
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IMapper _mapper = mapper;
     private readonly IReceiptRepository _receiptRepository = receiptRepository;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IReceiptBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
     private readonly IReceiptInventoryProjectionService _receiptInventoryProjectionService =
         receiptInventoryProjectionService;
@@ -60,7 +62,7 @@ public class ReceiptService(
         };
 
         AddHeaderFieldValues(companyId, receipt, createDto.ReceiptFieldValues);
-        AddReceiptLines(companyId, receipt, createDto.ReceiptLines);
+        await AddReceiptLinesAsync(companyId, receipt, createDto.ReceiptLines, ct);
 
         var created = await _receiptRepository.AddAsync(receipt, ct);
         await _receiptRepository.SaveChangesAsync(ct);
@@ -154,7 +156,7 @@ public class ReceiptService(
 
         if (patchedPaths.Contains(nameof(PatchReceiptDto.ReceiptLines)))
         {
-            ReplaceReceiptLines(companyId, receipt, updateDto.ReceiptLines);
+            await ReplaceReceiptLinesAsync(companyId, receipt, updateDto.ReceiptLines, ct);
         }
 
         await _receiptRepository.SaveChangesAsync(ct);
@@ -223,13 +225,17 @@ public class ReceiptService(
         }
     }
 
-    private static void AddReceiptLines(
+    private async Task AddReceiptLinesAsync(
         Guid companyId,
         Receipt receipt,
-        IEnumerable<CreateReceiptLineDto> lineDtos
+        IEnumerable<CreateReceiptLineDto> lineDtos,
+        CancellationToken ct
     )
     {
-        foreach (var lineDto in lineDtos)
+        var lineDtoList = lineDtos.ToList();
+        var unitsById = await LoadLinePreferredUnitsAsync(lineDtoList, ct);
+
+        foreach (var lineDto in lineDtoList)
         {
             var line = new ReceiptLine
             {
@@ -237,8 +243,16 @@ public class ReceiptService(
                 RowNumber = lineDto.RowNumber,
                 ItemId = lineDto.ItemId,
                 WarehouseLocationId = lineDto.WarehouseLocationId,
-                Weight = lineDto.Weight,
-                Volume = lineDto.Volume,
+                Weight = MeasurementUnitConverter.ConvertToBase(
+                    lineDto.Weight,
+                    lineDto.PreferredMassUnitId,
+                    unitsById
+                ),
+                Volume = MeasurementUnitConverter.ConvertToBase(
+                    lineDto.Volume,
+                    lineDto.PreferredVolumeUnitId,
+                    unitsById
+                ),
                 PreferredMassUnitId = lineDto.PreferredMassUnitId,
                 PreferredVolumeUnitId = lineDto.PreferredVolumeUnitId,
                 UnitPrice = lineDto.UnitPrice,
@@ -310,10 +324,11 @@ public class ReceiptService(
         AddHeaderFieldValues(companyId, receipt, fieldValues);
     }
 
-    private void ReplaceReceiptLines(
+    private async Task ReplaceReceiptLinesAsync(
         Guid companyId,
         Receipt receipt,
-        IReadOnlyCollection<CreateReceiptLineDto> lineDtos
+        IReadOnlyCollection<CreateReceiptLineDto> lineDtos,
+        CancellationToken ct
     )
     {
         var receiptLines = receipt.ReceiptLines.ToList();
@@ -342,7 +357,7 @@ public class ReceiptService(
             receipt.ReceiptLines.Remove(line);
         }
 
-        AddReceiptLines(companyId, receipt, lineDtos);
+        await AddReceiptLinesAsync(companyId, receipt, lineDtos, ct);
     }
 
     private static ReceiptFieldValue MapReceiptFieldValue(
@@ -401,8 +416,14 @@ public class ReceiptService(
             RowNumber = line.RowNumber,
             ItemId = line.ItemId,
             WarehouseLocationId = line.WarehouseLocationId,
-            Weight = line.Weight,
-            Volume = line.Volume,
+            Weight = MeasurementUnitConverter.ConvertFromBase(
+                line.Weight,
+                line.PreferredMassUnit
+            ),
+            Volume = MeasurementUnitConverter.ConvertFromBase(
+                line.Volume,
+                line.PreferredVolumeUnit
+            ),
             PreferredMassUnitId = line.PreferredMassUnitId,
             PreferredVolumeUnitId = line.PreferredVolumeUnitId,
             UnitPrice = line.UnitPrice,
@@ -464,6 +485,27 @@ public class ReceiptService(
             ItemUnitOfMeasurementId = dto.ItemUnitOfMeasurementId,
             Quantity = dto.Quantity
         };
+    }
+
+    private async Task<IReadOnlyDictionary<Guid, SiUnit>> LoadLinePreferredUnitsAsync(
+        IReadOnlyCollection<CreateReceiptLineDto> lineDtos,
+        CancellationToken ct
+    )
+    {
+        var unitIds = lineDtos
+            .SelectMany(line => new[]
+            {
+                line.PreferredMassUnitId,
+                line.PreferredVolumeUnitId
+            })
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
+        return unitIds.Length == 0
+            ? new Dictionary<Guid, SiUnit>()
+            : await _unitRepository.GetByIdsAsync(unitIds, ct);
     }
 
     private static CreateReceiptLineMeasurementValueDto MapCreateReceiptLineMeasurementValueDto(

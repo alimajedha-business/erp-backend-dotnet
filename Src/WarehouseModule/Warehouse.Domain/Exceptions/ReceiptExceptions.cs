@@ -109,6 +109,28 @@ public sealed class ReceiptLineUnitOfMeasurementNotAllowedException(
     public override string LocalizationKey => "ReceiptLine.UnitOfMeasurement.NotAllowed";
 }
 
+public sealed class ReceiptLinePreferredUnitNotFoundException(
+    int rowNumber,
+    Guid preferredUnitId
+) : BusinessRuleViolationException(preferredUnitId)
+{
+    public int RowNumber { get; } = rowNumber;
+    public Guid PreferredUnitId { get; } = preferredUnitId;
+    public override string LocalizationKey => "ReceiptLine.PreferredUnit.NotFound";
+}
+
+public sealed class ReceiptLinePreferredUnitDimensionMismatchException(
+    int rowNumber,
+    Guid preferredUnitId,
+    string expectedDimension
+) : BusinessRuleViolationException(preferredUnitId, expectedDimension)
+{
+    public int RowNumber { get; } = rowNumber;
+    public Guid PreferredUnitId { get; } = preferredUnitId;
+    public string ExpectedDimension { get; } = expectedDimension;
+    public override string LocalizationKey => "ReceiptLine.PreferredUnit.DimensionMismatch";
+}
+
 public sealed class ReceiptFieldValueMustHaveExactlyOneValueException(Guid fieldDefinitionId)
     : BusinessRuleViolationException(fieldDefinitionId)
 {

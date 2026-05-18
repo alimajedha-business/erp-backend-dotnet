@@ -143,7 +143,11 @@ public class ReceiptRepository(MainDbContext context) :
             .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
                 .ThenInclude(e => e.ReceiptLineAttributeValues)
             .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
-                .ThenInclude(e => e.ReceiptLineMeasurementValues);
+                .ThenInclude(e => e.ReceiptLineMeasurementValues)
+            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+                .ThenInclude(e => e.PreferredMassUnit)
+            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+                .ThenInclude(e => e.PreferredVolumeUnit);
     }
 
     private static IQueryable<Receipt> WithListIncludes(IQueryable<Receipt> query)

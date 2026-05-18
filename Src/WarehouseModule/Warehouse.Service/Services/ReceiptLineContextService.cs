@@ -50,7 +50,9 @@ public class ReceiptLineContextService(
                     MaxMass: location.WarehouseLocation.MaxMass,
                     MaxVolume: location.WarehouseLocation.MaxVolume,
                     PreferredMassUnitId: location.WarehouseLocation.PreferredMassUnitId,
-                    PreferredVolumeUnitId: location.WarehouseLocation.PreferredVolumeUnitId
+                    PreferredVolumeUnitId: location.WarehouseLocation.PreferredVolumeUnitId,
+                    PreferredMassUnit: location.WarehouseLocation.PreferredMassUnit,
+                    PreferredVolumeUnit: location.WarehouseLocation.PreferredVolumeUnit
                 )))
             .ToList();
 
@@ -77,9 +79,20 @@ public class ReceiptLineContextService(
                 continue;
 
             var (OccupiedMass, OccupiedVolume) = occupancyByLocation.GetValueOrDefault(reservation.WarehouseLocationId);
+            var location = locations.First(e => e.WarehouseLocationId == reservation.WarehouseLocationId);
             occupancyByLocation[reservation.WarehouseLocationId] = (
-                OccupiedMass + (reservation.OccupiedMass ?? 0),
-                OccupiedVolume + (reservation.OccupiedVolume ?? 0)
+                OccupiedMass + (
+                    MeasurementUnitConverter.ConvertToBase(
+                        reservation.OccupiedMass,
+                        location.PreferredMassUnit
+                    ) ?? 0
+                ),
+                OccupiedVolume + (
+                    MeasurementUnitConverter.ConvertToBase(
+                        reservation.OccupiedVolume,
+                        location.PreferredVolumeUnit
+                    ) ?? 0
+                )
             );
         }
 
@@ -115,17 +128,35 @@ public class ReceiptLineContextService(
                         WarehouseId: location.WarehouseId,
                         WarehouseTitle: location.WarehouseTitle,
                         CanStoreItem: location.CanStoreItem,
-                        MaxMass: location.MaxMass,
-                        MaxVolume: location.MaxVolume,
+                        MaxMass: MeasurementUnitConverter.ConvertFromBase(
+                            location.MaxMass,
+                            location.PreferredMassUnit
+                        ),
+                        MaxVolume: MeasurementUnitConverter.ConvertFromBase(
+                            location.MaxVolume,
+                            location.PreferredVolumeUnit
+                        ),
                         PreferredMassUnitId: location.PreferredMassUnitId,
                         PreferredVolumeUnitId: location.PreferredVolumeUnitId,
-                        OccupiedMass: OccupiedMass,
-                        OccupiedVolume: OccupiedVolume,
+                        OccupiedMass: MeasurementUnitConverter.ConvertFromBase(
+                            OccupiedMass,
+                            location.PreferredMassUnit
+                        ) ?? OccupiedMass,
+                        OccupiedVolume: MeasurementUnitConverter.ConvertFromBase(
+                            OccupiedVolume,
+                            location.PreferredVolumeUnit
+                        ) ?? OccupiedVolume,
                         AvailableMass: location.MaxMass.HasValue
-                            ? location.MaxMass.Value - OccupiedMass
+                            ? MeasurementUnitConverter.ConvertFromBase(
+                                location.MaxMass.Value - OccupiedMass,
+                                location.PreferredMassUnit
+                            )
                             : null,
                         AvailableVolume: location.MaxVolume.HasValue
-                            ? location.MaxVolume.Value - OccupiedVolume
+                            ? MeasurementUnitConverter.ConvertFromBase(
+                                location.MaxVolume.Value - OccupiedVolume,
+                                location.PreferredVolumeUnit
+                            )
                             : null
                     );
                 })],
@@ -154,19 +185,13 @@ public class ReceiptLineContextService(
         decimal? MaxMass,
         decimal? MaxVolume,
         Guid? PreferredMassUnitId,
-        Guid? PreferredVolumeUnitId
+        Guid? PreferredVolumeUnitId,
+        SiUnit? PreferredMassUnit,
+        SiUnit? PreferredVolumeUnit
     );
 
     private static decimal? ConvertFromBase(decimal? value, SiUnit? preferredUnit)
-    {
-        if (!value.HasValue || preferredUnit is null)
-            return value;
-
-        if (preferredUnit.FactorToBase == 0)
-            return value;
-
-        return value.Value / preferredUnit.FactorToBase;
-    }
+        => MeasurementUnitConverter.ConvertFromBase(value, preferredUnit);
 
     private SiUnitAsReferenceDto Localize(SiUnitAsReferenceDto dto)
     {
