@@ -342,6 +342,27 @@
   <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
     <value>نوع رسید نمی‌تواند خالی باشد.</value>
   </data>
+  <data name="ReceiptSourceOfSupply" xml:space="preserve">
+    <value>منبع تامین رسید</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Code.Duplicate" xml:space="preserve">
+    <value>کد منبع تامین رسید قبلا ثبت شده است.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Code.NotEmpty" xml:space="preserve">
+    <value>کد منبع تامین رسید نمی‌تواند خالی باشد.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Delete.HasRelatedEntities" xml:space="preserve">
+    <value>منبع تامین رسید به دلیل ارجاع در مقادیر فیلدهای رسید قابل حذف نیست.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.MaxLength" xml:space="preserve">
+    <value>عنوان منبع تامین رسید نمی‌تواند بیشتر از 100 کاراکتر باشد.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.MinLength" xml:space="preserve">
+    <value>عنوان منبع تامین رسید باید حداقل 3 کاراکتر داشته باشد.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.NotEmpty" xml:space="preserve">
+    <value>عنوان منبع تامین رسید نمی‌تواند خالی باشد.</value>
+  </data>
   <data name="ReceiptConfiguredPlacement.Detail" xml:space="preserve">
     <value>جزئیات</value>
   </data>
