@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -9,6 +10,7 @@ using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -20,6 +22,7 @@ public class SiUnitController(
     private readonly ISiUnitService _unitService = unitService;
 
     [HttpGet("filter-by-q")]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> Get(
         [FromQuery] SiUnitParameters parameters,
         CancellationToken ct

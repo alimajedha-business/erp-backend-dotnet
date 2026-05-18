@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -15,28 +15,23 @@ namespace NGErp.HCM.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/departments")]
-[HasPermission("DEPARTMENT")]
-public class DepartmentController(
-    IDepartmentService departmentService
-    ) : ControllerBase
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/work-locations")]
+public class WorkLocationController(
+    IWorkLocationService workLocationService
+) : ControllerBase
 {
-    private readonly IDepartmentService _departmentService = departmentService;
+    private readonly IWorkLocationService _workLocationService = workLocationService;
 
     [HttpPost]
     [Produces("application/json")]
     [Consumes("application/json")]
     public async Task<IActionResult> Create(
         [FromRoute] Guid companyId,
-        [FromBody] CreateDepartmentDto createDto,
+        [FromBody] CreateWorkLocationDto createDto,
         CancellationToken ct
-        )
+    )
     {
-        var dto = await _departmentService.CreateAsync(
-            companyId,
-            createDto,
-            ct
-        );
+        var dto = await _workLocationService.CreateAsync(companyId, createDto, ct);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -50,14 +45,15 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
-        var dto = await _departmentService.GetByIdAsync(
+        var dto = await _workLocationService.GetByIdAsync(
             companyId,
             id,
             trackChanges: true,
             ct
         );
+
 
         return Ok(dto);
     }
@@ -66,12 +62,12 @@ public class DepartmentController(
     [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
-        [FromQuery] DepartmentParameters parameters,
+        [FromQuery] WorkLocationParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
-        )
+    )
     {
-        var result = await _departmentService.GetFilteredAsync(
+        var result = await _workLocationService.GetFilteredAsync(
             companyId,
             parameters,
             filterNodeDto,
@@ -86,26 +82,9 @@ public class DepartmentController(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
         CancellationToken ct
-        )
+    )
     {
-        await _departmentService.DeleteAsync(companyId, id, ct);
-        return NoContent();
-    }
-
-    [HttpPatch("{id:guid}/status")]
-    public async Task<IActionResult> ChangeStatus(
-        Guid companyId,
-        Guid id,
-        [FromBody] DepartmentChangeStatusDto changeStatusDto,
-        CancellationToken ct
-        )
-    {
-        await _departmentService.ChangeStatusAsync(
-            companyId,
-            id,
-            changeStatusDto,
-            ct
-            );
+        await _workLocationService.DeleteAsync(companyId, id, ct);
         return NoContent();
     }
 
@@ -114,11 +93,11 @@ public class DepartmentController(
     public async Task<IActionResult> Patch(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
-        [FromBody] JsonPatchDocument<PatchDepartmentDto> patchDocument,
+        [FromBody] JsonPatchDocument<PatchWorkLocationDto> patchDocument,
         CancellationToken ct
-        )
+    )
     {
-        var dto = await _departmentService.PatchAsync(
+        var dto = await _workLocationService.PatchAsync(
             companyId,
             id,
             patchDocument,

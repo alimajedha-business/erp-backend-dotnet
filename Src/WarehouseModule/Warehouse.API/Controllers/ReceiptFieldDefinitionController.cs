@@ -2,6 +2,7 @@ using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
@@ -12,6 +13,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -43,6 +45,7 @@ public class ReceiptFieldDefinitionController(
     }
 
     [HttpGet("{id:guid}")]
+    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
         [FromRoute] Guid id,
