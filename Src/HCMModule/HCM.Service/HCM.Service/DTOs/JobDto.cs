@@ -14,7 +14,6 @@ public class JobDto
     public JobCategoryDto? JobCategory { get; set; }
     [MaxLength(1000)]
     public string? Description { get; set; }
-    public int LevelCode { get; set; }
 }
 
 public class CreateJobDto
@@ -30,8 +29,6 @@ public class CreateJobDto
     public Guid? JobCategoryId { get; set; }
     [MaxLength(1000)]
     public string? Description { get; set; }
-    [Required]
-    public int? LevelCode { get; set; }
 }
 
 public class PatchJobDto
@@ -44,5 +41,4 @@ public class PatchJobDto
     public Guid? JobCategoryId { get; set; }
     [MaxLength(1000)]
     public string? Description { get; set; }
-    public int? LevelCode { get; set; }
 }
