@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
@@ -16,6 +17,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -50,7 +52,7 @@ public class ReceiptController(
     }
 
     [HttpPost("list")]
-    [SkipModelValidation]
+    [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(ReceiptAdvancedSearchExample))]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ListResponseModel<ReceiptListDto>), StatusCodes.Status200OK)]
