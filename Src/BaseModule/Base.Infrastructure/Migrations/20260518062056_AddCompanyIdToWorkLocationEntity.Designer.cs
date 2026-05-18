@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518062056_AddCompanyIdToWorkLocationEntity")]
+    partial class AddCompanyIdToWorkLocationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1775,6 +1778,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("NextWorkLocationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1794,6 +1800,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("NextWorkLocationId")
+                        .HasDatabaseName("IX_WorkLocation_NextWorkLocation");
 
                     b.HasIndex("ParentId")
                         .HasDatabaseName("IX_WorkLocation_Parent");
@@ -4787,10 +4796,17 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("NGErp.HCM.Domain.Entities.WorkLocation", "NextWorkLocation")
+                        .WithMany()
+                        .HasForeignKey("NextWorkLocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("NGErp.HCM.Domain.Entities.WorkLocation", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("NextWorkLocation");
 
                     b.Navigation("Parent");
                 });

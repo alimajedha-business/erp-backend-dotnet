@@ -47,8 +47,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IJobCategoryBusinessRulesValidator, JobCategoryBusinessRuleValidator>();
         services.AddScoped<IJobBusinessRuleValidator, JobBusinessRuleValidator>();
         services.AddScoped<IPositionJobBusinessRuleValidator, PositionJobBusinessRuleValidator>();
+        services.AddScoped<IWorkLocationBusinessRuleValidator, WorkLocationBusinessRuleValidator>();
         services.AddScoped<IPositionJobService, PositionJobService>();
-
 
         services.AddSingleton<IFilterSchema<Department>, DepartmentSchema>();
         services.AddSingleton<IFilterSchema<EducationField>, EducationFieldSchema>();
@@ -59,8 +59,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<Position>, PositionSchema>();
         services.AddSingleton<IFilterSchema<RelativeType>, RelativeTypeSchema>();
         services.AddSingleton<IFilterSchema<JobCategory>, JobCategorySchema>();
+        services.AddSingleton<IFilterSchema<WorkLocation>, WorkLocationSchema>();
+        services.AddScoped<IWorkLocationService, WorkLocationService>();
 
-        
         return services;
     }
 }

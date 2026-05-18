@@ -1,0 +1,15 @@
+{
+  "entity": "WorkLocation",
+  "schema": "HCM",
+  "module": "HCM",
+  "baseClass": "BaseEntityWithCompany",
+  "route": "work-locations",
+  "status": false,
+  "withCompany": true,
+  "generateDtoValidators": true,
+  "generateBusinessRuleValidators": true,
+  "fields": [
+    { "name": "ParentId", "type": "Guid?", "relation": "WorkLocation" },
+    { "name": "Title", "type": "string", "required": true, "maxLength": 250 }
+  ]
+}

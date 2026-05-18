@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518051100_AddWorkLocationEntity")]
+    partial class AddWorkLocationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1758,9 +1761,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1773,6 +1773,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<Guid?>("ModifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("NextWorkLocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ParentId")
@@ -1795,12 +1798,11 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
+                    b.HasIndex("NextWorkLocationId")
+                        .HasDatabaseName("IX_WorkLocation_NextWorkLocation");
+
                     b.HasIndex("ParentId")
                         .HasDatabaseName("IX_WorkLocation_Parent");
-
-                    b.HasIndex("CompanyId", "Title")
-                        .IsUnique()
-                        .HasDatabaseName("UX_WorkLocation_CompanyId_Title");
 
                     b.ToTable("WorkLocation", "HCM");
                 });
@@ -4781,16 +4783,17 @@ namespace NGErp.Base.Infrastructure.Migrations
 
             modelBuilder.Entity("NGErp.HCM.Domain.Entities.WorkLocation", b =>
                 {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
+                    b.HasOne("NGErp.HCM.Domain.Entities.WorkLocation", "NextWorkLocation")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("NextWorkLocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("NGErp.HCM.Domain.Entities.WorkLocation", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("NextWorkLocation");
 
                     b.Navigation("Parent");
                 });
