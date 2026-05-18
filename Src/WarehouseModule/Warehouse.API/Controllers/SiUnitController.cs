@@ -50,7 +50,6 @@ public class SiUnitController(
     }
 
     [HttpGet("{id:guid}")]
-    [InherentlyAction(ActionType.Read)]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid id,
         CancellationToken ct
