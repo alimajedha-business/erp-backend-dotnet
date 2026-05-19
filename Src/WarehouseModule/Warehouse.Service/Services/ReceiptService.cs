@@ -90,6 +90,7 @@ public class ReceiptService(
 
     public async Task<ListResponseModel<ReceiptListDto>> GetFilteredAsync(
         Guid companyId,
+        Guid receiptTypeId,
         ReceiptParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default

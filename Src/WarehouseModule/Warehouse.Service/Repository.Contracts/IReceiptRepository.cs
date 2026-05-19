@@ -1,3 +1,4 @@
+using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Service.Repository.Contracts;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.Repository.Contracts.Models;
@@ -16,6 +17,12 @@ public interface IReceiptRepository : IRepositoryWithCompany<Receipt>
         IEnumerable<ReceiptLineMeasurementValue> measurementValues);
 
     void RemoveReceiptLines(IEnumerable<ReceiptLine> receiptLines);
+
+    IQueryable<Receipt> GetFiltered(
+        Guid companyId,
+        Guid receiptTypeId,
+        RequestAdvancedFilters requestAdvancedFilters
+    );
 
     Task DeleteReceiptGraphAsync(
         Guid companyId,

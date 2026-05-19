@@ -17,7 +17,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
-[JwtAuthorize]
+//[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -51,7 +51,7 @@ public class ReceiptController(
         );
     }
 
-    [HttpPost("list")]
+    [HttpPost("list/{receiptTypeId:guid}")]
     [InherentlyAction(ActionType.Read)]
     [SwaggerRequestExample(typeof(object), typeof(ReceiptAdvancedSearchExample))]
     [Produces("application/json")]
@@ -59,6 +59,7 @@ public class ReceiptController(
     [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ReceiptsGetListExample))]
     public async Task<IActionResult> Get(
         [FromRoute] Guid companyId,
+        [FromRoute] Guid receiptTypeId,
         [FromQuery] ReceiptParameters parameters,
         [FromBody] FilterNodeDto? filterNodeDto,
         CancellationToken ct
@@ -66,6 +67,7 @@ public class ReceiptController(
     {
         var result = await _receiptService.GetFilteredAsync(
             companyId,
+            receiptTypeId,
             parameters,
             filterNodeDto,
             ct
