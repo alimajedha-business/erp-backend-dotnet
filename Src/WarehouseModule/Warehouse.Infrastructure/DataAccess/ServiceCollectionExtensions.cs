@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInventoryProjectionRepository, InventoryProjectionRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
+        services.AddScoped<IRemittanceRepository, RemittanceRepository>();
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
