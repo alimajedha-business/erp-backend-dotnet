@@ -88,7 +88,7 @@ public class EmployeeRelativeService(
         var entity = await GetByIdOrThrowAsync(
             employeeId,
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 

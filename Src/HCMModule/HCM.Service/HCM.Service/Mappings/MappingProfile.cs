@@ -70,9 +70,9 @@ public class MappingProfile : Profile
         CreateMap<CreateEmployeeWarriorRecordDto, EmployeeWarriorRecord>();
         CreateMap<EmployeeWarriorRecord, PatchEmployeeWarriorRecordDto>().ReverseMap();
 
-        CreateMap<EmployeeRelative, EmployeeRelativeDto>();
+        CreateMap<EmployeeRelative, EmployeeRelativeDto>().ReverseMap();
         CreateMap<CreateEmployeeRelativeDto, EmployeeRelative>();
-        CreateMap<EmployeeRelative, PatchEmployeeRelativeDto>();
+        CreateMap<EmployeeRelative, PatchEmployeeRelativeDto>().ReverseMap();
         
         CreateMap<EducationLevel, EducationLevelDto>();
         CreateMap<CreateEducationLevelDto, EducationLevel>();
@@ -97,5 +97,10 @@ public class MappingProfile : Profile
         CreateMap<PositionJob, PositionJobDto>().ReverseMap();
         CreateMap<CreatePositionJobDto, PositionJob>();
         CreateMap<PositionJob, PatchPositionJobDto>().ReverseMap();
+
+        CreateMap<WorkLocation, WorkLocationDto>().ReverseMap();
+        CreateMap<CreateWorkLocationDto, WorkLocation>();
+        CreateMap<WorkLocation, PatchWorkLocationDto>().ReverseMap();
+
     }
 }

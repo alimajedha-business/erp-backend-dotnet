@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
@@ -16,6 +17,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -72,6 +74,16 @@ public class ReceiptController(
         return Ok(result);
     }
 
+    [HttpGet("new-number")]
+    public async Task<IActionResult> GetNextCode(
+        [FromRoute] Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var code = await _receiptService.GetNextNumber(companyId, ct);
+        return Ok(code);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
@@ -87,16 +99,6 @@ public class ReceiptController(
         );
 
         return Ok(dto);
-    }
-
-    [HttpGet("new-number")]
-    public async Task<IActionResult> GetNextCode(
-        [FromRoute] Guid companyId,
-        CancellationToken ct
-    )
-    {
-        var code = await _receiptService.GetNextNumber(companyId, ct);
-        return Ok(code);
     }
 
     [HttpPatch("{id:guid}")]
@@ -127,5 +129,18 @@ public class ReceiptController(
     {
         await _receiptService.DeleteAsync(companyId, id, ct);
         return NoContent();
+    }
+
+    /* POST /receipts creates the receipt document.
+     * POST /receipts/{id}/post finalizes it and updates inventory. */
+    [HttpPost("{id:guid}/post")]
+    public async Task<IActionResult> Post(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _receiptService.PostAsync(companyId, id, ct);
+        return Ok(dto);
     }
 }

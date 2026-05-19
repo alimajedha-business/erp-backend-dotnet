@@ -80,6 +80,8 @@ public static class ServiceCollectionExtensions
             ReceiptSourceOfSupplyBusinessRuleValidator
         >();
         services.AddScoped<IReceiptSourceOfSupplyService, ReceiptSourceOfSupplyService>();
+        services.AddScoped<IReceiptInventoryProjectionService, ReceiptInventoryProjectionService>();
+        services.AddScoped<IReceiptLineContextService, ReceiptLineContextService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
         services.AddScoped<
             IReceiptTypeConfigurationBusinessRuleValidator,

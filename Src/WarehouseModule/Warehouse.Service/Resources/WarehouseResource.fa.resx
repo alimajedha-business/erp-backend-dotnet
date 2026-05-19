@@ -411,6 +411,12 @@
   <data name="ReceiptLine.UnitOfMeasurement.NotAllowed" xml:space="preserve">
     <value>واحد اندازه‌گیری «{0}» برای کالای انتخاب‌شده در سطر رسید مجاز نیست.</value>
   </data>
+  <data name="ReceiptLine.PreferredUnit.NotFound" xml:space="preserve">
+    <value>واحد ترجیحی «{0}» برای سطر رسید یافت نشد.</value>
+  </data>
+  <data name="ReceiptLine.PreferredUnit.DimensionMismatch" xml:space="preserve">
+    <value>واحد ترجیحی «{0}» در سطر رسید باید از بعد «{1}» باشد.</value>
+  </data>
   <data name="ReceiptLineAttributeValue.ItemAttribute.NotEmpty" xml:space="preserve">
     <value>ویژگی کالا الزامی است.</value>
   </data>
