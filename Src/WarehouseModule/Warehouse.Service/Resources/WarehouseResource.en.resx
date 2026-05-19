@@ -342,6 +342,27 @@
   <data name="Receipt.ReceiptType.NotEmpty" xml:space="preserve">
     <value>Receipt type could not be empty.</value>
   </data>
+  <data name="ReceiptSourceOfSupply" xml:space="preserve">
+    <value>Receipt Source Of Supply</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Code.Duplicate" xml:space="preserve">
+    <value>Receipt source of supply code already exists.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Code.NotEmpty" xml:space="preserve">
+    <value>Receipt source of supply code could not be empty.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Delete.HasRelatedEntities" xml:space="preserve">
+    <value>Receipt source of supply cannot be deleted because receipt field values reference it.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.MaxLength" xml:space="preserve">
+    <value>Receipt source of supply title must not be longer than 100 characters.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.MinLength" xml:space="preserve">
+    <value>Receipt source of supply title must have at least 3 characters.</value>
+  </data>
+  <data name="ReceiptSourceOfSupply.Title.NotEmpty" xml:space="preserve">
+    <value>Receipt source of supply title could not be empty.</value>
+  </data>
   <data name="ReceiptConfiguredPlacement.Detail" xml:space="preserve">
     <value>Detail</value>
   </data>

@@ -114,15 +114,6 @@ public class WarehouseTypeController(
         return File(fileBytes.FileContents, fileBytes.ContentType);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        var dto = await _warehouseTypeService.GetByIdAsync(id, trackChanges: false, ct);
-        return Ok(dto);
-    }
 
     [HttpGet("new-code")]
     public async Task<IActionResult> GetNextCode(
@@ -131,6 +122,16 @@ public class WarehouseTypeController(
     {
         var code = await _warehouseTypeService.GetNextCode(ct);
         return Ok(code);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid id,
+        CancellationToken ct
+    )
+    {
+        var dto = await _warehouseTypeService.GetByIdAsync(id, trackChanges: false, ct);
+        return Ok(dto);
     }
 
     [HttpPatch("{id:guid}")]

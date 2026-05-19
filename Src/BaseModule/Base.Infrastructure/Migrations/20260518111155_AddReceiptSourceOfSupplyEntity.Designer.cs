@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518111155_AddReceiptSourceOfSupplyEntity")]
+    partial class AddReceiptSourceOfSupplyEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1751,60 +1754,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.WorkLocation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ParentId")
-                        .HasDatabaseName("IX_WorkLocation_Parent");
-
-                    b.HasIndex("CompanyId", "Title")
-                        .IsUnique()
-                        .HasDatabaseName("UX_WorkLocation_CompanyId_Title");
-
-                    b.ToTable("WorkLocation", "HCM");
-                });
-
             modelBuilder.Entity("NGErp.Shared.Domain.Entities.CompanyUnit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2237,11 +2186,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("StaticKey")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("TimeZone")
                         .HasColumnType("nvarchar(50)");
 
@@ -2610,8 +2554,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("LotNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("StockKeyHash")
                         .IsRequired()
@@ -2635,9 +2585,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("ItemId")
                         .HasDatabaseName("IX_InventoryLot_Item");
 
-                    b.HasIndex("ItemId", "StockKeyHash")
+                    b.HasIndex("ItemId", "SerialNumber", "StockKeyHash")
                         .IsUnique()
-                        .HasDatabaseName("UX_InvLot_Item_DimHash");
+                        .HasDatabaseName("UX_InvLot_Item_DimHash")
+                        .HasFilter("[SerialNumber] IS NOT NULL");
 
                     b.ToTable("InventoryLot", "Warehouse");
                 });
@@ -2679,6 +2630,9 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<int?>("IntValue")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("InventoryLotId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -2704,6 +2658,8 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("EnumReferenceId");
+
+                    b.HasIndex("InventoryLotId");
 
                     b.HasIndex("IsDeleted");
 
@@ -2738,81 +2694,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.ToTable("InventoryLotAttributeValue", "Warehouse");
                 });
 
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLotLocationBalance", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("LotId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Mass")
-                        .HasPrecision(28, 14)
-                        .HasColumnType("decimal(28,14)");
-
-                    b.Property<Guid?>("ModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(23, 8)
-                        .HasColumnType("decimal(23,8)");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<decimal>("Volume")
-                        .HasPrecision(28, 14)
-                        .HasColumnType("decimal(28,14)");
-
-                    b.Property<Guid>("WarehouseLocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("LotId");
-
-                    b.HasIndex("WarehouseLocationId");
-
-                    b.HasIndex("CompanyId", "LotId")
-                        .HasDatabaseName("IX_InventoryLotLocationBalance_Lot");
-
-                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("CompanyId", "LotId"), new[] { "Quantity", "Mass", "Volume" });
-
-                    b.HasIndex("CompanyId", "WarehouseLocationId")
-                        .HasDatabaseName("IX_InventoryLotLocationBalance_Location");
-
-                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("CompanyId", "WarehouseLocationId"), new[] { "Quantity", "Mass", "Volume" });
-
-                    b.HasIndex("CompanyId", "LotId", "WarehouseLocationId")
-                        .IsUnique()
-                        .HasDatabaseName("UX_InventoryLotLocationBalance_Company_Lot_Location");
-
-                    b.ToTable("InventoryLotLocationBalance", "Warehouse");
-                });
-
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryMovement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2831,10 +2712,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Direction")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("FromLocationId")
+                    b.Property<Guid>("FromLocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -2843,10 +2721,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("LotId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Mass")
-                        .HasPrecision(28, 14)
-                        .HasColumnType("decimal(28,14)");
-
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -2854,7 +2728,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
 
-                    b.Property<Guid?>("MovementTypeId")
+                    b.Property<Guid>("MovementTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Quantity")
@@ -2870,7 +2744,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<string>("TimeZone")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid?>("ToLocationId")
+                    b.Property<Guid>("ToLocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -2878,16 +2752,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<decimal>("Volume")
-                        .HasPrecision(28, 14)
-                        .HasColumnType("decimal(28,14)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FromLocationId")
                         .HasDatabaseName("IX_InventoryMovement_FromLocation");
 
-                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("FromLocationId"), new[] { "Quantity", "Mass", "Volume" });
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("FromLocationId"), new[] { "Quantity" });
 
                     b.HasIndex("IsDeleted");
 
@@ -2899,13 +2769,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("ToLocationId")
                         .HasDatabaseName("IX_InventoryMovement_ToLocation");
 
-                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("ToLocationId"), new[] { "Quantity", "Mass", "Volume" });
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("ToLocationId"), new[] { "Quantity" });
 
                     b.HasIndex("CompanyId", "MovementDate")
                         .HasDatabaseName("IX_InventoryMovement_Company_Date");
-
-                    b.HasIndex("SourceDocumentId", "SourceDocumentLineId")
-                        .HasDatabaseName("IX_InventoryMovement_SourceDocument");
 
                     b.ToTable("InventoryMovement", "Warehouse", t =>
                         {
@@ -5007,112 +4874,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("RolePermission");
                 });
 
-            modelBuilder.Entity("NGErp.HCM.Domain.Entities.WorkLocation", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.HCM.Domain.Entities.WorkLocation", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("NGErp.Shared.Domain.Entities.CompanyUnit", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Shared.Domain.Entities.CompanyUnit", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("NGErp.Shared.Domain.Entities.RoleMember", b =>
-                {
-                    b.HasOne("NGErp.Shared.Domain.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("NGErp.Shared.Domain.Entities.RolePermission", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.EntityType", "EntityType")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.General.Domain.Entities.Module", "Module")
-                        .WithMany()
-                        .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Shared.Domain.Entities.Role", "Role")
-                        .WithMany("Permissions")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntityType");
-
-                    b.Navigation("Module");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("NGErp.Shared.Domain.Entities.RolePermissionCommand", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.EntityTypeCommand", "EntityTypeCommand")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeCommandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.General.Domain.Entities.EntityType", "EntityType")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Shared.Domain.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Shared.Domain.Entities.RolePermission", "RolePermission")
-                        .WithMany("Commands")
-                        .HasForeignKey("RolePermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntityType");
-
-                    b.Navigation("EntityTypeCommand");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("RolePermission");
-                });
-
             modelBuilder.Entity("NGErp.Shared.Domain.Entities.RolePermissionConstraint", b =>
                 {
                     b.HasOne("NGErp.General.Domain.Entities.EntityType", "EntityType")
@@ -5248,8 +5009,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("EnumReferenceId");
 
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "InventoryLot")
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", null)
                         .WithMany("AttributeValues")
+                        .HasForeignKey("InventoryLotId");
+
+                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
+                        .WithMany()
                         .HasForeignKey("LotId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -5258,32 +5023,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Navigation("EnumValue");
 
-                    b.Navigation("InventoryLot");
-                });
-
-            modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryLotLocationBalance", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
-                        .WithMany()
-                        .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "WarehouseLocation")
-                        .WithMany()
-                        .HasForeignKey("WarehouseLocationId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Lot");
-
-                    b.Navigation("WarehouseLocation");
                 });
 
             modelBuilder.Entity("NGErp.Warehouse.Domain.Entities.InventoryMovement", b =>
@@ -5297,7 +5037,8 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "FromLocation")
                         .WithMany()
                         .HasForeignKey("FromLocationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryLot", "Lot")
                         .WithMany()
@@ -5308,12 +5049,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasOne("NGErp.Warehouse.Domain.Entities.InventoryMovementType", "MovementType")
                         .WithMany()
                         .HasForeignKey("MovementTypeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("NGErp.Warehouse.Domain.Entities.WarehouseLocation", "ToLocation")
                         .WithMany()
                         .HasForeignKey("ToLocationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("FromLocation");
 

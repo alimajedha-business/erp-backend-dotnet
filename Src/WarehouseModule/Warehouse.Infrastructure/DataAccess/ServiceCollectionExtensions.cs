@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
+        services.AddScoped<IReceiptSourceOfSupplyRepository, ReceiptSourceOfSupplyRepository>();
         services.AddScoped<IReceiptTypeRepository, ReceiptTypeRepository>();
         services.AddScoped<IReceiptTypeConfigurationRepository, ReceiptTypeConfigurationRepository>();
         services.AddScoped<
