@@ -1,4 +1,6 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+using NGErp.Warehouse.Domain.Entities;
+
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptFieldValueDto(
     Guid Id,
@@ -11,6 +13,16 @@ public record ReceiptFieldValueDto(
     DateTime? DateTimeValue,
     Guid? ReferenceId,
     bool? BooleanValue
+);
+
+public record ReceiptHeaderFieldValueListDto(
+    Guid Id,
+    Guid FieldDefinitionId,
+    string FieldDefinitionTitle,
+    string FieldDefinitionKey,
+    ReceiptFieldDataType DataType,
+    string DataTypeDescription,
+    object? Value
 );
 
 public class CreateReceiptFieldValueDto

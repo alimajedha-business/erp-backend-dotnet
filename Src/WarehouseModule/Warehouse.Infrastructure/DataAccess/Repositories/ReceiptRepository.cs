@@ -41,7 +41,11 @@ public class ReceiptRepository(MainDbContext context) :
             .Where(e =>
                 e.CompanyId == companyId && 
                 e.ReceiptTypeId == receiptTypeId
-            ).Include(e => e.ReceiptType)
+            )
+            .Include(e => e.ReceiptType)
+            .Include(e => e.ReceiptFieldValues
+                .Where(fieldValue => fieldValue.ReceiptLineId == null))
+                .ThenInclude(e => e.FieldDefinition)
             .Filter(requestAdvancedFilters);
     }
 

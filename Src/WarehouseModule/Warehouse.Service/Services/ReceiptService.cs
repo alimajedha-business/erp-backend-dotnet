@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentValidation;
 
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
@@ -16,6 +17,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
+using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -28,11 +30,13 @@ public class ReceiptService(
     IReceiptInventoryProjectionService receiptInventoryProjectionService,
     IValidator<CreateReceiptDto> createValidator,
     IValidator<PatchReceiptDto> patchValidator,
-    IMapper mapper
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : IReceiptService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer _localizer = localizer;
     private readonly IReceiptRepository _receiptRepository = receiptRepository;
     private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IReceiptBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
@@ -99,11 +103,18 @@ public class ReceiptService(
         _businessRuleValidator.ValidateParameters(parameters);
 
         var advancedFilters = _filterBuilder.Build<Receipt>(filterNodeDto);
-        var query = _receiptRepository.GetFiltered(companyId, advancedFilters);
+        var query = _receiptRepository.GetFiltered(
+            companyId,
+            receiptTypeId,
+            advancedFilters
+        );
         var res = await _receiptRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ReceiptListDto>(
-            results: _mapper.Map<IReadOnlyList<ReceiptListDto>>(res.items),
+            results: [.. _mapper
+                .Map<IReadOnlyList<ReceiptListDto>>(res.items)
+                .Select(Localize)
+            ],
             totalCount: res.count,
             parameters
         );
@@ -518,5 +529,26 @@ public class ReceiptService(
             ItemUnitOfMeasurementId = measurementValue.ItemUnitOfMeasurementId,
             Quantity = measurementValue.Quantity
         };
+    }
+
+    private ReceiptListDto Localize(ReceiptListDto dto)
+    {
+        return dto with
+        {
+            ReceiptFieldValues = [.. dto.ReceiptFieldValues.Select(Localize)]
+        };
+    }
+
+    private ReceiptHeaderFieldValueListDto Localize(ReceiptHeaderFieldValueListDto dto)
+    {
+        return dto with
+        {
+            FieldDefinitionTitle = Localize(dto.FieldDefinitionTitle)
+        };
+    }
+
+    private string Localize(string value)
+    {
+        return _localizer[value].Value;
     }
 }

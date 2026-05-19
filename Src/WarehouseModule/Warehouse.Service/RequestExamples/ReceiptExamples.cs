@@ -90,7 +90,21 @@ public class ReceiptsGetListExample : IExamplesProvider<ListResponseModel<Receip
                     Status: ReceiptStatus.Draft,
                     ReceiptTypeTitle: "رسید خرید داخلی",
                     Description: "توضیح نوع رسید خرید داخلی",
-                    ReceiptLineCount: 2
+                    ReceiptLineCount: 2,
+                    ReceiptFieldValues:
+                    [
+                        new ReceiptHeaderFieldValueListDto(
+                            Id: new Guid("F6E53C25-B517-45B3-9A1A-5E2C7C8B7F1E"),
+                            FieldDefinitionId: new Guid(
+                                "A09A5FB5-1FE4-45DD-8DBD-3ED0746F1BDE"
+                            ),
+                            FieldDefinitionTitle: "هزینه حمل و نقل",
+                            FieldDefinitionKey: "shipping_cost",
+                            DataType: ReceiptFieldDataType.Text,
+                            DataTypeDescription: "Text",
+                            Value: "PO-2026-0001"
+                        )
+                    ]
                 )
             ],
             totalCount: 1,
