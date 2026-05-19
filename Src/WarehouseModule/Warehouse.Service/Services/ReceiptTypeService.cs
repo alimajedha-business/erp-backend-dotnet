@@ -81,7 +81,10 @@ public class ReceiptTypeService(
     {
         _businessRuleValidator.ValidateParameters(parameters);
 
-        var query = _receiptRepository.FilterByQ(companyId, parameters);
+        var query = _receiptRepository
+            .FilterByQ(companyId, parameters)
+            .Where(e => e.ReceiptTypeConfiguration != null);
+
         var res = await _receiptRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ReceiptTypeSlimDto>(

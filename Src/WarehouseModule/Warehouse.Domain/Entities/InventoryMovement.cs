@@ -17,7 +17,7 @@ public class InventoryMovement :
     public decimal Mass { get; set; }
     public decimal Volume { get; set; }
     public InventoryMovementDirection Direction { get; set; }
-    public Guid? MovementTypeId { get; set; }
+    public Guid MovementTypeId { get; set; }
     public Guid LotId { get; set; } = default!;
     public Guid? FromLocationId { get; set; }
     public Guid? ToLocationId { get; set; }

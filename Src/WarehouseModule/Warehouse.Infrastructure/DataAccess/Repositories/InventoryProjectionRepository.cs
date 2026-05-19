@@ -64,6 +64,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 ? InventoryMovementDirection.Inbound
                 : InventoryMovementDirection.Outbound;
 
+            // TODO: add movement type reference
             var movement = new InventoryMovement
             {
                 CompanyId = companyId,
