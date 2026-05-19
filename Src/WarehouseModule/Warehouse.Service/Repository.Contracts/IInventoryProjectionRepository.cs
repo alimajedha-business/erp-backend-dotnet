@@ -16,6 +16,18 @@ public interface IInventoryProjectionRepository
         CancellationToken ct
     );
 
+    Task RebuildRemittanceAsync(
+        Guid companyId,
+        Guid remittanceId,
+        CancellationToken ct
+    );
+
+    Task RemoveRemittanceAsync(
+        Guid companyId,
+        Guid remittanceId,
+        CancellationToken ct
+    );
+
     Task<IReadOnlyList<WarehouseLocationUsage>> GetLocationUsagesAsync(
         Guid companyId,
         IReadOnlyCollection<Guid> warehouseLocationIds,
