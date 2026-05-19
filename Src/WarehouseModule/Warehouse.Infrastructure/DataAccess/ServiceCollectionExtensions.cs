@@ -19,11 +19,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryAttributeRuleRepository, CategoryAttributeRuleRepository>();
         services.AddScoped<ICategoryLevelConstraintRepository, CategoryLevelConstraintRepository>();
         services.AddScoped<IInventoryMovementTypeRepository, InventoryMovementTypeRepository>();
+        services.AddScoped<IInventoryProjectionRepository, InventoryProjectionRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
+        services.AddScoped<IReceiptSourceOfSupplyRepository, ReceiptSourceOfSupplyRepository>();
         services.AddScoped<IReceiptTypeRepository, ReceiptTypeRepository>();
         services.AddScoped<IReceiptTypeConfigurationRepository, ReceiptTypeConfigurationRepository>();
         services.AddScoped<

@@ -22,6 +22,8 @@ public class Attribute :
     public bool IsRequired { get; set; } = false;
     public bool IsStockDimension {  get; set; } = false;
     public bool IsStatic { get; set; } = false;
+    public string StaticKey { get; set; } = default!;
+
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
 
@@ -37,6 +39,10 @@ public class Attribute :
 
         builder
             .Property(e => e.Title)
+            .HasMaxLength(50);
+
+        builder
+            .Property(e => e.StaticKey)
             .HasMaxLength(50);
 
         builder

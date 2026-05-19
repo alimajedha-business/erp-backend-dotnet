@@ -13,7 +13,8 @@ public class ReceiptBusinessRuleValidator(
     IReceiptRepository receiptRepository,
     IItemRepository itemRepository,
     IReceiptTypeConfigurationRepository configurationRepository,
-    IReceiptTypeService receiptTypeService
+    IReceiptTypeService receiptTypeService,
+    ISiUnitRepository unitRepository
 ) : IReceiptBusinessRuleValidator
 {
     private static readonly HashSet<string> _allowedOrderFields = new(
@@ -29,6 +30,7 @@ public class ReceiptBusinessRuleValidator(
     private readonly IReceiptTypeConfigurationRepository _configurationRepository =
         configurationRepository;
     private readonly IReceiptTypeService _receiptTypeService = receiptTypeService;
+    private readonly ISiUnitRepository _unitRepository = unitRepository;
 
     public void ValidateParameters(ReceiptParameters parameters)
     {
@@ -178,6 +180,7 @@ public class ReceiptBusinessRuleValidator(
             AddLineConfiguredFieldErrors(line, configurations, detailConfigurations, errors);
         }
 
+        await AddLinePreferredUnitErrorsAsync(lines, errors, ct);
         await AddLineItemAndUnitErrorsAsync(companyId, lines, errors, ct);
 
         if (errors.Count > 0)
@@ -505,6 +508,82 @@ public class ReceiptBusinessRuleValidator(
                         )
                     );
             }
+        }
+    }
+
+    private async Task AddLinePreferredUnitErrorsAsync(
+        IReadOnlyCollection<CreateReceiptLineDto> lines,
+        Dictionary<int, List<Exception>> errors,
+        CancellationToken ct
+    )
+    {
+        var unitIds = lines
+            .SelectMany(line => new[]
+            {
+                line.PreferredMassUnitId,
+                line.PreferredVolumeUnitId
+            })
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
+        if (unitIds.Length == 0)
+            return;
+
+        var unitsById = await _unitRepository.GetByIdsAsync(unitIds, ct);
+
+        foreach (var line in lines)
+        {
+            AddPreferredUnitErrorIfInvalid(
+                line.RowNumber,
+                line.PreferredMassUnitId,
+                UnitDimension.MASS,
+                unitsById,
+                errors
+            );
+            AddPreferredUnitErrorIfInvalid(
+                line.RowNumber,
+                line.PreferredVolumeUnitId,
+                UnitDimension.VOLUME,
+                unitsById,
+                errors
+            );
+        }
+    }
+
+    private static void AddPreferredUnitErrorIfInvalid(
+        int rowNumber,
+        Guid? unitId,
+        UnitDimension expectedDimension,
+        IReadOnlyDictionary<Guid, SiUnit> unitsById,
+        Dictionary<int, List<Exception>> errors
+    )
+    {
+        if (!unitId.HasValue)
+            return;
+
+        if (!unitsById.TryGetValue(unitId.Value, out var unit))
+        {
+            AddLineError(
+                errors,
+                rowNumber,
+                new ReceiptLinePreferredUnitNotFoundException(rowNumber, unitId.Value)
+            );
+            return;
+        }
+
+        if (unit.UnitDimension != expectedDimension)
+        {
+            AddLineError(
+                errors,
+                rowNumber,
+                new ReceiptLinePreferredUnitDimensionMismatchException(
+                    rowNumber,
+                    unitId.Value,
+                    expectedDimension.ToString()
+                )
+            );
         }
     }
 

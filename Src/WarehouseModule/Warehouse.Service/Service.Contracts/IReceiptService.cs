@@ -36,6 +36,12 @@ public interface IReceiptService
         CancellationToken ct
     );
 
+    Task<ReceiptDto> PostAsync(
+        Guid companyId,
+        Guid id,
+        CancellationToken ct
+    );
+
     Task DeleteAsync(
         Guid companyId,
         Guid id,
