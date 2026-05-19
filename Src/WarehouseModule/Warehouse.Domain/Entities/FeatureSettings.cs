@@ -15,12 +15,12 @@ public class FeatureSettings :
     BaseEntityWithCompany,
     IBaseEntityTypeConfiguration<FeatureSettings>
 {
-    public int MaxCategoryLevel { get; set; }
-    public WarehouseSerialRule WarehouseSerialRule { get; set; }
-    public int PriceRoundingPoint { get; set; }
-    public Guid AccountingFiscalYear { get; set; }
-    public Guid PropertyFiscalYear { get; set; }
-    public Guid WarehousePreviousFiscalYear { get; set; }
+    public required int MaxCategoryLevel { get; set; }
+    public required WarehouseSerialRule WarehouseSerialRule { get; set; }
+    public required int PriceRoundingPoint { get; set; }
+    public required Guid AccountingFiscalYear { get; set; }
+    public required Guid PropertyFiscalYear { get; set; }
+    public required Guid WarehousePreviousFiscalYear { get; set; }
 
     public void Map(EntityTypeBuilder<FeatureSettings> builder)
     {
@@ -66,7 +66,7 @@ public class WarehouseSerialRuleConverter :
             "UniqueInWarehouseUser" => WarehouseSerialRule.UniqueInWarehouseUser,
             "UniqueInCompanySystem" => WarehouseSerialRule.UniqueInCompanySystem,
             "UniqueInCompanyUser" => WarehouseSerialRule.UniqueInCompanyUser,
-            _ => throw new JsonException($"Unknown AttributeDataType: {value}")
+            _ => throw new JsonException($"Unknown WarehouseSerialRule: {value}")
         };
     }
 

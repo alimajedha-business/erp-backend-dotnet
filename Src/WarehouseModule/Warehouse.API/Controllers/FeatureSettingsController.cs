@@ -3,14 +3,12 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
-using NGErp.Base.Service.Authorization;
-using NGErp.Base.Service.DTOs;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+//[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
@@ -37,24 +35,6 @@ public class FeatureSettingsController(
             new { companyId, id = dto.Id },
             dto
         );
-    }
-
-    [HttpPost("list")]
-    [InherentlyAction(ActionType.Read)]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid companyId,
-        [FromQuery] FeatureSettingsParameters parameters,
-        [FromBody] FilterNodeDto? filterNodeDto,
-        CancellationToken ct
-    )
-    {
-        var result = await _featureSettingsService.GetFilteredAsync(
-            companyId, parameters,
-            filterNodeDto,
-            ct
-        );
-
-        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]

@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<AttributeEnumValue>, AttributeEnumValueSchema>();
         services.AddSingleton<IFilterSchema<Category>, CategorySchema>();
         services.AddSingleton<IFilterSchema<CategoryLevelConstraint>, CategoryLevelConstraintSchema>();
+        services.AddSingleton<IFilterSchema<FeatureSettings>, FeatureSettingsSchema>();
         services.AddSingleton<IFilterSchema<InventoryMovementType>, InventoryMovementTypeSchema>();
         services.AddSingleton<IFilterSchema<Item>, ItemSchema>();
         services.AddSingleton<IFilterSchema<ItemAttribute>, ItemAttributeSchema>();
@@ -67,6 +68,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
+        services.AddScoped<IFeatureSettingsService, FeatureSettingsService>();
         services.AddScoped<IInventoryMovementTypeService, InventoryMovementTypeService>();
         services.AddScoped<IItemBusinessRuleValidator, ItemBusinessRuleValidator>();
         services.AddScoped<IItemService, ItemService>();

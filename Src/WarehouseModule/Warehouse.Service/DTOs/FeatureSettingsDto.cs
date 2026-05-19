@@ -28,18 +28,18 @@ public record FeatureSettingsDto(
 
 public class CreateFeatureSettingsDto
 {
-    public int? MaxCategoryLevel { get; set; }
-    public int? WarehouseSerial { get; set; }
-    public int? PriceRoundingPoint { get; set; }
-    public Guid? AccountingFiscalYear { get; set; }
-    public Guid? PropertyFiscalYear { get; set; }
-    public Guid? WarehousePreviousFiscalYear { get; set; }
+    public int MaxCategoryLevel { get; set; }
+    public WarehouseSerialRule WarehouseSerialRule { get; set; }
+    public int PriceRoundingPoint { get; set; }
+    public Guid AccountingFiscalYear { get; set; }
+    public Guid PropertyFiscalYear { get; set; }
+    public Guid WarehousePreviousFiscalYear { get; set; }
 }
 
 public class PatchFeatureSettingsDto
 {
     public int? MaxCategoryLevel { get; set; }
-    public int? WarehouseSerial { get; set; }
+    public WarehouseSerialRule? WarehouseSerialRule { get; set; }
     public int? PriceRoundingPoint { get; set; }
     public Guid? AccountingFiscalYear { get; set; }
     public Guid? PropertyFiscalYear { get; set; }

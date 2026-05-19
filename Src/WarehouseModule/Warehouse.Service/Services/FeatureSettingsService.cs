@@ -1,35 +1,33 @@
+using System.Linq.Expressions;
+
 using AutoMapper;
 
+using FluentValidation;
+
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
-using NGErp.Base.Service.Services;
+using NGErp.Base.Service.Validators;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
-using NGErp.Warehouse.Service.RequestFeatures;
-using NGErp.Warehouse.Service.Resources;
+using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class FeatureSettingsService(
-    IAdvancedFilterBuilder filterBuilder,
     IFeatureSettingsRepository featureSettingsRepository,
-    IMapper mapper,
-    IStringLocalizer<WarehouseResource> localizer
+    IValidator<CreateFeatureSettingsDto> createValidator,
+    IValidator<PatchFeatureSettingsDto> patchValidator,
+    IMapper mapper
 ) : IFeatureSettingsService
 {
-    private readonly string _key = "FeatureSettings";
-
     private readonly IMapper _mapper = mapper;
-    private readonly IStringLocalizer _localizer = localizer;
-    private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IFeatureSettingsRepository _featureSettingsRepository = featureSettingsRepository;
-
+    private readonly IValidator<CreateFeatureSettingsDto> _createValidator = createValidator;
+    private readonly IValidator<PatchFeatureSettingsDto> _patchValidator = patchValidator;
 
     public async Task<FeatureSettingsDto> CreateAsync(
         Guid companyId,
@@ -37,6 +35,10 @@ public class FeatureSettingsService(
         CancellationToken ct
     )
     {
+        RequestBodyValidator.ThrowIfNull(createDto);
+        await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
+        await ValidateCompanySettingsDoNotExistAsync(companyId, ct);
+
         var entity = _mapper.Map<FeatureSettings>(createDto);
         entity.CompanyId = companyId;
 
@@ -53,26 +55,15 @@ public class FeatureSettingsService(
         CancellationToken ct = default
     )
     {
-        var entity = await GetByIdOrThrowAsync(companyId, id, trackChanges, ct);
-        return _mapper.Map<FeatureSettingsDto>(entity);
-    }
-
-    public async Task<ListResponseModel<FeatureSettingsDto>> GetFilteredAsync(
-        Guid companyId,
-        FeatureSettingsParameters parameters,
-        FilterNodeDto? filterNodeDto = null,
-        CancellationToken ct = default
-    )
-    {
-        var advancedFilters = _filterBuilder.Build<FeatureSettings>(filterNodeDto);
-        var query = _featureSettingsRepository.GetFiltered(companyId, advancedFilters);
-        var res = await _featureSettingsRepository.GetResponseListAsync(query, parameters, ct);
-
-        return new ListResponseModel<FeatureSettingsDto>(
-            results: _mapper.Map<IReadOnlyList<FeatureSettingsDto>>(res.items),
-            totalCount: res.count,
-            parameters
+        var entity = await GetSingleOrThrowAsync(
+            trackChanges: trackChanges,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
+            ct
         );
+
+        return _mapper.Map<FeatureSettingsDto>(entity);
     }
 
     public virtual async Task<FeatureSettingsDto> PatchAsync(
@@ -82,9 +73,13 @@ public class FeatureSettingsService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId, id,
+        PatchFeatureSettingsPolicy.Validate(patchDocument);
+
+        var entity = await GetSingleOrThrowAsync(
             trackChanges: true,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
 
@@ -101,6 +96,8 @@ public class FeatureSettingsService(
             throw new InvalidPatchDocumentException(errors);
         }
 
+        await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
+
         _mapper.Map(patchDto, entity);
 
         await _featureSettingsRepository.SaveChangesAsync(ct);
@@ -113,24 +110,48 @@ public class FeatureSettingsService(
         CancellationToken ct
     )
     {
-        var entity = await GetByIdOrThrowAsync(
-            companyId, id,
-            trackChanges: true,
+        await GetSingleOrThrowAsync(
+            trackChanges: false,
+            predicate: p =>
+                p.CompanyId == companyId &&
+                p.Id == id,
             ct
         );
 
-        _featureSettingsRepository.Remove(entity);
-        await _featureSettingsRepository.SaveChangesAsync(ct);
+        await _featureSettingsRepository.Remove(
+            e =>
+                e.CompanyId == companyId &&
+                e.Id == id,
+            ct
+        );
     }
 
-    private async Task<FeatureSettings> GetByIdOrThrowAsync(
-        Guid companyId,
-        Guid id,
-        bool trackChanges = false,
+    private async Task<FeatureSettings> GetSingleOrThrowAsync(
+        bool trackChanges,
+        Expression<Func<FeatureSettings, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        var entity = await _featureSettingsRepository.GetByIdAsync(id, trackChanges, ct);
-        return entity ?? throw new NotFoundException(_localizer[_key].Value);
+        var entity = await _featureSettingsRepository.SingleOrDefaultAsync(
+            predicate,
+            trackChanges,
+            ct
+        );
+
+        return entity ?? throw new FeatureSettingsNotFoundException();
+    }
+
+    private async Task ValidateCompanySettingsDoNotExistAsync(
+        Guid companyId,
+        CancellationToken ct
+    )
+    {
+        var exists = await _featureSettingsRepository.AnyAsync(
+            e => e.CompanyId == companyId,
+            ct
+        );
+
+        if (exists)
+            throw new FeatureSettingsAlreadyExistsException();
     }
 }

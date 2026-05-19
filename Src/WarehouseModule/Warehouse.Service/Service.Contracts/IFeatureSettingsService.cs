@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 
-using NGErp.Base.Service.DTOs;
-using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Service.DTOs;
-using NGErp.Warehouse.Service.RequestFeatures;
 
 namespace NGErp.Warehouse.Service.Service.Contracts;
 
@@ -19,13 +16,6 @@ public interface IFeatureSettingsService
         Guid companyId,
         Guid id,
         bool trackChanges = false,
-        CancellationToken ct = default
-    );
-
-    Task<ListResponseModel<FeatureSettingsDto>> GetFilteredAsync(
-        Guid companyId,
-        FeatureSettingsParameters parameters,
-        FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
     );
 
