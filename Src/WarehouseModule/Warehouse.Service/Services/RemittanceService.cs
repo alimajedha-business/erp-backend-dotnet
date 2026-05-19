@@ -20,6 +20,7 @@ public class RemittanceService(
     IAdvancedFilterBuilder filterBuilder,
     IRemittanceRepository remittanceRepository,
     IRemittanceBusinessRuleValidator businessRuleValidator,
+    IRemittanceInventoryProjectionService remittanceInventoryProjectionService,
     IMapper mapper
 ) : IRemittanceService
 {
@@ -27,6 +28,7 @@ public class RemittanceService(
     private readonly IMapper _mapper = mapper;
     private readonly IRemittanceRepository _remittanceRepository = remittanceRepository;
     private readonly IRemittanceBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
+    private readonly IRemittanceInventoryProjectionService _remittanceInventoryProjectionService = remittanceInventoryProjectionService;
 
     public async Task<RemittanceDto> CreateAsync(Guid companyId, CreateRemittanceDto createDto, CancellationToken ct)
     {
@@ -119,6 +121,8 @@ public class RemittanceService(
             ReplaceRemittanceLines(companyId, remittance, updateDto.RemittanceLines);
 
         await _remittanceRepository.SaveChangesAsync(ct);
+        await _remittanceInventoryProjectionService.RebuildAsync(companyId, remittance, ct);
+
         return await GetByIdAsync(companyId, id, trackChanges: false, ct);
     }
 
@@ -135,12 +139,15 @@ public class RemittanceService(
 
         remittance.Status = RemittanceStatus.Posted;
         await _remittanceRepository.SaveChangesAsync(ct);
+        await _remittanceInventoryProjectionService.RebuildAsync(companyId, remittance, ct);
+
         return await GetByIdAsync(companyId, id, trackChanges: false, ct);
     }
 
     public async Task DeleteAsync(Guid companyId, Guid id, CancellationToken ct)
     {
         await _businessRuleValidator.ValidateDeleteAsync(companyId, id, ct);
+        await _remittanceInventoryProjectionService.RemoveAsync(companyId, id, ct);
         await _remittanceRepository.DeleteRemittanceGraphAsync(companyId, id, ct);
     }
 
