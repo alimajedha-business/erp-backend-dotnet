@@ -14,42 +14,19 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
 {
     private readonly MainDbContext _context = context;
 
-    public async Task RebuildReceiptAsync(
-        Guid companyId,
-        Guid receiptId,
-        CancellationToken ct
-    )
+    public async Task RebuildReceiptAsync(Guid companyId, Guid receiptId, CancellationToken ct)
     {
         await RemoveReceiptAsync(companyId, receiptId, ct);
 
         var receipt = await _context.Set<Receipt>()
             .AsSplitQuery()
             .Include(e => e.ReceiptType)
-
-            .Include(e => e.ReceiptLines)
-                .ThenInclude(e => e.WarehouseLocation)
-
-            .Include(e => e.ReceiptLines)
-                .ThenInclude(e => e.Item)
-                    .ThenInclude(e => e.ItemUnitOfMeasurements)
-
-            .Include(e => e.ReceiptLines)
-                .ThenInclude(e => e.Item)
-                    .ThenInclude(e => e.ItemAttributes)
-                        .ThenInclude(e => e.Attribute)
-
-            .Include(e => e.ReceiptLines)
-                .ThenInclude(e => e.ReceiptLineMeasurementValues)
-
-            .Include(e => e.ReceiptLines)
-                .ThenInclude(e => e.ReceiptLineAttributeValues)
-                    .ThenInclude(e => e.ItemAttribute)
-                        .ThenInclude(e => e.Attribute)
-
-            .SingleOrDefaultAsync(
-                e => e.CompanyId == companyId && e.Id == receiptId,
-                ct
-            );
+            .Include(e => e.ReceiptLines).ThenInclude(e => e.WarehouseLocation)
+            .Include(e => e.ReceiptLines).ThenInclude(e => e.Item).ThenInclude(e => e.ItemUnitOfMeasurements)
+            .Include(e => e.ReceiptLines).ThenInclude(e => e.Item).ThenInclude(e => e.ItemAttributes).ThenInclude(e => e.Attribute)
+            .Include(e => e.ReceiptLines).ThenInclude(e => e.ReceiptLineMeasurementValues)
+            .Include(e => e.ReceiptLines).ThenInclude(e => e.ReceiptLineAttributeValues).ThenInclude(e => e.ItemAttribute).ThenInclude(e => e.Attribute)
+            .SingleOrDefaultAsync(e => e.CompanyId == companyId && e.Id == receiptId, ct);
 
         if (receipt is null || receipt.Status == ReceiptStatus.Draft)
             return;
@@ -64,54 +41,19 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 ? InventoryMovementDirection.Inbound
                 : InventoryMovementDirection.Outbound;
 
-            var movement = new InventoryMovement
-            {
-                CompanyId = companyId,
-                SourceDocumentId = receipt.Id,
-                SourceDocumentLineId = line.Id,
-                MovementDate = receipt.ReceiptDate.ToDateTime(TimeOnly.MinValue),
-                Quantity = quantity,
-                Mass = mass,
-                Volume = volume,
-                Direction = direction,
-                Lot = lot,
-                ToLocationId = direction == InventoryMovementDirection.Inbound
-                    ? line.WarehouseLocationId
-                    : null,
-                FromLocationId = direction == InventoryMovementDirection.Outbound
-                    ? line.WarehouseLocationId
-                    : null
-            };
-
-            await _context.Set<InventoryMovement>().AddAsync(movement, ct);
-
-            var sign = direction == InventoryMovementDirection.Inbound ? 1 : -1;
-            await ApplyBalanceDeltaAsync(
+            await AddMovementAndApplyDeltasAsync(
                 companyId,
-                lot.Id,
-                line.WarehouseLocationId,
-                sign * quantity,
-                sign * mass,
-                sign * volume,
-                ct
-            );
-
-            await ApplyInventoryBalanceDeltaAsync(
-                companyId,
+                receipt.Id,
+                line.Id,
+                receipt.ReceiptDate.ToDateTime(TimeOnly.MinValue),
                 line.ItemId,
                 line.WarehouseLocation.WarehouseId,
                 line.WarehouseLocationId,
-                lot.Id,
-                sign * quantity,
-                sign * mass,
-                sign * volume,
-                ct
-            );
-
-            await ApplyLocationUsageDeltaAsync(
-                line.WarehouseLocationId,
-                sign * mass,
-                sign * volume,
+                lot,
+                quantity,
+                mass,
+                volume,
+                direction,
                 ct
             );
         }
@@ -119,68 +61,61 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         await _context.SaveChangesAsync(ct);
     }
 
-    public async Task RemoveReceiptAsync(
-        Guid companyId,
-        Guid receiptId,
-        CancellationToken ct
-    )
+    public Task RemoveReceiptAsync(Guid companyId, Guid receiptId, CancellationToken ct)
     {
-        var movements = await _context.Set<InventoryMovement>()
-            .Include(e => e.ToLocation)
-            .Include(e => e.FromLocation)
-            .Where(e => e.CompanyId == companyId && e.SourceDocumentId == receiptId)
-            .ToListAsync(ct);
+        return RemoveDocumentAsync(companyId, receiptId, ct);
+    }
 
-        foreach (var movement in movements)
+    public async Task RebuildRemittanceAsync(Guid companyId, Guid remittanceId, CancellationToken ct)
+    {
+        await RemoveRemittanceAsync(companyId, remittanceId, ct);
+
+        var remittance = await _context.Set<Remittance>()
+            .AsSplitQuery()
+            .Include(e => e.RemittanceType)
+            .Include(e => e.RemittanceLines).ThenInclude(e => e.WarehouseLocation)
+            .Include(e => e.RemittanceLines).ThenInclude(e => e.Item).ThenInclude(e => e.ItemUnitOfMeasurements)
+            .Include(e => e.RemittanceLines).ThenInclude(e => e.Item).ThenInclude(e => e.ItemAttributes).ThenInclude(e => e.Attribute)
+            .Include(e => e.RemittanceLines).ThenInclude(e => e.RemittanceLineMeasurementValues)
+            .Include(e => e.RemittanceLines).ThenInclude(e => e.RemittanceLineAttributeValues).ThenInclude(e => e.ItemAttribute).ThenInclude(e => e.Attribute)
+            .SingleOrDefaultAsync(e => e.CompanyId == companyId && e.Id == remittanceId, ct);
+
+        if (remittance is null || remittance.Status == RemittanceStatus.Draft)
+            return;
+
+        foreach (var line in remittance.RemittanceLines)
         {
-            var sign = movement.Direction == InventoryMovementDirection.Inbound ? -1 : 1;
-            var locationId = movement.Direction == InventoryMovementDirection.Inbound
-                ? movement.ToLocationId
-                : movement.FromLocationId;
-            var warehouseId = movement.Direction == InventoryMovementDirection.Inbound
-                ? movement.ToLocation?.WarehouseId
-                : movement.FromLocation?.WarehouseId;
+            var lot = await GetOrCreateLotAsync(companyId, line, ct);
+            var quantity = GetPrimaryQuantity(line);
+            var mass = GetLineMass(line, quantity);
+            var volume = GetLineVolume(line, quantity);
+            var direction = remittance.RemittanceType.AddToStock
+                ? InventoryMovementDirection.Inbound
+                : InventoryMovementDirection.Outbound;
 
-            if (locationId.HasValue && warehouseId.HasValue)
-            {
-                await ApplyBalanceDeltaAsync(
-                    companyId,
-                    movement.LotId,
-                    locationId.Value,
-                    sign * movement.Quantity,
-                    sign * movement.Mass,
-                    sign * movement.Volume,
-                    ct
-                );
-
-                var itemId = await _context.Set<InventoryLot>()
-                    .Where(e => e.Id == movement.LotId)
-                    .Select(e => e.ItemId)
-                    .SingleAsync(ct);
-
-                await ApplyInventoryBalanceDeltaAsync(
-                    companyId,
-                    itemId,
-                    warehouseId.Value,
-                    locationId.Value,
-                    movement.LotId,
-                    sign * movement.Quantity,
-                    sign * movement.Mass,
-                    sign * movement.Volume,
-                    ct
-                );
-
-                await ApplyLocationUsageDeltaAsync(
-                    locationId.Value,
-                    sign * movement.Mass,
-                    sign * movement.Volume,
-                    ct
-                );
-            }
+            await AddMovementAndApplyDeltasAsync(
+                companyId,
+                remittance.Id,
+                line.Id,
+                remittance.RemittanceDate.ToDateTime(TimeOnly.MinValue),
+                line.ItemId,
+                line.WarehouseLocation.WarehouseId,
+                line.WarehouseLocationId,
+                lot,
+                quantity,
+                mass,
+                volume,
+                direction,
+                ct
+            );
         }
 
-        _context.Set<InventoryMovement>().RemoveRange(movements);
         await _context.SaveChangesAsync(ct);
+    }
+
+    public Task RemoveRemittanceAsync(Guid companyId, Guid remittanceId, CancellationToken ct)
+    {
+        return RemoveDocumentAsync(companyId, remittanceId, ct);
     }
 
     public async Task<IReadOnlyList<WarehouseLocationUsage>> GetLocationUsagesAsync(
@@ -198,26 +133,125 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             .ToListAsync(ct);
     }
 
-    private async Task<InventoryLot> GetOrCreateLotAsync(
+    private async Task AddMovementAndApplyDeltasAsync(
         Guid companyId,
-        ReceiptLine line,
+        Guid sourceDocumentId,
+        Guid sourceDocumentLineId,
+        DateTime movementDate,
+        Guid itemId,
+        Guid warehouseId,
+        Guid warehouseLocationId,
+        InventoryLot lot,
+        decimal quantity,
+        decimal mass,
+        decimal volume,
+        InventoryMovementDirection direction,
         CancellationToken ct
     )
     {
-        var stockDimensions = GetStockDimensionValues(line);
+        var movement = new InventoryMovement
+        {
+            CompanyId = companyId,
+            SourceDocumentId = sourceDocumentId,
+            SourceDocumentLineId = sourceDocumentLineId,
+            MovementDate = movementDate,
+            Quantity = quantity,
+            Mass = mass,
+            Volume = volume,
+            Direction = direction,
+            Lot = lot,
+            ToLocationId = direction == InventoryMovementDirection.Inbound ? warehouseLocationId : null,
+            FromLocationId = direction == InventoryMovementDirection.Outbound ? warehouseLocationId : null
+        };
+
+        await _context.Set<InventoryMovement>().AddAsync(movement, ct);
+
+        var sign = direction == InventoryMovementDirection.Inbound ? 1 : -1;
+        await ApplyBalanceDeltaAsync(companyId, lot.Id, warehouseLocationId, sign * quantity, sign * mass, sign * volume, ct);
+        await ApplyInventoryBalanceDeltaAsync(companyId, itemId, warehouseId, warehouseLocationId, lot.Id, sign * quantity, sign * mass, sign * volume, ct);
+        await ApplyLocationUsageDeltaAsync(warehouseLocationId, sign * mass, sign * volume, ct);
+    }
+
+    private async Task RemoveDocumentAsync(Guid companyId, Guid sourceDocumentId, CancellationToken ct)
+    {
+        var movements = await _context.Set<InventoryMovement>()
+            .Include(e => e.ToLocation)
+            .Include(e => e.FromLocation)
+            .Where(e => e.CompanyId == companyId && e.SourceDocumentId == sourceDocumentId)
+            .ToListAsync(ct);
+
+        foreach (var movement in movements)
+        {
+            var sign = movement.Direction == InventoryMovementDirection.Inbound ? -1 : 1;
+            var locationId = movement.Direction == InventoryMovementDirection.Inbound
+                ? movement.ToLocationId
+                : movement.FromLocationId;
+            var warehouseId = movement.Direction == InventoryMovementDirection.Inbound
+                ? movement.ToLocation?.WarehouseId
+                : movement.FromLocation?.WarehouseId;
+
+            if (!locationId.HasValue || !warehouseId.HasValue)
+                continue;
+
+            await ApplyBalanceDeltaAsync(
+                companyId,
+                movement.LotId,
+                locationId.Value,
+                sign * movement.Quantity,
+                sign * movement.Mass,
+                sign * movement.Volume,
+                ct
+            );
+
+            var itemId = await _context.Set<InventoryLot>()
+                .Where(e => e.Id == movement.LotId)
+                .Select(e => e.ItemId)
+                .SingleAsync(ct);
+
+            await ApplyInventoryBalanceDeltaAsync(
+                companyId,
+                itemId,
+                warehouseId.Value,
+                locationId.Value,
+                movement.LotId,
+                sign * movement.Quantity,
+                sign * movement.Mass,
+                sign * movement.Volume,
+                ct
+            );
+
+            await ApplyLocationUsageDeltaAsync(locationId.Value, sign * movement.Mass, sign * movement.Volume, ct);
+        }
+
+        _context.Set<InventoryMovement>().RemoveRange(movements);
+        await _context.SaveChangesAsync(ct);
+    }
+
+    private async Task<InventoryLot> GetOrCreateLotAsync(Guid companyId, ReceiptLine line, CancellationToken ct)
+    {
+        return await GetOrCreateLotAsync(companyId, line.ItemId, GetStockDimensionValues(line), ct);
+    }
+
+    private async Task<InventoryLot> GetOrCreateLotAsync(Guid companyId, RemittanceLine line, CancellationToken ct)
+    {
+        return await GetOrCreateLotAsync(companyId, line.ItemId, GetStockDimensionValues(line), ct);
+    }
+
+    private async Task<InventoryLot> GetOrCreateLotAsync(
+        Guid companyId,
+        Guid itemId,
+        IReadOnlyList<StockDimensionValue> stockDimensions,
+        CancellationToken ct
+    )
+    {
         var stockKeyHash = ComputeStockKeyHash(stockDimensions);
 
         var candidateLots = await _context.Set<InventoryLot>()
             .Include(e => e.AttributeValues)
-            .Where(e =>
-                e.CompanyId == companyId &&
-                e.ItemId == line.ItemId
-            )
+            .Where(e => e.CompanyId == companyId && e.ItemId == itemId)
             .ToListAsync(ct);
 
-        var existingLot = candidateLots.FirstOrDefault(e =>
-            e.StockKeyHash.SequenceEqual(stockKeyHash)
-        );
+        var existingLot = candidateLots.FirstOrDefault(e => e.StockKeyHash.SequenceEqual(stockKeyHash));
 
         if (existingLot is not null)
             return existingLot;
@@ -226,7 +260,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         {
             Id = Guid.NewGuid(),
             CompanyId = companyId,
-            ItemId = line.ItemId,
+            ItemId = itemId,
             StockKeyHash = stockKeyHash
         };
 
@@ -250,10 +284,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
 
     private static decimal GetPrimaryQuantity(ReceiptLine line)
     {
-        var primaryUomId = line.Item.ItemUnitOfMeasurements
-            .OrderBy(e => e.UnitOrder)
-            .FirstOrDefault()
-            ?.Id;
+        var primaryUomId = line.Item.ItemUnitOfMeasurements.OrderBy(e => e.UnitOrder).FirstOrDefault()?.Id;
 
         if (primaryUomId.HasValue)
         {
@@ -267,12 +298,38 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         return line.ReceiptLineMeasurementValues.FirstOrDefault()?.Quantity ?? 1;
     }
 
+    private static decimal GetPrimaryQuantity(RemittanceLine line)
+    {
+        var primaryUomId = line.Item.ItemUnitOfMeasurements.OrderBy(e => e.UnitOrder).FirstOrDefault()?.Id;
+
+        if (primaryUomId.HasValue)
+        {
+            var primaryMeasurement = line.RemittanceLineMeasurementValues
+                .FirstOrDefault(e => e.ItemUnitOfMeasurementId == primaryUomId.Value);
+
+            if (primaryMeasurement is not null)
+                return primaryMeasurement.Quantity;
+        }
+
+        return line.RemittanceLineMeasurementValues.FirstOrDefault()?.Quantity ?? 1;
+    }
+
     private static decimal GetLineMass(ReceiptLine line, decimal primaryQuantity)
     {
         return line.Weight ?? (line.Item.Weight ?? 0) * primaryQuantity;
     }
 
+    private static decimal GetLineMass(RemittanceLine line, decimal primaryQuantity)
+    {
+        return line.Weight ?? (line.Item.Weight ?? 0) * primaryQuantity;
+    }
+
     private static decimal GetLineVolume(ReceiptLine line, decimal primaryQuantity)
+    {
+        return line.Volume ?? (line.Item.Volume ?? 0) * primaryQuantity;
+    }
+
+    private static decimal GetLineVolume(RemittanceLine line, decimal primaryQuantity)
     {
         return line.Volume ?? (line.Item.Volume ?? 0) * primaryQuantity;
     }
@@ -289,10 +346,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
     {
         var balance = await _context.Set<InventoryLotLocationBalance>()
             .SingleOrDefaultAsync(
-                e =>
-                    e.CompanyId == companyId &&
-                    e.LotId == lotId &&
-                    e.WarehouseLocationId == warehouseLocationId,
+                e => e.CompanyId == companyId && e.LotId == lotId && e.WarehouseLocationId == warehouseLocationId,
                 ct
             );
 
@@ -355,23 +409,14 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         balance.OccupiedVolume += volumeDelta;
     }
 
-    private async Task ApplyLocationUsageDeltaAsync(
-        Guid warehouseLocationId,
-        decimal massDelta,
-        decimal volumeDelta,
-        CancellationToken ct
-    )
+    private async Task ApplyLocationUsageDeltaAsync(Guid warehouseLocationId, decimal massDelta, decimal volumeDelta, CancellationToken ct)
     {
         var usage = await _context.Set<WarehouseLocationUsage>()
             .SingleOrDefaultAsync(e => e.WarehouseLocationId == warehouseLocationId, ct);
 
         if (usage is null)
         {
-            usage = new WarehouseLocationUsage
-            {
-                WarehouseLocationId = warehouseLocationId
-            };
-
+            usage = new WarehouseLocationUsage { WarehouseLocationId = warehouseLocationId };
             await _context.Set<WarehouseLocationUsage>().AddAsync(usage, ct);
         }
 
@@ -382,22 +427,49 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
     private static List<StockDimensionValue> GetStockDimensionValues(ReceiptLine line)
     {
         var values = new List<StockDimensionValue>();
+        AddStaticStockDimensions(line.Item.ItemAttributes, line.BatchNumber, line.SerialNumber, line.ExpiryDate, values);
+        AddDynamicStockDimensions(line.ReceiptLineAttributeValues.Select(e => new LineAttributeValue(
+            e.ItemAttribute.Attribute,
+            e.ItemAttribute.AttributeId,
+            e.StringValue,
+            e.DecimalValue,
+            e.DateValue,
+            e.DateTimeValue,
+            e.BooleanValue,
+            e.ReferenceId
+        )), values);
 
-        AddStaticStockDimensions(line, values);
-        AddDynamicStockDimensions(line, values);
+        return [.. values.OrderBy(e => e.Name)];
+    }
+
+    private static List<StockDimensionValue> GetStockDimensionValues(RemittanceLine line)
+    {
+        var values = new List<StockDimensionValue>();
+        AddStaticStockDimensions(line.Item.ItemAttributes, line.BatchNumber, line.SerialNumber, line.ExpiryDate, values);
+        AddDynamicStockDimensions(line.RemittanceLineAttributeValues.Select(e => new LineAttributeValue(
+            e.ItemAttribute.Attribute,
+            e.ItemAttribute.AttributeId,
+            e.StringValue,
+            e.DecimalValue,
+            e.DateValue,
+            e.DateTimeValue,
+            e.BooleanValue,
+            e.ReferenceId
+        )), values);
 
         return [.. values.OrderBy(e => e.Name)];
     }
 
     private static void AddStaticStockDimensions(
-        ReceiptLine line,
+        IEnumerable<ItemAttribute> itemAttributes,
+        string? batchNumber,
+        string? serialNumber,
+        DateTime? expiryDate,
         List<StockDimensionValue> values
     )
     {
-        var staticItemAttributes = line.Item.ItemAttributes
-            .Where(e =>
-                e.Attribute.IsStatic &&
-                e.Attribute.IsStockDimension)
+        var staticItemAttributes = itemAttributes
+            .Where(e => e.Attribute.IsStatic && e.Attribute.IsStockDimension)
             .ToList();
 
         foreach (var itemAttribute in staticItemAttributes)
@@ -407,35 +479,23 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             switch (attribute.StaticKey)
             {
                 case StaticAttributeKeys.BatchNumber:
-                    if (!string.IsNullOrWhiteSpace(line.BatchNumber))
+                    if (!string.IsNullOrWhiteSpace(batchNumber))
                     {
-                        values.Add(new StockDimensionValue(
-                            Name: attribute.Code.ToString(),
-                            AttributeId: attribute.Id,
-                            StringValue: line.BatchNumber.Trim()
-                        ));
+                        values.Add(new StockDimensionValue(attribute.Code.ToString(), attribute.Id, StringValue: batchNumber.Trim()));
                     }
                     break;
 
                 case StaticAttributeKeys.SerialNumber:
-                    if (!string.IsNullOrWhiteSpace(line.SerialNumber))
+                    if (!string.IsNullOrWhiteSpace(serialNumber))
                     {
-                        values.Add(new StockDimensionValue(
-                            Name: attribute.Code.ToString(),
-                            AttributeId: attribute.Id,
-                            StringValue: line.SerialNumber.Trim()
-                        ));
+                        values.Add(new StockDimensionValue(attribute.Code.ToString(), attribute.Id, StringValue: serialNumber.Trim()));
                     }
                     break;
 
                 case StaticAttributeKeys.ExpiryDate:
-                    if (line.ExpiryDate.HasValue)
+                    if (expiryDate.HasValue)
                     {
-                        values.Add(new StockDimensionValue(
-                            Name: attribute.Code.ToString(),
-                            AttributeId: attribute.Id,
-                            DateTimeValue: line.ExpiryDate.Value
-                        ));
+                        values.Add(new StockDimensionValue(attribute.Code.ToString(), attribute.Id, DateTimeValue: expiryDate.Value));
                     }
                     break;
             }
@@ -443,17 +503,15 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
     }
 
     private static void AddDynamicStockDimensions(
-    ReceiptLine line,
-    List<StockDimensionValue> values
-)
+        IEnumerable<LineAttributeValue> lineAttributeValues,
+        List<StockDimensionValue> values
+    )
     {
-        values.AddRange(line.ReceiptLineAttributeValues
-            .Where(e =>
-                !e.ItemAttribute.Attribute.IsStatic &&
-                e.ItemAttribute.Attribute.IsStockDimension
-            ).Select(e => new StockDimensionValue(
-                Name: e.ItemAttribute.Attribute.Code.ToString(),
-                AttributeId: e.ItemAttribute.AttributeId,
+        values.AddRange(lineAttributeValues
+            .Where(e => !e.Attribute.IsStatic && e.Attribute.IsStockDimension)
+            .Select(e => new StockDimensionValue(
+                Name: e.Attribute.Code.ToString(),
+                AttributeId: e.AttributeId,
                 StringValue: e.StringValue?.Trim(),
                 DecimalValue: e.DecimalValue,
                 DateTimeValue: e.DateTimeValue ?? e.DateValue?.ToDateTime(TimeOnly.MinValue),
@@ -492,5 +550,16 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         DateTime? DateTimeValue = null,
         bool? BooleanValue = null,
         Guid? EnumReferenceId = null
+    );
+
+    private sealed record LineAttributeValue(
+        Domain.Entities.Attribute Attribute,
+        Guid AttributeId,
+        string? StringValue,
+        decimal? DecimalValue,
+        DateOnly? DateValue,
+        DateTime? DateTimeValue,
+        bool? BooleanValue,
+        Guid? ReferenceId
     );
 }
