@@ -24,7 +24,6 @@ public class Attribute :
     public bool IsStatic { get; set; } = false;
     public string StaticKey { get; set; } = default!;
 
-
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
 
     public void Map(EntityTypeBuilder<Attribute> builder)
