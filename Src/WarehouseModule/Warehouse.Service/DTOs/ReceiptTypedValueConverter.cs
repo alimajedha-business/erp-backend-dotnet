@@ -1,15 +1,14 @@
 using System.Globalization;
-using System.Text.Json;
 
 namespace NGErp.Warehouse.Service.DTOs;
 
 internal static class ReceiptTypedValueConverter
 {
-    public static ReceiptTypedValue Convert(JsonElement value, string type)
+    public static ReceiptTypedValue Convert(object? value, string type)
     {
         var normalizedType = type.Trim().ToLowerInvariant();
 
-        if (value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+        if (value is null)
             return ReceiptTypedValue.Empty;
 
         return normalizedType switch
@@ -24,45 +23,71 @@ internal static class ReceiptTypedValueConverter
         };
     }
 
-    private static string? GetString(JsonElement value)
+    private static string? GetString(object value)
     {
-        return value.ValueKind == JsonValueKind.String
-            ? value.GetString()
-            : value.ToString();
+        return value.ToString();
     }
 
-    private static int GetInteger(JsonElement value)
+    private static int GetInteger(object value)
     {
-        return value.ValueKind == JsonValueKind.Number
-            ? value.GetInt32()
-            : int.Parse(value.GetString()!, CultureInfo.InvariantCulture);
-    }
-
-    private static decimal GetDecimal(JsonElement value)
-    {
-        return value.ValueKind == JsonValueKind.Number
-            ? value.GetDecimal()
-            : decimal.Parse(value.GetString()!, CultureInfo.InvariantCulture);
-    }
-
-    private static DateOnly GetDate(JsonElement value)
-    {
-        return DateOnly.Parse(value.GetString()!, CultureInfo.InvariantCulture);
-    }
-
-    private static bool GetBoolean(JsonElement value)
-    {
-        return value.ValueKind switch
+        return value switch
         {
-            JsonValueKind.True => true,
-            JsonValueKind.False => false,
-            _ => bool.Parse(value.GetString()!)
+            int integer => integer,
+            long longValue => checked((int)longValue),
+            _ => int.Parse(NormalizeNumber(value), NumberStyles.Integer, CultureInfo.InvariantCulture)
         };
     }
 
-    private static Guid GetGuid(JsonElement value)
+    private static decimal GetDecimal(object value)
     {
-        return Guid.Parse(value.GetString()!);
+        return value switch
+        {
+            decimal decimalValue => decimalValue,
+            double doubleValue => ConvertToDecimal(doubleValue),
+            float floatValue => ConvertToDecimal(floatValue),
+            int integer => integer,
+            long longValue => longValue,
+            _ => decimal.Parse(NormalizeNumber(value), NumberStyles.Number, CultureInfo.InvariantCulture)
+        };
+    }
+
+    private static DateOnly GetDate(object value)
+    {
+        return DateOnly.Parse(value.ToString()!, CultureInfo.InvariantCulture);
+    }
+
+    private static bool GetBoolean(object value)
+    {
+        return value switch
+        {
+            bool booleanValue => booleanValue,
+            _ => bool.Parse(value.ToString()!)
+        };
+    }
+
+    private static Guid GetGuid(object value)
+    {
+        return Guid.Parse(value.ToString()!);
+    }
+
+    private static decimal ConvertToDecimal(double value)
+    {
+        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+    }
+
+    private static decimal ConvertToDecimal(float value)
+    {
+        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+    }
+
+    private static string NormalizeNumber(object value)
+    {
+        return value
+            .ToString()!
+            .Trim()
+            .Replace('٫', '.')
+            .Replace('٬', ',')
+            .Replace('−', '-');
     }
 }
 
