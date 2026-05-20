@@ -239,7 +239,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 AttributeId = dimension.AttributeId,
                 StringValue = dimension.StringValue,
                 DecimalValue = dimension.DecimalValue,
-                DateTimeValue = dimension.DateTimeValue,
+                DateValue = dimension.DateValue,
                 BooleanValue = dimension.BooleanValue,
                 EnumReferenceId = dimension.EnumReferenceId
             });
@@ -435,7 +435,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                         values.Add(new StockDimensionValue(
                             Name: attribute.Code.ToString(),
                             AttributeId: attribute.Id,
-                            DateTimeValue: line.ExpiryDate.Value
+                            DateValue: line.ExpiryDate.Value
                         ));
                     }
                     break;
@@ -469,7 +469,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
             e.Name,
             e.StringValue,
             e.DecimalValue,
-            e.DateTimeValue,
+            e.DateValue,
             e.BooleanValue,
             e.EnumReferenceId
         }));
@@ -489,7 +489,7 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
         Guid AttributeId,
         string? StringValue = null,
         decimal? DecimalValue = null,
-        DateTime? DateTimeValue = null,
+        DateOnly? DateValue = null,
         bool? BooleanValue = null,
         Guid? EnumReferenceId = null
     );

@@ -14,9 +14,9 @@ public class InventoryLotAttributeValue :
     public Guid AttributeId { get; set; }
 
     public string? StringValue { get; set; }
-    public int? IntValue { get; set; }
+    public int? IntegerValue { get; set; }
     public decimal? DecimalValue { get; set; }
-    public DateTime? DateTimeValue { get; set; }
+    public DateOnly? DateValue { get; set; }
     public bool? BooleanValue { get; set; }
     public Guid? EnumReferenceId { get; set; }
 
@@ -39,7 +39,7 @@ public class InventoryLotAttributeValue :
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.IntValue })
+            .HasIndex(i => new { i.AttributeId, i.IntegerValue })
             .IncludeProperties(e => e.LotId);
 
         builder
@@ -47,7 +47,7 @@ public class InventoryLotAttributeValue :
             .IncludeProperties(e => e.LotId);
 
         builder
-            .HasIndex(i => new { i.AttributeId, i.DateTimeValue })
+            .HasIndex(i => new { i.AttributeId, i.DateValue })
             .IncludeProperties(e => e.LotId);
 
         builder

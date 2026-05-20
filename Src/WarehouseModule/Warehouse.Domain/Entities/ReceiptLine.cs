@@ -28,7 +28,7 @@ public class ReceiptLine :
     // Frequently used item attributes
     public string? BatchNumber { get; set; }
     public string? SerialNumber { get; set; }
-    public DateTime? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
 
     public string? Description { get; set; }
 

@@ -7,7 +7,7 @@ public record ReceiptFieldValueDto(
     Guid FieldDefinitionId,
     Guid? ReceiptLineId,
     string? StringValue,
-    int? IntValue,
+    int? IntegerValue,
     decimal? DecimalValue,
     DateOnly? DateValue,
     Guid? ReferenceId,

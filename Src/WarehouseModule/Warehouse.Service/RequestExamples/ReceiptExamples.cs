@@ -45,7 +45,7 @@ public class CreateReceiptExample :
                     TotalPrice = 1500000,
                     BatchNumber = "202256799",
                     SerialNumber = "65879000020012",
-                    ExpiryDate = new DateTime(2026, 5, 29),
+                    ExpiryDate = new DateOnly(2026, 5, 29),
                     Weight = 10,
                     Volume = 100,
                     PreferredMassUnitId = new Guid(),
