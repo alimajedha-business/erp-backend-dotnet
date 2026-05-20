@@ -447,6 +447,7 @@ public class ReceiptBusinessRuleValidator(
             ReceiptFieldDataType.String => dto.StringValue is not null,
             ReceiptFieldDataType.Integer => dto.IntegerValue is not null,
             ReceiptFieldDataType.Decimal => dto.DecimalValue is not null,
+            ReceiptFieldDataType.Date => dto.DateValue is not null,
             ReceiptFieldDataType.Boolean => dto.BooleanValue is not null,
             ReceiptFieldDataType.Guid => dto.ReferenceId is not null,
             _ => false
