@@ -72,12 +72,12 @@ internal static class ReceiptTypedValueConverter
 
     private static decimal ConvertToDecimal(double value)
     {
-        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+        return System.Convert.ToDecimal(value, CultureInfo.InvariantCulture);
     }
 
     private static decimal ConvertToDecimal(float value)
     {
-        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+        return System.Convert.ToDecimal(value, CultureInfo.InvariantCulture);
     }
 
     private static string NormalizeNumber(object value)
