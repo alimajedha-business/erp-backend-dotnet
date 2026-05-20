@@ -27,6 +27,7 @@ public class EntityType : IViewModelTypeConfiguration<EntityType>
     public bool Permissible { get; set; }
     public bool HasConstraint { get; set; }
     public short? Ordering { get; set; }
+    public long? InherentlyModuleId { get; set; }
 
     public Module? Module { get; set; }
     public ICollection<EntityTypeCommand> Commands { get; set; } = [];
@@ -38,7 +39,6 @@ public class EntityType : IViewModelTypeConfiguration<EntityType>
             "general",
             t =>
             {
-                t.ExcludeFromMigrations();
                 t.UseSqlOutputClause(false);
             }
         );
@@ -65,6 +65,7 @@ public class EntityType : IViewModelTypeConfiguration<EntityType>
         builder.Property(e => e.Permissible).HasColumnName("permissible");
         builder.Property(e => e.HasConstraint).HasColumnName("has_constraint");
         builder.Property(e => e.Ordering).HasColumnName("ordering");
+        builder.Property(e => e.InherentlyModuleId).HasColumnName("inherently_module_id");
 
         builder.HasIndex(e => e.ModuleId);
         builder.HasIndex(e => new { e.ModuleId, e.Key }).IsUnique();

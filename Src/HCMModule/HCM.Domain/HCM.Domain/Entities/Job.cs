@@ -16,7 +16,7 @@ public class Job :
     public string Title { get; set; } = default!;
     public Guid JobCategoryId { get; set; }
     public string? Description { get; set; }
-    public int LevelCode { get; set; }
+    public int? LevelCode { get; set; }
     public bool? Seniority { get; set; }
     public Job? Parent { get; set; }
     public Job? NextJob { get; set; }
@@ -59,8 +59,7 @@ public class Job :
             .Property(e => e.Description)
             .HasMaxLength(1000);
         builder
-            .Property(e => e.LevelCode)
-            .IsRequired();
+            .Property(e => e.LevelCode);
         builder
             .Property(e => e.Seniority);
 

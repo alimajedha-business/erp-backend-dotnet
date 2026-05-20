@@ -26,5 +26,8 @@ public static class EntityTypes
     public const string AttributeEnumValue = "ATTRIBUTE_ENUM_VALUE";
     public const string CategoryAttributeRule = "CATEGORY_ATTRIBUTE_RULE";
     public const string ReceiptType = "RECEIPT_TYPE";
+    public const string WarehouseReceipt = "WAREHOUSE_RECEIPT";
     public const string RemittanceType = "REMITTANCE_TYPE";
+    public const string WarehouseRemittance = "WAREHOUSE_REMITTANCE";
+    public const string SiUnit = "SI_UNIT";
 }
