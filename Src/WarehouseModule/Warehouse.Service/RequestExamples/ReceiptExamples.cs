@@ -100,7 +100,7 @@ public class ReceiptsGetListExample : IExamplesProvider<ListResponseModel<Receip
                             ),
                             FieldDefinitionTitle: "هزینه حمل و نقل",
                             FieldDefinitionKey: "shipping_cost",
-                            DataType: ReceiptFieldDataType.Text,
+                            DataType: ReceiptFieldDataType.String,
                             DataTypeDescription: "Text",
                             Value: "PO-2026-0001"
                         )

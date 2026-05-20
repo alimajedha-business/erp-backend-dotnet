@@ -457,7 +457,6 @@ public class InventoryProjectionRepository(MainDbContext context) : IInventoryPr
                 AttributeId: e.ItemAttribute.AttributeId,
                 StringValue: e.StringValue?.Trim(),
                 DecimalValue: e.DecimalValue,
-                DateTimeValue: e.DateTimeValue ?? e.DateValue?.ToDateTime(TimeOnly.MinValue),
                 BooleanValue: e.BooleanValue,
                 EnumReferenceId: e.ReferenceId
             )));

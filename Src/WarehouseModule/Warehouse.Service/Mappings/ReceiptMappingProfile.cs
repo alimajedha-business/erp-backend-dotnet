@@ -82,10 +82,9 @@ public class ReceiptMappingProfile : Profile
     {
         return fieldValue.FieldDefinition.DataType switch
         {
-            ReceiptFieldDataType.Text => fieldValue.StringValue,
-            ReceiptFieldDataType.Integer => fieldValue.IntValue,
+            ReceiptFieldDataType.String => fieldValue.StringValue,
+            ReceiptFieldDataType.Integer => fieldValue.IntegerValue,
             ReceiptFieldDataType.Decimal => fieldValue.DecimalValue,
-            ReceiptFieldDataType.Date => (object?)fieldValue.DateValue ?? fieldValue.DateTimeValue,
             ReceiptFieldDataType.Boolean => fieldValue.BooleanValue,
             ReceiptFieldDataType.Guid => fieldValue.ReferenceId,
             _ => null

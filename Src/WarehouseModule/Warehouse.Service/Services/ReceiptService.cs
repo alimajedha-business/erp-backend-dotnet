@@ -290,9 +290,9 @@ public class ReceiptService(
                     CompanyId = companyId,
                     ItemAttributeId = attributeValueDto.ItemAttributeId,
                     StringValue = attributeValueDto.StringValue,
+                    IntegerValue = attributeValueDto.IntegerValue,
                     DecimalValue = attributeValueDto.DecimalValue,
                     DateValue = attributeValueDto.DateValue,
-                    DateTimeValue = attributeValueDto.DateTimeValue,
                     ReferenceId = attributeValueDto.ReferenceId,
                     BooleanValue = attributeValueDto.BooleanValue,
                     ReceiptLine = line
@@ -382,10 +382,9 @@ public class ReceiptService(
             CompanyId = companyId,
             FieldDefinitionId = dto.FieldDefinitionId,
             StringValue = dto.StringValue,
-            IntValue = dto.IntValue,
+            IntegerValue = dto.IntegerValue,
             DecimalValue = dto.DecimalValue,
             DateValue = dto.DateValue,
-            DateTimeValue = dto.DateTimeValue,
             ReferenceId = dto.ReferenceId,
             BooleanValue = dto.BooleanValue
         };
@@ -461,10 +460,9 @@ public class ReceiptService(
         {
             FieldDefinitionId = fieldValue.FieldDefinitionId,
             StringValue = fieldValue.StringValue,
-            IntValue = fieldValue.IntValue,
+            IntegerValue = fieldValue.IntegerValue,
             DecimalValue = fieldValue.DecimalValue,
             DateValue = fieldValue.DateValue,
-            DateTimeValue = fieldValue.DateTimeValue,
             ReferenceId = fieldValue.ReferenceId,
             BooleanValue = fieldValue.BooleanValue
         };
@@ -478,9 +476,9 @@ public class ReceiptService(
         {
             ItemAttributeId = attributeValue.ItemAttributeId,
             StringValue = attributeValue.StringValue,
+            IntegerValue = attributeValue.IntegerValue,
             DecimalValue = attributeValue.DecimalValue,
             DateValue = attributeValue.DateValue,
-            DateTimeValue = attributeValue.DateTimeValue,
             ReferenceId = attributeValue.ReferenceId,
             BooleanValue = attributeValue.BooleanValue
         };

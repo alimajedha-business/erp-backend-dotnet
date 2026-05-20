@@ -61,8 +61,8 @@ public enum AttributeDataType
     [Description("String")]
     String = 1,
 
-    [Description("Int")]
-    Int = 2,
+    [Description("Integer")]
+    Integer = 2,
 
     [Description("Decimal")]
     Decimal = 3,
@@ -90,7 +90,7 @@ public class AttributeDataTypeConverter :
         return value switch
         {
             "String" => AttributeDataType.String,
-            "Int" => AttributeDataType.Int,
+            "Integer" => AttributeDataType.Integer,
             "Decimal" => AttributeDataType.Decimal,
             "Date" => AttributeDataType.Date,
             "Boolean" => AttributeDataType.Boolean,
