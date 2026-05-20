@@ -1,3 +1,8 @@
+using System.ComponentModel;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -38,5 +43,50 @@ public class RemittanceTypeFieldConfiguration :
             .WithMany()
             .HasForeignKey(e => e.FieldDefinitionId)
             .OnDelete(DeleteBehavior.NoAction);
+    }
+}
+
+[JsonConverter(typeof(RemittanceConfiguredPlacementConverter))]
+public enum RemittanceConfiguredPlacement
+{
+    [Description("Header")]
+    Header = 1,
+
+    [Description("Detail")]
+    Detail = 2
+}
+
+public class RemittanceConfiguredPlacementConverter :
+    JsonConverter<RemittanceConfiguredPlacement>
+{
+    public override RemittanceConfiguredPlacement Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
+    {
+        var value = reader.GetString();
+        return value switch
+        {
+            "Header" => RemittanceConfiguredPlacement.Header,
+            "Detail" => RemittanceConfiguredPlacement.Detail,
+            _ => throw new JsonException($"Unknown RemittanceFieldPlacement: {value}")
+        };
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        RemittanceConfiguredPlacement value,
+        JsonSerializerOptions options
+    )
+    {
+        writer.WriteStringValue(GetDataTypeDescription(value));
+    }
+
+    private static string GetDataTypeDescription(RemittanceConfiguredPlacement value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
     }
 }
