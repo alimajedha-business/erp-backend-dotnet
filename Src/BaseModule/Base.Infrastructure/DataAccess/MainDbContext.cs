@@ -59,6 +59,7 @@ namespace NGErp.Base.Infrastructure.DataAccess
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<EntityType> EntityTypes { get; set; }
         public virtual DbSet<EntityTypeCommand> EntityTypeCommands { get; set; }
+        public virtual DbSet<MenuItem> MenuItems { get; set; }
         public virtual DbSet<ContentType> ContentTypes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
