@@ -8,7 +8,7 @@ public class HCMModuleProfile : IEntityTypeModuleProfile
 {
     public long ModuleId => ModuleIds.HCM;
     public string Prefix => "hcm";
-    public bool DeleteStale => false;
+    public bool DeleteStale => true;
 
     public IEnumerable<EntityTypeDefinition> GetDefinitions()
     {

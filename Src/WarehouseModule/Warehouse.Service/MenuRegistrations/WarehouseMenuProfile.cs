@@ -7,7 +7,7 @@ namespace NGErp.Warehouse.Service.MenuRegistrations;
 public class WarehouseMenuProfile : IMenuModuleProfile
 {
     public long ModuleId => ModuleIds.Warehouse;
-    public bool DeleteStale => false;
+    public bool DeleteStale => true;
 
     public IEnumerable<MenuDefinition> GetMenus()
     {
@@ -37,9 +37,8 @@ public class WarehouseMenuProfile : IMenuModuleProfile
             Order = 2,
             Children = new List<MenuDefinition>
             {
-                new() { NameFa = "حرکات موجودی", NameEn = "Inventory Movements", Order = 1, EntityTypeKey = EntityTypes.InventoryMovement, Link = "/warehouse/inventory-management/movements" },
-                new() { NameFa = "انواع حرکات موجودی", NameEn = "Movement Types", Order = 2, EntityTypeKey = EntityTypes.InventoryMovementType, Link = "/warehouse/inventory-management/movement-types" },
-                new() { NameFa = "بچ‌های موجودی", NameEn = "Inventory Lots", Order = 3, EntityTypeKey = EntityTypes.InventoryLot, Link = "/warehouse/inventory-management/lots" },
+                new() { NameFa = "جا به جایی کالا", NameEn = "Inventory Movements", Order = 1, EntityTypeKey = EntityTypes.InventoryMovement, Link = "/warehouse/inventory-management/movements" },
+                new() { NameFa = "انواع جا به جایی کالا", NameEn = "Movement Types", Order = 2, EntityTypeKey = EntityTypes.InventoryMovementType, Link = "/warehouse/inventory-management/movement-types" },
                 new() { NameFa = "ویژگی‌های بچ موجودی", NameEn = "Lot Attribute Values", Order = 4, EntityTypeKey = EntityTypes.InventoryLotAttributeValue, Link = "/warehouse/inventory-management/lot-attributes" },
             }
         };
