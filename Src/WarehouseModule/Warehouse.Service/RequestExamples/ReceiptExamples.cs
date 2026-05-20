@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
@@ -25,7 +23,7 @@ public class CreateReceiptExample :
                 new CreateReceiptFieldValueDto
                 {
                     FieldDefinitionId = new Guid("F6E53C25-B517-45B3-9A1A-5E2C7C8B7F1E"),
-                    Value = JsonSerializer.SerializeToElement("PO-2026-0001"),
+                    Value = "PO-2026-0001",
                     Type = "string"
                 }
             ],
@@ -60,7 +58,7 @@ public class CreateReceiptExample :
                             ItemAttributeId = new Guid(
                                 "427ADDD0-1D3A-4B58-8BC3-B9D8EA67B173"
                             ),
-                            Value = JsonSerializer.SerializeToElement("BATCH-001"),
+                            Value = "BATCH-001",
                             Type = "string"
                         }
                     ],
@@ -71,7 +69,7 @@ public class CreateReceiptExample :
                             FieldDefinitionId = new Guid(
                                 "A09A5FB5-1FE4-45DD-8DBD-3ED0746F1BDE"
                             ),
-                            Value = JsonSerializer.SerializeToElement("2027-05-09"),
+                            Value = "2027-05-09",
                             Type = "date"
                         }
                     ]
