@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,14 +20,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddWarehouseServices(this IServiceCollection services)
     {
-        services.AddScoped<
-            IExceptionLocalizer<WarehouseResource>, ExceptionLocalizer<WarehouseResource>
-        >();
-
+        services.AddScoped<IExceptionLocalizer<WarehouseResource>, ExceptionLocalizer<WarehouseResource>>();
         services.AddHttpContextAccessor();
-
         services.AddAutoMapper(typeof(MappingProfile));
-
         services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
 
         services.AddSingleton<IFilterSchema<Domain.Entities.Attribute>, AttributeSchema>();
@@ -40,6 +35,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ItemType>, ItemTypeSchema>();
         services.AddSingleton<IFilterSchema<ItemUnitOfMeasurement>, ItemUnitOfMeasurementSchema>();
         services.AddSingleton<IFilterSchema<Remittance>, RemittanceSchema>();
+        services.AddSingleton<IFilterSchema<RemittanceFieldDefinition>, RemittanceFieldDefinitionSchema>();
         services.AddSingleton<IFilterSchema<RemittanceType>, RemittanceTypeSchema>();
         services.AddSingleton<IFilterSchema<RemittanceTypeConfiguration>, RemittanceTypeConfigurationSchema>();
         services.AddSingleton<IFilterSchema<Receipt>, ReceiptSchema>();
@@ -47,10 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IFilterSchema<ReceiptSourceOfSupply>, ReceiptSourceOfSupplySchema>();
         services.AddSingleton<IFilterSchema<ReceiptType>, ReceiptTypeSchema>();
         services.AddSingleton<IFilterSchema<ReceiptTypeConfiguration>, ReceiptTypeConfigurationSchema>();
-        services.AddSingleton<
-            IFilterSchema<ReceiptTypeFieldConfiguration>,
-            ReceiptTypeFieldConfigurationSchema
-        >();
+        services.AddSingleton<IFilterSchema<ReceiptTypeFieldConfiguration>, ReceiptTypeFieldConfigurationSchema>();
         services.AddSingleton<IFilterSchema<ShippingCompany>, ShippingCompanySchema>();
         services.AddSingleton<IFilterSchema<SiUnit>, SiUnitSchema>();
         services.AddSingleton<IFilterSchema<UnitOfMeasurement>, UnitOfMeasurementSchema>();
@@ -62,10 +55,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAttributeEnumValueService, AttributeEnumValueService>();
         services.AddScoped<IAttributeBusinessRuleValidator, AttributeBusinessRuleValidator>();
         services.AddScoped<ICategoryBusinessRuleValidator, CategoryBusinessRuleValidator>();
-        services.AddScoped<
-            ICategoryLevelConstraintBusinessRuleValidator,
-            CategoryLevelConstraintBusinessRuleValidator
-        >();
+        services.AddScoped<ICategoryLevelConstraintBusinessRuleValidator, CategoryLevelConstraintBusinessRuleValidator>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICategoryAttributeRuleService, CategoryAttributeRuleService>();
         services.AddScoped<ICategoryLevelConstraintService, CategoryLevelConstraintService>();
@@ -74,35 +64,24 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemService, ItemService>();
         services.AddScoped<IItemTypeService, ItemTypeService>();
         services.AddScoped<IRemittanceBusinessRuleValidator, RemittanceBusinessRuleValidator>();
+        services.AddScoped<IRemittanceFieldDefinitionService, RemittanceFieldDefinitionService>();
         services.AddScoped<IRemittanceInventoryProjectionService, RemittanceInventoryProjectionService>();
         services.AddScoped<IRemittanceService, RemittanceService>();
         services.AddScoped<IRemittanceTypeBusinessRuleValidator, RemittanceTypeBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeConfigurationBusinessRuleValidator, RemittanceTypeConfigurationBusinessRuleValidator>();
         services.AddScoped<IRemittanceTypeConfigurationService, RemittanceTypeConfigurationService>();
-        services.AddScoped<
-            IRemittanceTypeFieldConfigurationService,
-            RemittanceTypeFieldConfigurationService
-        >();
+        services.AddScoped<IRemittanceTypeFieldConfigurationService, RemittanceTypeFieldConfigurationService>();
         services.AddScoped<IRemittanceTypeService, RemittanceTypeService>();
         services.AddScoped<IReceiptBusinessRuleValidator, ReceiptBusinessRuleValidator>();
         services.AddScoped<IReceiptFieldDefinitionService, ReceiptFieldDefinitionService>();
-        services.AddScoped<
-            IReceiptSourceOfSupplyBusinessRuleValidator,
-            ReceiptSourceOfSupplyBusinessRuleValidator
-        >();
+        services.AddScoped<IReceiptSourceOfSupplyBusinessRuleValidator, ReceiptSourceOfSupplyBusinessRuleValidator>();
         services.AddScoped<IReceiptSourceOfSupplyService, ReceiptSourceOfSupplyService>();
         services.AddScoped<IReceiptInventoryProjectionService, ReceiptInventoryProjectionService>();
         services.AddScoped<IReceiptLineContextService, ReceiptLineContextService>();
         services.AddScoped<IReceiptTypeBusinessRuleValidator, ReceiptTypeBusinessRuleValidator>();
-        services.AddScoped<
-            IReceiptTypeConfigurationBusinessRuleValidator,
-            ReceiptTypeConfigurationBusinessRuleValidator
-        >();
+        services.AddScoped<IReceiptTypeConfigurationBusinessRuleValidator, ReceiptTypeConfigurationBusinessRuleValidator>();
         services.AddScoped<IReceiptTypeConfigurationService, ReceiptTypeConfigurationService>();
-        services.AddScoped<
-            IReceiptTypeFieldConfigurationService,
-            ReceiptTypeFieldConfigurationService
-        >();
+        services.AddScoped<IReceiptTypeFieldConfigurationService, ReceiptTypeFieldConfigurationService>();
         services.AddScoped<IReceiptService, ReceiptService>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
@@ -111,13 +90,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IWarehouseLocationService, WarehouseLocationService>();
         services.AddScoped<IWarehouseBusinessRuleValidator, WarehouseBusinessRuleValidator>();
-        services.AddScoped<
-            IWarehouseLocationBusinessRuleValidator,
-            WarehouseLocationBusinessRuleValidator
-        >();
+        services.AddScoped<IWarehouseLocationBusinessRuleValidator, WarehouseLocationBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeBusinessRuleValidator, WarehouseTypeBusinessRuleValidator>();
         services.AddScoped<IWarehouseTypeService, WarehouseTypeService>();
-
         services.AddScoped<IExcelExportService, ExcelExportService<WarehouseResource>>();
 
         return services;
