@@ -36,7 +36,7 @@ public class CreateRemittanceTypeFieldConfigurationValidator :
         RuleFor(p => p.Placement)
             .NotNull()
             .WithMessage(_localizer["RemittanceTypeFieldConfiguration.Placement.NotNull"].Value)
-            .Must(p => p is null || Enum.IsDefined(typeof(ReceiptConfiguredPlacement), p.Value))
+            .Must(p => p is null || Enum.IsDefined(typeof(RemittanceConfiguredPlacement), p.Value))
             .WithMessage(_localizer["RemittanceTypeFieldConfiguration.Placement.Invalid"].Value);
     }
 }
