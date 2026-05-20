@@ -82,7 +82,7 @@ public class EmployeeDependantService(
     {
         var entity = await GetByIdOrThrowAsync(
             id,
-            trackChanges: false,
+            trackChanges: true,
             ct
         );
 
