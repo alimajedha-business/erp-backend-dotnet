@@ -13,10 +13,10 @@ public class RemittanceTypeFieldConfiguration :
     public Guid FieldDefinitionId { get; set; }
     public bool Exists { get; set; }
     public bool IsRequired { get; set; }
-    public ReceiptConfiguredPlacement Placement { get; set; }
+    public RemittanceConfiguredPlacement Placement { get; set; }
 
     public RemittanceTypeConfiguration RemittanceTypeConfiguration { get; set; } = null!;
-    public ReceiptFieldDefinition FieldDefinition { get; set; } = null!;
+    public RemittanceFieldDefinition FieldDefinition { get; set; } = null!;
 
     public void Map(EntityTypeBuilder<RemittanceTypeFieldConfiguration> builder)
     {
