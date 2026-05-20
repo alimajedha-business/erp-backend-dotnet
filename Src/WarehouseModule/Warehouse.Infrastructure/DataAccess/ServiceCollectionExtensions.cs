@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
@@ -22,22 +22,17 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInventoryProjectionRepository, InventoryProjectionRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
+        services.AddScoped<IRemittanceFieldDefinitionRepository, RemittanceFieldDefinitionRepository>();
         services.AddScoped<IRemittanceRepository, RemittanceRepository>();
         services.AddScoped<IRemittanceTypeConfigurationRepository, RemittanceTypeConfigurationRepository>();
-        services.AddScoped<
-            IRemittanceTypeFieldConfigurationRepository,
-            RemittanceTypeFieldConfigurationRepository
-        >();
+        services.AddScoped<IRemittanceTypeFieldConfigurationRepository, RemittanceTypeFieldConfigurationRepository>();
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
         services.AddScoped<IReceiptSourceOfSupplyRepository, ReceiptSourceOfSupplyRepository>();
         services.AddScoped<IReceiptTypeRepository, ReceiptTypeRepository>();
         services.AddScoped<IReceiptTypeConfigurationRepository, ReceiptTypeConfigurationRepository>();
-        services.AddScoped<
-            IReceiptTypeFieldConfigurationRepository,
-            ReceiptTypeFieldConfigurationRepository
-        >();
+        services.AddScoped<IReceiptTypeFieldConfigurationRepository, ReceiptTypeFieldConfigurationRepository>();
         services.AddScoped<IShippingCompanyRepository, ShippingCompanyRepository>();
         services.AddScoped<ISiUnitRepository, SiUnitRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();
