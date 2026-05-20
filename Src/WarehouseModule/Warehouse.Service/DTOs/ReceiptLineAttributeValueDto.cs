@@ -16,6 +16,7 @@ public class CreateReceiptLineAttributeValueDto
 
     public object? Value { get; set; }
     public string? Type { get; set; }
+    public string? DataType { get; set; }
 
     public string? StringValue { get; set; }
     public int? IntegerValue { get; set; }
@@ -26,10 +27,12 @@ public class CreateReceiptLineAttributeValueDto
 
     public void NormalizeValue()
     {
-        if (Value is null || string.IsNullOrWhiteSpace(Type))
+        var effectiveType = Type ?? DataType;
+
+        if (Value is null || string.IsNullOrWhiteSpace(effectiveType))
             return;
 
-        var typedValue = ReceiptTypedValueConverter.Convert(Value, Type);
+        var typedValue = ReceiptTypedValueConverter.Convert(Value, effectiveType);
 
         StringValue = typedValue.StringValue;
         IntegerValue = typedValue.IntegerValue;
