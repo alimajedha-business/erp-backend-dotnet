@@ -10,7 +10,7 @@ namespace NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 
 public class RemittanceTypeConfigurationBusinessRuleValidator(
     IRemittanceTypeRepository remittanceTypeRepository,
-    IReceiptFieldDefinitionRepository fieldDefinitionRepository,
+    IRemittanceFieldDefinitionRepository fieldDefinitionRepository,
     IRemittanceTypeConfigurationRepository configurationRepository
 ) : IRemittanceTypeConfigurationBusinessRuleValidator
 {
@@ -22,7 +22,7 @@ public class RemittanceTypeConfigurationBusinessRuleValidator(
     };
 
     private readonly IRemittanceTypeRepository _remittanceTypeRepository = remittanceTypeRepository;
-    private readonly IReceiptFieldDefinitionRepository _fieldDefinitionRepository =
+    private readonly IRemittanceFieldDefinitionRepository _fieldDefinitionRepository =
         fieldDefinitionRepository;
     private readonly IRemittanceTypeConfigurationRepository _configurationRepository =
         configurationRepository;
@@ -105,7 +105,7 @@ public class RemittanceTypeConfigurationBusinessRuleValidator(
             throw new RemittanceTypeConfigurationFieldDefinitionDuplicateException(duplicate.Key);
     }
 
-    private async Task<ReceiptFieldDefinition> GetFieldDefinitionAsync(
+    private async Task<RemittanceFieldDefinition> GetFieldDefinitionAsync(
         Guid companyId,
         Guid fieldDefinitionId,
         CancellationToken ct
@@ -115,7 +115,7 @@ public class RemittanceTypeConfigurationBusinessRuleValidator(
             e => e.CompanyId == companyId && e.Id == fieldDefinitionId,
             trackChanges: false,
             ct
-        ) ?? throw new ReceiptFieldDefinitionNotFoundException();
+        ) ?? throw new RemittanceFieldDefinitionNotFoundException();
     }
 
     private static void ValidateExistsRequiredRule(bool exists, bool isRequired)
@@ -125,14 +125,14 @@ public class RemittanceTypeConfigurationBusinessRuleValidator(
     }
 
     private static void ValidatePlacementRule(
-        ReceiptFieldPlacement allowedPlacement,
-        ReceiptConfiguredPlacement configuredPlacement
+        RemittanceFieldPlacement allowedPlacement,
+        RemittanceConfiguredPlacement configuredPlacement
     )
     {
         var configuredAsFieldPlacement = configuredPlacement switch
         {
-            ReceiptConfiguredPlacement.Header => ReceiptFieldPlacement.Header,
-            ReceiptConfiguredPlacement.Detail => ReceiptFieldPlacement.Detail,
+            RemittanceConfiguredPlacement.Header => RemittanceFieldPlacement.Header,
+            RemittanceConfiguredPlacement.Detail => RemittanceFieldPlacement.Detail,
             _ => throw new RemittanceTypeFieldConfigurationPlacementNotAllowedException()
         };
 
