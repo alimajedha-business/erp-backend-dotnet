@@ -29,6 +29,9 @@ public class CreateReceiptFieldValueDto
 {
     public Guid FieldDefinitionId { get; set; }
 
+    public object? Value { get; set; }
+    public string? Type { get; set; }
+
     public string? StringValue { get; set; }
     public int? IntValue { get; set; }
     public decimal? DecimalValue { get; set; }
