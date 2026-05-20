@@ -23,7 +23,7 @@ public class RemittanceFieldValue :
 
     public Remittance Remittance { get; set; } = default!;
     public RemittanceLine? RemittanceLine { get; set; }
-    public ReceiptFieldDefinition FieldDefinition { get; set; } = default!;
+    public RemittanceFieldDefinition FieldDefinition { get; set; } = default!;
 
     public void Map(EntityTypeBuilder<RemittanceFieldValue> builder)
     {
