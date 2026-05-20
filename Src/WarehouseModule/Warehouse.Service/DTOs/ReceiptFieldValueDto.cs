@@ -29,7 +29,7 @@ public class CreateReceiptFieldValueDto
     public Guid FieldDefinitionId { get; set; }
 
     public object? Value { get; set; }
-    public string? Type { get; set; }
+    public string? DataType { get; set; }
 
     public string? StringValue { get; set; }
     public int? IntegerValue { get; set; }
@@ -40,10 +40,10 @@ public class CreateReceiptFieldValueDto
 
     public void NormalizeValue()
     {
-        if (Value is null || string.IsNullOrWhiteSpace(Type))
+        if (Value is null || string.IsNullOrWhiteSpace(DataType))
             return;
 
-        var typedValue = ReceiptTypedValueConverter.Convert(Value, Type);
+        var typedValue = ReceiptTypedValueConverter.Convert(Value, DataType);
 
         StringValue = typedValue.StringValue;
         IntegerValue = typedValue.IntegerValue;
