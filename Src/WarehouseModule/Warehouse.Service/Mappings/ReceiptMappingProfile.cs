@@ -85,6 +85,7 @@ public class ReceiptMappingProfile : Profile
             ReceiptFieldDataType.String => fieldValue.StringValue,
             ReceiptFieldDataType.Integer => fieldValue.IntegerValue,
             ReceiptFieldDataType.Decimal => fieldValue.DecimalValue,
+            ReceiptFieldDataType.Date => fieldValue.DateValue,
             ReceiptFieldDataType.Boolean => fieldValue.BooleanValue,
             ReceiptFieldDataType.Guid => fieldValue.ReferenceId,
             _ => null
