@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 using NGErp.Warehouse.Domain.Entities;
 
 namespace NGErp.Warehouse.Service.DTOs;
@@ -30,7 +28,7 @@ public class CreateReceiptFieldValueDto
 {
     public Guid FieldDefinitionId { get; set; }
 
-    public JsonElement? Value { get; set; }
+    public object? Value { get; set; }
     public string? Type { get; set; }
 
     public string? StringValue { get; set; }
@@ -45,7 +43,7 @@ public class CreateReceiptFieldValueDto
         if (Value is null || string.IsNullOrWhiteSpace(Type))
             return;
 
-        var typedValue = ReceiptTypedValueConverter.Convert(Value.Value, Type);
+        var typedValue = ReceiptTypedValueConverter.Convert(Value, Type);
 
         StringValue = typedValue.StringValue;
         IntegerValue = typedValue.IntegerValue;
