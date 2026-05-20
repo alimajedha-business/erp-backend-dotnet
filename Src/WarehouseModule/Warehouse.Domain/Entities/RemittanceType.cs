@@ -14,6 +14,8 @@ public class RemittanceType :
     public required string Title { get; set; }
     public required bool AddToStock { get; set; }
 
+    public RemittanceTypeConfiguration RemittanceTypeConfiguration { get; set; } = null!;
+
     public void Map(EntityTypeBuilder<RemittanceType> builder)
     {
         builder
