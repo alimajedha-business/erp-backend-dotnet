@@ -23,6 +23,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IItemTypeRepository, ItemTypeRepository>();
         services.AddScoped<IRemittanceRepository, RemittanceRepository>();
+        services.AddScoped<IRemittanceTypeConfigurationRepository, RemittanceTypeConfigurationRepository>();
+        services.AddScoped<
+            IRemittanceTypeFieldConfigurationRepository,
+            RemittanceTypeFieldConfigurationRepository
+        >();
         services.AddScoped<IRemittanceTypeRepository, RemittanceTypeRepository>();
         services.AddScoped<IReceiptFieldDefinitionRepository, ReceiptFieldDefinitionRepository>();
         services.AddScoped<IReceiptRepository, ReceiptRepository>();
