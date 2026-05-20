@@ -17,5 +17,14 @@ public class CreateReceiptFieldValueValidator :
         RuleFor(e => e.FieldDefinitionId)
             .NotEmpty()
             .WithMessage(localizer["ReceiptFieldValue.FieldDefinition.NotEmpty"].Value);
+
+        RuleFor(e => e)
+            .Custom((dto, context) =>
+            {
+                var normalizationError = ReceiptFieldValueInputNormalizer.Normalize(dto);
+
+                if (normalizationError is not null)
+                    context.AddFailure(nameof(CreateReceiptFieldValueDto.Value), normalizationError);
+            });
     }
 }
