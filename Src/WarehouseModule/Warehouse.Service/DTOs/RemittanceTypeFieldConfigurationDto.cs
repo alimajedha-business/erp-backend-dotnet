@@ -12,12 +12,12 @@ public record RemittanceTypeFieldConfigurationDto(
     Guid FieldDefinitionId,
     bool Exists,
     bool IsRequired,
-    ReceiptConfiguredPlacement Placement,
+    RemittanceConfiguredPlacement Placement,
     string PlacementDescription,
-    ReceiptFieldDefinitionDto FieldDefinition
+    RemittanceFieldDefinitionDto FieldDefinition
 )
 {
-    public static string GetPlacementDescription(ReceiptConfiguredPlacement value)
+    public static string GetPlacementDescription(RemittanceConfiguredPlacement value)
     {
         var field = value.GetType().GetField(value.ToString());
         var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
@@ -34,7 +34,7 @@ public record RemittanceTypeFieldConfigurationListDto(
     string FieldDefinitionTitle,
     bool Exists,
     bool IsRequired,
-    ReceiptConfiguredPlacement Placement,
+    RemittanceConfiguredPlacement Placement,
     string PlacementDescription
 );
 
@@ -43,12 +43,12 @@ public class CreateRemittanceTypeFieldConfigurationDto
     public Guid FieldDefinitionId { get; set; }
     public bool? Exists { get; set; }
     public bool? IsRequired { get; set; }
-    public ReceiptConfiguredPlacement? Placement { get; set; }
+    public RemittanceConfiguredPlacement? Placement { get; set; }
 }
 
 public class PatchRemittanceTypeFieldConfigurationDto
 {
     public bool? Exists { get; set; }
     public bool? IsRequired { get; set; }
-    public ReceiptConfiguredPlacement? Placement { get; set; }
+    public RemittanceConfiguredPlacement? Placement { get; set; }
 }
