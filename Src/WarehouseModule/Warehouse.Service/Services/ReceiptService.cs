@@ -52,6 +52,7 @@ public class ReceiptService(
     )
     {
         RequestBodyValidator.ThrowIfNull(createDto);
+        NormalizeCreateDtoValues(createDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
         await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
 
@@ -146,9 +147,11 @@ public class ReceiptService(
         if (errors.Count != 0)
             throw new InvalidPatchDocumentException(errors);
 
+        NormalizePatchDtoValues(patchDto);
         await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
 
         var updateDto = BuildCreateDto(patchDto);
+        NormalizeCreateDtoValues(updateDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, updateDto, ct);
         await _businessRuleValidator.ValidateUpdateAsync(companyId, id, updateDto, ct);
 
@@ -217,6 +220,39 @@ public class ReceiptService(
     )
     {
         return _receiptRepository.GetNextNumberAsync(companyId, ct);
+    }
+
+    private static void NormalizePatchDtoValues(PatchReceiptDto patchDto)
+    {
+        if (patchDto.ReceiptFieldValues is not null)
+        {
+            foreach (var fieldValue in patchDto.ReceiptFieldValues)
+                fieldValue.NormalizeValue();
+        }
+
+        if (patchDto.ReceiptLines is not null)
+        {
+            foreach (var line in patchDto.ReceiptLines)
+                NormalizeLineValues(line);
+        }
+    }
+
+    private static void NormalizeCreateDtoValues(CreateReceiptDto createDto)
+    {
+        foreach (var fieldValue in createDto.ReceiptFieldValues)
+            fieldValue.NormalizeValue();
+
+        foreach (var line in createDto.ReceiptLines)
+            NormalizeLineValues(line);
+    }
+
+    private static void NormalizeLineValues(CreateReceiptLineDto lineDto)
+    {
+        foreach (var attributeValue in lineDto.ReceiptLineAttributeValues)
+            attributeValue.NormalizeValue();
+
+        foreach (var fieldValue in lineDto.ReceiptFieldValues)
+            fieldValue.NormalizeValue();
     }
 
     private static void AddHeaderFieldValues(
