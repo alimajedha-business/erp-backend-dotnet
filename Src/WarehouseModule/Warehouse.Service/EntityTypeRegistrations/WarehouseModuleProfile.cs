@@ -8,7 +8,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 {
     public long ModuleId => ModuleIds.Warehouse;
     public string Prefix => "warehouse";
-    public bool DeleteStale => false;
+    public bool DeleteStale => true;
 
     public IEnumerable<EntityTypeDefinition> GetDefinitions()
     {

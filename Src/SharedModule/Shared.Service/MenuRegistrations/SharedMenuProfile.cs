@@ -18,9 +18,9 @@ public class SharedMenuProfile : IMenuModuleProfile
             Order = 6,
             Children = new List<MenuDefinition>
             {
-                new() { NameFa = "واحد سازمانی", NameEn = "Department", Order = 1, EntityTypeKey = EntityTypes.Department, Link = "/shared/organizational-structure/departments" },
-                new() { NameFa = "پست سازمانی", NameEn = "Position", Order = 2, EntityTypeKey = EntityTypes.Position, Link = "/shared/organizational-structure/positions" },
-                new() { NameFa = "چارت سازمانی", NameEn = "Organizational Chart", Order = 3, EntityTypeKey = EntityTypes.OrganizationalStructure, Link = "/shared/organizational-structure/chart" },
+                new() { NameFa = "واحد سازمانی", NameEn = "Department", Order = 1, EntityTypeKey = EntityTypes.Department, Link = "/organizational-structure/departments" },
+                new() { NameFa = "پست سازمانی", NameEn = "Position", Order = 2, EntityTypeKey = EntityTypes.Position, Link = "/organizational-structure/positions" },
+                new() { NameFa = "چارت سازمانی", NameEn = "Organizational Chart", Order = 3, EntityTypeKey = EntityTypes.OrganizationalStructure, Link = "/organizational-structure/chart" },
             }
         };
     }
