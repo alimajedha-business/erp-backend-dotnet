@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520081949_FixInventoryDynamicDataTypes")]
+    partial class FixInventoryDynamicDataTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,10 +122,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("importable");
 
-                    b.Property<long?>("InherentlyModuleId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("inherently_module_id");
-
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -178,7 +177,10 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.HasIndex("ModuleId", "NameFa")
                         .IsUnique();
 
-                    b.ToTable("entity_types", "general");
+                    b.ToTable("entity_types", "general", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
@@ -228,97 +230,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("entity_type_commands", "general", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("NGErp.General.Domain.Entities.MenuItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid?>("EntityTypeCommandId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("entity_type_command_id");
-
-                    b.Property<Guid?>("EntityTypeId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("entity_type_id");
-
-                    b.Property<string>("Link")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("link");
-
-                    b.Property<string>("Meta")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("meta");
-
-                    b.Property<long>("ModuleId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("module_id");
-
-                    b.Property<string>("NameEn")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name_en");
-
-                    b.Property<string>("NameFa")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name_fa");
-
-                    b.Property<bool>("NewTab")
-                        .HasColumnType("bit")
-                        .HasColumnName("new_tab");
-
-                    b.Property<short>("Order")
-                        .HasColumnType("smallint")
-                        .HasColumnName("order");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int")
-                        .HasColumnName("parent_id");
-
-                    b.Property<string>("ShortKey")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)")
-                        .HasColumnName("short_key");
-
-                    b.Property<string>("StandardPage")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("standard_page");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntityTypeCommandId");
-
-                    b.HasIndex("EntityTypeId");
-
-                    b.HasIndex("ModuleId");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("ModuleId", "NameEn", "ParentId")
-                        .IsUnique()
-                        .HasFilter("[module_id] IS NOT NULL AND [name_en] IS NOT NULL AND [parent_id] IS NOT NULL");
-
-                    b.HasIndex("ModuleId", "NameFa", "ParentId")
-                        .IsUnique()
-                        .HasFilter("[module_id] IS NOT NULL AND [name_fa] IS NOT NULL AND [parent_id] IS NOT NULL");
-
-                    b.ToTable("menu_items", "general", t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -1302,7 +1213,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("JobCategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("LevelCode")
+                    b.Property<int>("LevelCode")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("ModifierId")
@@ -1901,8 +1812,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AuthorizedUsers")
                         .HasColumnType("nvarchar(max)")
@@ -1919,8 +1829,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uniqueidentifier");
@@ -1953,18 +1862,14 @@ namespace NGErp.Base.Infrastructure.Migrations
                         .HasColumnName("parent_id");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("ParentId");
 
@@ -4721,38 +4626,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Navigation("EntityType");
                 });
 
-            modelBuilder.Entity("NGErp.General.Domain.Entities.MenuItem", b =>
-                {
-                    b.HasOne("NGErp.General.Domain.Entities.EntityTypeCommand", "EntityTypeCommand")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeCommandId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("NGErp.General.Domain.Entities.EntityType", "EntityType")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("NGErp.General.Domain.Entities.Module", "Module")
-                        .WithMany()
-                        .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("NGErp.General.Domain.Entities.MenuItem", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("EntityType");
-
-                    b.Navigation("EntityTypeCommand");
-
-                    b.Navigation("Module");
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("NGErp.General.Domain.Entities.User", b =>
                 {
                     b.HasOne("NGErp.General.Domain.Entities.Person", "Person")
@@ -5800,11 +5673,6 @@ namespace NGErp.Base.Infrastructure.Migrations
             modelBuilder.Entity("NGErp.General.Domain.Entities.EntityType", b =>
                 {
                     b.Navigation("Commands");
-                });
-
-            modelBuilder.Entity("NGErp.General.Domain.Entities.MenuItem", b =>
-                {
-                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("NGErp.General.Domain.Entities.Module", b =>

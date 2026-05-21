@@ -21,7 +21,8 @@ public record ReceiptListDto(
     string ReceiptTypeTitle,
     ReceiptStatus Status,
     string? Description,
-    int ReceiptLineCount
+    int ReceiptLineCount,
+    IReadOnlyList<ReceiptHeaderFieldValueListDto> ReceiptFieldValues
 );
 
 public class CreateReceiptDto

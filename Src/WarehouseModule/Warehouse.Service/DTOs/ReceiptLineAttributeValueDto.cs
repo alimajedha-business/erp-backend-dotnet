@@ -1,4 +1,4 @@
-﻿namespace NGErp.Warehouse.Service.DTOs;
+namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptLineAttributeValueDto(
     Guid Id,
@@ -6,7 +6,6 @@ public record ReceiptLineAttributeValueDto(
     string? StringValue,
     decimal? DecimalValue,
     DateOnly? DateValue,
-    DateTime? DateTimeValue,
     Guid? ReferenceId,
     bool? BooleanValue
 );
@@ -15,10 +14,28 @@ public class CreateReceiptLineAttributeValueDto
 {
     public Guid ItemAttributeId { get; set; }
 
+    public object? Value { get; set; }
+    public string? DataType { get; set; }
+
     public string? StringValue { get; set; }
+    public int? IntegerValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }
-    public DateTime? DateTimeValue { get; set; }
     public Guid? ReferenceId { get; set; }
     public bool? BooleanValue { get; set; }
+
+    public void NormalizeValue()
+    {
+        if (Value is null || string.IsNullOrWhiteSpace(DataType))
+            return;
+
+        var typedValue = ReceiptTypedValueConverter.Convert(Value, DataType);
+
+        StringValue = typedValue.StringValue;
+        IntegerValue = typedValue.IntegerValue;
+        DecimalValue = typedValue.DecimalValue;
+        DateValue = typedValue.DateValue;
+        ReferenceId = typedValue.ReferenceId;
+        BooleanValue = typedValue.BooleanValue;
+    }
 }

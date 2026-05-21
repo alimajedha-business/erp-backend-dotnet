@@ -13,7 +13,7 @@ public record ReceiptLineDto(
     decimal? TotalPrice,
     string? BatchNumber,
     string? SerialNumber,
-    DateTime? ExpiryDate,
+    DateOnly? ExpiryDate,
     string? Description,
     IReadOnlyList<ReceiptLineMeasurementValueDto> ReceiptLineMeasurementValues,
     IReadOnlyList<ReceiptLineAttributeValueDto> ReceiptLineAttributeValues,
@@ -33,7 +33,7 @@ public class CreateReceiptLineDto
     public decimal? TotalPrice { get; set; }
     public string? BatchNumber { get; set; }
     public string? SerialNumber { get; set; }
-    public DateTime? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
     public string? Description { get; set; }
 
     public List<CreateReceiptLineMeasurementValueDto> ReceiptLineMeasurementValues { get; set; } = [];
