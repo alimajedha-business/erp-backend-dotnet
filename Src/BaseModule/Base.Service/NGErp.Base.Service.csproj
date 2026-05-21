@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Base.Domain\NGErp.Base.Domain.csproj" />
-    <ProjectReference Include="..\..\HCMModule\HCM.Domain\HCM.Domain\NGErp.HCM.Domain.csproj" />
+    <ProjectReference Include="..\..\HCMModule\HCM.Domain\NGErp.HCM.Domain.csproj" />
   </ItemGroup>
 
 </Project>

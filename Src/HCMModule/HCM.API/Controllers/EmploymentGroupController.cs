@@ -1,0 +1,114 @@
+﻿using Asp.Versioning;
+
+using Microsoft.AspNetCore.Mvc;
+
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Domain.Constants;
+using NGErp.Base.Service.Authorization;
+using NGErp.Base.Service.DTOs;
+using NGErp.HCM.Domain.Constants;
+using NGErp.HCM.Service.DTOs;
+using NGErp.HCM.Service.RequestFeatures;
+using NGErp.HCM.Service.Service.Contracts;
+
+namespace NGErp.HCM.API.Controllers;
+
+[JwtAuthorize]
+[ApiController]
+[ApiVersion(1.0)]
+[ApiExplorerSettings(GroupName = "v1-hcm")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employment-groups")]
+[HasPermission(EntityTypes.EmploymentGroup, moduleId: ModuleIds.HCM)]
+public class EmploymentGroupController(
+    IEmploymentGroupService employmentGroupService
+    ) : ControllerBase
+{
+    private readonly IEmploymentGroupService _employmentGroupService = employmentGroupService;
+
+    [HttpPost]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Create(
+    [FromRoute] Guid companyId,
+    [FromBody] CreateEmploymentGroupDto createDto,
+    CancellationToken ct
+    )
+    {
+        var dto = await _employmentGroupService.CreateAsync(
+            companyId,
+            createDto,
+            ct
+        );
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { companyId, id = dto.Id },
+            dto
+        );
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+        )
+    {
+        var dto = await _employmentGroupService.GetByIdAsync(
+            companyId,
+            id,
+            ct
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPost("list")]
+    [InherentlyAction(ActionType.Read)]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] EmploymentGroupParameters parameters,
+        [FromBody] FilterNodeDto? filterNodeDto,
+        CancellationToken ct
+        )
+    {
+        var result = await _employmentGroupService.GetFilteredAsync(
+            companyId,
+            parameters,
+            filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        CancellationToken ct
+        )
+    {
+        await _employmentGroupService.DeleteAsync(companyId, id, ct);
+        return NoContent();
+    }
+
+    [HttpPut("{id:guid}")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Put(
+        [FromRoute] Guid companyId,
+        [FromRoute] Guid id,
+        [FromBody] UpdateEmploymentGroupDto updateDto,
+        CancellationToken ct
+        )
+    {
+        var dto = await _employmentGroupService.UpdateAsync(
+            companyId,
+            id,
+            updateDto,
+            ct
+        );
+
+        return Ok(dto);
+    }
+}

@@ -132,6 +132,14 @@ def to_kebab_plural(name: str) -> str:
     return kebab + "s"
 
 
+def to_upper_snake(name: str) -> str:
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", name).upper()
+
+
+def to_title_case(name: str) -> str:
+    return re.sub(r"(?<!^)(?=[A-Z])", " ", name)
+
+
 def singular_from_id(field_name: str) -> str | None:
     if field_name.endswith("Id") and len(field_name) > 2:
         return field_name[:-2]
@@ -726,7 +734,7 @@ using NGErp.Base.Service.ResponseModels;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.RequestFeatures;
 
-namespace NGErp.{spec.module}.Service.Services;
+namespace NGErp.{spec.module}.Service.Service.Contracts;
 
 public interface I{spec.entity}Service
 {{
@@ -869,14 +877,15 @@ using NGErp.{spec.module}.Domain.Entities;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.Repository.Contracts;
 using NGErp.{spec.module}.Service.RequestFeatures;
-{business_rule_usings}using NGErp.{spec.module}.Service.Resources;
+using NGErp.{spec.module}.Service.Service.Contracts;
+using NGErp.{spec.module}.Service.Resources;
 
 namespace NGErp.{spec.module}.Service.Services;
 
 public class {entity}Service(
     I{entity}Repository {camel}Repository,
 {business_rule_ctor}    IMapper mapper,
-    IStringLocalizer<HCMResource> localizer,
+    IStringLocalizer<{spec.module}Resource> localizer,
     IAdvancedFilterBuilder filterBuilder
 ) : I{entity}Service
 {{
@@ -1022,19 +1031,24 @@ def generate_controller(spec: EntitySpec) -> str:
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
+using NGErp.{spec.module}.Domain.Constants;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.RequestFeatures;
+using NGErp.{spec.module}.Service.Service.Contracts;
 using NGErp.{spec.module}.Service.Services;
 
 namespace NGErp.{spec.module}.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-{spec.module.lower()}")]
 [Route("{route}")]
+[HasPermission(EntityTypes.{entity})]
 public class {entity}Controller(
     I{entity}Service {camel}Service
 ) : ControllerBase
@@ -1128,13 +1142,13 @@ using Microsoft.Extensions.Localization;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.Resources;
 
-namespace NGErp.{spec.module}.Service.RequestValidators;
+namespace NGErp.{spec.module}.Service.RequestValidators.DtoValidators;
 
 public class {spec.entity}ChangeStatusValidator : AbstractValidator<{spec.entity}ChangeStatusDto>
 {{
-    private readonly IStringLocalizer<HCMResource> _localizer;
+    private readonly IStringLocalizer<{spec.module}Resource> _localizer;
 
-    public {spec.entity}ChangeStatusValidator(IStringLocalizer<HCMResource> localizer)
+    public {spec.entity}ChangeStatusValidator(IStringLocalizer<{spec.module}Resource> localizer)
     {{
         _localizer = localizer;
 
@@ -1153,13 +1167,13 @@ using Microsoft.Extensions.Localization;
 using NGErp.{spec.module}.Service.DTOs;
 using NGErp.{spec.module}.Service.Resources;
 
-namespace NGErp.{spec.module}.Service.RequestValidators;
+namespace NGErp.{spec.module}.Service.RequestValidators.DtoValidators;
 
 public class Create{spec.entity}Validator : AbstractValidator<Create{spec.entity}Dto>
 {{
-    private readonly IStringLocalizer<HCMResource> _localizer;
+    private readonly IStringLocalizer<{spec.module}Resource> _localizer;
 
-    public Create{spec.entity}Validator(IStringLocalizer<HCMResource> localizer)
+    public Create{spec.entity}Validator(IStringLocalizer<{spec.module}Resource> localizer)
     {{
         _localizer = localizer;
     }}
@@ -1228,10 +1242,31 @@ def generate_dto_validators(spec: EntitySpec) -> str:
     patch_body = "\n\n".join(patch_rules) or "        // Add patch rules here."
     patch_policy_body = ",\n".join(patch_policy_rules)
 
+    status_validator = ""
+    localizer_using = ""
+    if spec.status:
+        localizer_using = f"using Microsoft.Extensions.Localization;\nusing NGErp.{spec.module}.Service.Resources;\n"
+        status_validator = f'''
+
+public class {spec.entity}ChangeStatusValidator : AbstractValidator<{spec.entity}ChangeStatusDto>
+{{
+    private readonly IStringLocalizer<{spec.module}Resource> _localizer;
+
+    public {spec.entity}ChangeStatusValidator(IStringLocalizer<{spec.module}Resource> localizer)
+    {{
+        _localizer = localizer;
+
+        RuleFor(x => x.Date)
+            .NotEmpty()
+            .When(x => x.Status == false)
+            .WithMessage(_localizer["StatusChangeDate.IsRequired"].Value);
+    }}
+}}'''
+
     return f'''using FluentValidation;
 
 using Microsoft.AspNetCore.JsonPatch;
-
+{localizer_using}
 using NGErp.Base.Service.Validators;
 using NGErp.{spec.module}.Service.DTOs;
 
@@ -1265,7 +1300,7 @@ public static class Patch{spec.entity}Policy
     {{
         PatchPolicyValidator.Validate(patchDocument, Rules);
     }}
-}}
+}}{status_validator}
 '''
 
 
@@ -1474,7 +1509,9 @@ def patch_mapping_profile(paths: ProjectPaths, spec: EntitySpec, force: bool) ->
 
 
 def patch_service_collection(paths: ProjectPaths, spec: EntitySpec, force: bool) -> None:
-    candidates = list(paths.service.rglob("ServiceCollectionExtensions.cs")) + list(paths.infrastructure.rglob("ServiceCollectionExtensions.cs"))
+    candidates = list(paths.service.rglob("ServiceCollectionExtensions.cs")) + list(
+        paths.infrastructure.rglob("ServiceCollectionExtensions.cs")
+    )
     for path in candidates:
         content = path.read_text(encoding="utf-8")
         if "AddScoped" not in content:
@@ -1503,14 +1540,74 @@ def patch_service_collection(paths: ProjectPaths, spec: EntitySpec, force: bool)
             print(f"DRY PATCH DI: {path}")
 
 
+def patch_entity_types(paths: ProjectPaths, spec: EntitySpec, force: bool) -> None:
+    candidates = list(paths.domain.rglob("EntityTypes.cs"))
+    if not candidates:
+        print("WARN no EntityTypes.cs file found")
+        return
+    path = candidates[0]
+    marker = f"public const string {spec.entity} ="
+    content = path.read_text(encoding="utf-8")
+    if marker in content:
+        print(f"SKIP already patched: {path}")
+        return
+
+    text = f'    public const string {spec.entity} = "{to_upper_snake(spec.entity)}";'
+    insert_before_last_brace(path, text, marker, force)
+
+
+def patch_module_profile(paths: ProjectPaths, spec: EntitySpec, force: bool) -> None:
+    candidates = list(paths.service.rglob(f"{spec.module}ModuleProfile.cs"))
+    if not candidates:
+        print(f"WARN no {spec.module}ModuleProfile.cs file found")
+        return
+    path = candidates[0]
+    marker = f"Key = EntityTypes.{spec.entity},"
+    content = path.read_text(encoding="utf-8")
+    if marker in content:
+        print(f"SKIP already patched: {path}")
+        return
+
+    text = f'''
+        yield return new EntityTypeDefinition 
+        {{ 
+            Key = EntityTypes.{spec.entity}, 
+            NameFa = "{to_title_case(spec.entity)}", 
+            NameEn = "{to_title_case(spec.entity)}", 
+            Attributes = new EntityTypeAttributes
+            {{
+                Readable = true, Creatable = true, Editable = true, Deletable = true, 
+                Loggable = true, Printable = true, Importable = false, Exportable = true, 
+                IfNotCreator = false, HasRestriction = false, Permissible = true
+            }}
+        }};'''
+
+    match = re.search(r"\n\s+return\s+definitions;\s*\n\s+\}\s*$", content)
+    if match:
+        # Some layouts use return definitions;
+        patched = content[: match.start()] + text + content[match.start() :]
+    else:
+        # Some use yield return
+        pos = content.rfind("}")
+        if pos == -1:
+            return
+        # Find the brace before the last one
+        pos2 = content.rfind("}", 0, pos)
+        if pos2 == -1:
+            return
+        patched = content[:pos2].rstrip() + "\n" + text.rstrip() + "\n    " + content[pos2:]
+
+    if force:
+        path.write_text(patched, encoding="utf-8")
+        print(f"PATCH Profile: {path}")
+    else:
+        print(f"DRY PATCH Profile: {path}")
+
+
 def scaffold(spec: EntitySpec, root: Path, force: bool, patch: bool) -> None:
     paths = resolve_paths(root, spec.module)
 
-    validator_path = (
-        paths.service / "RequestValidators" / f"{spec.entity}Validator.cs"
-        if not spec.generate_dto_validators or spec.status
-        else None
-    )
+    dto_validator_path = paths.service / "RequestValidators" / "DtoValidators" / f"{spec.entity}Validator.cs"
 
     files = {
         paths.domain / "Entities" / f"{spec.entity}.cs": generate_entity(spec),
@@ -1518,18 +1615,16 @@ def scaffold(spec: EntitySpec, root: Path, force: bool, patch: bool) -> None:
         paths.service / "Repository.Contracts" / f"I{spec.entity}Repository.cs": generate_repository_contract(spec),
         paths.infrastructure / "DataAccess" / "Repositories" / f"{spec.entity}Repository.cs": generate_repository(spec),
         paths.service / "RequestFeatures" / f"{spec.entity}Parameters.cs": generate_parameters(spec),
-        paths.service / "Services" / f"I{spec.entity}Service.cs": generate_service_interface(spec),
+        paths.service / "Service.Contracts" / f"I{spec.entity}Service.cs": generate_service_interface(spec),
         paths.service / "Services" / f"{spec.entity}Service.cs": generate_service(spec),
         paths.api / "Controllers" / f"{spec.entity}Controller.cs": generate_controller(spec),
     }
 
-    if validator_path is not None:
-        files[validator_path] = generate_validator(spec)
-
     if spec.generate_dto_validators:
-        files[
-            paths.service / "RequestValidators" / "DtoValidators" / f"{spec.entity}Validator.cs"
-        ] = generate_dto_validators(spec)
+        files[dto_validator_path] = generate_dto_validators(spec)
+    else:
+        # Simple CreateValidator or ChangeStatusValidator
+        files[dto_validator_path] = generate_validator(spec)
 
     if spec.generate_business_rule_validators:
         files[
@@ -1551,6 +1646,8 @@ def scaffold(spec: EntitySpec, root: Path, force: bool, patch: bool) -> None:
     if patch:
         patch_mapping_profile(paths, spec, force=True)
         patch_service_collection(paths, spec, force=True)
+        patch_entity_types(paths, spec, force=True)
+        patch_module_profile(paths, spec, force=True)
 
 
 # -----------------------------
