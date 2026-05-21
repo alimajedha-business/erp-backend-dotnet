@@ -22,6 +22,7 @@ public static class EntityTypes
     public const string ItemWarehouseLocation = "ITEM_WAREHOUSE_LOCATION";
     public const string MeasurementDimension = "MEASUREMENT_DIMENSION";
     public const string ReceiptType = "RECEIPT_TYPE";
+    public const string WarehouseReceipt = "WAREHOUSE_RECEIPT";
     public const string RemittanceType = "REMITTANCE_TYPE";
     public const string ShippingCompany = "SHIPPING_COMPANY";
     public const string UnitOfMeasurement = "UNIT_OF_MEASUREMENT";

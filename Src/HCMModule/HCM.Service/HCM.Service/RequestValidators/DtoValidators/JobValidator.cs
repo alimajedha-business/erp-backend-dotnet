@@ -25,9 +25,6 @@ public class CreateJobValidator : AbstractValidator<CreateJobDto>
 
         RuleFor(x => x.Description)
             .MaximumLength(1000);
-
-        RuleFor(x => x.LevelCode)
-            .NotEmpty();
     }
 }
 
@@ -58,8 +55,7 @@ public static class PatchJobPolicy
         ["/code"] = PatchFieldRule.RequiredReplaceOnly(),
         ["/title"] = PatchFieldRule.RequiredReplaceOnly(),
         ["/jobCategoryId"] = PatchFieldRule.RequiredReplaceOnly(),
-        ["/description"] = PatchFieldRule.OptionalReplaceOrRemove(),
-        ["/levelCode"] = PatchFieldRule.RequiredReplaceOnly()
+        ["/description"] = PatchFieldRule.OptionalReplaceOrRemove()
     };
 
     public static void Validate(JsonPatchDocument<PatchJobDto> patchDocument)

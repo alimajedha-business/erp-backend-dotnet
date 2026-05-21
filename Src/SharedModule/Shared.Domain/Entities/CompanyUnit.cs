@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NGErp.Base.Domain.Entities;
 using NGErp.General.Domain.Entities;
 
 namespace NGErp.Shared.Domain.Entities;
 
 [Table("company_units", Schema = "Shared")]
-public class CompanyUnit : BaseEntity
+public class CompanyUnit : BaseEntity, IBaseEntityTypeConfiguration<CompanyUnit>
 {
     [Column("company_id")]
     public Guid CompanyId { get; set; }
@@ -38,4 +39,8 @@ public class CompanyUnit : BaseEntity
     public string? AuthorizedUsers { get; set; }
 
     public virtual ICollection<CompanyUnit> Children { get; set; } = new List<CompanyUnit>();
+
+    public void Map(EntityTypeBuilder<CompanyUnit> builder)
+    {
+    }
 }

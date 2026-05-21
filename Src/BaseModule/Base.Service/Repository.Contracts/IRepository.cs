@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 
+using AutoMapper;
+
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 
@@ -58,6 +60,13 @@ public interface IRepository<T> where T : class
     Task<ListQueryResult<T>> GetResponseListAsync(
         IQueryable<T> query,
         RequestParameters requestParameters,
+        CancellationToken ct
+    );
+
+    Task<ListQueryResult<TDto>> GetResponseListAsync<TEntity, TDto>(
+        IQueryable<TEntity> query,
+        RequestParameters requestParameters,
+        IConfigurationProvider mapperConfig,
         CancellationToken ct
     );
 

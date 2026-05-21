@@ -49,8 +49,8 @@ public class ReceiptFieldDefinition :
 [JsonConverter(typeof(ReceiptFieldDataTypeConverter))]
 public enum ReceiptFieldDataType
 {
-    [Description("Text")]
-    Text = 1,
+    [Description("String")]
+    String = 1,
 
     [Description("Integer")]
     Integer = 2,
@@ -80,7 +80,7 @@ public class ReceiptFieldDataTypeConverter :
         var value = reader.GetString();
         return value switch
         {
-            "Text" => ReceiptFieldDataType.Text,
+            "String" => ReceiptFieldDataType.String,
             "Integer" => ReceiptFieldDataType.Integer,
             "Decimal" => ReceiptFieldDataType.Decimal,
             "Date" => ReceiptFieldDataType.Date,

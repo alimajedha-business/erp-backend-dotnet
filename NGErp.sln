@@ -73,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedModule", "SharedModul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Shared.Domain", "Src\SharedModule\Shared.Domain\NGErp.Shared.Domain.csproj", "{4055C7FD-351F-4002-B271-11FAD35B6CF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Shared.Service", "Src\SharedModule\Shared.Service\NGErp.Shared.Service.csproj", "{D9DF790F-B53B-480C-881C-A7F339A0FC18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +177,10 @@ Global
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,6 +219,7 @@ Global
 		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6} = {4A7EB7E4-675D-4360-8531-87E7A7A17735}
 		{FC178E3F-9AF3-47E1-8244-EF8D56B23C58} = {00293A27-E0AC-4B6C-BA00-1975D2915C60}
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1} = {FC178E3F-9AF3-47E1-8244-EF8D56B23C58}
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18} = {FC178E3F-9AF3-47E1-8244-EF8D56B23C58}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD08F26D-DEEA-4DF8-89F2-7D46444A79BC}

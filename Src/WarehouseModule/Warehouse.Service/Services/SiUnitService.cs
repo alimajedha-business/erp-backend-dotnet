@@ -76,7 +76,8 @@ public class SiUnitService(
         return new ListResponseModel<SiUnitDto>(
             results: [.. _mapper
                 .Map<IReadOnlyList<SiUnitDto>>(res.items)
-                .Select(Localize)],
+                .Select(Localize)
+            ],
             totalCount: res.count,
             parameters
         );

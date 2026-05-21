@@ -30,13 +30,22 @@ public class ReceiptRepository(MainDbContext context) :
             .SingleOrDefaultAsync(predicate, ct);
     }
 
-    public override IQueryable<Receipt> GetFiltered(
+    public IQueryable<Receipt> GetFiltered(
         Guid companyId,
+        Guid receiptTypeId,
         RequestAdvancedFilters requestAdvancedFilters
     )
     {
-        return WithListIncludes(_dbSet.AsNoTracking())
-            .Where(e => e.CompanyId == companyId)
+        return _dbSet
+            .AsNoTracking()
+            .Where(e =>
+                e.CompanyId == companyId && 
+                e.ReceiptTypeId == receiptTypeId
+            )
+            .Include(e => e.ReceiptType)
+            .Include(e => e.ReceiptFieldValues
+                .Where(fieldValue => fieldValue.ReceiptLineId == null))
+                .ThenInclude(e => e.FieldDefinition)
             .Filter(requestAdvancedFilters);
     }
 
@@ -148,12 +157,5 @@ public class ReceiptRepository(MainDbContext context) :
                 .ThenInclude(e => e.PreferredMassUnit)
             .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
                 .ThenInclude(e => e.PreferredVolumeUnit);
-    }
-
-    private static IQueryable<Receipt> WithListIncludes(IQueryable<Receipt> query)
-    {
-        return query
-            .Include(e => e.ReceiptType)
-            .Include(e => e.ReceiptLines);
     }
 }

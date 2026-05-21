@@ -25,4 +25,5 @@ public static class EntityTypes
     public const string MaritalStatus = "MARITAL_STATUS";
     public const string MilitaryServiceStatus = "MILITARY_SERVICE_STATUS";
     public const string RelativeType = "RELATIVE_TYPE";
+    public const string WorkLocation = "WORK_LOCATION";
 }
