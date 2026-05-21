@@ -14,6 +14,33 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
     {
         yield return new EntityTypeDefinition
         {
+            Key = EntityTypes.ModuleEntity,
+            NameFa = "موجودیت ماژول",
+            NameEn = "Module Entity",
+            Code = "0001",
+            Ordering = null,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = false,
+                Creatable = false,
+                Editable = false,
+                Deletable = false,
+                Loggable = false,
+                Printable = false,
+                Importable = false,
+                Exportable = false,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+            Commands =
+            [
+                new() { Key = EntityTypeCommands.ModuleEntityView, NameFa = "مشاهده", NameEn = "View" }
+            ]
+        };
+
+        yield return new EntityTypeDefinition
+        {
             Key = EntityTypes.Attribute,
             NameFa = "ویژگی",
             NameEn = "Attribute",
@@ -54,7 +81,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
                 Exportable = true,
                 IfNotCreator = false,
                 HasRestriction = false,
-                Permissible = true
+                Permissible = false
             },
         };
 
@@ -111,98 +138,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             NameEn = "Category Level Constraint",
             Code = "0020",
             Ordering = 110,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.InventoryLot,
-            NameFa = "بچ موجودی",
-            NameEn = "Inventory Lot",
-            Code = "0017",
-            Ordering = 97,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.InventoryLotAttributeValue,
-            NameFa = "مقدار ویژگی بچ موجودی",
-            NameEn = "Inventory Lot Attr Value",
-            Code = "0018",
-            Ordering = 98,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.InventoryMovement,
-            NameFa = "حرکت موجودی",
-            NameEn = "Inventory Movement",
-            Code = "0016",
-            Ordering = 95,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.InventoryMovementType,
-            NameFa = "نوع حرکت موجودی",
-            NameEn = "Inventory Movement Type",
-            Code = "0015",
-            Ordering = 90,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,
@@ -382,17 +317,17 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.MeasurementDimension,
-            NameFa = "بعد اندازه‌گیری",
-            NameEn = "Measurement Dimension",
-            Code = "0007",
-            Ordering = 60,
+            Key = EntityTypes.Receipt,
+            NameFa = "رسید",
+            NameEn = "Receipt",
+            Code = "0024",
+            Ordering = 150,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,
                 Creatable = true,
                 Editable = true,
-                Deletable = false,
+                Deletable = true,
                 Loggable = true,
                 Printable = true,
                 Importable = false,
@@ -405,29 +340,163 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.ModuleEntity,
-            NameFa = "موجودیت ماژول",
-            NameEn = "Module Entity",
-            Code = "0001",
-            Ordering = null,
+            Key = EntityTypes.ReceiptFieldDefinition,
+            NameFa = "تعریف ورودی رسید",
+            NameEn = "Receipt Field Definition",
+            Code = "0024",
+            Ordering = 150,
             Attributes = new EntityTypeAttributes
             {
-                Readable = false,
-                Creatable = false,
-                Editable = false,
-                Deletable = false,
-                Loggable = false,
-                Printable = false,
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
                 Importable = false,
-                Exportable = false,
+                Exportable = true,
                 IfNotCreator = false,
                 HasRestriction = false,
                 Permissible = true
             },
-            Commands =
-            [
-                new() { Key = EntityTypeCommands.ModuleEntityView, NameFa = "مشاهده", NameEn = "View" }
-            ]
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptFieldValue,
+            NameFa = "مقدار ورودی رسید",
+            NameEn = "Receipt Field Value",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptLine,
+            NameFa = "ردیف‌ رسید",
+            NameEn = "Receipt Line",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptLineAttributeValue,
+            NameFa = "مشخصه ردیف رسید",
+            NameEn = "Receipt Line Attribute Value",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+				
+		yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptLineAttributeValue,
+            NameFa = "مقدار مشخصه ردیف رسید",
+            NameEn = "Receipt Line Attribute Value",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+				
+		yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptLineMeasurementValue,
+            NameFa = "مقدار واحد اندازه گیری ردیف رسید",
+            NameEn = "Receipt Line Measurement Value",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+				
+		yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptLineMeasurementValue,
+            NameFa = "منبع تامین رسید",
+            NameEn = "Receipt Source of Supply",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
         };
 
         yield return new EntityTypeDefinition
@@ -435,6 +504,52 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             Key = EntityTypes.ReceiptType,
             NameFa = "نوع رسید",
             NameEn = "Receipt Type",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptTypeConfiguration,
+            NameFa = "پیکربندی نوع رسید",
+            NameEn = "Receipt Type Configuration",
+            Code = "0024",
+            Ordering = 150,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.ReceiptTypeFieldConfiguration,
+            NameFa = "پیکربندی ورودی نوع رسید",
+            NameEn = "Receipt Type Field Configuration",
             Code = "0024",
             Ordering = 150,
             Attributes = new EntityTypeAttributes
@@ -474,6 +589,29 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
                 HasRestriction = false,
                 Permissible = true
             },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.SiUnit,
+            NameFa = "واحد SI",
+            NameEn = "SI Unit",
+            Code = "0028",
+            Ordering = 190,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            }
         };
 
         yield return new EntityTypeDefinition
@@ -589,36 +727,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
                 HasRestriction = false,
                 Permissible = true
             },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.WarehouseReceipt,
-            NameFa = "رسید انبار",
-            NameEn = "Warehouse Receipt",
-            Code = "0026",
-            Ordering = 170,
-            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.WarehouseRemittance,
-            NameFa = "حواله انبار",
-            NameEn = "Warehouse Remittance",
-            Code = "0027",
-            Ordering = 180,
-            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.SiUnit,
-            NameFa = "واحد SI",
-            NameEn = "SI Unit",
-            Code = "0028",
-            Ordering = 190,
-            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
         };
     }
 }
