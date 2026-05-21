@@ -7,15 +7,17 @@ public class HasPermissionAttribute : AuthorizeAttribute
 {
     public const string PolicyPrefix = "Permission";
 
-    public HasPermissionAttribute(string entityKey, string? commandKey = null)
+    public HasPermissionAttribute(string entityKey, string? commandKey = null, long moduleId = 0)
     {
+        var mid = moduleId > 0 ? $":m{moduleId}" : "";
         Policy = commandKey == null 
-            ? $"{PolicyPrefix}:{entityKey}" 
-            : $"{PolicyPrefix}:{entityKey}:{commandKey}";
+            ? $"{PolicyPrefix}:{entityKey}{mid}" 
+            : $"{PolicyPrefix}:{entityKey}{mid}:{commandKey}";
     }
 
-    public HasPermissionAttribute(string entityKey, ActionType action)
+    public HasPermissionAttribute(string entityKey, ActionType action, long moduleId = 0)
     {
-        Policy = $"{PolicyPrefix}:{entityKey}:{(int)action}";
+        var mid = moduleId > 0 ? $":m{moduleId}" : "";
+        Policy = $"{PolicyPrefix}:{entityKey}{mid}:{(int)action}";
     }
 }

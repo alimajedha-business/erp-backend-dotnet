@@ -18,8 +18,7 @@ public class JobBusinessRuleValidator(
         "code",
         "title",
         "jobCategoryId",
-        "description",
-        "levelCode"
+        "description"
     };
 
     private readonly IJobRepository _jobRepository = jobRepository;

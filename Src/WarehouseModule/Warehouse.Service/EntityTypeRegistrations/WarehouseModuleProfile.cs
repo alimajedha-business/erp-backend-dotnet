@@ -1,3 +1,4 @@
+using NGErp.Base.Domain.Constants;
 using NGErp.Base.Domain.EntityTypeRegistration;
 using NGErp.Warehouse.Domain.Constants;
 
@@ -5,7 +6,7 @@ namespace NGErp.Warehouse.Service.EntityTypeRegistrations;
 
 public class WarehouseModuleProfile : IEntityTypeModuleProfile
 {
-    public long ModuleId => 4;
+    public long ModuleId => ModuleIds.Warehouse;
     public string Prefix => "warehouse";
     public bool DeleteStale => true;
 
@@ -261,6 +262,36 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             NameEn = "Remittance Type",
             Code = "0025",
             Ordering = 160,
+            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.WarehouseReceipt,
+            NameFa = "رسید انبار",
+            NameEn = "Warehouse Receipt",
+            Code = "0026",
+            Ordering = 170,
+            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.WarehouseRemittance,
+            NameFa = "حواله انبار",
+            NameEn = "Warehouse Remittance",
+            Code = "0027",
+            Ordering = 180,
+            Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.SiUnit,
+            NameFa = "واحد SI",
+            NameEn = "SI Unit",
+            Code = "0028",
+            Ordering = 190,
             Attributes = new EntityTypeAttributes { Readable = true, Creatable = true, Editable = true, Deletable = true, Loggable = true, Printable = true, Importable = false, Exportable = true, IfNotCreator = false, HasRestriction = false, Permissible = true }
         };
     }

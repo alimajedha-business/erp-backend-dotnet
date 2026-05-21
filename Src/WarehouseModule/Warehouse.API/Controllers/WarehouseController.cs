@@ -8,6 +8,7 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.Services;
+using NGErp.General.Domain.Constants;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
@@ -22,6 +23,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
+[HasPermission(EntityTypes.Warehouse)]
 public class WarehouseController(
     IWarehouseService warehouseService,
     IExcelExportService excelExportService

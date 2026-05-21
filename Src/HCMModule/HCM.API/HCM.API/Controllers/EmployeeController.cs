@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Domain.Constants;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
+using NGErp.HCM.Domain.Constants;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
@@ -15,7 +17,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/employees")]
-[HasPermission("EMPLOYEE")]
+[HasPermission(EntityTypes.Employee, moduleId: ModuleIds.HCM)]
 public class EmployeeController(
     IEmployeeService employeeService,
     IEmployeeEducationService employeeEducationService,
