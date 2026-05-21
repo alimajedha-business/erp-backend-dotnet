@@ -1,18 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-using Asp.Versioning;
+﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
 
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Domain.Constants;
 using NGErp.Base.Service.Authorization;
-using NGErp.HCM.Domain.Constants;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
+
+using SharedHCM = NGErp.Shared.Domain.Constants;
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -21,7 +18,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/org-structures")]
-[HasPermission(EntityTypes.OrganizationalStructure, moduleId: ModuleIds.HCM)]
+[HasPermission(SharedHCM.EntityTypes.OrganizationalStructure, moduleId: ModuleIds.HCM)]
 public class OrganizationalStructureController(IOrganizationalStructureService organizationalStructureService) : ControllerBase
 {
     private readonly IOrganizationalStructureService _organizationalStructureService = organizationalStructureService;

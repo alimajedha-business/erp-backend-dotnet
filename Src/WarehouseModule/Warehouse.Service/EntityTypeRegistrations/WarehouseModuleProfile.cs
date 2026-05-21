@@ -318,7 +318,7 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
         yield return new EntityTypeDefinition
         {
             Key = EntityTypes.Receipt,
-            NameFa = "رسید",
+            NameFa = "رسید انبار",
             NameEn = "Receipt",
             Code = "0024",
             Ordering = 150,
@@ -575,6 +575,29 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             NameEn = "Remittance Type",
             Code = "0035",
             Ordering = 170,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.Remittance,
+            NameFa = "حواله انبار",
+            NameEn = "Remittance",
+            Code = "0035",
+            Ordering = 171,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,

@@ -1,6 +1,6 @@
 using NGErp.Base.Domain.Constants;
 using NGErp.Base.Domain.EntityTypeRegistration;
-using NGErp.HCM.Domain.Constants;
+using NGErp.General.Domain.Constants;
 
 namespace NGErp.General.Service.MenuRegistrations;
 
@@ -33,6 +33,63 @@ public class GeneralMenuProfile : IMenuModuleProfile
                 new() { NameFa = "وضعیت نظام وظیفه", NameEn = "Military Service Status", Order = 6, EntityTypeKey = EntityTypes.MilitaryServiceStatus, Link = "/hcm/military-service-statuses" },
                 new() { NameFa = "رسته شغلی", NameEn = "Job Category", Order = 7, EntityTypeKey = EntityTypes.JobCategory, Link = "/hcm/job-categories" },
             }
+        };
+
+        yield return new MenuDefinition
+        {
+            NameFa = "انبار",
+            NameEn = "Warehouse",
+            Order = 3,
+            Children = [
+                new()
+                {
+                    NameFa = "رشته تحصیلی",
+                    NameEn = "Education Field",
+                    Order = 2,
+                    EntityTypeKey = EntityTypes.EducationField,
+                    Link = "/hcm/education-fields"
+                },
+                new()
+                {
+                    NameFa = "وضعیت تحصیلی",
+                    NameEn = "Educational Status",
+                    Order = 3,
+                    EntityTypeKey = EntityTypes.EducationalStatus,
+                    Link = "/hcm/educational-statuses"
+                },
+                new()
+                {
+                    NameFa = "وضعیت تاهل",
+                    NameEn = "Marital Status",
+                    Order = 4,
+                    EntityTypeKey = EntityTypes.MaritalStatus,
+                    Link = "/hcm/marital-statuses"
+                },
+                new()
+                {
+                    NameFa = "انواع وابستگان",
+                    NameEn = "Relative Types",
+                    Order = 5,
+                    EntityTypeKey = EntityTypes.RelativeType,
+                    Link = "/hcm/relative-types"
+                },
+                new()
+                {
+                    NameFa = "وضعیت نظام وظیفه",
+                    NameEn = "Military Service Status",
+                    Order = 6,
+                    EntityTypeKey = EntityTypes.MilitaryServiceStatus,
+                    Link = "/hcm/military-service-statuses"
+                },
+                new()
+                {
+                    NameFa = "رسته شغلی",
+                    NameEn = "Job Category",
+                    Order = 7,
+                    EntityTypeKey = EntityTypes.JobCategory,
+                    Link = "/hcm/job-categories"
+                }
+            ]
         };
     }
 }

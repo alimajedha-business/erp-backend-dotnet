@@ -1,6 +1,6 @@
 using NGErp.Base.Domain.Constants;
 using NGErp.Base.Domain.EntityTypeRegistration;
-using NGErp.HCM.Domain.Constants;
+using NGErp.General.Domain.Constants;
 
 namespace NGErp.General.Service.EntityTypeRegistrations;
 

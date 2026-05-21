@@ -9,10 +9,11 @@ using NGErp.Base.Domain.Constants;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.Services;
-using NGErp.HCM.Domain.Constants;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
+
+using GeneralHCM = NGErp.General.Domain.Constants;
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -21,7 +22,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/hcm/job-categories")]
-[HasPermission(EntityTypes.JobCategory, moduleId: ModuleIds.HCM)]
+[HasPermission(GeneralHCM.EntityTypes.JobCategory, moduleId: ModuleIds.HCM)]
 public class JobCategoryController(
     IJobCategoryService jobCategoryService,
     IExcelExportService excelExportService

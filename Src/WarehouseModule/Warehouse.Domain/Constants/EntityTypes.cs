@@ -26,6 +26,7 @@ public static class EntityTypes
     public const string ReceiptType = "RECEIPT_TYPE";
     public const string ReceiptTypeConfiguration = "RECEIPT_TYPE_CONFIGURATION";
     public const string ReceiptTypeFieldConfiguration = "RECEIPT_TYPE_FIELD_CONFIGURATION";
+    public const string Remittance = "REMITTANCE";
     public const string RemittanceType = "REMITTANCE_TYPE";
     public const string ShippingCompany = "SHIPPING_COMPANY";
     public const string SiUnit = "SI_UNIT";

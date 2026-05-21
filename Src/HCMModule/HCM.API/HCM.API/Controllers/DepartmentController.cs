@@ -6,10 +6,11 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Domain.Constants;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
-using NGErp.HCM.Domain.Constants;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
+
+using SharedHCM = NGErp.Shared.Domain.Constants;
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -18,7 +19,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/hcm/departments")]
-[HasPermission(EntityTypes.Department, moduleId: ModuleIds.HCM)]
+[HasPermission(SharedHCM.EntityTypes.Department, moduleId: ModuleIds.HCM)]
 public class DepartmentController(
     IDepartmentService departmentService
     ) : ControllerBase

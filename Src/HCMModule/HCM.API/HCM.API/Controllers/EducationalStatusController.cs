@@ -7,10 +7,11 @@ using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Domain.Constants;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
-using NGErp.HCM.Domain.Constants;
 using NGErp.HCM.Service.DTOs;
 using NGErp.HCM.Service.RequestFeatures;
 using NGErp.HCM.Service.Services;
+
+using GeneralHCM = NGErp.General.Domain.Constants;
 
 namespace NGErp.HCM.API.Controllers;
 
@@ -19,7 +20,7 @@ namespace NGErp.HCM.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-hcm")]
 [Route("api/v{version:apiVersion}/hcm/educational-statuses")]
-[HasPermission(EntityTypes.EducationalStatus, moduleId: ModuleIds.HCM)]
+[HasPermission(GeneralHCM.EntityTypes.EducationalStatus, moduleId: ModuleIds.HCM)]
 public class EducationalStatusController(
     IEducationalStatusService educationalStatusService
 ) : ControllerBase
