@@ -29,7 +29,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                 {
                     NameFa = "مشخصه‌های شناور",
                     NameEn = "Attributes",
-                    Order = 3,
+                    Order = 2,
                     EntityTypeKey = EntityTypes.Attribute,
                     Link = "/base-data/settings/attributes"
                 },
@@ -40,6 +40,38 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     Order = 3,
                     EntityTypeKey = EntityTypes.Item,
                     Link = "/base-data/items"
+                },
+                new()
+                {
+                    NameFa = "انواع رسید",
+                    NameEn = "Receipt Types",
+                    Order = 4,
+                    EntityTypeKey = EntityTypes.ReceiptType,
+                    Link = "/base-data/receipt-types"
+                },
+                new()
+                {
+                    NameFa = "انواع حواله",
+                    NameEn = "Remittance Types",
+                    Order = 5,
+                    EntityTypeKey = EntityTypes.RemittanceType,
+                    Link = "/base-data/remittance-types"
+                },
+                new()
+                {
+                    NameFa = "انواع فعالیت‌ها",
+                    NameEn = "Inventory Movement Types",
+                    Order = 6,
+                    EntityTypeKey = EntityTypes.InventoryMovementTypes,
+                    Link = "/base-data/inventory-movement-types"
+                },
+                new()
+                {
+                    NameFa = "منبع تامین رسید",
+                    NameEn = "Receipt Source of Supply",
+                    Order = 7,
+                    EntityTypeKey = EntityTypes.ReceiptSourceOfSupply,
+                    Link = "/base-data/receipt-source-of-supply"
                 },
             ]
         };
@@ -65,39 +97,6 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     Order = 2,
                     EntityTypeKey = EntityTypes.Remittance,
                     Link = "/current-affairs/remittances"
-                }
-            ]
-        };
-
-        yield return new MenuDefinition
-        {
-            NameFa = "اسناد انبار",
-            NameEn = "Warehouse Documents",
-            Order = 4,
-            Children = [
-                new()
-                {
-                    NameFa = "انواع رسید",
-                    NameEn = "Receipt Types",
-                    Order = 1,
-                    EntityTypeKey = EntityTypes.ReceiptType,
-                    Link = "/warehouse-documents/receipt-types"
-                },
-                new()
-                {
-                    NameFa = "انواع حواله",
-                    NameEn = "Remittance Types",
-                    Order = 2,
-                    EntityTypeKey = EntityTypes.RemittanceType,
-                    Link = "/warehouse-documents/remittance-types"
-                },
-                new()
-                {
-                    NameFa = "انواع فعالیت‌ها",
-                    NameEn = "Inventory Movement Types",
-                    Order = 3,
-                    EntityTypeKey = EntityTypes.InventoryMovementTypes,
-                    Link = "/warehouse-documents/inventory-movement-types"
                 }
             ]
         };
