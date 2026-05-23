@@ -31,7 +31,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Attributes",
                     Order = 2,
                     EntityTypeKey = EntityTypes.Attribute,
-                    Link = "/base-data/settings/attributes"
+                    Link = "/base-data/attributes"
                 },
                 new()
                 {
