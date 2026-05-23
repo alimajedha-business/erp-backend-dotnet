@@ -1,6 +1,6 @@
 namespace NGErp.General.Domain.Constants;
 
-public static class EntityTypes
+public static partial class EntityTypes
 {
     public const string Person = "PERSON";
     public const string Company = "COMPANY";

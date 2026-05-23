@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
-using NGErp.Warehouse.Domain.Constants;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
+
+using GeneralWarehouse = NGErp.General.Domain.Constants;
 
 namespace NGErp.Warehouse.API.Controllers;
 
@@ -16,7 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/si-units")]
-[HasPermission(EntityTypes.SiUnit)]
+[HasPermission(GeneralWarehouse.EntityTypes.SiUnit)]
 public class SiUnitController(
     ISiUnitService unitService
 ) : ControllerBase
