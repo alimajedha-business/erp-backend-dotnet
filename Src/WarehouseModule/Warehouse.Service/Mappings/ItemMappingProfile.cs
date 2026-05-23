@@ -9,6 +9,7 @@ public class ItemMappingProfile : Profile
 {
     public ItemMappingProfile()
     {
+        CreateMap<Item, ItemSlimDto>();
         CreateMap<Item, ItemListDto>()
             .ForCtorParam(
                 nameof(ItemListDto.UnitOfMeasurementTitle),

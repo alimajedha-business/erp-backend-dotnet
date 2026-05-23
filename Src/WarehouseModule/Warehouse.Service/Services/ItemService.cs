@@ -122,6 +122,24 @@ public class ItemService(
         return await BuildItemDtoAsync(item, ct);
     }
 
+    public async Task<ListResponseModel<ItemSlimDto>> FilterByQAsync(
+        Guid companyId,
+        ItemParameters parameters,
+        CancellationToken ct = default
+    )
+    {
+        _businessRuleValidator.ValidateParameters(parameters);
+
+        var query = _itemRepository.FilterByQ(companyId, parameters);
+        var res = await _itemRepository.GetResponseListAsync(query, parameters, ct);
+
+        return new ListResponseModel<ItemSlimDto>(
+            results: _mapper.Map<IReadOnlyList<ItemSlimDto>>(res.items),
+            totalCount: res.count,
+            parameters
+        );
+    }
+
     public async Task<ListResponseModel<ItemListDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,

@@ -13,6 +13,7 @@ using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Services;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -50,6 +51,22 @@ public class ItemController(
             companyId,
             parameters,
             filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] ItemParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _itemService.FilterByQAsync(
+            companyId,
+            parameters,
             ct
         );
 
