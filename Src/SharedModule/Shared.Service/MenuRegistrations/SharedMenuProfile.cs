@@ -52,7 +52,7 @@ public class SharedMenuProfile : IMenuModuleProfile
             Children = [
                 new()
                 {
-                    NameFa = "محدودیت سطوح کالا",
+                    NameFa = "محدودیت سطوح طبقه‌بندی",
                     NameEn = "Category Level Constraint",
                     Order = 1,
                     EntityTypeKey = EntityTypes.CategoryLevelConstraint,
@@ -60,11 +60,11 @@ public class SharedMenuProfile : IMenuModuleProfile
                 },
                 new()
                 {
-                    NameFa = "تعریف کدینگ کالا",
-                    NameEn = "Category",
+                    NameFa = "طبقه‌بندی کالا",
+                    NameEn = "Warehouse Category",
                     Order = 2,
                     EntityTypeKey = EntityTypes.Category,
-                    Link = "/good-base-data/categories"
+                    Link = "/good-base-data/warehouse-categories"
                 }
             ]
         };
