@@ -107,6 +107,13 @@ internal static class UpdateMenus
             var menuItem = await context.MenuItems
                 .FirstOrDefaultAsync(m => m.ModuleId == module.Id && m.NameFa == def.NameFa && m.ParentId == (parent != null ? parent.Id : (Guid?)null));
 
+            // Fallback for initial migration: find by name and parent if module_id is not set
+            if (menuItem is null)
+            {
+                menuItem = await context.MenuItems
+                    .FirstOrDefaultAsync(m => m.ModuleId == 0 && m.NameFa == def.NameFa && m.ParentId == (parent != null ? parent.Id : (Guid?)null));
+            }
+
             if (menuItem is null)
             {
                 menuItem = new MenuItem
@@ -125,6 +132,7 @@ internal static class UpdateMenus
                 result.UpdatedMenus++;
             }
 
+            menuItem.ModuleId = module.Id; // Ensure ModuleId is set
             menuItem.NameEn = def.NameEn;
             menuItem.Order = def.Order;
             menuItem.Link = def.Link;

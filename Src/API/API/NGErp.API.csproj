@@ -36,9 +36,9 @@
         <ProjectReference Include="..\..\GeneralModule\General.API\NGErp.General.API.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General.Infrastructure\NGErp.General.Infrastructure.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General.Service\NGErp.General.Service.csproj" />
-        <ProjectReference Include="..\..\HCMModule\HCM.API\HCM.API\NGErp.HCM.API.csproj" />
-        <ProjectReference Include="..\..\HCMModule\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.API\NGErp.HCM.API.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\HCMModule\HCM.Service\NGErp.HCM.Service.csproj" />
         <ProjectReference Include="..\..\WarehouseModule\Warehouse.API\NGErp.Warehouse.API.csproj" />
         <ProjectReference Include="..\..\WarehouseModule\Warehouse.Infrastructure\NGErp.Warehouse.Infrastructure.csproj" />
         <ProjectReference Include="..\..\WarehouseModule\Warehouse.Service\NGErp.Warehouse.Service.csproj" />
