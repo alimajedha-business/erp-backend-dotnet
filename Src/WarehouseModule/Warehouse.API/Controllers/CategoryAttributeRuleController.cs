@@ -1,4 +1,4 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +8,8 @@ using NGErp.Base.Service.Authorization;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Service.Contracts;
 
+using SharedWarehouse = NGErp.Shared.Domain.Constants;
+
 namespace NGErp.Warehouse.API.Controllers;
 
 [JwtAuthorize]
@@ -15,6 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories/{categoryId:guid}/attribute-rules")]
+[HasPermission(SharedWarehouse.EntityTypes.CategoryAttributeRule)]
 public class CategoryAttributeRuleController(
     ICategoryAttributeRuleService attributeRuleService
 ) : ControllerBase

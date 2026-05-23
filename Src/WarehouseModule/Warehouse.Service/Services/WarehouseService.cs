@@ -104,10 +104,14 @@ public class WarehouseService(
 
         var advancedFilters = _filterBuilder.Build<Domain.Entities.Warehouse>(filterNodeDto);
         var query = _warehouseRepository.GetFiltered(companyId, advancedFilters);
-        var res = await _warehouseRepository.GetResponseListAsync(query, parameters, ct);
+
+        var res = await _warehouseRepository.GetResponseListAsync<
+            Domain.Entities.Warehouse,
+            WarehouseListDto
+        >(query, parameters, _mapper.ConfigurationProvider, ct);
 
         return new ListResponseModel<WarehouseListDto>(
-            results: _mapper.Map<IReadOnlyList<WarehouseListDto>>(res.items),
+            results: res.items,
             totalCount: res.count,
             parameters
         );

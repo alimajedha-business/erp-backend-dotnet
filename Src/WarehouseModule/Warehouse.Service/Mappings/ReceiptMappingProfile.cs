@@ -18,6 +18,11 @@ public class ReceiptMappingProfile : Profile
             .ForCtorParam(
                 nameof(ReceiptListDto.ReceiptLineCount),
                 opt => opt.MapFrom(src => src.ReceiptLines.Count)
+            )
+            .ForCtorParam(
+                nameof(ReceiptListDto.ReceiptFieldValues),
+                opt => opt.MapFrom(src => src.ReceiptFieldValues
+                    .Where(e => e.ReceiptLineId == null))
             );
 
         CreateMap<Receipt, ReceiptDto>();
@@ -33,6 +38,29 @@ public class ReceiptMappingProfile : Profile
         CreateMap<ReceiptLineAttributeValue, ReceiptLineAttributeValueDto>();
         CreateMap<ReceiptLineMeasurementValue, ReceiptLineMeasurementValueDto>();
         CreateMap<ReceiptFieldValue, ReceiptFieldValueDto>();
+        CreateMap<ReceiptFieldValue, ReceiptHeaderFieldValueListDto>()
+            .ForCtorParam(
+                nameof(ReceiptHeaderFieldValueListDto.FieldDefinitionTitle),
+                opt => opt.MapFrom(src => src.FieldDefinition.Title)
+            )
+            .ForCtorParam(
+                nameof(ReceiptHeaderFieldValueListDto.FieldDefinitionKey),
+                opt => opt.MapFrom(src => src.FieldDefinition.Key)
+            )
+            .ForCtorParam(
+                nameof(ReceiptHeaderFieldValueListDto.DataType),
+                opt => opt.MapFrom(src => src.FieldDefinition.DataType)
+            )
+            .ForCtorParam(
+                nameof(ReceiptHeaderFieldValueListDto.DataTypeDescription),
+                opt => opt.MapFrom(src =>
+                    ReceiptFieldDefinitionDto.GetDataTypeDescription(src.FieldDefinition.DataType)
+                )
+            )
+            .ForCtorParam(
+                nameof(ReceiptHeaderFieldValueListDto.Value),
+                opt => opt.MapFrom(src => GetReceiptFieldValue(src))
+            );
 
         CreateMap<CreateReceiptDto, Receipt>()
             .ForMember(d => d.Number, o => o.MapFrom(s => s.Number!))
@@ -48,5 +76,19 @@ public class ReceiptMappingProfile : Profile
         CreateMap<CreateReceiptLineMeasurementValueDto, ReceiptLineMeasurementValue>();
 
         CreateMap<CreateReceiptFieldValueDto, ReceiptFieldValue>();
+    }
+
+    private static object? GetReceiptFieldValue(ReceiptFieldValue fieldValue)
+    {
+        return fieldValue.FieldDefinition.DataType switch
+        {
+            ReceiptFieldDataType.String => fieldValue.StringValue,
+            ReceiptFieldDataType.Integer => fieldValue.IntegerValue,
+            ReceiptFieldDataType.Decimal => fieldValue.DecimalValue,
+            ReceiptFieldDataType.Date => fieldValue.DateValue,
+            ReceiptFieldDataType.Boolean => fieldValue.BooleanValue,
+            ReceiptFieldDataType.Guid => fieldValue.ReferenceId,
+            _ => null
+        };
     }
 }

@@ -20,11 +20,11 @@ public class ReceiptFieldValue :
     // Not null means detail/grid-row value.
     public Guid? ReceiptLineId { get; set; }
     public Guid FieldDefinitionId { get; set; }
+
     public string? StringValue { get; set; }
-    public int? IntValue { get; set; }
+    public int? IntegerValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }
-    public DateTime? DateTimeValue { get; set; }
     public Guid? ReferenceId { get; set; }
     public bool? BooleanValue { get; set; }
 

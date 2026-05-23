@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentValidation;
 
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Localization;
 
 using NGErp.Base.Domain.Exceptions;
 using NGErp.Base.Service.DTOs;
@@ -16,6 +17,7 @@ using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
+using NGErp.Warehouse.Service.Resources;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.Service.Services;
@@ -28,11 +30,13 @@ public class ReceiptService(
     IReceiptInventoryProjectionService receiptInventoryProjectionService,
     IValidator<CreateReceiptDto> createValidator,
     IValidator<PatchReceiptDto> patchValidator,
-    IMapper mapper
+    IMapper mapper,
+    IStringLocalizer<WarehouseResource> localizer
 ) : IReceiptService
 {
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IMapper _mapper = mapper;
+    private readonly IStringLocalizer _localizer = localizer;
     private readonly IReceiptRepository _receiptRepository = receiptRepository;
     private readonly ISiUnitRepository _unitRepository = unitRepository;
     private readonly IReceiptBusinessRuleValidator _businessRuleValidator = businessRuleValidator;
@@ -48,6 +52,7 @@ public class ReceiptService(
     )
     {
         RequestBodyValidator.ThrowIfNull(createDto);
+        NormalizeCreateDtoValues(createDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, createDto, ct);
         await _businessRuleValidator.ValidateCreateAsync(companyId, createDto, ct);
 
@@ -90,6 +95,7 @@ public class ReceiptService(
 
     public async Task<ListResponseModel<ReceiptListDto>> GetFilteredAsync(
         Guid companyId,
+        Guid receiptTypeId,
         ReceiptParameters parameters,
         FilterNodeDto? filterNodeDto = null,
         CancellationToken ct = default
@@ -98,11 +104,18 @@ public class ReceiptService(
         _businessRuleValidator.ValidateParameters(parameters);
 
         var advancedFilters = _filterBuilder.Build<Receipt>(filterNodeDto);
-        var query = _receiptRepository.GetFiltered(companyId, advancedFilters);
+        var query = _receiptRepository.GetFiltered(
+            companyId,
+            receiptTypeId,
+            advancedFilters
+        );
         var res = await _receiptRepository.GetResponseListAsync(query, parameters, ct);
 
         return new ListResponseModel<ReceiptListDto>(
-            results: _mapper.Map<IReadOnlyList<ReceiptListDto>>(res.items),
+            results: [.. _mapper
+                .Map<IReadOnlyList<ReceiptListDto>>(res.items)
+                .Select(Localize)
+            ],
             totalCount: res.count,
             parameters
         );
@@ -134,9 +147,11 @@ public class ReceiptService(
         if (errors.Count != 0)
             throw new InvalidPatchDocumentException(errors);
 
+        NormalizePatchDtoValues(patchDto);
         await RequestBodyValidator.ValidateAsync(_patchValidator, patchDto, ct);
 
         var updateDto = BuildCreateDto(patchDto);
+        NormalizeCreateDtoValues(updateDto);
         await RequestBodyValidator.ValidateAsync(_createValidator, updateDto, ct);
         await _businessRuleValidator.ValidateUpdateAsync(companyId, id, updateDto, ct);
 
@@ -205,6 +220,39 @@ public class ReceiptService(
     )
     {
         return _receiptRepository.GetNextNumberAsync(companyId, ct);
+    }
+
+    private static void NormalizePatchDtoValues(PatchReceiptDto patchDto)
+    {
+        if (patchDto.ReceiptFieldValues is not null)
+        {
+            foreach (var fieldValue in patchDto.ReceiptFieldValues)
+                fieldValue.NormalizeValue();
+        }
+
+        if (patchDto.ReceiptLines is not null)
+        {
+            foreach (var line in patchDto.ReceiptLines)
+                NormalizeLineValues(line);
+        }
+    }
+
+    private static void NormalizeCreateDtoValues(CreateReceiptDto createDto)
+    {
+        foreach (var fieldValue in createDto.ReceiptFieldValues)
+            fieldValue.NormalizeValue();
+
+        foreach (var line in createDto.ReceiptLines)
+            NormalizeLineValues(line);
+    }
+
+    private static void NormalizeLineValues(CreateReceiptLineDto lineDto)
+    {
+        foreach (var attributeValue in lineDto.ReceiptLineAttributeValues)
+            attributeValue.NormalizeValue();
+
+        foreach (var fieldValue in lineDto.ReceiptFieldValues)
+            fieldValue.NormalizeValue();
     }
 
     private static void AddHeaderFieldValues(
@@ -278,9 +326,9 @@ public class ReceiptService(
                     CompanyId = companyId,
                     ItemAttributeId = attributeValueDto.ItemAttributeId,
                     StringValue = attributeValueDto.StringValue,
+                    IntegerValue = attributeValueDto.IntegerValue,
                     DecimalValue = attributeValueDto.DecimalValue,
                     DateValue = attributeValueDto.DateValue,
-                    DateTimeValue = attributeValueDto.DateTimeValue,
                     ReferenceId = attributeValueDto.ReferenceId,
                     BooleanValue = attributeValueDto.BooleanValue,
                     ReceiptLine = line
@@ -370,10 +418,9 @@ public class ReceiptService(
             CompanyId = companyId,
             FieldDefinitionId = dto.FieldDefinitionId,
             StringValue = dto.StringValue,
-            IntValue = dto.IntValue,
+            IntegerValue = dto.IntegerValue,
             DecimalValue = dto.DecimalValue,
             DateValue = dto.DateValue,
-            DateTimeValue = dto.DateTimeValue,
             ReferenceId = dto.ReferenceId,
             BooleanValue = dto.BooleanValue
         };
@@ -449,10 +496,9 @@ public class ReceiptService(
         {
             FieldDefinitionId = fieldValue.FieldDefinitionId,
             StringValue = fieldValue.StringValue,
-            IntValue = fieldValue.IntValue,
+            IntegerValue = fieldValue.IntegerValue,
             DecimalValue = fieldValue.DecimalValue,
             DateValue = fieldValue.DateValue,
-            DateTimeValue = fieldValue.DateTimeValue,
             ReferenceId = fieldValue.ReferenceId,
             BooleanValue = fieldValue.BooleanValue
         };
@@ -466,9 +512,9 @@ public class ReceiptService(
         {
             ItemAttributeId = attributeValue.ItemAttributeId,
             StringValue = attributeValue.StringValue,
+            IntegerValue = attributeValue.IntegerValue,
             DecimalValue = attributeValue.DecimalValue,
             DateValue = attributeValue.DateValue,
-            DateTimeValue = attributeValue.DateTimeValue,
             ReferenceId = attributeValue.ReferenceId,
             BooleanValue = attributeValue.BooleanValue
         };
@@ -517,5 +563,26 @@ public class ReceiptService(
             ItemUnitOfMeasurementId = measurementValue.ItemUnitOfMeasurementId,
             Quantity = measurementValue.Quantity
         };
+    }
+
+    private ReceiptListDto Localize(ReceiptListDto dto)
+    {
+        return dto with
+        {
+            ReceiptFieldValues = [.. dto.ReceiptFieldValues.Select(Localize)]
+        };
+    }
+
+    private ReceiptHeaderFieldValueListDto Localize(ReceiptHeaderFieldValueListDto dto)
+    {
+        return dto with
+        {
+            FieldDefinitionTitle = Localize(dto.FieldDefinitionTitle)
+        };
+    }
+
+    private string Localize(string value)
+    {
+        return _localizer[value].Value;
     }
 }

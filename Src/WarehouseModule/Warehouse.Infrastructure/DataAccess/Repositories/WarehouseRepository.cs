@@ -28,17 +28,6 @@ public class WarehouseRepository(MainDbContext context) :
             .SingleOrDefaultAsync(predicate, ct);
     }
 
-    public override IQueryable<Domain.Entities.Warehouse> GetFiltered(
-        Guid companyId,
-        RequestAdvancedFilters requestAdvancedFilters
-    )
-    {
-        var query = base.GetFiltered(companyId, requestAdvancedFilters);
-        return query
-            .Include(i => i.CompanyUnit)
-            .Include(i => i.WarehouseType);
-    }
-
     public async Task<int> GetNextCodeAsync(
         Guid companyId,
         CancellationToken ct

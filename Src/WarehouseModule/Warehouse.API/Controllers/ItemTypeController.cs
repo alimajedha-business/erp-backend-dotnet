@@ -11,6 +11,8 @@ using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
+using GeneralWarehouse = NGErp.General.Domain.Constants;
+
 using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -20,6 +22,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/warehouse/item-types")]
+[HasPermission(GeneralWarehouse.EntityTypes.ItemType)]
 public class ItemTypeController(
     IItemTypeService itemTypeService
 ) : ControllerBase

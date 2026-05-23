@@ -23,7 +23,8 @@ public class CreateReceiptExample :
                 new CreateReceiptFieldValueDto
                 {
                     FieldDefinitionId = new Guid("F6E53C25-B517-45B3-9A1A-5E2C7C8B7F1E"),
-                    StringValue = "PO-2026-0001"
+                    Value = "PO-2026-0001",
+                    DataType = "string"
                 }
             ],
             ReceiptLines =
@@ -45,7 +46,7 @@ public class CreateReceiptExample :
                     TotalPrice = 1500000,
                     BatchNumber = "202256799",
                     SerialNumber = "65879000020012",
-                    ExpiryDate = new DateTime(2026, 5, 29),
+                    ExpiryDate = new DateOnly(2026, 5, 29),
                     Weight = 10,
                     Volume = 100,
                     PreferredMassUnitId = new Guid(),
@@ -57,7 +58,8 @@ public class CreateReceiptExample :
                             ItemAttributeId = new Guid(
                                 "427ADDD0-1D3A-4B58-8BC3-B9D8EA67B173"
                             ),
-                            StringValue = "BATCH-001"
+                            Value = "BATCH-001",
+                            DataType = "string"
                         }
                     ],
                     ReceiptFieldValues =
@@ -67,7 +69,8 @@ public class CreateReceiptExample :
                             FieldDefinitionId = new Guid(
                                 "A09A5FB5-1FE4-45DD-8DBD-3ED0746F1BDE"
                             ),
-                            DateValue = new DateOnly(2027, 5, 9)
+                            Value = "2027-05-09",
+                            DataType = "date"
                         }
                     ]
                 }
@@ -90,7 +93,21 @@ public class ReceiptsGetListExample : IExamplesProvider<ListResponseModel<Receip
                     Status: ReceiptStatus.Draft,
                     ReceiptTypeTitle: "رسید خرید داخلی",
                     Description: "توضیح نوع رسید خرید داخلی",
-                    ReceiptLineCount: 2
+                    ReceiptLineCount: 2,
+                    ReceiptFieldValues:
+                    [
+                        new ReceiptHeaderFieldValueListDto(
+                            Id: new Guid("F6E53C25-B517-45B3-9A1A-5E2C7C8B7F1E"),
+                            FieldDefinitionId: new Guid(
+                                "A09A5FB5-1FE4-45DD-8DBD-3ED0746F1BDE"
+                            ),
+                            FieldDefinitionTitle: "هزینه حمل و نقل",
+                            FieldDefinitionKey: "shipping_cost",
+                            DataType: ReceiptFieldDataType.String,
+                            DataTypeDescription: "Text",
+                            Value: "PO-2026-0001"
+                        )
+                    ]
                 )
             ],
             totalCount: 1,

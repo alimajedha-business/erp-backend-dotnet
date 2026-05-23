@@ -37,13 +37,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.PythonIntegration.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HCMModule", "HCMModule", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.API", "Src\HCMModule\HCM.API\HCM.API\NGErp.HCM.API.csproj", "{659F857D-963E-4157-9146-52C8670F40A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.API", "Src\HCMModule\HCM.API\NGErp.HCM.API.csproj", "{659F857D-963E-4157-9146-52C8670F40A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Domain", "Src\HCMModule\HCM.Domain\HCM.Domain\NGErp.HCM.Domain.csproj", "{A2F84CF0-1BB0-4B3B-AB93-2CFDB336B48A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Domain", "Src\HCMModule\HCM.Domain\NGErp.HCM.Domain.csproj", "{A2F84CF0-1BB0-4B3B-AB93-2CFDB336B48A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Infrastructure", "Src\HCMModule\HCM.Infrastructure\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj", "{16874B42-E847-467B-8D8E-5D586FD34435}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Infrastructure", "Src\HCMModule\HCM.Infrastructure\NGErp.HCM.Infrastructure.csproj", "{16874B42-E847-467B-8D8E-5D586FD34435}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Service", "Src\HCMModule\HCM.Service\HCM.Service\NGErp.HCM.Service.csproj", "{CB49952B-A068-4198-A0D2-347574D17504}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.HCM.Service", "Src\HCMModule\HCM.Service\NGErp.HCM.Service.csproj", "{CB49952B-A068-4198-A0D2-347574D17504}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WarehouseModule", "WarehouseModule", "{5E08A633-874E-43D6-B595-CE94A22BEBF5}"
 EndProject
@@ -72,6 +72,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedModule", "SharedModule", "{FC178E3F-9AF3-47E1-8244-EF8D56B23C58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Shared.Domain", "Src\SharedModule\Shared.Domain\NGErp.Shared.Domain.csproj", "{4055C7FD-351F-4002-B271-11FAD35B6CF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGErp.Shared.Service", "Src\SharedModule\Shared.Service\NGErp.Shared.Service.csproj", "{D9DF790F-B53B-480C-881C-A7F339A0FC18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +177,10 @@ Global
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,6 +219,7 @@ Global
 		{631B710F-DC7A-491D-B9DE-5B3AD66DCDD6} = {4A7EB7E4-675D-4360-8531-87E7A7A17735}
 		{FC178E3F-9AF3-47E1-8244-EF8D56B23C58} = {00293A27-E0AC-4B6C-BA00-1975D2915C60}
 		{4055C7FD-351F-4002-B271-11FAD35B6CF1} = {FC178E3F-9AF3-47E1-8244-EF8D56B23C58}
+		{D9DF790F-B53B-480C-881C-A7F339A0FC18} = {FC178E3F-9AF3-47E1-8244-EF8D56B23C58}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD08F26D-DEEA-4DF8-89F2-7D46444A79BC}

@@ -30,6 +30,7 @@ public class EntityTypeDefinition
     public required string NameFa { get; init; }
     public required string NameEn { get; init; }
     public required string Code { get; init; }
+    public long? InherentlyModuleId { get; init; }
     public Type? BaseModel { get; init; } // Mirroring Django's base_model
     public short? Ordering { get; init; }
     public required EntityTypeAttributes Attributes { get; init; }

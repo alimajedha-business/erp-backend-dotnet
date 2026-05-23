@@ -22,6 +22,8 @@ internal static class UpdateEntities
         // Force load assemblies by referencing a type from each module
         _ = typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile);
         _ = typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile);
+        _ = typeof(General.Service.EntityTypeRegistrations.GeneralModuleProfile);
+        _ = typeof(Shared.Service.EntityTypeRegistrations.SharedModuleProfile);
 
         var profiles = DiscoverProfiles();
         
@@ -136,7 +138,9 @@ internal static class UpdateEntities
         {
             typeof(UpdateEntities).Assembly,
             typeof(HCM.Service.EntityTypeRegistrations.HCMModuleProfile).Assembly,
-            typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile).Assembly
+            typeof(Warehouse.Service.EntityTypeRegistrations.WarehouseModuleProfile).Assembly,
+            typeof(General.Service.EntityTypeRegistrations.GeneralModuleProfile).Assembly,
+            typeof(Shared.Service.EntityTypeRegistrations.SharedModuleProfile).Assembly
         };
 
         foreach (var assembly in assemblies)
@@ -169,7 +173,8 @@ internal static class UpdateEntities
                        entityType.Exportable != definition.Attributes.Exportable ||
                        entityType.IfNotCreator != definition.Attributes.IfNotCreator ||
                        entityType.HasRestriction != definition.Attributes.HasRestriction ||
-                       entityType.Permissible != definition.Attributes.Permissible;
+                       entityType.Permissible != definition.Attributes.Permissible ||
+                       entityType.InherentlyModuleId != definition.InherentlyModuleId;
 
         entityType.NameFa = definition.NameFa;
         entityType.NameEn = definition.NameEn;
@@ -186,6 +191,7 @@ internal static class UpdateEntities
         entityType.IfNotCreator = definition.Attributes.IfNotCreator;
         entityType.HasRestriction = definition.Attributes.HasRestriction;
         entityType.Permissible = definition.Attributes.Permissible;
+        entityType.InherentlyModuleId = definition.InherentlyModuleId;
 
         return changed;
     }
