@@ -56,7 +56,7 @@ public class SharedMenuProfile : IMenuModuleProfile
                     NameEn = "Category Level Constraint",
                     Order = 1,
                     EntityTypeKey = EntityTypes.CategoryLevelConstraint,
-                    Link = "/warehouse/category-level-constraint"
+                    Link = "/good-base-data/category-level-constraint"
                 },
                 new()
                 {
@@ -64,7 +64,7 @@ public class SharedMenuProfile : IMenuModuleProfile
                     NameEn = "Category",
                     Order = 2,
                     EntityTypeKey = EntityTypes.Category,
-                    Link = "/warehouse/categories"
+                    Link = "/good-base-data/categories"
                 }
             ]
         };
