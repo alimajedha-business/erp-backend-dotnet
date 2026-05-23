@@ -156,6 +156,27 @@
   <data name="Attribute.Title.NotEmpty" xml:space="preserve">
     <value>Attribute title could not be empty.</value>
   </data>
+  <data name="FeatureSettings" xml:space="preserve">
+    <value>Feature settings</value>
+  </data>
+  <data name="FeatureSettings.AccountingFiscalYear.NotEmpty" xml:space="preserve">
+    <value>Accounting fiscal year is required.</value>
+  </data>
+  <data name="FeatureSettings.Duplicate" xml:space="preserve">
+    <value>Feature settings already exist for this company.</value>
+  </data>
+  <data name="FeatureSettings.PriceRoundingPoint.Range" xml:space="preserve">
+    <value>Price rounding point must be greater than or equal to 0.</value>
+  </data>
+  <data name="FeatureSettings.PropertyFiscalYear.NotEmpty" xml:space="preserve">
+    <value>Property fiscal year is required.</value>
+  </data>
+  <data name="FeatureSettings.WarehousePreviousFiscalYear.NotEmpty" xml:space="preserve">
+    <value>Warehouse previous fiscal year is required.</value>
+  </data>
+  <data name="FeatureSettings.WarehouseSerialRule.Invalid" xml:space="preserve">
+    <value>Warehouse serial rule is invalid.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Category</value>
   </data>
