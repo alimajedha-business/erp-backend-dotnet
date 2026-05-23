@@ -17,7 +17,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/receipt-field-definitions")]
-[HasPermission(EntityTypes.ReceiptType)]
+[HasPermission(EntityTypes.ReceiptFieldDefinition)]
 public class ReceiptFieldDefinitionController(
     IReceiptFieldDefinitionService fieldDefinitionService
 ) : ControllerBase

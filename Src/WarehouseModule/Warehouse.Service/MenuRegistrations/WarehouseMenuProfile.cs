@@ -19,68 +19,28 @@ public class WarehouseMenuProfile : IMenuModuleProfile
             Children = [
                 new()
                 {
-                    NameFa = "انواع انبار",
-                    NameEn = "Warehouse Types",
-                    Order = 1,
-                    EntityTypeKey = EntityTypes.WarehouseType,
-                    Link = "/warehouse/basic-information/warehouse-types"
-                },
-                new()
-                {
                     NameFa = "انبارها",
                     NameEn = "Warehouses",
-                    Order = 2,
+                    Order = 1,
                     EntityTypeKey = EntityTypes.Warehouse,
                     Link = "/warehouse/basic-information/warehouses"
                 },
                 new()
                 {
-                    NameFa = "محل‌های انبار",
-                    NameEn = "Warehouse Locations",
+                    NameFa = "مشخصه‌های شناور",
+                    NameEn = "Attributes",
                     Order = 3,
-                    EntityTypeKey = EntityTypes.WarehouseLocation,
-                    Link = "/warehouse/basic-information/warehouse-locations"
+                    EntityTypeKey = EntityTypes.Attribute,
+                    Link = "/warehouse/settings/attributes"
                 },
                 new()
                 {
                     NameFa = "کالاها",
                     NameEn = "Items",
-                    Order = 4,
+                    Order = 3,
                     EntityTypeKey = EntityTypes.Item,
                     Link = "/warehouse/basic-information/items"
                 },
-                new()
-                {
-                    NameFa = "انواع کالا",
-                    NameEn = "Item Types",
-                    Order = 5,
-                    EntityTypeKey = EntityTypes.ItemType,
-                    Link = "/warehouse/basic-information/item-types"
-                },
-                new()
-                {
-                    NameFa = "دسته‌بندی کالاها",
-                    NameEn = "Categories",
-                    Order = 6,
-                    EntityTypeKey = EntityTypes.Category,
-                    Link = "/warehouse/basic-information/categories"
-                },
-                new()
-                {
-                    NameFa = "واحدهای اندازه‌گیری",
-                    NameEn = "Units of Measurement",
-                    Order = 7,
-                    EntityTypeKey = EntityTypes.UnitOfMeasurement,
-                    Link = "/warehouse/basic-information/uoms"
-                },
-                new()
-                {
-                    NameFa = "شرکت‌های حمل و نقل",
-                    NameEn = "Shipping Companies",
-                    Order = 9,
-                    EntityTypeKey = EntityTypes.ShippingCompany,
-                    Link = "/warehouse/basic-information/shipping-companies"
-                }
             ]
         };
 
@@ -130,88 +90,32 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     Order = 2,
                     EntityTypeKey = EntityTypes.RemittanceType,
                     Link = "/warehouse/documents/remittance-types"
+                },
+                new()
+                {
+                    NameFa = "انواع فعالیت‌ها",
+                    NameEn = "Inventory Movement Types",
+                    Order = 3,
+                    EntityTypeKey = EntityTypes.InventoryMovementTypes,
+                    Link = "/warehouse/documents/inventory-movement-types"
                 }
             ]
         };
 
         yield return new MenuDefinition
         {
-            NameFa = "تنظیمات و ویژگی‌ها",
-            NameEn = "Settings & Attributes",
+            NameFa = "امکانات",
+            NameEn = "Faciliteis",
             Order = 5,
             Children = [
                 new()
                 {
-                    NameFa = "ویژگی‌های کالا",
-                    NameEn = "Item Attributes",
+                    NameFa = "تنظیم ویژگی‌ها",
+                    NameEn = "Feature Settings",
                     Order = 1,
-                    EntityTypeKey = EntityTypes.ItemAttribute,
-                    Link = "/warehouse/settings/item-attributes"
+                    EntityTypeKey = EntityTypes.FeatureSettings,
+                    Link = "/warehouse/facilities/feature-settings"
                 },
-                new()
-                {
-                    NameFa = "واحدهای اندازه‌گیری کالا",
-                    NameEn = "Item UoMs",
-                    Order = 2,
-                    EntityTypeKey = EntityTypes.ItemUnitOfMeasurement,
-                    Link = "/warehouse/settings/item-uoms"
-                },
-                new()
-                {
-                    NameFa = "تبدیل واحدهای کالا",
-                    NameEn = "Item Unit Conversions",
-                    Order = 3,
-                    EntityTypeKey = EntityTypes.ItemUnitOfMeasurementConversion,
-                    Link = "/warehouse/settings/item-unit-conversions"
-                },
-                new()
-                {
-                    NameFa = "کالاهای انبار",
-                    NameEn = "Item Warehouses",
-                    Order = 4,
-                    EntityTypeKey = EntityTypes.ItemWarehouse,
-                    Link = "/warehouse/settings/item-warehouses"
-                },
-                new()
-                {
-                    NameFa = "محل کالاهای انبار",
-                    NameEn = "Item Warehouse Locations",
-                    Order = 5,
-                    EntityTypeKey = EntityTypes.ItemWarehouseLocation,
-                    Link = "/warehouse/settings/item-warehouse-locations"
-                },
-                new()
-                {
-                    NameFa = "ویژگی‌ها",
-                    NameEn = "Attributes",
-                    Order = 6,
-                    EntityTypeKey = EntityTypes.Attribute,
-                    Link = "/warehouse/settings/attributes"
-                },
-                new()
-                {
-                    NameFa = "مقادیر شمارشی ویژگی‌ها",
-                    NameEn = "Attribute Enum Values",
-                    Order = 7,
-                    EntityTypeKey = EntityTypes.AttributeEnumValue,
-                    Link = "/warehouse/settings/attribute-enums"
-                },
-                new()
-                {
-                    NameFa = "قوانین ویژگی‌های دسته بندی",
-                    NameEn = "Category Attr Rules",
-                    Order = 8,
-                    EntityTypeKey = EntityTypes.CategoryAttributeRule,
-                    Link = "/warehouse/settings/category-attr-rules"
-                },
-                new()
-                {
-                    NameFa = "محدودیت‌های سطوح دسته‌بندی",
-                    NameEn = "Category Level Constraints",
-                    Order = 9,
-                    EntityTypeKey = EntityTypes.CategoryLevelConstraint,
-                    Link = "/warehouse/settings/category-level-constraints"
-                }
             ]
         };
     }

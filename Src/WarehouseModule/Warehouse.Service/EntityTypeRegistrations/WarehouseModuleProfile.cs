@@ -87,57 +87,11 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.Category,
-            NameFa = "طبقه‌بندی کالا",
-            NameEn = "Category",
-            Code = "0019",
-            Ordering = 100,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.CategoryAttributeRule,
-            NameFa = "قانون ویژگی دسته بندی",
-            NameEn = "Category Attr Rule",
-            Code = "0023",
-            Ordering = 101,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.CategoryLevelConstraint,
-            NameFa = "محدودیت سطح دسته بندی",
-            NameEn = "Category Level Constraint",
-            Code = "0020",
-            Ordering = 102,
+            Key = EntityTypes.InventoryMovementTypes,
+            NameFa = "انواع فعالیت",
+            NameEn = "Inventory Movement Type",
+            Code = "0089",
+            Ordering = 210,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,
@@ -184,29 +138,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             NameEn = "Item Attribute",
             Code = "0010",
             Ordering = 72,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.ItemType,
-            NameFa = "نوع کالا",
-            NameEn = "Item Type",
-            Code = "0008",
-            Ordering = 70,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,
@@ -616,75 +547,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
 
         yield return new EntityTypeDefinition
         {
-            Key = EntityTypes.SiUnit,
-            NameFa = "واحد SI",
-            NameEn = "SI Unit",
-            Code = "0036",
-            Ordering = 190,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            }
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.ShippingCompany,
-            NameFa = "شرکت حمل و نقل",
-            NameEn = "Shipping Company",
-            Code = "0006",
-            Ordering = 50,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.UnitOfMeasurement,
-            NameFa = "واحد اندازه‌گیری",
-            NameEn = "Unit Of Measurement",
-            Code = "0005",
-            Ordering = 40,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
             Key = EntityTypes.Warehouse,
             NameFa = "انبار",
             NameEn = "Warehouse",
@@ -713,29 +575,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
             NameEn = "Warehouse Location",
             Code = "0004",
             Ordering = 22,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = true
-            },
-        };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.WarehouseType,
-            NameFa = "نوع انبار",
-            NameEn = "Warehouse Type",
-            Code = "0002",
-            Ordering = 20,
             Attributes = new EntityTypeAttributes
             {
                 Readable = true,

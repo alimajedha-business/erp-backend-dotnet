@@ -86,5 +86,74 @@ public class SharedModuleProfile : IEntityTypeModuleProfile
                 IfNotCreator = false, HasRestriction = false, Permissible = true
             }
         };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.Category,
+            NameFa = "طبقه‌بندی کالا",
+            NameEn = "Category",
+            Code = "0019",
+            Ordering = 100,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.CategoryAttributeRule,
+            NameFa = "قانون ویژگی دسته بندی",
+            NameEn = "Category Attr Rule",
+            Code = "0023",
+            Ordering = 101,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = false
+            },
+        };
+
+        yield return new EntityTypeDefinition
+        {
+            Key = EntityTypes.CategoryLevelConstraint,
+            NameFa = "محدودیت سطح دسته بندی",
+            NameEn = "Category Level Constraint",
+            Code = "0020",
+            Ordering = 102,
+            Attributes = new EntityTypeAttributes
+            {
+                Readable = true,
+                Creatable = true,
+                Editable = true,
+                Deletable = true,
+                Loggable = true,
+                Printable = true,
+                Importable = false,
+                Exportable = true,
+                IfNotCreator = false,
+                HasRestriction = false,
+                Permissible = true
+            },
+        };
     }
 }

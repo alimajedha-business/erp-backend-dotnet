@@ -43,5 +43,30 @@ public class SharedMenuProfile : IMenuModuleProfile
                 }
             ]
         };
+
+        yield return new MenuDefinition
+        {
+            NameFa = "انبار",
+            NameEn = "Warehouse",
+            Order = 7,
+            Children = [
+                new()
+                {
+                    NameFa = "محدودیت سطوح کالا",
+                    NameEn = "Category Level Constraint",
+                    Order = 1,
+                    EntityTypeKey = EntityTypes.CategoryLevelConstraint,
+                    Link = "/warehouse/category-level-constraint"
+                },
+                new()
+                {
+                    NameFa = "تعریف کدینگ کالا",
+                    NameEn = "Category",
+                    Order = 2,
+                    EntityTypeKey = EntityTypes.Category,
+                    Link = "/warehouse/categories"
+                }
+            ]
+        };
     }
 }

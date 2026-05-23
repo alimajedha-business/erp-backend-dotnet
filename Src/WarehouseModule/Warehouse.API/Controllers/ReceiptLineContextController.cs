@@ -2,15 +2,20 @@ using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
+using NGErp.Warehouse.Domain.Constants;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/receipts/lines")]
+[HasPermission(EntityTypes.Receipt)]
 public class ReceiptLineContextController(
     IReceiptLineContextService receiptLineContextService
 ) : ControllerBase
