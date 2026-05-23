@@ -98,6 +98,14 @@ public static class QueryableExtensions
             );
         }
 
+        var titleInEnglishField = typeof(T).GetProperty("TitleInEnglish");
+        if (titleInEnglishField is not null)
+        {
+            conditions.Add(e => e != null && searchTerms.All(term =>
+                EF.Property<string>(e, "TitleInEnglish").Contains(term))
+            );
+        }
+
         var nameField = typeof(T).GetProperty("Name");
         if (nameField is not null)
         {

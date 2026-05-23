@@ -29,6 +29,12 @@ public interface IItemService
         CancellationToken ct
     );
 
+    Task<ListResponseModel<ItemSlimDto>> FilterByQAsync(
+        Guid companyId,
+        ItemParameters parameters,
+        CancellationToken ct = default
+    );
+
     Task<ListResponseModel<ItemListDto>> GetFilteredAsync(
         Guid companyId,
         ItemParameters parameters,

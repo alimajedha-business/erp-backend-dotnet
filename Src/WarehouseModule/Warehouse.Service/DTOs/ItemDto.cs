@@ -29,6 +29,14 @@ public record ItemDto(
     bool IsActive
 );
 
+public record ItemSlimDto(
+    Guid Id,
+    string Code,
+    string Title,
+    string TitleInEnglish,
+    string Sku
+);
+
 public record ItemListDto(
     Guid Id,
     string Code,
