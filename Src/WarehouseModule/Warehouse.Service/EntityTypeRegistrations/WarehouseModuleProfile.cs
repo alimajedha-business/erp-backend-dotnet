@@ -337,29 +337,6 @@ public class WarehouseModuleProfile : IEntityTypeModuleProfile
                 Permissible = false
             },
         };
-
-        yield return new EntityTypeDefinition
-        {
-            Key = EntityTypes.ReceiptLineAttributeValue,
-            NameFa = "مشخصه ردیف رسید",
-            NameEn = "Receipt Line Attribute Value",
-            Code = "0028",
-            Ordering = 154,
-            Attributes = new EntityTypeAttributes
-            {
-                Readable = true,
-                Creatable = true,
-                Editable = true,
-                Deletable = true,
-                Loggable = true,
-                Printable = true,
-                Importable = false,
-                Exportable = true,
-                IfNotCreator = false,
-                HasRestriction = false,
-                Permissible = false
-            },
-        };
 				
 		yield return new EntityTypeDefinition
         {

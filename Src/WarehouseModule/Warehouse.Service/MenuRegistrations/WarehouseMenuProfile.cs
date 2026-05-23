@@ -14,7 +14,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
         yield return new MenuDefinition
         {
             NameFa = "اطلاعات پایه",
-            NameEn = "Basic Information",
+            NameEn = "Base Data",
             Order = 1,
             Children = [
                 new()
@@ -23,7 +23,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Warehouses",
                     Order = 1,
                     EntityTypeKey = EntityTypes.Warehouse,
-                    Link = "/warehouse/basic-information/warehouses"
+                    Link = "/base-data/warehouses"
                 },
                 new()
                 {
@@ -31,7 +31,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Attributes",
                     Order = 3,
                     EntityTypeKey = EntityTypes.Attribute,
-                    Link = "/warehouse/settings/attributes"
+                    Link = "/base-data/settings/attributes"
                 },
                 new()
                 {
@@ -39,7 +39,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Items",
                     Order = 3,
                     EntityTypeKey = EntityTypes.Item,
-                    Link = "/warehouse/basic-information/items"
+                    Link = "/base-data/items"
                 },
             ]
         };
@@ -56,7 +56,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Warehouse Receipt",
                     Order = 1,
                     EntityTypeKey = EntityTypes.Receipt,
-                    Link = "/warehouse/current-affairs/receipts"
+                    Link = "/current-affairs/receipts"
                 },
                 new()
                 {
@@ -64,7 +64,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Warehouse Remittance",
                     Order = 2,
                     EntityTypeKey = EntityTypes.Remittance,
-                    Link = "/warehouse/current-affairs/remittances"
+                    Link = "/current-affairs/remittances"
                 }
             ]
         };
@@ -81,7 +81,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Receipt Types",
                     Order = 1,
                     EntityTypeKey = EntityTypes.ReceiptType,
-                    Link = "/warehouse/documents/receipt-types"
+                    Link = "/warehouse-documents/receipt-types"
                 },
                 new()
                 {
@@ -89,7 +89,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Remittance Types",
                     Order = 2,
                     EntityTypeKey = EntityTypes.RemittanceType,
-                    Link = "/warehouse/documents/remittance-types"
+                    Link = "/warehouse-documents/remittance-types"
                 },
                 new()
                 {
@@ -97,7 +97,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Inventory Movement Types",
                     Order = 3,
                     EntityTypeKey = EntityTypes.InventoryMovementTypes,
-                    Link = "/warehouse/documents/inventory-movement-types"
+                    Link = "/warehouse-documents/inventory-movement-types"
                 }
             ]
         };
@@ -114,7 +114,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
                     NameEn = "Feature Settings",
                     Order = 1,
                     EntityTypeKey = EntityTypes.FeatureSettings,
-                    Link = "/warehouse/facilities/feature-settings"
+                    Link = "/facilities/feature-settings"
                 },
             ]
         };

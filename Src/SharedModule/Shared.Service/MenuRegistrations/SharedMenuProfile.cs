@@ -46,8 +46,8 @@ public class SharedMenuProfile : IMenuModuleProfile
 
         yield return new MenuDefinition
         {
-            NameFa = "انبار",
-            NameEn = "Warehouse",
+            NameFa = "اطلاعات پایه کالا",
+            NameEn = "Good Base Data",
             Order = 7,
             Children = [
                 new()
