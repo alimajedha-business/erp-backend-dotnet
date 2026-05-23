@@ -84,19 +84,19 @@ public class WarehouseMenuProfile : IMenuModuleProfile
             Children = [
                 new()
                 {
-                    NameFa = "رسید انبار",
-                    NameEn = "Warehouse Receipt",
+                    NameFa = "رسیدهای انبار",
+                    NameEn = "Warehouse Receipts",
                     Order = 1,
                     EntityTypeKey = EntityTypes.Receipt,
-                    Link = "/current-affairs/receipts"
+                    Link = "/current-affairs/warehouse-receipts"
                 },
                 new()
                 {
-                    NameFa = "حواله انبار",
-                    NameEn = "Warehouse Remittance",
+                    NameFa = "حواله‌های انبار",
+                    NameEn = "Warehouse Remittances",
                     Order = 2,
                     EntityTypeKey = EntityTypes.Remittance,
-                    Link = "/current-affairs/remittances"
+                    Link = "/current-affairs/warehouse-remittances"
                 }
             ]
         };
