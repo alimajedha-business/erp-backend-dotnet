@@ -50,16 +50,13 @@ public class FeatureSettingsService(
 
     public async Task<FeatureSettingsDto> GetByIdAsync(
         Guid companyId,
-        Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
         var entity = await GetSingleOrThrowAsync(
             trackChanges: trackChanges,
-            predicate: p =>
-                p.CompanyId == companyId &&
-                p.Id == id,
+            predicate: p => p.CompanyId == companyId,
             ct
         );
 
@@ -102,28 +99,6 @@ public class FeatureSettingsService(
 
         await _featureSettingsRepository.SaveChangesAsync(ct);
         return _mapper.Map<FeatureSettingsDto>(entity);
-    }
-
-    public async Task DeleteAsync(
-        Guid companyId,
-        Guid id,
-        CancellationToken ct
-    )
-    {
-        await GetSingleOrThrowAsync(
-            trackChanges: false,
-            predicate: p =>
-                p.CompanyId == companyId &&
-                p.Id == id,
-            ct
-        );
-
-        await _featureSettingsRepository.Remove(
-            e =>
-                e.CompanyId == companyId &&
-                e.Id == id,
-            ct
-        );
     }
 
     private async Task<FeatureSettings> GetSingleOrThrowAsync(

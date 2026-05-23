@@ -3,16 +3,20 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
+using NGErp.Base.API.ActionFilters;
+using NGErp.Base.Service.Authorization;
+using NGErp.Warehouse.Domain.Constants;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Service.Contracts;
 
 namespace NGErp.Warehouse.API.Controllers;
 
-//[JwtAuthorize]
+[JwtAuthorize]
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/feature-settings")]
+[HasPermission(EntityTypes.FeatureSettings)]
 public class FeatureSettingsController(
     IFeatureSettingsService featureSettingsService
 ) : ControllerBase
@@ -37,15 +41,14 @@ public class FeatureSettingsController(
         );
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
         CancellationToken ct
     )
     {
         var dto = await _featureSettingsService.GetByIdAsync(
-            companyId, id,
+            companyId,
             trackChanges: true,
             ct
         );
@@ -69,16 +72,5 @@ public class FeatureSettingsController(
         );
 
         return Ok(dto);
-    }
-
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
-        [FromRoute] Guid companyId,
-        [FromRoute] Guid id,
-        CancellationToken ct
-    )
-    {
-        await _featureSettingsService.DeleteAsync(companyId, id, ct);
-        return NoContent();
     }
 }

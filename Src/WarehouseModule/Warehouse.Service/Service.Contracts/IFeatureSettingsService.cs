@@ -14,7 +14,6 @@ public interface IFeatureSettingsService
 
     Task<FeatureSettingsDto> GetByIdAsync(
         Guid companyId,
-        Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     );
@@ -23,12 +22,6 @@ public interface IFeatureSettingsService
         Guid companyId,
         Guid id,
         JsonPatchDocument<PatchFeatureSettingsDto> patchDocument,
-        CancellationToken ct
-    );
-
-    Task DeleteAsync(
-        Guid companyId,
-        Guid id,
         CancellationToken ct
     );
 }
