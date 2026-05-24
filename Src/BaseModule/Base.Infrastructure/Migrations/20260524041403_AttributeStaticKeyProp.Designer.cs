@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NGErp.Base.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using NGErp.Base.Infrastructure.DataAccess;
 namespace NGErp.Base.Infrastructure.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260524041403_AttributeStaticKeyProp")]
+    partial class AttributeStaticKeyProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3592,12 +3595,6 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ReceiptTypeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -3810,7 +3807,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ReceiptId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Sequence")
+                    b.Property<int>("RowNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
@@ -3855,7 +3852,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseLocationId");
 
-                    b.HasIndex("ReceiptId", "Sequence")
+                    b.HasIndex("ReceiptId", "RowNumber")
                         .IsUnique();
 
                     b.HasIndex("CompanyId", "ItemId", "WarehouseLocationId");
