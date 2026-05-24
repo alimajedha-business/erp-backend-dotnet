@@ -1,7 +1,9 @@
 ﻿using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
+using AutoMapper;
 using AutoMapper.Execution;
+using AutoMapper.QueryableExtensions;
 
 using DocumentFormat.OpenXml.Office2010.Excel;
 
@@ -96,6 +98,14 @@ public static class QueryableExtensions
             );
         }
 
+        var titleInEnglishField = typeof(T).GetProperty("TitleInEnglish");
+        if (titleInEnglishField is not null)
+        {
+            conditions.Add(e => e != null && searchTerms.All(term =>
+                EF.Property<string>(e, "TitleInEnglish").Contains(term))
+            );
+        }
+
         var nameField = typeof(T).GetProperty("Name");
         if (nameField is not null)
         {
@@ -166,6 +176,23 @@ public static class QueryableExtensions
             .ToListAsync(ct);
 
         return new ListQueryResult<T>(items, totalCount);
+    }
+
+    public static async Task<ListQueryResult<TDto>> ToResponseListAsync<TEntity, TDto>(
+        this IQueryable<TEntity> query,
+        RequestParameters requestParameters,
+        IConfigurationProvider mapperConfig,
+        CancellationToken ct)
+    {
+        var totalCount = await query.CountAsync(ct);
+
+        var items = await query
+            .Sort(requestParameters)
+            .Paginate(requestParameters)
+            .ProjectTo<TDto>(mapperConfig)
+            .ToListAsync(ct);
+
+        return new ListQueryResult<TDto>(items, totalCount);
     }
 
     private static Expression<Func<T, bool>> CombineExpressions<T>(

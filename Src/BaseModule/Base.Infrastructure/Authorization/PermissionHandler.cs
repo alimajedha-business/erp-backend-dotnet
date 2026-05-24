@@ -92,16 +92,65 @@ public class PermissionHandler(
             return;
         }
 
+        // Check for InherentlyActionAttribute on the endpoint
+        var endpoint = httpContext.GetEndpoint();
+        var inherentAction = endpoint?.Metadata.GetMetadata<InherentlyActionAttribute>()?.ActionType;
+        
+        // Use ModuleId from requirement if set (explicitly requested in HasPermission)
+        var moduleId = requirement.ModuleId;
+
+        // Validation: If no ModuleId is provided, ensure the EntityKey is unique across modules
+        if (!moduleId.HasValue)
+        {
+            var moduleIds = await dbContext.EntityTypes
+                .AsNoTracking()
+                .Where(et => et.Key == requirement.EntityKey)
+                .Select(et => et.ModuleId)
+                .Distinct()
+                .ToListAsync();
+
+            if (moduleIds.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"Entity type '{requirement.EntityKey}' is defined in multiple modules. " +
+                    "You must specify the 'moduleId' explicitly in the [HasPermission] attribute on the controller or action.");
+            }
+
+            if (moduleIds.Count == 0)
+            {
+                // If not found at all, we can't proceed with permission check
+                return;
+            }
+
+            moduleId = moduleIds[0];
+        }
+
+        // Auto-redirect to Inherent Module if defined for the local entity type
+        var inherentModuleId = await dbContext.EntityTypes
+            .AsNoTracking()
+            .Where(et => et.ModuleId == moduleId.Value && et.Key == requirement.EntityKey)
+            .Select(et => et.InherentlyModuleId)
+            .FirstOrDefaultAsync();
+
+        if (inherentModuleId.HasValue && inherentModuleId.Value > 0)
+        {
+            moduleId = inherentModuleId.Value;
+        }
+
         // 5. Command-specific check
         if (!string.IsNullOrEmpty(requirement.CommandKey))
         {
-            var hasCommandAccess = await dbContext.RolePermissionCommands
-                .AnyAsync(rpc => roleMemberIds.Contains(rpc.RoleId) &&
+            var commandQuery = dbContext.RolePermissionCommands
+                .Where(rpc => roleMemberIds.Contains(rpc.RoleId) &&
                                  rpc.RolePermission.EntityType.Key == requirement.EntityKey &&
                                  rpc.EntityTypeCommand.Key == requirement.CommandKey &&
                                  rpc.Value);
+            
+            // Check logical ownership: InherentlyModuleId ?? ModuleId
+            commandQuery = commandQuery.Where(rpc => 
+                (rpc.RolePermission.EntityType.InherentlyModuleId ?? rpc.RolePermission.EntityType.ModuleId) == moduleId.Value);
 
-            if (hasCommandAccess)
+            if (await commandQuery.AnyAsync())
             {
                 context.Succeed(requirement);
             }
@@ -112,11 +161,11 @@ public class PermissionHandler(
         var query = dbContext.RolePermissions
             .Where(rp => roleMemberIds.Contains(rp.RoleId) && rp.EntityType.Key == requirement.EntityKey);
 
-        bool isAuthorized = false;
+        // Check logical ownership: InherentlyModuleId ?? ModuleId
+        query = query.Where(rp => 
+            (rp.EntityType.InherentlyModuleId ?? rp.EntityType.ModuleId) == moduleId.Value);
 
-        // Check for InherentlyActionAttribute on the endpoint
-        var endpoint = httpContext.GetEndpoint();
-        var inherentAction = endpoint?.Metadata.GetMetadata<InherentlyActionAttribute>()?.ActionType;
+        bool isAuthorized = false;
 
         if (requirement.Action != ActionType.Default || (inherentAction != null && inherentAction != ActionType.Default))
         {

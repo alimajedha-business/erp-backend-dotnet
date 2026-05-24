@@ -8,10 +8,12 @@ using NGErp.Base.Service.Authorization;
 using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
+using NGErp.Warehouse.Domain.Constants;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Warehouse.Service.Services;
 
 using Swashbuckle.AspNetCore.Filters;
 
@@ -22,6 +24,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/items")]
+[HasPermission(EntityTypes.Item)]
 public class ItemController(
     IItemService itemService,
     IExcelExportService excelExportService
@@ -48,6 +51,22 @@ public class ItemController(
             companyId,
             parameters,
             filterNodeDto,
+            ct
+        );
+
+        return Ok(result);
+    }
+
+    [HttpGet("filter-by-q")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid companyId,
+        [FromQuery] ItemParameters parameters,
+        CancellationToken ct
+    )
+    {
+        var result = await _itemService.FilterByQAsync(
+            companyId,
+            parameters,
             ct
         );
 

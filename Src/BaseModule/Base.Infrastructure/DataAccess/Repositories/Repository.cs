@@ -1,6 +1,8 @@
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Service.Repository.Contracts;
@@ -144,6 +146,20 @@ public class Repository<T>(MainDbContext context) : IRepository<T> where T : cla
     )
     {
         return await query.ToResponseListAsync(requestParameters, ct);
+    }
+
+    public async Task<ListQueryResult<TDto>> GetResponseListAsync<TEntity, TDto>(
+        IQueryable<TEntity> query,
+        RequestParameters requestParameters,
+        IConfigurationProvider mapperConfig,
+        CancellationToken ct
+    )
+    {
+        return await query.ToResponseListAsync<TEntity, TDto>(
+            requestParameters,
+            mapperConfig,
+            ct
+        );
     }
 
     public virtual async Task<int> SaveChangesAsync(

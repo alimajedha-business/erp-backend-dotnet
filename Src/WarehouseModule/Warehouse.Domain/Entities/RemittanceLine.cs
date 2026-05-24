@@ -22,7 +22,7 @@ public class RemittanceLine :
     public decimal? TotalPrice { get; set; }
     public string? BatchNumber { get; set; }
     public string? SerialNumber { get; set; }
-    public DateTime? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
     public string? Description { get; set; }
 
     public Remittance Remittance { get; set; } = default!;

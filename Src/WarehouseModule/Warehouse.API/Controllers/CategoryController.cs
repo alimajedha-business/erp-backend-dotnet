@@ -13,6 +13,8 @@ using NGErp.Warehouse.Service.RequestExamples;
 using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.Service.Contracts;
 
+using SharedWarehouse = NGErp.Shared.Domain.Constants;
+
 using Swashbuckle.AspNetCore.Filters;
 
 namespace NGErp.Warehouse.API.Controllers;
@@ -22,6 +24,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
 [Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/categories")]
+[HasPermission(SharedWarehouse.EntityTypes.Category)]
 public class CategoryController(
     ICategoryService categoryService,
     IExcelExportService excelExportService

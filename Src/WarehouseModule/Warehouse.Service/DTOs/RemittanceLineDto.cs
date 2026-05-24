@@ -13,7 +13,7 @@ public record RemittanceLineDto(
     decimal? TotalPrice,
     string? BatchNumber,
     string? SerialNumber,
-    DateTime? ExpiryDate,
+    DateOnly? ExpiryDate,
     string? Description,
     IReadOnlyList<RemittanceLineMeasurementValueDto> RemittanceLineMeasurementValues,
     IReadOnlyList<RemittanceLineAttributeValueDto> RemittanceLineAttributeValues,
@@ -33,7 +33,7 @@ public class CreateRemittanceLineDto
     public decimal? TotalPrice { get; set; }
     public string? BatchNumber { get; set; }
     public string? SerialNumber { get; set; }
-    public DateTime? ExpiryDate { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
     public string? Description { get; set; }
 
     public List<CreateRemittanceLineMeasurementValueDto> RemittanceLineMeasurementValues { get; set; } = [];

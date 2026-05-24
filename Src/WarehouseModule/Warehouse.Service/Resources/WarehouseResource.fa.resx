@@ -156,6 +156,27 @@
   <data name="Attribute.Title.NotEmpty" xml:space="preserve">
     <value>عنوان مشخصه نمی‌تواند خالی باشد.</value>
   </data>
+  <data name="FeatureSettings" xml:space="preserve">
+    <value>تنظیمات ویژگی</value>
+  </data>
+  <data name="FeatureSettings.AccountingFiscalYear.NotEmpty" xml:space="preserve">
+    <value>سال مالی حسابداری الزامی است.</value>
+  </data>
+  <data name="FeatureSettings.Duplicate" xml:space="preserve">
+    <value>تنظیمات ویژگی برای این شرکت قبلا ثبت شده است.</value>
+  </data>
+  <data name="FeatureSettings.PriceRoundingPoint.Range" xml:space="preserve">
+    <value>نقطه گرد کردن قیمت باید بزرگ‌تر یا مساوی 0 باشد.</value>
+  </data>
+  <data name="FeatureSettings.PropertyFiscalYear.NotEmpty" xml:space="preserve">
+    <value>سال مالی اموال الزامی است.</value>
+  </data>
+  <data name="FeatureSettings.WarehousePreviousFiscalYear.NotEmpty" xml:space="preserve">
+    <value>سال مالی قبلی انبار الزامی است.</value>
+  </data>
+  <data name="FeatureSettings.WarehouseSerialRule.Invalid" xml:space="preserve">
+    <value>قاعده سریال انبار نامعتبر است.</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>طبقه‌بندی</value>
   </data>

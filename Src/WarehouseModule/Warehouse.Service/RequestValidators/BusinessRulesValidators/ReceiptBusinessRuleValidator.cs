@@ -444,10 +444,10 @@ public class ReceiptBusinessRuleValidator(
     {
         return definition.DataType switch
         {
-            ReceiptFieldDataType.Text => dto.StringValue is not null,
-            ReceiptFieldDataType.Integer => dto.IntValue is not null,
+            ReceiptFieldDataType.String => dto.StringValue is not null,
+            ReceiptFieldDataType.Integer => dto.IntegerValue is not null,
             ReceiptFieldDataType.Decimal => dto.DecimalValue is not null,
-            ReceiptFieldDataType.Date => dto.DateValue is not null || dto.DateTimeValue is not null,
+            ReceiptFieldDataType.Date => dto.DateValue is not null,
             ReceiptFieldDataType.Boolean => dto.BooleanValue is not null,
             ReceiptFieldDataType.Guid => dto.ReferenceId is not null,
             _ => false
@@ -613,10 +613,9 @@ public class ReceiptBusinessRuleValidator(
         return new object?[]
         {
             dto.StringValue,
-            dto.IntValue,
+            dto.IntegerValue,
             dto.DecimalValue,
             dto.DateValue,
-            dto.DateTimeValue,
             dto.ReferenceId,
             dto.BooleanValue
         }.Count(e => e is not null) == 1;
@@ -627,9 +626,9 @@ public class ReceiptBusinessRuleValidator(
         return new object?[]
         {
             dto.StringValue,
+            dto.IntegerValue,
             dto.DecimalValue,
             dto.DateValue,
-            dto.DateTimeValue,
             dto.ReferenceId,
             dto.BooleanValue
         }.Count(e => e is not null) == 1;
