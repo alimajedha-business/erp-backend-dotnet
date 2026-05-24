@@ -25,6 +25,9 @@ public class Receipt :
     public ReceiptStatus Status { get; set; } = ReceiptStatus.Draft;
     public string? Description { get; set; }
 
+    // Optional optimistic concurrency token.
+    public byte[] RowVersion { get; set; } = default!;
+
     public ReceiptType ReceiptType { get; set; } = null!;
 
     public ICollection<ReceiptLine> ReceiptLines { get; set; } = [];
@@ -45,6 +48,10 @@ public class Receipt :
             i.ReceiptTypeId,
             i.ReceiptDate
         });
+
+        builder
+            .Property(e => e.RowVersion)
+            .IsRowVersion();
 
         builder
             .HasOne(e => e.ReceiptType)
