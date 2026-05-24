@@ -53,3 +53,9 @@ public class CreateReceiptFieldValueDto
         BooleanValue = typedValue.BooleanValue;
     }
 }
+
+public record ReceiptFieldValueReferenceDto(
+    Guid Id,
+    string Code,
+    string Title
+);

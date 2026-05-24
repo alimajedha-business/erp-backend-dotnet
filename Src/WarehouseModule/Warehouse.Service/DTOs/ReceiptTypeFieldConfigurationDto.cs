@@ -27,8 +27,6 @@ public record ReceiptTypeFieldConfigurationDto(
 
 public record ReceiptTypeFieldConfigurationListDto(
     Guid Id,
-    Guid ReceiptTypeConfigurationId,
-    Guid ReceiptTypeId,
     Guid FieldDefinitionId,
     string FieldDefinitionKey,
     string FieldDefinitionTitle,

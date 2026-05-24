@@ -449,7 +449,7 @@ public class ReceiptBusinessRuleValidator(
             ReceiptFieldDataType.Decimal => dto.DecimalValue is not null,
             ReceiptFieldDataType.Date => dto.DateValue is not null,
             ReceiptFieldDataType.Boolean => dto.BooleanValue is not null,
-            ReceiptFieldDataType.Guid => dto.ReferenceId is not null,
+            ReceiptFieldDataType.Reference => dto.ReferenceId is not null,
             _ => false
         };
     }

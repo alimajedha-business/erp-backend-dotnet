@@ -34,6 +34,16 @@ public class ReceiptFieldValueMappingProfile : Profile
                 opt => opt.MapFrom(src => GetReceiptFieldValue(src))
             );
         CreateMap<CreateReceiptFieldValueDto, ReceiptFieldValue>();
+
+        CreateMap<ReceiptSourceOfSupply, ReceiptFieldValueReferenceDto>()
+            .ForCtorParam(
+                nameof(ReceiptFieldValueReferenceDto.Code),
+                opt => opt.MapFrom(src => src.Code)
+            )
+            .ForCtorParam(
+                nameof(ReceiptFieldValueReferenceDto.Title),
+                opt => opt.MapFrom(src => src.Title)
+            );
     }
 
     private static object? GetReceiptFieldValue(ReceiptFieldValue fieldValue)
@@ -45,7 +55,7 @@ public class ReceiptFieldValueMappingProfile : Profile
             ReceiptFieldDataType.Decimal => fieldValue.DecimalValue,
             ReceiptFieldDataType.Date => fieldValue.DateValue,
             ReceiptFieldDataType.Boolean => fieldValue.BooleanValue,
-            ReceiptFieldDataType.Guid => fieldValue.ReferenceId,
+            ReceiptFieldDataType.Reference => fieldValue.ReferenceId,
             _ => null
         };
     }
