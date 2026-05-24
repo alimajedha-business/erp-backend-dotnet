@@ -22,7 +22,7 @@ public class Attribute :
     public bool IsRequired { get; set; } = false;
     public bool IsStockDimension {  get; set; } = false;
     public bool IsStatic { get; set; } = false;
-    public string StaticKey { get; set; } = default!;
+    public string? StaticKey { get; set; } = default!;
 
     public ICollection<ItemAttribute> ItemAttributes { get; set; } = [];
 
