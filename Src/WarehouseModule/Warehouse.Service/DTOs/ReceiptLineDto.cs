@@ -2,7 +2,7 @@
 
 public record ReceiptLineDto(
     Guid Id,
-    int RowNumber,
+    int Sequence,
     Guid ItemId,
     Guid WarehouseLocationId,
     decimal? Weight,
@@ -22,7 +22,7 @@ public record ReceiptLineDto(
 
 public class CreateReceiptLineDto
 {
-    public int RowNumber { get; set; }
+    public int Sequence { get; set; }
     public Guid ItemId { get; set; }
     public Guid WarehouseLocationId { get; set; }
     public decimal? Weight { get; set; }

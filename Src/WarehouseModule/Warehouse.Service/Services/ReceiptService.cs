@@ -288,7 +288,7 @@ public class ReceiptService(
             var line = new ReceiptLine
             {
                 CompanyId = companyId,
-                Sequence = lineDto.RowNumber,
+                Sequence = lineDto.Sequence,
                 ItemId = lineDto.ItemId,
                 WarehouseLocationId = lineDto.WarehouseLocationId,
                 Weight = MeasurementUnitConverter.ConvertToBase(
@@ -460,7 +460,7 @@ public class ReceiptService(
     {
         return new CreateReceiptLineDto
         {
-            RowNumber = line.Sequence,
+            Sequence = line.Sequence,
             ItemId = line.ItemId,
             WarehouseLocationId = line.WarehouseLocationId,
             Weight = MeasurementUnitConverter.ConvertFromBase(

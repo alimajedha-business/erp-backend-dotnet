@@ -200,7 +200,7 @@ public class ReceiptBusinessRuleValidator(
     )
     {
         var duplicates = lines
-            .GroupBy(e => e.RowNumber)
+            .GroupBy(e => e.Sequence)
             .Where(e => e.Count() > 1);
 
         foreach (var duplicate in duplicates)
@@ -229,14 +229,14 @@ public class ReceiptBusinessRuleValidator(
             .Where(e => e.Count() > 1);
 
         foreach (var duplicate in duplicateLineFields)
-            AddLineError(errors, line.RowNumber, new ReceiptDuplicateFieldDefinitionException(duplicate.Key));
+            AddLineError(errors, line.Sequence, new ReceiptDuplicateFieldDefinitionException(duplicate.Key));
 
         var duplicateAttributes = line.ReceiptLineAttributeValues
             .GroupBy(e => e.ItemAttributeId)
             .Where(e => e.Count() > 1);
 
         foreach (var duplicate in duplicateAttributes)
-            AddLineError(errors, line.RowNumber, new ReceiptDuplicateLineAttributeException(duplicate.Key));
+            AddLineError(errors, line.Sequence, new ReceiptDuplicateLineAttributeException(duplicate.Key));
 
         var duplicateMeasurements = line.ReceiptLineMeasurementValues
             .GroupBy(e => e.ItemUnitOfMeasurementId)
@@ -246,7 +246,7 @@ public class ReceiptBusinessRuleValidator(
         {
             AddLineError(
                 errors,
-                line.RowNumber,
+                line.Sequence,
                 new ReceiptDuplicateLineMeasurementValueException(duplicate.Key)
             );
         }
@@ -271,7 +271,7 @@ public class ReceiptBusinessRuleValidator(
             {
                 AddLineError(
                     errors,
-                    line.RowNumber,
+                    line.Sequence,
                     new ReceiptLineAttributeValueMustHaveExactlyOneValueException(
                         attributeValue.ItemAttributeId
                     )
@@ -285,7 +285,7 @@ public class ReceiptBusinessRuleValidator(
             {
                 AddLineError(
                     errors,
-                    line.RowNumber,
+                    line.Sequence,
                     new ReceiptFieldValueMustHaveExactlyOneValueException(
                         fieldValue.FieldDefinitionId
                     )
@@ -306,7 +306,7 @@ public class ReceiptBusinessRuleValidator(
                 fieldValue,
                 configurations,
                 ReceiptConfiguredPlacement.Detail,
-                line.RowNumber,
+                line.Sequence,
                 errors
             );
 
@@ -321,7 +321,7 @@ public class ReceiptBusinessRuleValidator(
         {
             AddLineError(
                 errors,
-                line.RowNumber,
+                line.Sequence,
                 new ReceiptRequiredFieldValueMissingException(
                     missing.FieldDefinitionId,
                     missing.FieldDefinition.Title
@@ -481,7 +481,7 @@ public class ReceiptBusinessRuleValidator(
 
                 if (item is null)
                 {
-                    AddLineError(errors, line.RowNumber, new ItemNotFoundException());
+                    AddLineError(errors, line.Sequence, new ItemNotFoundException());
                     continue;
                 }
 
@@ -501,9 +501,9 @@ public class ReceiptBusinessRuleValidator(
                 if (!unitIsAllowed)
                     AddLineError(
                         errors,
-                        line.RowNumber,
+                        line.Sequence,
                         new ReceiptLineUnitOfMeasurementNotAllowedException(
-                            line.RowNumber,
+                            line.Sequence,
                             measurementValue.ItemUnitOfMeasurementId
                         )
                     );
@@ -536,14 +536,14 @@ public class ReceiptBusinessRuleValidator(
         foreach (var line in lines)
         {
             AddPreferredUnitErrorIfInvalid(
-                line.RowNumber,
+                line.Sequence,
                 line.PreferredMassUnitId,
                 UnitDimension.MASS,
                 unitsById,
                 errors
             );
             AddPreferredUnitErrorIfInvalid(
-                line.RowNumber,
+                line.Sequence,
                 line.PreferredVolumeUnitId,
                 UnitDimension.VOLUME,
                 unitsById,
