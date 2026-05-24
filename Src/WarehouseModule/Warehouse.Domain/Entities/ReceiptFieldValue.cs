@@ -25,8 +25,10 @@ public class ReceiptFieldValue :
     public int? IntegerValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }
-    public Guid? ReferenceId { get; set; }
     public bool? BooleanValue { get; set; }
+
+    public Guid? ReferenceId { get; set; }
+    public string? ReferenceDisplayValue { get; set; }
 
     public Receipt Receipt { get; set; } = default!;
     public ReceiptLine? ReceiptLine { get; set; }
@@ -77,4 +79,6 @@ public class ReceiptFieldValue :
             .HasForeignKey(e => e.FieldDefinitionId)
             .OnDelete(DeleteBehavior.Restrict);
     }
+
+    public bool IsReference => FieldDefinition?.DataType == ReceiptFieldDataType.Reference;
 }
