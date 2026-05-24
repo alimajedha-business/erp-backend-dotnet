@@ -104,7 +104,7 @@ public class WarehouseMenuProfile : IMenuModuleProfile
         yield return new MenuDefinition
         {
             NameFa = "امکانات",
-            NameEn = "Faciliteis",
+            NameEn = "Facilities",
             Order = 5,
             Children = [
                 new()
