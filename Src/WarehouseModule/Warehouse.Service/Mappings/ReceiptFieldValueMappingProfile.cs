@@ -55,7 +55,7 @@ public class ReceiptFieldValueMappingProfile : Profile
             ReceiptFieldDataType.Decimal => fieldValue.DecimalValue,
             ReceiptFieldDataType.Date => fieldValue.DateValue,
             ReceiptFieldDataType.Boolean => fieldValue.BooleanValue,
-            ReceiptFieldDataType.Reference => fieldValue.ReferenceId,
+            ReceiptFieldDataType.Reference => fieldValue.ReferenceDisplayValue,
             _ => null
         };
     }

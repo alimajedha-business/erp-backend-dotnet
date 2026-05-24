@@ -422,7 +422,8 @@ public class ReceiptService(
             DecimalValue = dto.DecimalValue,
             DateValue = dto.DateValue,
             ReferenceId = dto.ReferenceId,
-            BooleanValue = dto.BooleanValue
+            BooleanValue = dto.BooleanValue,
+            ReferenceDisplayValue = dto.ReferenceDisplayValue,
         };
     }
 

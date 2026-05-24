@@ -35,8 +35,10 @@ public class CreateReceiptFieldValueDto
     public int? IntegerValue { get; set; }
     public decimal? DecimalValue { get; set; }
     public DateOnly? DateValue { get; set; }
-    public Guid? ReferenceId { get; set; }
     public bool? BooleanValue { get; set; }
+
+    public Guid? ReferenceId { get; set; }
+    public string? ReferenceDisplayValue { get; set; }
 
     public void NormalizeValue()
     {
