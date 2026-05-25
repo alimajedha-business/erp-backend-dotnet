@@ -3,6 +3,7 @@
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.Service.Contracts;
@@ -37,7 +38,7 @@ public class ReceiptFieldValueService(
 
         if (res is null)
         {
-            throw new Exception();
+            throw new ReceiptFieldReferenceNotFoundException();
         }
 
         return new ListResponseModel<ReceiptFieldValueReferenceDto>(
