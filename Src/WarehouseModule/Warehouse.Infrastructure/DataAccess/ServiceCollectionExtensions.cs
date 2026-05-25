@@ -30,10 +30,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReceiptSourceOfSupplyRepository, ReceiptSourceOfSupplyRepository>();
         services.AddScoped<IReceiptTypeRepository, ReceiptTypeRepository>();
         services.AddScoped<IReceiptTypeConfigurationRepository, ReceiptTypeConfigurationRepository>();
-        services.AddScoped<
-            IReceiptTypeFieldConfigurationRepository,
-            ReceiptTypeFieldConfigurationRepository
-        >();
         services.AddScoped<IShippingCompanyRepository, ShippingCompanyRepository>();
         services.AddScoped<ISiUnitRepository, SiUnitRepository>();
         services.AddScoped<IUnitOfMeasurementRepository, UnitOfMeasurementRepository>();

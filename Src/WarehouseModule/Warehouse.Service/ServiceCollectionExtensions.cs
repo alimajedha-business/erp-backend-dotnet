@@ -91,10 +91,6 @@ public static class ServiceCollectionExtensions
             ReceiptTypeConfigurationBusinessRuleValidator
         >();
         services.AddScoped<IReceiptTypeConfigurationService, ReceiptTypeConfigurationService>();
-        services.AddScoped<
-            IReceiptTypeFieldConfigurationService,
-            ReceiptTypeFieldConfigurationService
-        >();
         services.AddScoped<IReceiptService, ReceiptService>();
         services.AddScoped<IReceiptTypeService, ReceiptTypeService>();
         services.AddScoped<IShippingCompanyService, ShippingCompanyService>();
