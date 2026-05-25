@@ -1,10 +1,13 @@
 ﻿using System.Linq.Expressions;
 
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+
 using Microsoft.EntityFrameworkCore;
 
 using NGErp.Base.Infrastructure.DataAccess;
-using NGErp.Base.Service.RequestFeatures;
 using NGErp.General.Infrastructure.DataAccess.Repositories;
+using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 
 namespace NGErp.Warehouse.Infrastructure.DataAccess.Repositories;
@@ -13,8 +16,9 @@ public class WarehouseRepository(MainDbContext context) :
     RepositoryWithCompany<Domain.Entities.Warehouse>(context),
     IWarehouseRepository
 {
-    public override async Task<Domain.Entities.Warehouse?> SingleOrDefaultAsync(
+    public async Task<WarehouseDto?> SingleOrDefaultAsync(
         Expression<Func<Domain.Entities.Warehouse, bool>> predicate,
+        IConfigurationProvider mapperConfig,
         bool trackChanges = true,
         CancellationToken ct = default
     )
@@ -23,9 +27,10 @@ public class WarehouseRepository(MainDbContext context) :
             .AsSplitQuery();
 
         return await query
+            .Where(predicate)
             .Include(i => i.WarehouseType)
-            .Include(i => i.CompanyUnit)
-            .SingleOrDefaultAsync(predicate, ct);
+            .ProjectTo<WarehouseDto>(mapperConfig)
+            .SingleOrDefaultAsync(ct);
     }
 
     public async Task<int> GetNextCodeAsync(

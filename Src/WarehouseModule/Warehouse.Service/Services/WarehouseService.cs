@@ -64,15 +64,16 @@ public class WarehouseService(
         CancellationToken ct = default
     )
     {
-        var warehouse = await GetSingleOrThrowAsync(
-            trackChanges: trackChanges,
+        var warehouse = await _warehouseRepository.SingleOrDefaultAsync(
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
+            mapperConfig: _mapper.ConfigurationProvider,
+            trackChanges,
             ct
         );
 
-        return _mapper.Map<WarehouseDto>(warehouse);
+        return warehouse is null ? throw new WarehouseNotFoundException() : warehouse;
     }
 
     public async Task<ListResponseModel<WarehouseSlimDto>> FilterByQAsync(
@@ -131,13 +132,13 @@ public class WarehouseService(
             nameof(PatchWarehouseDto.Code)
         );
 
-        var warehouse = await GetSingleOrThrowAsync(
-            trackChanges: true,
+        var warehouse = await _warehouseRepository.SingleOrDefaultAsync(
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
+            trackChanges: true,
             ct
-        );
+        ) ?? throw new WarehouseNotFoundException();
 
         var patchDto = _mapper.Map<PatchWarehouseDto>(warehouse);
         var errors = new List<string>();
@@ -194,21 +195,6 @@ public class WarehouseService(
     )
     {
         return _warehouseRepository.GetNextCodeAsync(companyId, ct);
-    }
-
-    private async Task<Domain.Entities.Warehouse> GetSingleOrThrowAsync(
-        bool trackChanges,
-        Expression<Func<Domain.Entities.Warehouse, bool>> predicate,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _warehouseRepository.SingleOrDefaultAsync(
-            predicate,
-            trackChanges,
-            ct
-        );
-
-        return entity ?? throw new WarehouseNotFoundException();
     }
 
     private static void ApplyRemovedNullableFields(
