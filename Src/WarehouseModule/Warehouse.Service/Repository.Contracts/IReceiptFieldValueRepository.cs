@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 
 using NGErp.Base.Domain.Entities;
 using NGErp.Base.Service.RequestFeatures;
@@ -10,9 +12,9 @@ namespace NGErp.Warehouse.Service.Repository.Contracts;
 public interface IReceiptFieldValueRepository
 {
     Task<ListQueryResult<ReceiptFieldValueReferenceDto>> FilterByQ<TEntity>(
-        Guid companyId,
         RequestParameters requestParameters,
         IConfigurationProvider mapperConfig,
-        CancellationToken ct
+        Expression<Func<TEntity, bool>>? predicate = null,
+        CancellationToken ct = default
     ) where TEntity : BaseEntity;
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using NGErp.Shared.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Service.DTOs;
 
@@ -35,14 +36,12 @@ public class ReceiptFieldValueMappingProfile : Profile
             );
         CreateMap<CreateReceiptFieldValueDto, ReceiptFieldValue>();
 
-        CreateMap<ReceiptSourceOfSupply, ReceiptFieldValueReferenceDto>()
-            .ForCtorParam(
-                nameof(ReceiptFieldValueReferenceDto.Code),
-                opt => opt.MapFrom(src => src.Code)
-            )
+        CreateMap<Domain.Entities.Warehouse, ReceiptFieldValueReferenceDto>();
+        CreateMap<ReceiptSourceOfSupply, ReceiptFieldValueReferenceDto>();
+        CreateMap<CompanyUnit, ReceiptFieldValueReferenceDto>()
             .ForCtorParam(
                 nameof(ReceiptFieldValueReferenceDto.Title),
-                opt => opt.MapFrom(src => src.Title)
+                opt => opt.MapFrom(src => src.Name)
             );
     }
 
