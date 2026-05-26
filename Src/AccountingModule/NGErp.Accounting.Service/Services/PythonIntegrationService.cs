@@ -8,33 +8,42 @@ namespace NGErp.Accounting.Service.Services;
 public interface IPythonIntegrationService
 {
     Task<SlaveAccountCompanyDto?> GetSlaveAccountCompanyByIdAsync(
-        Guid id,
-        string? token = null
+        Guid companyId,
+        Guid ledgerId,
+        Guid? slaveAccountCompanyId
     );
 }
 
 public class PythonIntegrationService(
     DjangoApiService djangoApiService,
+    ICurrentUserService currentUserService,
     ILogger<PythonIntegrationService> logger
 ) : IPythonIntegrationService
 {
     private readonly DjangoApiService _djangoApiService = djangoApiService;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly ILogger<PythonIntegrationService> _logger = logger;
 
     public async Task<SlaveAccountCompanyDto?> GetSlaveAccountCompanyByIdAsync(
-        Guid id,
-        string? token = null
+        Guid companyId,
+        Guid ledgerId,
+        Guid? slaveAccountCompanyId
     )
     {
-        // TODO: fix api route when the api is being implemented in django
+        if (slaveAccountCompanyId is null)
+            throw new Exception();
+
         try
         {
-            _logger.LogInformation("Fetching company {CompanyId} from Django API at /api/general/companies/{CompanyId}/", id, id);
-            return await _djangoApiService.GetAsync<SlaveAccountCompanyDto>($"/api/general/companies/{id}/", token);
+            _logger.LogInformation("Fetching slave account company from Django API");
+            return await _djangoApiService.GetAsync<SlaveAccountCompanyDto>(
+                $"/api/accounting/{companyId}/accounts/ledgers/{ledgerId}/company-slaves/{slaveAccountCompanyId}/",
+                _currentUserService.Token
+            );
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching company {Id} from Django API", id);
+            _logger.LogError(ex, "Error fetching slave account company"); 
             throw;
         }
     }

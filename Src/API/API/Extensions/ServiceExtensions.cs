@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using NGErp.Accounting.Service;
 using NGErp.Base.API.ActionFilters;
 using NGErp.Base.Infrastructure;
 using NGErp.Base.Service;
@@ -43,6 +44,7 @@ public static class ServiceExtensions
 
     public static void AddServices(this IServiceCollection services)
     {
+        services.AddAccountingServices();
         services.AddBaseServices();
         services.AddGeneralServices();
         services.AddGeneralApiServices();

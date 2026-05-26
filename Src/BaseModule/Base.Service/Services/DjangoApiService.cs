@@ -28,7 +28,7 @@ public class  DjangoApiService
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-
+             
             return await response.Content.ReadFromJsonAsync<T>();
         }
         catch (Exception ex)
