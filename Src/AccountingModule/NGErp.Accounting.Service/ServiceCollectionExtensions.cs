@@ -10,7 +10,7 @@ namespace NGErp.Accounting.Service
     {
         public static IServiceCollection AddAccountingServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
 
             services.AddScoped<IPythonIntegrationService, PythonIntegrationService>();
 

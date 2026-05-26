@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
 
         services.AddHttpContextAccessor();
 
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
 
         services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
 

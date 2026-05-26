@@ -10,7 +10,7 @@ namespace NGErp.Base.Service
     {
         public static IServiceCollection AddBaseServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
             services.AddHttpContextAccessor();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
