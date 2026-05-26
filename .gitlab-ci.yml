@@ -13,8 +13,6 @@ variables:
   DEPLOY_TARGET: "/home/emaco/www/devg-ngerp/backend-dotnet/"
   SERVICE_NAME:  "ngerp-dotnet.service"
   NUGER_SORECE: "https://api.nuget.org/v3/index.json"
-  NUGET_SOURCE_RUNFLARE: "https://mirror-nuget.runflare.com/v3/index.json"
-  NUGET_SOURCE_LIARA: "https://mirror-nuget.runflare.com/v3/index.json"
 
 cache:
   key: "dotnet-${CI_COMMIT_REF_SLUG}"
@@ -28,7 +26,7 @@ build:
     - ubuntu
     - deploy
   script:
-    - dotnet restore "$SOLUTION_FILE" --source "$NUGER_SORECE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
+    - dotnet restore "$SOLUTION_FILE" --source "$NUGER_SORECE"
     - dotnet build   "$SOLUTION_FILE" --configuration Debug --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -68,7 +66,7 @@ publish:
     - ubuntu
     - deploy
   script:
-    - dotnet publish "$API_PROJECT" --configuration Debug --output "$PUBLISH_DIR" --source "$NUGER_SORECE" --source "$NUGET_SOURCE_RUNFLARE" --source "$NUGET_SOURCE_LIARA"
+    - dotnet publish "$API_PROJECT" --configuration Debug --output "$PUBLISH_DIR" --source "$NUGER_SORECE"
   artifacts:
     paths:
       - "$PUBLISH_DIR"
