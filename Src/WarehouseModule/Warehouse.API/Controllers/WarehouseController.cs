@@ -22,7 +22,7 @@ namespace NGErp.Warehouse.API.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [ApiExplorerSettings(GroupName = "v1-warehouse")]
-[Route("api/v{version:apiVersion}/companies/{companyId:guid}/warehouse/warehouses")]
+[Route("api/v{version:apiVersion}/companies/{companyId:guid}/ledgers/{ledgerId:guid}/warehouse/warehouses")]
 [HasPermission(EntityTypes.Warehouse)]
 public class WarehouseController(
     IWarehouseService warehouseService,
@@ -134,12 +134,14 @@ public class WarehouseController(
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(
        [FromRoute] Guid companyId,
+       [FromRoute] Guid ledgerId,
        [FromRoute] Guid id,
        CancellationToken ct
     )
     {
         var warehouse = await _warehouseService.GetByIdAsync(
             companyId,
+            ledgerId,
             id,
             trackChanges: false,
             ct

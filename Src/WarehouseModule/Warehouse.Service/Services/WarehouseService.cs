@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using AutoMapper;
 
 using FluentValidation;
@@ -11,6 +9,7 @@ using NGErp.Base.Service.DTOs;
 using NGErp.Base.Service.ResponseModels;
 using NGErp.Base.Service.Services;
 using NGErp.Base.Service.Validators;
+using NGErp.Accounting.Service.Services;
 using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
@@ -18,12 +17,14 @@ using NGErp.Warehouse.Service.RequestFeatures;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
 using NGErp.Warehouse.Service.Service.Contracts;
+using NGErp.Accounting.Service.DTOs;
 
 namespace NGErp.Warehouse.Service.Services;
 
 public class WarehouseService(
     IAdvancedFilterBuilder filterBuilder,
     IWarehouseRepository warehouseRepository,
+    IPythonIntegrationService pythonService,
     IWarehouseBusinessRuleValidator businessRuleValidator,
     IValidator<CreateWarehouseDto> createValidator,
     IValidator<PatchWarehouseDto> patchValidator,
@@ -33,6 +34,7 @@ public class WarehouseService(
     private readonly IMapper _mapper = mapper;
     private readonly IAdvancedFilterBuilder _filterBuilder = filterBuilder;
     private readonly IWarehouseRepository _warehouseRepository = warehouseRepository;
+    private readonly IPythonIntegrationService _pythonService = pythonService;
     private readonly IWarehouseBusinessRuleValidator _businessRuleValidator =
         businessRuleValidator;
     private readonly IValidator<CreateWarehouseDto> _createValidator = createValidator;
@@ -59,20 +61,46 @@ public class WarehouseService(
 
     public async Task<WarehouseDto> GetByIdAsync(
         Guid companyId,
+        Guid ledgerId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
     )
     {
-        var warehouse = await GetSingleOrThrowAsync(
-            trackChanges: trackChanges,
+        var warehouse = await _warehouseRepository.SingleOrDefaultAsync(
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
+            mapperConfig: _mapper.ConfigurationProvider,
+            trackChanges,
             ct
-        );
+        ) ?? throw new WarehouseNotFoundException();
 
-        return _mapper.Map<WarehouseDto>(warehouse);
+        if (warehouse.WarehouseSlaveAccountCompanyId is not null)
+        {
+            var accountCompany = await _pythonService
+                .GetSlaveAccountCompanyByIdAsync(
+                    companyId,
+                    ledgerId,
+                    warehouse.WarehouseSlaveAccountCompanyId
+                ) ?? throw new WarehouseNotFoundException();
+
+            warehouse.WarehouseSlaveAccountCompany = accountCompany;
+        }
+
+        if (warehouse.ReturnFromPurchaseSlaveAccountCompanyId is not null)
+        {
+            var accountCompany = await _pythonService
+                .GetSlaveAccountCompanyByIdAsync(
+                    companyId,
+                    ledgerId,
+                    warehouse.ReturnFromPurchaseSlaveAccountCompanyId
+                ) ?? throw new WarehouseNotFoundException();
+
+            warehouse.ReturnFromPurchaseSlaveAccountCompany = accountCompany;
+        }
+
+        return warehouse;
     }
 
     public async Task<ListResponseModel<WarehouseSlimDto>> FilterByQAsync(
@@ -131,13 +159,13 @@ public class WarehouseService(
             nameof(PatchWarehouseDto.Code)
         );
 
-        var warehouse = await GetSingleOrThrowAsync(
-            trackChanges: true,
+        var warehouse = await _warehouseRepository.SingleOrDefaultAsync(
             predicate: p =>
                 p.CompanyId == companyId &&
                 p.Id == id,
+            trackChanges: true,
             ct
-        );
+        ) ?? throw new WarehouseNotFoundException();
 
         var patchDto = _mapper.Map<PatchWarehouseDto>(warehouse);
         var errors = new List<string>();
@@ -194,21 +222,6 @@ public class WarehouseService(
     )
     {
         return _warehouseRepository.GetNextCodeAsync(companyId, ct);
-    }
-
-    private async Task<Domain.Entities.Warehouse> GetSingleOrThrowAsync(
-        bool trackChanges,
-        Expression<Func<Domain.Entities.Warehouse, bool>> predicate,
-        CancellationToken ct = default
-    )
-    {
-        var entity = await _warehouseRepository.SingleOrDefaultAsync(
-            predicate,
-            trackChanges,
-            ct
-        );
-
-        return entity ?? throw new WarehouseNotFoundException();
     }
 
     private static void ApplyRemovedNullableFields(
