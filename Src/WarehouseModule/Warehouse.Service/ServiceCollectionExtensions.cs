@@ -6,7 +6,6 @@ using NGErp.Base.Domain.EntitySchemas;
 using NGErp.Base.Service.Services;
 using NGErp.Warehouse.Domain.Entities;
 using NGErp.Warehouse.Domain.EntitySchemas;
-using NGErp.Warehouse.Service.Mappings;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidator.Contracts;
 using NGErp.Warehouse.Service.RequestValidators.BusinessRulesValidators;
 using NGErp.Warehouse.Service.RequestValidators.DtoValidators;
@@ -26,7 +25,10 @@ public static class ServiceCollectionExtensions
 
         services.AddHttpContextAccessor();
 
-        services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddMaps(typeof(ServiceCollectionExtensions).Assembly);
+        });
 
         services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
 

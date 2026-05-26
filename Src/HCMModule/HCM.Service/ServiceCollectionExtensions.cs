@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NGErp.Base.Domain.EntitySchemas;
 using NGErp.HCM.Domain.Entities;
 using NGErp.HCM.Domain.EntitySchemas;
-using NGErp.HCM.Service.Mappings;
 using NGErp.HCM.Service.RequestValidators.DtoValidators;
 using NGErp.HCM.Service.Services;
 using NGErp.HCM.Service.RequestValidators.BusinessRulesValidator.Contracts;
@@ -20,7 +19,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHCMServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddMaps(typeof(ServiceCollectionExtensions).Assembly);
+        });
 
             services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
 

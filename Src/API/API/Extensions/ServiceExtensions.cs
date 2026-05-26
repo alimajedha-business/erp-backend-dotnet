@@ -50,15 +50,6 @@ public static class ServiceExtensions
         services.AddGeneralApiServices();
         services.AddWarehouseServices();
         services.AddHCMServices();
-
-        services.AddAutoMapper(cfg =>
-        {
-            cfg.AddProfile<NGErp.Accounting.Service.Mappings.MappingProfile>();
-            cfg.AddProfile<NGErp.Base.Service.Mappings.MappingProfile>();
-            cfg.AddProfile<NGErp.General.Service.Mappings.MappingProfile>();
-            cfg.AddProfile<NGErp.HCM.Service.Mappings.MappingProfile>();
-            cfg.AddProfile<NGErp.Warehouse.Service.Mappings.MappingProfile>();
-        });
     }
 
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
