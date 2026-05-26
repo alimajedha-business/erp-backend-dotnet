@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\AccountingModule\NGErp.Accounting.Service\NGErp.Accounting.Service.csproj" />
         <ProjectReference Include="..\..\BaseModule\Base.Service\NGErp.Base.Service.csproj" />
         <ProjectReference Include="..\..\GeneralModule\General.Service\NGErp.General.Service.csproj" />
         <ProjectReference Include="..\Warehouse.Domain\NGErp.Warehouse.Domain.csproj" />

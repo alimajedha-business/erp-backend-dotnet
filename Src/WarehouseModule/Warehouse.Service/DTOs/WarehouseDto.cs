@@ -1,28 +1,32 @@
-﻿using NGErp.General.Service.DTOs;
+﻿using NGErp.Accounting.Service.DTOs;
+using NGErp.General.Service.DTOs;
 
 namespace NGErp.Warehouse.Service.DTOs;
 
-public record WarehouseDto(
-    Guid Id,
-    int Code,
-    string Title,
-    bool IsActive,
-    decimal MaxMonetaryValue,
-    WarehouseTypeDto warehouseType,
-    CompanyUnitDto companyUnit,
+public record WarehouseDto
+{
+    public Guid Id { get; init; }
+    public int Code { get; init; }
+    public string Title { get; init; } = default!;
+    public bool IsActive { get; init; }
+    public decimal MaxMonetaryValue { get; init; }
+    public WarehouseTypeDto warehouseType { get; init; } = default!;
+    public CompanyUnitDto companyUnit { get; init; } = default!;
 
-    Guid? WarehouseSlaveAccountCompanyId,
-    string WarehouseAccountMasterValue,
-    string WarehouseAccountSlaveValue,
-    string WarehouseAccountDetailed1Value,
-    string WarehouseAccountDetailed2Value,
+    public Guid? WarehouseSlaveAccountCompanyId { get; init; }
+    public SlaveAccountCompanyDto? WarehouseSlaveAccountCompany { get; set; } = default!;
+    public string WarehouseAccountMasterValue { get; init; } = default!;
+    public string WarehouseAccountSlaveValue { get; init; } = default!;
+    public string WarehouseAccountDetailed1Value { get; init; } = default!;
+    public string WarehouseAccountDetailed2Value { get; init; } = default!;
 
-    Guid? ReturnFromPurchaseSlaveAccountCompanyId,
-    string ReturnFromPurchaseAccountMasterValue,
-    string ReturnFromPurchaseAccountSlaveValue,
-    string ReturnFromPurchaseAccountDetailed1Value,
-    string ReturnFromPurchaseAccountDetailed2Value
-);
+    public Guid? ReturnFromPurchaseSlaveAccountCompanyId { get; init; }
+    public SlaveAccountCompanyDto? ReturnFromPurchaseSlaveAccountCompany { get; set; }
+    public string ReturnFromPurchaseAccountMasterValue { get; init; } = default!;
+    public string ReturnFromPurchaseAccountSlaveValue { get; init; } = default!;
+    public string ReturnFromPurchaseAccountDetailed1Value { get; init; } = default!;
+    public string ReturnFromPurchaseAccountDetailed2Value { get; init; } = default!;
+}
 
 public record WarehouseSlimDto(
     Guid Id,

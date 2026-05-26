@@ -17,6 +17,7 @@ public interface IWarehouseService
 
     Task<WarehouseDto> GetByIdAsync(
         Guid companyId,
+        Guid ledgerId,
         Guid id,
         bool trackChanges = false,
         CancellationToken ct = default
