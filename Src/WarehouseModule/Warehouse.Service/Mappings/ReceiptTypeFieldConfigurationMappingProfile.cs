@@ -23,10 +23,6 @@ public class ReceiptTypeFieldConfigurationMappingProfile : Profile
 
         CreateMap<ReceiptTypeFieldConfiguration, ReceiptTypeFieldConfigurationListDto>()
             .ForCtorParam(
-                nameof(ReceiptTypeFieldConfigurationListDto.ReceiptTypeId),
-                opt => opt.MapFrom(src => src.ReceiptTypeConfiguration.ReceiptTypeId)
-            )
-            .ForCtorParam(
                 nameof(ReceiptTypeFieldConfigurationListDto.FieldDefinitionKey),
                 opt => opt.MapFrom(src => src.FieldDefinition.Key)
             )

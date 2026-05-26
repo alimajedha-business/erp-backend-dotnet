@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHCMServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
 
             services.AddScoped<IExceptionLocalizer<HCMResource>, ExceptionLocalizer<HCMResource>>();
 

@@ -288,7 +288,7 @@ public class ReceiptService(
             var line = new ReceiptLine
             {
                 CompanyId = companyId,
-                RowNumber = lineDto.RowNumber,
+                Sequence = lineDto.Sequence,
                 ItemId = lineDto.ItemId,
                 WarehouseLocationId = lineDto.WarehouseLocationId,
                 Weight = MeasurementUnitConverter.ConvertToBase(
@@ -422,7 +422,8 @@ public class ReceiptService(
             DecimalValue = dto.DecimalValue,
             DateValue = dto.DateValue,
             ReferenceId = dto.ReferenceId,
-            BooleanValue = dto.BooleanValue
+            BooleanValue = dto.BooleanValue,
+            ReferenceDisplayValue = dto.ReferenceDisplayValue,
         };
     }
 
@@ -438,7 +439,7 @@ public class ReceiptService(
                 .Where(e => e.ReceiptLineId is null)
                 .Select(MapCreateReceiptFieldValueDto)],
             ReceiptLines = [.. receipt.ReceiptLines
-                .OrderBy(e => e.RowNumber)
+                .OrderBy(e => e.Sequence)
                 .Select(MapCreateReceiptLineDto)]
         };
     }
@@ -460,7 +461,7 @@ public class ReceiptService(
     {
         return new CreateReceiptLineDto
         {
-            RowNumber = line.RowNumber,
+            Sequence = line.Sequence,
             ItemId = line.ItemId,
             WarehouseLocationId = line.WarehouseLocationId,
             Weight = MeasurementUnitConverter.ConvertFromBase(
