@@ -26,7 +26,7 @@ build:
     - ubuntu
     - deploy
   script:
-    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE"
+    - dotnet restore "$SOLUTION_FILE" --source "$NUGET_SOURCE" /p:NuGetAudit=false
     - dotnet build   "$SOLUTION_FILE" --configuration Debug --no-restore
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
