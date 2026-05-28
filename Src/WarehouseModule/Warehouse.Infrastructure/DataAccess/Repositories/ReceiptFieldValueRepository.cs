@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +20,17 @@ public class ReceiptFieldValueRepository(MainDbContext context) :
     protected readonly MainDbContext _context = context;
 
     public async Task<ListQueryResult<ReceiptFieldValueReferenceDto>> FilterByQ<TEntity>(
-        Guid companyId,
         RequestParameters requestParameters,
         IConfigurationProvider mapperConfig,
-        CancellationToken ct
+        Expression<Func<TEntity, bool>>? predicate = null,
+        CancellationToken ct = default
     ) where TEntity : BaseEntity
     {
         var query = _context.Set<TEntity>().AsNoTracking();
+
+        if (predicate != null)
+            query = query.Where(predicate);
+
         var totalCount = await query.CountAsync(ct);
         var items = await query
             .Sort(requestParameters)

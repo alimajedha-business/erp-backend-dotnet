@@ -11,29 +11,31 @@ public class ReceiptTypeFieldConfigurationMappingProfile : Profile
     {
         CreateMap<ReceiptTypeFieldConfiguration, ReceiptTypeFieldConfigurationDto>()
             .ForCtorParam(
-                nameof(ReceiptTypeFieldConfigurationDto.ReceiptTypeId),
-                opt => opt.MapFrom(src => src.ReceiptTypeConfiguration.ReceiptTypeId)
+                nameof(ReceiptTypeFieldConfigurationDto.FieldDefinitionKey),
+                opt => opt.MapFrom(src => src.FieldDefinition.Key)
+            )
+            .ForCtorParam(
+                nameof(ReceiptTypeFieldConfigurationDto.FieldDefinitionTitle),
+                opt => opt.MapFrom(src => src.FieldDefinition.Title)
             )
             .ForCtorParam(
                 nameof(ReceiptTypeFieldConfigurationDto.PlacementDescription),
                 opt => opt.MapFrom(src =>
                     ReceiptTypeFieldConfigurationDto.GetPlacementDescription(src.Placement)
                 )
-            );
-
-        CreateMap<ReceiptTypeFieldConfiguration, ReceiptTypeFieldConfigurationListDto>()
-            .ForCtorParam(
-                nameof(ReceiptTypeFieldConfigurationListDto.FieldDefinitionKey),
-                opt => opt.MapFrom(src => src.FieldDefinition.Key)
             )
             .ForCtorParam(
-                nameof(ReceiptTypeFieldConfigurationListDto.FieldDefinitionTitle),
-                opt => opt.MapFrom(src => src.FieldDefinition.Title)
+                nameof(ReceiptTypeFieldConfigurationDto.ReferenceEntityType),
+                opt => opt.MapFrom(src => src.FieldDefinition.ReferenceEntityType)
             )
             .ForCtorParam(
-                nameof(ReceiptTypeFieldConfigurationListDto.PlacementDescription),
+                nameof(ReceiptTypeFieldConfigurationDto.FieldDataType),
+                opt => opt.MapFrom(src => src.FieldDefinition.DataType)
+            )
+            .ForCtorParam(
+                nameof(ReceiptTypeFieldConfigurationDto.FieldDataTypeDescription),
                 opt => opt.MapFrom(src =>
-                    ReceiptTypeFieldConfigurationDto.GetPlacementDescription(src.Placement)
+                    ReceiptTypeFieldConfigurationDto.GetDataTypeDescription(src.FieldDefinition.DataType)
                 )
             );
 

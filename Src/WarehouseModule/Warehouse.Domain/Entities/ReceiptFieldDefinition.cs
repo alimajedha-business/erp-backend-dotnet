@@ -162,4 +162,5 @@ public enum ReceiptReferenceEntityType
 {
     Warehouse = 1,
     SourceOfSupply = 2,
+    CompanyUnit = 3,
 }

@@ -7,16 +7,25 @@ namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptTypeFieldConfigurationDto(
     Guid Id,
-    Guid ReceiptTypeConfigurationId,
-    Guid ReceiptTypeId,
     Guid FieldDefinitionId,
+    string FieldDefinitionKey,
+    string FieldDefinitionTitle,
     bool Exists,
     bool IsRequired,
     ReceiptConfiguredPlacement Placement,
     string PlacementDescription,
-    ReceiptFieldDefinitionDto FieldDefinition
+    ReceiptFieldDataType FieldDataType,
+    string FieldDataTypeDescription,
+    ReceiptReferenceEntityType ReferenceEntityType
 )
 {
+    public static string GetDataTypeDescription(ReceiptFieldDataType value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
+    }
+
     public static string GetPlacementDescription(ReceiptConfiguredPlacement value)
     {
         var field = value.GetType().GetField(value.ToString());
@@ -24,17 +33,6 @@ public record ReceiptTypeFieldConfigurationDto(
         return attribute?.Description ?? value.ToString();
     }
 }
-
-public record ReceiptTypeFieldConfigurationListDto(
-    Guid Id,
-    Guid FieldDefinitionId,
-    string FieldDefinitionKey,
-    string FieldDefinitionTitle,
-    bool Exists,
-    bool IsRequired,
-    ReceiptConfiguredPlacement Placement,
-    string PlacementDescription
-);
 
 public class CreateReceiptTypeFieldConfigurationDto
 {

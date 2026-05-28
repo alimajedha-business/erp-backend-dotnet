@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using NGErp.Base.Service.Mappings;
 using NGErp.Base.Service.Resources;
 using NGErp.Base.Service.Services;
 
@@ -10,7 +9,10 @@ namespace NGErp.Base.Service
     {
         public static IServiceCollection AddBaseServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(typeof(ServiceCollectionExtensions).Assembly);
+            });
             services.AddHttpContextAccessor();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
