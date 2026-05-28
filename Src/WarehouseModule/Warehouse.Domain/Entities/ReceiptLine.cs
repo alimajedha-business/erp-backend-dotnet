@@ -15,7 +15,7 @@ public class ReceiptLine :
     IBaseEntityTypeConfiguration<ReceiptLine>
 {
     public Guid ReceiptId { get; set; }
-    public int RowNumber { get; set; }
+    public int Sequence { get; set; }
     public Guid ItemId { get; set; }
     public Guid WarehouseLocationId { get; set; }
     public decimal? Weight { get; set; }
@@ -48,7 +48,7 @@ public class ReceiptLine :
             .ToTable(nameof(ReceiptLine), "Warehouse");
 
         builder
-            .HasIndex(i => new { i.ReceiptId, i.RowNumber })
+            .HasIndex(i => new { i.ReceiptId, i.Sequence })
             .IsUnique();
 
         builder

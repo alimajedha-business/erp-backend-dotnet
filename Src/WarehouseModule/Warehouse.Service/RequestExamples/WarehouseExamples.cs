@@ -21,10 +21,10 @@ public class WarehouseCreateRequestExample : IExamplesProvider<object>
             IsActive = true,
             MaxMonetaryValue = 120000,
             WarehouseSlaveAccountCompanyId = new Guid("9D6A7AAE-BFD1-4894-9B6D-20AC1EEDFA6B"),
-            ExportSaleAccountMasterValue = "100",
-            ExportSaleAccountSlaveValue = "25",
-            ExportSaleAccountDetailed1Value = "سطح 2",
-            ExportSaleAccountDetailed2Value = "10",
+            ReturnFromPurchaseAccountMasterValue = "100",
+            ReturnFromPurchaseAccountSlaveValue = "25",
+            ReturnFromPurchaseAccountDetailed1Value = "سطح 2",
+            ReturnFromPurchaseAccountDetailed2Value = "10",
         };
     }
 }

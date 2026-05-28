@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\BaseModule\Base.Infrastructure\NGErp.Base.Infrastructure.csproj" />
     <ProjectReference Include="..\..\GeneralModule\General.Domain\NGErp.General.Domain.csproj" />
     <ProjectReference Include="..\..\HCMModule\HCM.Service\NGErp.HCM.Service.csproj" />

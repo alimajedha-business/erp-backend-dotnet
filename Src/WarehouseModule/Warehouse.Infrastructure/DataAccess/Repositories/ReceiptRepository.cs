@@ -147,15 +147,15 @@ public class ReceiptRepository(MainDbContext context) :
         return query
             .Include(e => e.ReceiptType)
             .Include(e => e.ReceiptFieldValues)
-            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+            .Include(e => e.ReceiptLines.OrderBy(l => l.Sequence))
                 .ThenInclude(e => e.ReceiptFieldValues)
-            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+            .Include(e => e.ReceiptLines.OrderBy(l => l.Sequence))
                 .ThenInclude(e => e.ReceiptLineAttributeValues)
-            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+            .Include(e => e.ReceiptLines.OrderBy(l => l.Sequence))
                 .ThenInclude(e => e.ReceiptLineMeasurementValues)
-            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+            .Include(e => e.ReceiptLines.OrderBy(l => l.Sequence))
                 .ThenInclude(e => e.PreferredMassUnit)
-            .Include(e => e.ReceiptLines.OrderBy(l => l.RowNumber))
+            .Include(e => e.ReceiptLines.OrderBy(l => l.Sequence))
                 .ThenInclude(e => e.PreferredVolumeUnit);
     }
 }

@@ -9,6 +9,7 @@ public class ReceiptLineAttributeValueMappingProfile : Profile
 {
     public ReceiptLineAttributeValueMappingProfile()
     {
+        CreateMap<ReceiptLineAttributeValue, ReceiptLineAttributeValueDto>();
         CreateMap<CreateReceiptLineAttributeValueDto, ReceiptLineAttributeValue>();
     }
 }

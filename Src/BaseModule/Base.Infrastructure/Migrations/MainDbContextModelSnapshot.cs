@@ -3592,6 +3592,12 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ReceiptTypeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -3656,6 +3662,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<Guid?>("ModifierId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("ReferenceEntityType")
+                        .HasColumnType("int");
 
                     b.Property<string>("TimeZone")
                         .HasColumnType("nvarchar(50)");
@@ -3725,6 +3734,9 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.Property<Guid?>("ReceiptLineId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReferenceDisplayValue")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ReferenceId")
                         .HasColumnType("uniqueidentifier");
@@ -3804,7 +3816,7 @@ namespace NGErp.Base.Infrastructure.Migrations
                     b.Property<Guid>("ReceiptId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("RowNumber")
+                    b.Property<int>("Sequence")
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
@@ -3849,7 +3861,7 @@ namespace NGErp.Base.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseLocationId");
 
-                    b.HasIndex("ReceiptId", "RowNumber")
+                    b.HasIndex("ReceiptId", "Sequence")
                         .IsUnique();
 
                     b.HasIndex("CompanyId", "ItemId", "WarehouseLocationId");

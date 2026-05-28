@@ -2,7 +2,6 @@ namespace NGErp.Warehouse.Service.DTOs;
 
 public record ReceiptTypeConfigurationDto(
     Guid Id,
-    Guid ReceiptTypeId,
     ReceiptTypeSlimDto ReceiptType,
     IReadOnlyList<ReceiptTypeFieldConfigurationListDto> FieldConfigurations
 );

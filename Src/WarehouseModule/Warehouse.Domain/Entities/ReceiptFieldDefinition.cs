@@ -19,6 +19,7 @@ public class ReceiptFieldDefinition :
     public required string Title { get; set; }
     public required ReceiptFieldDataType DataType { get; set; }
     public required ReceiptFieldPlacement AllowedPlacement { get; set; }
+    public ReceiptReferenceEntityType? ReferenceEntityType { get; set; }
     public bool IsActive { get; set; } = true;
 
     public void Map(EntityTypeBuilder<ReceiptFieldDefinition> builder)
@@ -64,8 +65,8 @@ public enum ReceiptFieldDataType
     [Description("Boolean")]
     Boolean = 5,
 
-    [Description("Guid")]
-    Guid = 6
+    [Description("Reference")]
+    Reference = 6
 }
 
 public class ReceiptFieldDataTypeConverter :
@@ -85,7 +86,7 @@ public class ReceiptFieldDataTypeConverter :
             "Decimal" => ReceiptFieldDataType.Decimal,
             "Date" => ReceiptFieldDataType.Date,
             "Boolean" => ReceiptFieldDataType.Boolean,
-            "Guid" => ReceiptFieldDataType.Guid,
+            "Reference" => ReceiptFieldDataType.Reference,
             _ => throw new JsonException($"Unknown ReceiptFieldDataType: {value}")
         };
     }
@@ -155,4 +156,10 @@ public class ReceiptFieldPlacementConverter :
         var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
         return attribute?.Description ?? value.ToString();
     }
+}
+
+public enum ReceiptReferenceEntityType
+{
+    Warehouse = 1,
+    SourceOfSupply = 2,
 }

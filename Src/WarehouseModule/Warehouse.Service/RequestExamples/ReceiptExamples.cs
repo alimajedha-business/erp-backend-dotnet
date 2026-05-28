@@ -31,7 +31,7 @@ public class CreateReceiptExample :
             [
                 new CreateReceiptLineDto
                 {
-                    RowNumber = 1,
+                    Sequence = 1,
                     ItemId = new Guid("EA128520-C888-43FD-8B54-03BB1D277BD6"),
                     WarehouseLocationId = new Guid("B634A73B-49F9-4B92-95D9-4AAC55AFF72E"),
                     ReceiptLineMeasurementValues =
