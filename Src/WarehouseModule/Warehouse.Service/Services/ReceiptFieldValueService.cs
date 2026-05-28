@@ -2,7 +2,9 @@
 
 using NGErp.Base.Service.RequestFeatures;
 using NGErp.Base.Service.ResponseModels;
+using NGErp.Shared.Domain.Entities;
 using NGErp.Warehouse.Domain.Entities;
+using NGErp.Warehouse.Domain.Exceptions;
 using NGErp.Warehouse.Service.DTOs;
 using NGErp.Warehouse.Service.Repository.Contracts;
 using NGErp.Warehouse.Service.Service.Contracts;
@@ -25,19 +27,40 @@ public class ReceiptFieldValueService(
     )
     {
         ListQueryResult<ReceiptFieldValueReferenceDto>? res = null;
+        if (reference == ReceiptReferenceEntityType.Warehouse)
+        {
+            res = await _fieldValueRepository.FilterByQ<Domain.Entities.Warehouse>(
+                parameters,
+                _mapper.ConfigurationProvider,
+                predicate: p => p.CompanyId == companyId,
+                ct
+            );
+        }
+
         if (reference == ReceiptReferenceEntityType.SourceOfSupply)
         {
             res = await _fieldValueRepository.FilterByQ<ReceiptSourceOfSupply>(
-                companyId,
                 parameters,
                 _mapper.ConfigurationProvider,
+                predicate: p => p.CompanyId == companyId,
                 ct
+            );
+        }
+
+        if (reference == ReceiptReferenceEntityType.CompanyUnit)
+        {
+            res = await _fieldValueRepository.FilterByQ<CompanyUnit>(
+                parameters,
+                _mapper.ConfigurationProvider,
+                predicate: p => p.CompanyId == companyId,
+                ct
+
             );
         }
 
         if (res is null)
         {
-            throw new Exception();
+            throw new ReceiptFieldReferenceNotFoundException();
         }
 
         return new ListResponseModel<ReceiptFieldValueReferenceDto>(

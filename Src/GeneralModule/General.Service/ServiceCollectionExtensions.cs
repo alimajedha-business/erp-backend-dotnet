@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using NGErp.Base.Service.Services;
-using NGErp.General.Service.Mappings;
 using NGErp.General.Service.Resources;
 using NGErp.General.Service.Services;
 
@@ -12,7 +11,10 @@ namespace NGErp.General.Service
     {
         public static IServiceCollection AddGeneralServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); });
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(typeof(ServiceCollectionExtensions).Assembly);
+            });
 
             services.AddScoped<IExceptionLocalizer<GeneralResource>, ExceptionLocalizer<GeneralResource>>();
 

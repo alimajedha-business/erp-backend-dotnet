@@ -14,7 +14,7 @@ public class GeneralMenuProfile : IMenuModuleProfile
         yield return new MenuDefinition
         {
             NameFa = "اطلاعات پایه",
-            NameEn = "Basic Information",
+            NameEn = "Domain",
             Order = 1
         };
 
